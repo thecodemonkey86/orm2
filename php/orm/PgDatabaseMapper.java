@@ -1,12 +1,10 @@
 package php.orm;
 
-import model.Column;
-import php.Types;
-import php.cls.Type;
-import php.cls.bean.BeanCls;
-import php.cls.expression.Expression;
-import php.cls.expression.Var;
-import php.lib.ClsPgSqlQuery;
+import database.column.Column;
+import php.bean.BeanCls;
+import php.core.Type;
+import php.core.Types;
+import php.core.expression.Expression;
 
 public class PgDatabaseMapper extends DatabaseTypeMapper{
 

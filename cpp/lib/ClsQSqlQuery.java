@@ -1,9 +1,9 @@
 package cpp.lib;
 
 import cpp.Types;
-import cpp.cls.Cls;
-import cpp.cls.RawPtr;
-import cpp.cls.UniquePtr;
+import cpp.core.Cls;
+import cpp.core.RawPtr;
+import cpp.core.UniquePtr;
 
 public class ClsQSqlQuery extends Cls{
 

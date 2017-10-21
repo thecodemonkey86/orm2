@@ -1,7 +1,7 @@
 package sunjava.lib;
 
-import sunjava.cls.JavaGenericInterface;
-import sunjava.cls.Type;
+import sunjava.core.JavaGenericInterface;
+import sunjava.core.Type;
 
 public class IList extends JavaGenericInterface {
 

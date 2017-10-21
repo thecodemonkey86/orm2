@@ -1,8 +1,8 @@
 package cpp.lib;
 
 import cpp.Types;
-import cpp.cls.TplCls;
-import cpp.cls.Type;
+import cpp.core.TplCls;
+import cpp.core.Type;
 
 public class ClsQVector extends TplCls {
 

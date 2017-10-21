@@ -1,6 +1,6 @@
 package php.lib;
 
-import php.cls.Type;
+import php.core.Type;
 
 public class StaticLibMethod extends LibMethod {
 

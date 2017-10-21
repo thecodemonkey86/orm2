@@ -1,10 +1,10 @@
 package sunjava.lib;
 
 import codegen.CodeUtil;
-import sunjava.Types;
-import sunjava.cls.JavaGenericClass;
-import sunjava.cls.Type;
-import sunjava.cls.expression.IArrayAccessible;
+import sunjava.core.JavaGenericClass;
+import sunjava.core.Type;
+import sunjava.core.Types;
+import sunjava.core.expression.IArrayAccessible;
 
 public class ClsHashMap extends JavaGenericClass implements IArrayAccessible {
 	protected Type valType;

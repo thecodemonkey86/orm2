@@ -1,7 +1,7 @@
 package cpp.lib;
 
 import cpp.Types;
-import cpp.cls.NonMemberMethod;
+import cpp.core.NonMemberMethod;
 
 public class MethodDefaultQHash extends NonMemberMethod {
 

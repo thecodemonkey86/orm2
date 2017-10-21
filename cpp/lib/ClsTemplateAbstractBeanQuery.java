@@ -1,10 +1,10 @@
 package cpp.lib;
 
-import cpp.cls.Cls;
-import cpp.cls.ClsTemplate;
-import cpp.cls.TplCls;
-import cpp.cls.TplSymbol;
-import cpp.cls.Type;
+import cpp.core.Cls;
+import cpp.core.ClsTemplate;
+import cpp.core.TplCls;
+import cpp.core.TplSymbol;
+import cpp.core.Type;
 
 public class ClsTemplateAbstractBeanQuery extends ClsTemplate{
 

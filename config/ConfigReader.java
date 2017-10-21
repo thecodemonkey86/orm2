@@ -11,17 +11,17 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
-import model.Column;
-import model.Database;
-import model.FirebirdDatabase;
-import model.M2MColumns;
-import model.ManyRelation;
-import model.MappingTable;
-import model.MysqlDatabase;
-import model.OneRelation;
-import model.OneToManyRelation;
-import model.PgDatabase;
-import model.Table;
+import database.Database;
+import database.FirebirdDatabase;
+import database.MysqlDatabase;
+import database.PgDatabase;
+import database.column.Column;
+import database.relation.M2MColumns;
+import database.relation.ManyRelation;
+import database.relation.OneRelation;
+import database.relation.OneToManyRelation;
+import database.table.MappingTable;
+import database.table.Table;
 import util.Pair;
 
 public class ConfigReader implements ContentHandler {

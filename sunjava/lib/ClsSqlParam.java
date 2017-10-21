@@ -1,7 +1,7 @@
 package sunjava.lib;
 
-import sunjava.cls.JavaCls;
-import sunjava.cls.Type;
+import sunjava.core.JavaCls;
+import sunjava.core.Type;
 
 public class ClsSqlParam extends JavaCls{
 

@@ -3,8 +3,8 @@ package cpp;
 import java.util.ArrayList;
 
 import codegen.CodeUtil;
-import cpp.cls.Attr;
-import cpp.cls.Type;
+import cpp.core.Attr;
+import cpp.core.Type;
 
 public class Struct extends Type implements IAttributeContainer  {
 	protected ArrayList<Attr> attrs;

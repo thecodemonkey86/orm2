@@ -1,10 +1,10 @@
 package sunjava.orm;
 
+import database.relation.IManyRelation;
+import database.relation.ManyRelation;
+import database.relation.OneRelation;
+import database.relation.OneToManyRelation;
 import generate.CodeUtil2;
-import model.IManyRelation;
-import model.ManyRelation;
-import model.OneRelation;
-import model.OneToManyRelation;
 import util.StringUtil;
 
 public class OrmUtil {

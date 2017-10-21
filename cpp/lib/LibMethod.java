@@ -1,7 +1,7 @@
 package cpp.lib;
 
-import cpp.cls.Method;
-import cpp.cls.Type;
+import cpp.core.Method;
+import cpp.core.Type;
 
 public class LibMethod extends Method{
 

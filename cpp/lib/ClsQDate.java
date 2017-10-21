@@ -1,6 +1,6 @@
 package cpp.lib;
 
-import cpp.cls.Cls;
+import cpp.core.Cls;
 
 public class ClsQDate extends Cls{
 

@@ -1,7 +1,7 @@
 package cpp.lib;
 
 import cpp.Types;
-import cpp.cls.Cls;
+import cpp.core.Cls;
 
 public class ClsWebAppCommonForm extends Cls{
 

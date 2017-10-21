@@ -1,6 +1,6 @@
 package sunjava.lib;
 
-import sunjava.cls.Type;
+import sunjava.core.Type;
 
 public class StaticLibMethod extends LibMethod {
 

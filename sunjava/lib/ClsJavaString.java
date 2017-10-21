@@ -2,8 +2,8 @@ package sunjava.lib;
 
 import java.util.ArrayList;
 
-import sunjava.cls.JavaCls;
-import sunjava.cls.expression.JavaStringPlusEqOperator;
+import sunjava.core.JavaCls;
+import sunjava.core.expression.JavaStringPlusEqOperator;
 
 public class ClsJavaString extends JavaCls {
 	public static final String METHOD_NAME_LENGTH = "length";

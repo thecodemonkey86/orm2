@@ -1,9 +1,9 @@
 package sunjava.lib;
 
-import sunjava.Types;
-import sunjava.cls.Attr;
-import sunjava.cls.JavaCls;
-import sunjava.cls.JavaGenericClass;
+import sunjava.core.Attr;
+import sunjava.core.JavaCls;
+import sunjava.core.JavaGenericClass;
+import sunjava.core.Types;
 
 public class ClsBaseBeanQuery extends JavaGenericClass{
 

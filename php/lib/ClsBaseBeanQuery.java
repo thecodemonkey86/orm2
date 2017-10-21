@@ -1,10 +1,9 @@
 package php.lib;
 
-import php.Types;
-import php.cls.Attr;
-import php.cls.Method;
-import php.cls.PhpCls;
-import php.cls.PhpPseudoGenericClass;
+import php.core.Attr;
+import php.core.PhpCls;
+import php.core.PhpPseudoGenericClass;
+import php.core.Types;
 
 public class ClsBaseBeanQuery extends PhpPseudoGenericClass{
 

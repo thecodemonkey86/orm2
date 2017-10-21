@@ -1,11 +1,11 @@
 package sunjava.orm;
 
-import model.Column;
-import sunjava.Types;
-import sunjava.cls.Type;
-import sunjava.cls.bean.BeanCls;
-import sunjava.cls.expression.Expression;
-import sunjava.cls.expression.Var;
+import database.column.Column;
+import sunjava.bean.BeanCls;
+import sunjava.core.Type;
+import sunjava.core.Types;
+import sunjava.core.expression.Expression;
+import sunjava.core.expression.Var;
 
 public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 	

@@ -1,6 +1,6 @@
 package cpp;
 
-import cpp.cls.Attr;
+import cpp.core.Attr;
 
 public interface IAttributeContainer {
 	public Attr getAttrByName(String name);

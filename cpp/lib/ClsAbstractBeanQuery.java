@@ -1,10 +1,10 @@
 package cpp.lib;
 
 import cpp.Types;
-import cpp.cls.Attr;
-import cpp.cls.Cls;
-import cpp.cls.ClsTemplate;
-import cpp.cls.TplCls;
+import cpp.core.Attr;
+import cpp.core.Cls;
+import cpp.core.ClsTemplate;
+import cpp.core.TplCls;
 
 public class ClsAbstractBeanQuery extends TplCls{
 

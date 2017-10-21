@@ -1,7 +1,7 @@
 package php.lib;
 
-import php.cls.Method;
-import php.cls.Type;
+import php.core.Type;
+import php.core.method.Method;
 
 public class LibMethod extends Method{
 

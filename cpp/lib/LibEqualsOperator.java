@@ -1,6 +1,6 @@
 package cpp.lib;
 
-import cpp.cls.expression.EqualOperator;
+import cpp.core.expression.EqualOperator;
 
 public class LibEqualsOperator extends EqualOperator {
 

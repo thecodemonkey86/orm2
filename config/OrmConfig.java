@@ -7,12 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import model.Database;
-import model.ManyRelation;
-import model.MappingTable;
-import model.OneRelation;
-import model.OneToManyRelation;
-import model.Table;
+import database.Database;
+import database.relation.ManyRelation;
+import database.relation.OneRelation;
+import database.relation.OneToManyRelation;
+import database.table.MappingTable;
+import database.table.Table;
 
 public class OrmConfig {
 	protected String basePath,pathModel, pathRepository, dbUser, dbPass, dbUrl, dbName, schema;

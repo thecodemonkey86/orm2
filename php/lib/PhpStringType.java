@@ -2,8 +2,8 @@ package php.lib;
 
 import java.util.ArrayList;
 
-import php.cls.PhpCls;
-import php.cls.expression.PhpStringPlusEqOperator;
+import php.core.PhpCls;
+import php.core.expression.PhpStringPlusEqOperator;
 
 public class PhpStringType extends PhpCls {
 

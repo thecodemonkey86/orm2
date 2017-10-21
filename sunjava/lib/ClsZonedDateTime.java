@@ -1,6 +1,6 @@
 package sunjava.lib;
 
-import sunjava.cls.JavaCls;
+import sunjava.core.JavaCls;
 
 public class ClsZonedDateTime extends JavaCls {
 

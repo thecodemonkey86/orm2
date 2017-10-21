@@ -1,9 +1,9 @@
 package sunjava.lib;
 
-import sunjava.Types;
-import sunjava.cls.Attr;
-import sunjava.cls.JavaCls;
-import sunjava.cls.method.MethodAttributeSetter;
+import sunjava.core.Attr;
+import sunjava.core.JavaCls;
+import sunjava.core.Types;
+import sunjava.core.method.MethodAttributeSetter;
 
 public class ClsBaseBean extends JavaCls{
 

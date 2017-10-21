@@ -1,17 +1,17 @@
 package cpp.orm;
 
 import cpp.Types;
-import cpp.cls.Method;
-import cpp.cls.QString;
-import cpp.cls.Type;
-import cpp.cls.expression.CreateObjectExpression;
-import cpp.cls.expression.DoubleExpression;
-import cpp.cls.expression.Expression;
-import cpp.cls.expression.Expressions;
-import cpp.cls.expression.IntExpression;
-import cpp.cls.expression.LongLongExpression;
-import cpp.cls.expression.ShortExpression;
-import model.Column;
+import cpp.core.Method;
+import cpp.core.QString;
+import cpp.core.Type;
+import cpp.core.expression.CreateObjectExpression;
+import cpp.core.expression.DoubleExpression;
+import cpp.core.expression.Expression;
+import cpp.core.expression.Expressions;
+import cpp.core.expression.IntExpression;
+import cpp.core.expression.LongLongExpression;
+import cpp.core.expression.ShortExpression;
+import database.column.Column;
 
 public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 

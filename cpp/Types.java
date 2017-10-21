@@ -1,14 +1,13 @@
 package cpp;
 
-import model.AbstractRelation;
-import cpp.cls.Cls;
-import cpp.cls.PrimitiveType;
-import cpp.cls.TplCls;
-import cpp.cls.Type;
-import cpp.cls.bean.BeanCls;
-import cpp.cls.bean.Beans;
-import cpp.cls.bean.Nullable;
-import cpp.cls.bean.repo.ClsBeanRepository;
+import cpp.bean.BeanCls;
+import cpp.bean.Beans;
+import cpp.bean.Nullable;
+import cpp.beanrepository.ClsBeanRepository;
+import cpp.core.Cls;
+import cpp.core.PrimitiveType;
+import cpp.core.TplCls;
+import cpp.core.Type;
 import cpp.lib.ClsBaseBean;
 import cpp.lib.ClsOrderedSet;
 import cpp.lib.ClsQDate;
@@ -25,6 +24,7 @@ import cpp.lib.ClsQVector;
 import cpp.lib.ClsSql;
 import cpp.lib.ClsSqlQuery;
 import cpp.lib.ClsTemplateAbstractBeanQuery;
+import database.relation.AbstractRelation;
 
 
 public class Types {

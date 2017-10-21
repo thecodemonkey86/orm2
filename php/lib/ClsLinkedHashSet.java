@@ -1,8 +1,8 @@
 package php.lib;
 
-import php.Types;
-import php.cls.PhpPseudoGenericClass;
-import php.cls.Type;
+import php.core.PhpPseudoGenericClass;
+import php.core.Type;
+import php.core.Types;
 
 public class ClsLinkedHashSet extends PhpPseudoGenericClass {
 

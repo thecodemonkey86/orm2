@@ -1,9 +1,9 @@
 package cpp.orm;
 
-import cpp.cls.Method;
-import cpp.cls.Type;
-import cpp.cls.expression.Expression;
-import model.Column;
+import cpp.core.Method;
+import cpp.core.Type;
+import cpp.core.expression.Expression;
+import database.column.Column;
 
 public abstract class DatabaseTypeMapper {
 	public abstract Method getQVariantConvertMethod(String dbType);

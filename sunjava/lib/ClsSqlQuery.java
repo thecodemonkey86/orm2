@@ -1,8 +1,8 @@
 package sunjava.lib;
 
-import sunjava.Types;
-import sunjava.cls.Attr;
-import sunjava.cls.JavaCls;
+import sunjava.core.Attr;
+import sunjava.core.JavaCls;
+import sunjava.core.Types;
 
 public class ClsSqlQuery extends JavaCls{
 

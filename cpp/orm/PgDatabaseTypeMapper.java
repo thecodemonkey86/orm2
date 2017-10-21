@@ -1,18 +1,18 @@
 package cpp.orm;
 
-import model.Column;
-import pg.PgCppUtil;
+import util.pg.PgCppUtil;
 import cpp.Types;
-import cpp.cls.Method;
-import cpp.cls.QString;
-import cpp.cls.Type;
-import cpp.cls.expression.BoolExpression;
-import cpp.cls.expression.CreateObjectExpression;
-import cpp.cls.expression.DoubleExpression;
-import cpp.cls.expression.Expression;
-import cpp.cls.expression.IntExpression;
-import cpp.cls.expression.LongLongExpression;
-import cpp.cls.expression.ShortExpression;
+import cpp.core.Method;
+import cpp.core.QString;
+import cpp.core.Type;
+import cpp.core.expression.BoolExpression;
+import cpp.core.expression.CreateObjectExpression;
+import cpp.core.expression.DoubleExpression;
+import cpp.core.expression.Expression;
+import cpp.core.expression.IntExpression;
+import cpp.core.expression.LongLongExpression;
+import cpp.core.expression.ShortExpression;
+import database.column.Column;
 
 public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 	@Override

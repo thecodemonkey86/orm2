@@ -1,7 +1,7 @@
 package php.lib;
 
-import php.cls.Operator;
-import php.cls.Type;
+import php.core.Operator;
+import php.core.Type;
 
 public class LibOperator extends Operator {
 

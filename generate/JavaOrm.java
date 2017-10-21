@@ -6,22 +6,23 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
-import sunjava.Types;
-import sunjava.cls.JavaCls;
-import sunjava.cls.bean.BeanCls;
-import sunjava.cls.bean.Beans;
-import sunjava.cls.bean.CustomClassMemberCode;
-import sunjava.cls.bean.repo.ClsBeanRepository;
-import sunjava.cls.bean.repo.query.ClsBeanQuery;
+
+import database.PgDatabase;
+import database.column.Column;
+import database.relation.ManyRelation;
+import database.relation.OneRelation;
+import database.relation.OneToManyRelation;
+import database.table.Table;
+import sunjava.bean.BeanCls;
+import sunjava.bean.Beans;
+import sunjava.bean.CustomClassMemberCode;
+import sunjava.beanrepository.ClsBeanRepository;
+import sunjava.beanrepository.query.ClsBeanQuery;
 import sunjava.config.JavaConfigReader;
 import sunjava.config.JavaOrmOutputConfig;
+import sunjava.core.JavaCls;
+import sunjava.core.Types;
 import sunjava.orm.PgDatabaseMapper;
-import model.Column;
-import model.ManyRelation;
-import model.OneToManyRelation;
-import model.OneRelation;
-import model.PgDatabase;
-import model.Table;
 import xml.reader.DefaultXMLReader;
 
 public class JavaOrm extends OrmCommon{

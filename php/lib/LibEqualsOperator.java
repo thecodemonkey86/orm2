@@ -1,6 +1,6 @@
 package php.lib;
 
-import php.cls.expression.EqualOperator;
+import php.core.expression.EqualOperator;
 
 public class LibEqualsOperator extends EqualOperator {
 

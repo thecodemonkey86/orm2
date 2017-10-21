@@ -1,9 +1,9 @@
 package cpp.lib;
 
 import cpp.Types;
-import cpp.cls.Attr;
-import cpp.cls.Cls;
-import cpp.cls.method.MethodAttributeSetter;
+import cpp.core.Attr;
+import cpp.core.Cls;
+import cpp.core.method.MethodAttributeSetter;
 
 public class ClsBaseBean extends Cls{
 

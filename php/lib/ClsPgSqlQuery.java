@@ -1,7 +1,7 @@
 package php.lib;
 
-import php.Types;
-import php.cls.PhpCls;
+import php.core.PhpCls;
+import php.core.Types;
 
 public class ClsPgSqlQuery extends PhpCls{
 

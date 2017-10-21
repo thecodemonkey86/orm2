@@ -1,7 +1,7 @@
 package sunjava.lib;
 
-import sunjava.cls.Operator;
-import sunjava.cls.Type;
+import sunjava.core.Operator;
+import sunjava.core.Type;
 
 public class LibOperator extends Operator {
 

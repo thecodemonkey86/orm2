@@ -1,8 +1,8 @@
 package cpp.lib;
 
-import cpp.cls.Cls;
-import cpp.cls.TplCls;
-import cpp.cls.Type;
+import cpp.core.Cls;
+import cpp.core.TplCls;
+import cpp.core.Type;
 
 public class EnableSharedFromThis extends TplCls{
 

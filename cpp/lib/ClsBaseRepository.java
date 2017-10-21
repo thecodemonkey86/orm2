@@ -1,10 +1,10 @@
 package cpp.lib;
 
 import cpp.Types;
-import cpp.cls.Attr;
-import cpp.cls.Cls;
-import cpp.cls.bean.repo.ClsBeanRepository;
-import cpp.cls.method.MethodAttributeGetter;
+import cpp.beanrepository.ClsBeanRepository;
+import cpp.core.Attr;
+import cpp.core.Cls;
+import cpp.core.method.MethodAttributeGetter;
 
 public class ClsBaseRepository extends Cls{
 

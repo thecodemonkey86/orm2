@@ -1,8 +1,8 @@
 package sunjava.lib;
 
-import sunjava.Types;
-import sunjava.cls.JavaGenericClass;
-import sunjava.cls.Type;
+import sunjava.core.JavaGenericClass;
+import sunjava.core.Type;
+import sunjava.core.Types;
 
 public class ClsHashSet extends JavaGenericClass{
 

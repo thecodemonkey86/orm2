@@ -1,10 +1,10 @@
 package cpp.orm;
 
-import model.Column;
 import cpp.Types;
-import cpp.cls.Method;
-import cpp.cls.Type;
-import cpp.cls.expression.Expression;
+import cpp.core.Method;
+import cpp.core.Type;
+import cpp.core.expression.Expression;
+import database.column.Column;
 
 public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 	@Override

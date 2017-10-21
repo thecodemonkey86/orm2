@@ -1,8 +1,6 @@
 package php.lib;
 
-import php.Types;
-import php.cls.Attr;
-import php.cls.PhpCls;
+import php.core.PhpCls;
 
 public class ClsSqlQuery extends PhpCls{
 

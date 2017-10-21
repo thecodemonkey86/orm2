@@ -1,7 +1,7 @@
 package cpp.lib;
 
-import cpp.cls.Cls;
-import cpp.cls.QStringPlusEqOperator;
+import cpp.core.Cls;
+import cpp.core.QStringPlusEqOperator;
 
 public class ClsQString extends Cls {
 

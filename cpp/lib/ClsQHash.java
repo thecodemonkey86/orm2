@@ -2,9 +2,9 @@ package cpp.lib;
 
 import codegen.CodeUtil;
 import cpp.Types;
-import cpp.cls.TplCls;
-import cpp.cls.Type;
-import cpp.cls.expression.IArrayAccessible;
+import cpp.core.TplCls;
+import cpp.core.Type;
+import cpp.core.expression.IArrayAccessible;
 
 public class ClsQHash extends TplCls implements IArrayAccessible {
 	protected Type valType;

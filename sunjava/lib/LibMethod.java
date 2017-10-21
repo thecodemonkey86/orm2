@@ -1,7 +1,7 @@
 package sunjava.lib;
 
-import sunjava.cls.Method;
-import sunjava.cls.Type;
+import sunjava.core.Method;
+import sunjava.core.Type;
 
 public class LibMethod extends Method{
 

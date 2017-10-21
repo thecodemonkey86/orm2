@@ -1,17 +1,16 @@
 package php.orm;
 
-import php.cls.expression.IntExpression;
-import php.cls.expression.PhpStringLiteral;
-import php.cls.expression.NewOperator;
-import model.Column;
-import php.Types;
-import php.cls.Type;
-import php.cls.bean.BeanCls;
-import php.cls.expression.BoolExpression;
-import php.cls.expression.DoubleExpression;
-import php.cls.expression.Expression;
-import php.cls.expression.Expressions;
-import php.cls.expression.Var;
+import database.column.Column;
+import php.bean.BeanCls;
+import php.core.Type;
+import php.core.Types;
+import php.core.expression.BoolExpression;
+import php.core.expression.DoubleExpression;
+import php.core.expression.Expression;
+import php.core.expression.Expressions;
+import php.core.expression.IntExpression;
+import php.core.expression.NewOperator;
+import php.core.expression.PhpStringLiteral;
 
 public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 	

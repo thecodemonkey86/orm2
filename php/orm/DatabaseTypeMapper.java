@@ -1,16 +1,14 @@
 package php.orm;
 
-import php.cls.Type;
-import php.cls.bean.BeanCls;
-import php.cls.expression.Expression;
-import php.cls.expression.Var;
-import model.Column;
+import database.column.Column;
+import php.bean.BeanCls;
+import php.core.Type;
+import php.core.expression.Expression;
 
 public abstract class DatabaseTypeMapper {
 	public abstract Type getTypeFromDbDataType(String dbType);
 	
 	public abstract Expression getColumnDefaultValueExpression(Column col);
-//	public abstract Expression getGenericDefaultValueExpression(Column col);
 	
 	public abstract Type columnToType(Column c);
 

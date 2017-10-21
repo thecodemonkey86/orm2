@@ -1,7 +1,7 @@
 package sunjava.lib;
 
-import sunjava.Types;
-import sunjava.cls.JavaCls;
+import sunjava.core.JavaCls;
+import sunjava.core.Types;
 
 public class ClsSqlDate extends JavaCls {
 

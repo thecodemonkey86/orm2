@@ -1,7 +1,7 @@
 package cpp.lib;
 
-import cpp.cls.Operator;
-import cpp.cls.Type;
+import cpp.core.Operator;
+import cpp.core.Type;
 
 public class LibOperator extends Operator {
 

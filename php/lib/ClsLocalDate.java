@@ -1,6 +1,6 @@
 package php.lib;
 
-import php.cls.PhpCls;
+import php.core.PhpCls;
 
 public class ClsLocalDate extends PhpCls {
 

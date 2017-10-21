@@ -1,6 +1,6 @@
 package sunjava.lib;
 
-import sunjava.cls.expression.EqualOperator;
+import sunjava.core.expression.EqualOperator;
 
 public class LibEqualsOperator extends EqualOperator {
 

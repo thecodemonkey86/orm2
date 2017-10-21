@@ -1,7 +1,7 @@
 package php.lib;
 
-import php.cls.PhpCls;
-import php.cls.Type;
+import php.core.PhpCls;
+import php.core.Type;
 import util.StringUtil;
 
 public class ClsSqlParam extends PhpCls{

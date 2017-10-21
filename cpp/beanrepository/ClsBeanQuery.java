@@ -1,0 +1,43 @@
+package cpp.beanrepository;
+
+import cpp.Types;
+import cpp.bean.BeanCls;
+import cpp.beanrepository.method.ConstructorBeanQuery;
+import cpp.beanrepository.method.MethodBeanQueryFetch;
+import cpp.beanrepository.method.MethodBeanQueryFetchOne;
+import cpp.core.Attr;
+import cpp.core.Cls;
+import cpp.lib.ClsQVector;
+import cpp.lib.ClsTemplateAbstractBeanQuery;
+
+public class ClsBeanQuery extends Cls {
+
+	
+	public ClsBeanQuery(BeanCls cls) {
+		super(cls.getName()+ "BeanQuery");
+		addSuperclass(Types.beanQuery(cls));
+		addConstructor(new ConstructorBeanQuery());
+		addMethod(new MethodBeanQueryFetch(cls));
+		addMethod(new MethodBeanQueryFetchOne(cls));
+		addIncludeLib(ClsQVector.CLSNAME);
+		addIncludeHeader(BeanCls.getModelPath() + "beans/"+cls.getIncludeHeader());
+		addIncludeHeader(ClsTemplateAbstractBeanQuery.CLSNAME.toLowerCase());
+		addIncludeHeader("../"+ ClsBeanRepository.CLSNAME.toLowerCase());
+		addAttr(new Attr(Types.BeanRepository.toSharedPtr(), "repository"));
+		
+		addForwardDeclaredClass(Types.BeanRepository.getName());
+	}
+	
+	@Override
+	public String toHeaderString() {
+		// TODO Auto-generated method stub
+		return super.toHeaderString();
+	}
+	
+	@Override
+	protected void addBeforeSourceCode(StringBuilder sb){
+		super.addBeforeSourceCode(sb);
+	}
+
+
+}

@@ -1,9 +1,9 @@
 package cpp.orm;
 
+import database.relation.ManyRelation;
+import database.relation.OneRelation;
+import database.relation.OneToManyRelation;
 import generate.CodeUtil2;
-import model.ManyRelation;
-import model.OneRelation;
-import model.OneToManyRelation;
 import util.StringUtil;
 
 public class OrmUtil {

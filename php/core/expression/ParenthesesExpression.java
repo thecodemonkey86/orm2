@@ -1,0 +1,24 @@
+package php.core.expression;
+
+import generate.CodeUtil2;
+import php.core.Type;
+
+public class ParenthesesExpression extends Expression {
+
+	Expression expression;
+	
+	public ParenthesesExpression(Expression expression) {
+		this.expression = expression;
+	}
+	
+	@Override
+	public Type getType() {
+		return expression.getType();
+	}
+
+	@Override
+	public String toString() {
+		return CodeUtil2.parentheses(expression);
+	}
+
+}
