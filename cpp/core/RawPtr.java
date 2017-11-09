@@ -1,7 +1,5 @@
 package cpp.core;
 
-import cpp.IAttributeContainer;
-
 public class RawPtr extends TplCls{
 
 	public RawPtr(Type element) {

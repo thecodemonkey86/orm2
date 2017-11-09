@@ -7,6 +7,7 @@ public class PhpFunctions {
 	public static final PhpFunction spl_object_hash  = new PhpFunction("spl_object_hash", Types.String);
 	public static final PhpFunction count  = new PhpFunction("count", Types.Int);
 	public static final PhpFunction isset  = new PhpFunction("isset", Types.Bool);
+	public static final PhpFunction array_values  = new PhpFunction("array_values", Types.array(Types.Mixed));
 	
 	
 }

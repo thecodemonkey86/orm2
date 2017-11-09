@@ -25,7 +25,7 @@ public class OrmConfig {
 	protected Map<Table,List<ManyRelation>> manyToManyRelations;
 	
 	protected Database database;
-	private boolean enableStacktrace = false;
+	private boolean enableStacktrace = true;
 	
 	public boolean isEnableStacktrace() {
 		return enableStacktrace;

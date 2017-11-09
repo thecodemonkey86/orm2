@@ -1,4 +1,4 @@
-package cpp.bean;
+/*package cpp.bean;
 
 import cpp.core.Method;
 import cpp.core.instruction.Instruction;
@@ -33,3 +33,4 @@ public class CustomClassMemberCode extends Method{
 		return this.instructions.get(0).toString();
 	}
 }
+*/

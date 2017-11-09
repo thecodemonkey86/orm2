@@ -21,7 +21,7 @@ public class MethodAddRelatedTableJoins extends Method {
 	
 	public MethodAddRelatedTableJoins(BeanCls cls) {
 		super(Public, Types.Void, "addRelatedTableJoins");
-		addParam(new Param(Types.beanQuery(cls).toRef(), "query"));
+		addParam(new Param(Types.baseBeanQuery(cls).toRef(), "query"));
 		setStatic(true);
 	}
 

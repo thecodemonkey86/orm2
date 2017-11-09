@@ -140,7 +140,7 @@ public class MethodLoadCollection extends Method{
 		exprQSqlQuery = exprQSqlQuery.callMethod("whereIn", varColumns, params);
 		
 		addInstr(exprQSqlQuery.asInstruction());
-		Var query = _declare(Types.QSqlQuery.toUniquePointer(), "query", sqlQuery.callMethod("execQuery"));
+		Var query = _declare(Types.QSqlQuery, "query", sqlQuery.callMethod("execQuery"));
 		
 		
 		IfBlock ifQueryNext = _if(query.callMethod("next"));

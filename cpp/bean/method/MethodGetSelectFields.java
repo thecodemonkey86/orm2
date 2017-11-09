@@ -33,7 +33,7 @@ public class MethodGetSelectFields extends Method  {
 		String sprintfTmpl = "%1." + cols.get(0).getEscapedName() + " as %1__" + cols.get(0).getName();
 
 		for(int i=1;i<cols.size();i++) {
-			sprintfTmpl = sprintfTmpl + "," + "%1." + cols.get(i).getEscapedName() + " as %1 __" + cols.get(i).getName();
+			sprintfTmpl = sprintfTmpl + "," + "%1." + cols.get(i).getEscapedName() + " as %1__" + cols.get(i).getName();
 		}
 		
 		_return (new QStringLiteral(sprintfTmpl).callMethod(ClsQString.arg, getParam("alias")));

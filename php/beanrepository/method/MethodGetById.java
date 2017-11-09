@@ -24,6 +24,7 @@ import php.core.Types;
 import php.core.expression.BoolExpression;
 import php.core.expression.Expression;
 import php.core.expression.Expressions;
+import php.core.expression.Operators;
 import php.core.expression.PhpStringLiteral;
 import php.core.expression.Var;
 import php.core.instruction.DoWhile;
@@ -99,7 +100,7 @@ public class MethodGetById extends Method {
 				joinConditions.add(CodeUtil.sp("b1."+r.getSourceEntityColumn(i).getEscapedName(),'=',r.getAlias("mapping")+"."+ r.getSourceMappingColumn(i).getEscapedName()));
 			}
 			
-			exprSqlQuery = exprSqlQuery.callMethod("leftJoin", new PhpStringLiteral(r.getMappingTable().getName()),new PhpStringLiteral(r.getAlias("mapping")), new PhpStringLiteral(CodeUtil2.concat(joinConditions," AND ")));
+			exprSqlQuery = exprSqlQuery.callMethod("leftJoin", new PhpStringLiteral(r.getMappingTable().getEscapedName()+" " + r.getAlias("mapping")), new PhpStringLiteral(CodeUtil2.concat(joinConditions," AND ")));
 			
 			joinConditions.clear();
 			for(int i=0;i<r.getDestColumnCount();i++) {
@@ -165,12 +166,12 @@ public class MethodGetById extends Method {
 				pkArrayIndex = pkSet.arrayIndex(PhpFunctions.spl_object_hash.call(foreignPk));
 				
 			} else {
-				Column colPk = r.getDestTable().getPrimaryKey().getColumns().get(0);
+				Column colPk = r.getDestTable().getPrimaryKey().getFirstColumn();
 				
 				Var pkSet = ifRowNotNull.thenBlock()._declareNewArray(Types.array(Types.Mixed), "pkSet"+StringUtil.ucfirst(r.getAlias()));
 				pkArrayIndex = pkSet.arrayIndex(row.arrayIndex(new PhpStringLiteral( r.getAlias()+"__"+colPk.getName())));
 			}
-			IfBlock ifNotIssetPk = doWhileRowIsNotNull._if(_not(PhpFunctions.isset.call(pkArrayIndex)));
+			IfBlock ifNotIssetPk = doWhileRowIsNotNull._if(Expressions.and(_not(PhpFunctions.isset.call(pkArrayIndex)), row.arrayIndex( new PhpStringLiteral(r.getAlias()+"__"+r.getDestTable().getPrimaryKey().getFirstColumn().getName())).isNotNull()));
 			Var foreignBean = ifNotIssetPk.thenBlock()._declare(foreignCls, "b" + r.getAlias(),  Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Beans.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
 			ifNotIssetPk.thenBlock()._assign(pkArrayIndex, foreignBean);
 			ifNotIssetPk.thenBlock()._callMethodInstr(b1, BeanCls.getAddRelatedBeanMethodName(r), foreignBean);

@@ -16,6 +16,7 @@ import php.bean.method.MethodAddManyToManyRelatedBeanInternal;
 import php.bean.method.MethodAddRelatedBean;
 import php.bean.method.MethodAddRelatedBeanInternal;
 import php.bean.method.MethodAttrGetter;
+import php.bean.method.MethodClearModified;
 import php.bean.method.MethodColumnAttrSetNull;
 import php.bean.method.MethodColumnAttrSetter;
 import php.bean.method.MethodColumnAttrSetterInternal;
@@ -93,7 +94,7 @@ public class BeanCls extends PhpCls {
 	protected List<OneRelation> oneRelations;
 	protected List<ManyRelation> manyRelations;
 
-	//protected Struct structPk;
+	
 	protected Type pkType;
 	protected FetchListHelperClass fetchListHelper;
 
@@ -131,10 +132,10 @@ public class BeanCls extends PhpCls {
 			addAttr(attr);
 			addMethod(new MethodManyAttrGetter(attr));
 			
-			Attr manyRelAdded = new Attr(Types.array(Types.Mixed) ,attr.getName()+"Added");
+			Attr manyRelAdded = new Attr(Types.array(Beans.get(r.getSourceTable())) ,attr.getName()+"Added");
 			addAttr(manyRelAdded);
 			addMethod(new MethodAttributeGetter(manyRelAdded));
-			Attr manyRelRemoved = new Attr(Types.array(Types.Mixed) ,attr.getName()+"Removed");
+			Attr manyRelRemoved = new Attr(Types.array(Beans.get(r.getSourceTable())) ,attr.getName()+"Removed");
 			addAttr(manyRelRemoved);
 			addMethod(new MethodAttributeGetter(manyRelRemoved));
 			
@@ -144,6 +145,8 @@ public class BeanCls extends PhpCls {
 			addMethod(new MethodRemoveManyToManyRelatedBean(r, new Param(attr.getElementType(), "bean")));
 			addMethod(new MethodHasRemovedManyToMany(r));
 			addMethod(new MethodHasAddedManyToMany(r));
+			
+			
 		}
 
 
@@ -198,6 +201,7 @@ public class BeanCls extends PhpCls {
 			addMethod(new MethodAttrGetter(attrPrev, false));
 			pkType =typeMapper.columnToType(col);
 		}
+		addMethod(new MethodClearModified());
 	}
 
 	public BeanCls(Table tbl,List<OneToManyRelation> manyRelations,List<OneRelation> oneRelations, List<ManyRelation> manyToManyRelations) {

@@ -1,5 +1,6 @@
 package cpp.lib;
 
+import cpp.Types;
 import cpp.core.Cls;
 
 public class ClsSqlQuery extends Cls{
@@ -11,7 +12,7 @@ public class ClsSqlQuery extends Cls{
 		addMethod(new LibMethod(this.toRawPointer(), "from"));
 		addMethod(new LibMethod(this.toRawPointer(), "leftJoin"));
 		addMethod(new LibMethod(this.toRawPointer(), "join"));
-		addMethod(new LibMethod(new ClsQSqlQuery().toSharedPtr(), "execQuery"));
+		addMethod(new LibMethod(Types.QSqlQuery, "execQuery"));
 		addMethod(new LibMethod(this.toRawPointer(), "where"));
 		addMethod(new LibMethod(this.toRawPointer(), "andWhereIn"));
 		addMethod(new LibMethod(this.toRawPointer(), "whereIn"));

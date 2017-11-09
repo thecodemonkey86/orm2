@@ -1,7 +1,6 @@
 package cpp.core;
 
 import codegen.CodeUtil;
-import cpp.IAttributeContainer;
 
 public class Ref extends Cls {
 

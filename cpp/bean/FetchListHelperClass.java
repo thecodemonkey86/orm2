@@ -3,9 +3,9 @@ package cpp.bean;
 import java.util.ArrayList;
 import java.util.List;
 
-import cpp.Struct;
 import cpp.Types;
 import cpp.core.Attr;
+import cpp.core.Struct;
 import cpp.core.Type;
 import database.relation.AbstractRelation;
 
@@ -32,7 +32,7 @@ public class FetchListHelperClass extends Struct{
 		for(AbstractRelation r:manyRelations) {
 			Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
 			if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
-				parent.addForwardDeclaredClass(beanPk.getName());
+				parent.addForwardDeclaredClass((Struct) beanPk );
 			}
 			Attr attrSet = new Attr(Types.qset(beanPk), r.getAlias()+"Set");
 //			addMethod(new Method(Method.Public, attrSet.getType().toRef(), "get"+StringUtil.ucfirst(attrSet.getName())) {

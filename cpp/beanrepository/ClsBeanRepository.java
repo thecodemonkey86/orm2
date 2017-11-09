@@ -51,8 +51,8 @@ public class ClsBeanRepository extends Cls{
 			addMethod(new MethodFetchOne(bean.getOneRelations(),bean.getOneToManyRelations(), bean, null));
 //			addMethod(new MethodFetchOneStatic(bean));
 //			beanQueryClasses.add(new ClsBeanQuery(bean));
-			addForwardDeclaredClass(bean.getName());
-			addForwardDeclaredClass(bean.getName()+"BeanQuery");
+			addForwardDeclaredClass(bean);
+			addForwardDeclaredClass(Types.beanQuery(bean));
 //			addMethod(new MethodLoadCollection(new Param(Types.qset(bean.toSharedPtr()).toRawPointer(), "collection")));
 			addMethod(new MethodLoadCollection(new Param(Types.orderedSet(bean.toSharedPtr()).toRawPointer(),  "collection"), bean));
 			addMethod(new MethodCreateQuery(bean));

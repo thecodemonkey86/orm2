@@ -1,10 +1,10 @@
 package cpp.bean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import util.StringUtil;
 import generate.CodeUtil2;
-import cpp.Struct;
 import cpp.Types;
 import cpp.bean.method.BeanConstructor;
 import cpp.bean.method.BeanDestructor;
@@ -46,6 +46,7 @@ import cpp.core.Destructor;
 import cpp.core.Method;
 import cpp.core.Operator;
 import cpp.core.Param;
+import cpp.core.Struct;
 import cpp.core.Type;
 import cpp.core.expression.Expression;
 import cpp.core.expression.StaticAccessExpression;
@@ -64,11 +65,18 @@ public class BeanCls extends Cls {
 
 //	public static final String attrPkFieldName = "pkFieldName";
 //	public static final String attrPkFieldNames = "pkFieldNames";
+	public static final String BEGIN_CUSTOM_CLASS_MEMBERS = "/*BEGIN_CUSTOM_CLASS_MEMBERS*/";
+	public static final String END_CUSTOM_CLASS_MEMBERS = "/*END_CUSTOM_CLASS_MEMBERS*/";
+	public static final String BEGIN_CUSTOM_PREPROCESSOR = "/*BEGIN_CUSTOM_PREPROCESSOR*/";
+	public static final String END_CUSTOM_PREPROCESSOR = "/*END_CUSTOM_PREPROCESSOR*/";
 	
 	static Database database;
 	static DatabaseTypeMapper mapper;
 	public static final String repository = "repository";
 	private static String modelPath, repositoryPath;
+	
+	private ArrayList<String> customHeaderCode, customSourceCode, customPreprocessorCode;
+	
 	
 	public static void setModelPath(String modelPath) {
 		BeanCls.modelPath = modelPath;
@@ -117,13 +125,33 @@ public class BeanCls extends Cls {
 		return fetchListHelper;
 	}
 	
+	public void addCustomHeaderCode(String code) {
+		if(this.customHeaderCode == null) {
+			this.customHeaderCode = new ArrayList<>();
+		}
+		this.customHeaderCode.add(code);
+	}
+	
+	public void addCustomSourceCode(String code) {
+		if(this.customSourceCode == null) {
+			this.customSourceCode = new ArrayList<>();
+		}
+		this.customSourceCode.add(code);
+	}
+		
+	public void addCustomPreprocessorCode(String code) {
+		if(this.customPreprocessorCode == null) {
+			this.customPreprocessorCode = new ArrayList<>();
+		}
+		this.customPreprocessorCode.add(code);
+	}
 	private void addAttributes(List<Column> allColumns) {
 		addAttr(new RepositoryAttr());
 		for(OneRelation r:oneRelations) {
 			OneAttr attr = new OneAttr(r);
 				addAttr(attr);
 				addIncludeHeader(attr.getElementType().getName().toLowerCase());
-				addForwardDeclaredClass(attr.getType().getName());
+				addForwardDeclaredClass(attr.getClassType());
 				addMethod(new MethodAttrGetter(attr,true));	
 				addMethod(new MethodOneRelationBeanIsNull(r,true));
 				addMethod(new MethodOneRelationBeanIsNull(r,false));
@@ -143,7 +171,7 @@ public class BeanCls extends Cls {
 			ManyAttr attr = new ManyAttr(r);
 			addAttr(attr);
 			addIncludeHeader(attr.getClassType().getIncludeHeader());
-			addForwardDeclaredClass(attr.getElementType().getName());
+			addForwardDeclaredClass((Cls) attr.getElementType());
 			addMethod(new MethodManyAttrGetter(attr));
 			addMethod(new MethodAddRelatedBean(r, new Param(attr.getElementType().toConstRef(), "bean")));
 			addMethod(new MethodAddRelatedBeanInternal(r, new Param(attr.getElementType().toConstRef(), "bean")));
@@ -153,7 +181,7 @@ public class BeanCls extends Cls {
 			ManyAttr attr = new ManyAttr(r);
 			addAttr(attr);
 			addIncludeHeader(attr.getClassType().getIncludeHeader());
-			addForwardDeclaredClass(attr.getElementType().getName());
+			addForwardDeclaredClass((Cls) attr.getElementType());
 			addMethod(new MethodManyAttrGetter(attr));
 			Attr attrManyToManyAdded = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Added");
 			addAttr(attrManyToManyAdded);
@@ -285,10 +313,10 @@ public class BeanCls extends Cls {
 		addMethod(new MethodGetTableNameInternal());
 		addIncludeHeader("beanquery");
 		addIncludeHeader(repositoryPath + "beanrepository");
-		addForwardDeclaredClass(Types.BeanRepository.getName());
+		addForwardDeclaredClass(Types.BeanRepository);
 		addIncludeHeader("util/orderedset");
 		addAttributes(tbl.getAllColumns());
-		addForwardDeclaredClass(getName());
+		addForwardDeclaredClass(this);
 		List<Column> cols = tbl.getColumns(!tbl.getPrimaryKey().isAutoIncrement());
 		List<Column> allCols = tbl.getColumns(true);
 		addMethod(new MethodGetInsertFields(cols));
@@ -378,7 +406,8 @@ public class BeanCls extends Cls {
 	
 	
 	@Override
-	protected void addHeaderCodeBeforeClassDefinition(StringBuilder sb) {
+	protected void addHeaderCodeBeforeClassDeclaration(StringBuilder sb) {
+		super.addHeaderCodeBeforeClassDeclaration(sb);
 		if (tbl.getPrimaryKey().isMultiColumn()) {
 			sb.append(getStructPk().toSourceString()).append('\n');
 		}
@@ -387,6 +416,14 @@ public class BeanCls extends Cls {
 //		}
 		if (fetchListHelper!=null) {
 			sb.append(fetchListHelper.toSourceString()).append('\n').append('\n');
+		}
+		
+		if(customPreprocessorCode != null) {
+			sb.append('\n').append(BEGIN_CUSTOM_PREPROCESSOR).append('\n');
+			for(String cc : customPreprocessorCode) {
+				sb.append(cc.trim());
+			}
+			sb.append('\n').append(END_CUSTOM_PREPROCESSOR).append('\n');
 		}
 	}
 
@@ -400,6 +437,14 @@ public class BeanCls extends Cls {
 //		if (fetchListHelper!=null) {
 //			sb.append(fetchListHelper.toSourceString()).append('\n').append('\n');
 //		}
+		
+		if(customSourceCode != null) {
+			sb.append('\n').append(BEGIN_CUSTOM_CLASS_MEMBERS).append('\n');
+			for(String cc : customSourceCode) {
+				sb.append(cc.trim());
+			}
+			sb.append('\n').append(BEGIN_CUSTOM_CLASS_MEMBERS).append('\n');
+		}
 	}
 	
 	public Attr getManyRelationAttr(OneRelation r) {
@@ -425,10 +470,6 @@ public class BeanCls extends Cls {
 		return pkType;
 	}
 	
-	@Override
-	protected void addClassHeaderCode(StringBuilder sb) {
-		
-	}
 
 	public StaticAccessExpression accessStaticAttribute(String attrName) {
 		return new StaticAccessExpression(this, getStaticAttribute(attrName));
@@ -519,6 +560,20 @@ public class BeanCls extends Cls {
 		return manyRelations;
 	}
 	
+	@Override
+	protected void addClassHeaderCode(StringBuilder sb) {
+		super.addClassHeaderCode(sb);
+		if(customHeaderCode != null) {
+			sb.append('\n').append(BEGIN_CUSTOM_CLASS_MEMBERS).append('\n');
+			for(String cc : customHeaderCode) {
+				sb.append(cc.trim());
+			}
+			sb.append('\n').append(END_CUSTOM_CLASS_MEMBERS).append('\n');
+		}
+
+	}
+	
+	
 	public static String getRelatedBeanMethodName(AbstractRelation r) {
 		 if (r instanceof OneToManyRelation) {
 			return "add"+StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrNameSingular((OneToManyRelation) r))+"Internal";
@@ -532,4 +587,5 @@ public class BeanCls extends Cls {
 	public static DatabaseTypeMapper getDatabaseMapper() {
 		return mapper;
 	}
+
 }

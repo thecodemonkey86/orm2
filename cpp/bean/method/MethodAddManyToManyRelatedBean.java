@@ -1,13 +1,13 @@
 package cpp.bean.method;
 
 import util.StringUtil;
-import cpp.Struct;
 import cpp.Types;
 import cpp.bean.BeanCls;
 import cpp.bean.Beans;
 import cpp.core.Attr;
 import cpp.core.Method;
 import cpp.core.Param;
+import cpp.core.Struct;
 import cpp.core.expression.Var;
 import cpp.orm.OrmUtil;
 import database.column.Column;

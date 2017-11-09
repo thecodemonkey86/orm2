@@ -3,6 +3,7 @@ package cpp;
 import cpp.bean.BeanCls;
 import cpp.bean.Beans;
 import cpp.bean.Nullable;
+import cpp.beanrepository.ClsBeanQuery;
 import cpp.beanrepository.ClsBeanRepository;
 import cpp.core.Cls;
 import cpp.core.PrimitiveType;
@@ -60,9 +61,11 @@ public class Types {
 	public static TplCls qlist(Type element) {
 		return new TplCls("QList", element);
 	}
-	
-	public static TplCls beanQuery(Cls cls) {
+	public static Cls baseBeanQuery(BeanCls cls) {
 		return new ClsTemplateAbstractBeanQuery().getConcreteClass(cls);
+	}
+	public static Cls beanQuery(BeanCls cls) {
+		return new ClsBeanQuery(cls); //
 	}
 	public static ClsQVector qvector(Type element) {
 		return new ClsQVector(element);

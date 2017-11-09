@@ -1,10 +1,8 @@
-package cpp;
+package cpp.core;
 
 import java.util.ArrayList;
 
 import codegen.CodeUtil;
-import cpp.core.Attr;
-import cpp.core.Type;
 
 public class Struct extends Type implements IAttributeContainer  {
 	protected ArrayList<Attr> attrs;
@@ -69,4 +67,8 @@ public class Struct extends Type implements IAttributeContainer  {
 		throw new RuntimeException("not such attribute "+prototype.getName());
 	} 
 	
+	@Override
+	public String getForwardDeclaration() {
+		return CodeUtil.sp("struct", getName());
+	}
 }

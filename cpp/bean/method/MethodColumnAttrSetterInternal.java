@@ -17,7 +17,7 @@ public class MethodColumnAttrSetterInternal extends Method{
 	Column col;
 	
 	public MethodColumnAttrSetterInternal(BeanCls cls, Column col, Attr a) {
-		super(Public, cls.toRawPointer(), "set"+StringUtil.ucfirst(a.getName())+"Internal");
+		super(Public, Types.Void, "set"+StringUtil.ucfirst(a.getName())+"Internal");
 		this.a=a;
 		if (col.isNullable()) {
 			TplCls nullable=(TplCls) a.getType();
@@ -37,7 +37,7 @@ public class MethodColumnAttrSetterInternal extends Method{
 		} else {
 			_assign(_accessThis(a), param);
 		}
-		_return(_this());
+		//_return(_this());
 		
 	}
 

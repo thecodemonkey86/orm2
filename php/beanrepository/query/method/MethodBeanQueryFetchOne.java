@@ -107,7 +107,13 @@ public class MethodBeanQueryFetchOne extends Method{
 		}
 		
 		ifRowNotNull.addIfInstr(doWhileQSqlQueryNext);
-		doWhileQSqlQueryNext.setCondition(ifRowNotNull.getCondition());
+		
+		if(bean.getTbl().getPrimaryKey().isMultiColumn()) {
+			
+		} else {
+			doWhileQSqlQueryNext.setCondition(Expressions.and( ifRowNotNull.getCondition() , row.arrayIndex(new PhpStringLiteral("b1__" + bean.getTbl().getPrimaryKey().getFirstColumn().getName())).cast(BeanCls.getTypeMapper().columnToType(bean.getTbl().getPrimaryKey().getFirstColumn()))._equals(b1.callAttrGetter(bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())) ));	
+		}
+		
 		doWhileQSqlQueryNext.addInstr(row.assign(res.callMethod(ClsMysqliResult.fetch_assoc)));
 		_return(b1);
 	}

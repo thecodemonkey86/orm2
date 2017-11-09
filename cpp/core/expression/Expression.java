@@ -1,9 +1,9 @@
 package cpp.core.expression;
 
 import util.StringUtil;
-import cpp.IAttributeContainer;
 import cpp.core.Attr;
 import cpp.core.Cls;
+import cpp.core.IAttributeContainer;
 import cpp.core.Method;
 import cpp.core.MethodCall;
 import cpp.core.RawPtr;
@@ -22,6 +22,11 @@ public abstract class Expression {
 	
 	public Expression callMethod(Method m, Expression...args) {
 		return new MethodCall(this, m,args);
+	}
+	
+
+	public MethodCall callAttrGetter(String attrname) {
+		return callMethod("get" + StringUtil.ucfirst( attrname));
 	}
 	
 	public MethodCallInstruction callMethodInstruction(String m, Expression...args) {

@@ -28,10 +28,10 @@ public class MethodCall extends Expression {
 	public String toString() {
 		String[] strArgs=new String[args.length];
 		for(int i=0;i<args.length;i++) {
-			strArgs[i] = args[i].toString();
+			strArgs[i] = args[i].getUsageString();
 		}
 		
-		return expression + "->" +method.getName()+CodeUtil.parentheses(CodeUtil.commaSep(strArgs));
+		return expression.getUsageString() + "->" +method.getName()+CodeUtil.parentheses(CodeUtil.commaSep(strArgs));
 	}
 
 	

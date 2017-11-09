@@ -17,7 +17,7 @@ public class ForeachLoop extends InstructionBlock{
 	
 	@Override
 	public String toString() {
-		StringBuilder sb=new StringBuilder(CodeUtil2.sp("for",CodeUtil2.parentheses(CodeUtil.sp(var.toDeclarationString(),":",collection.toString()))));
+		StringBuilder sb=new StringBuilder(CodeUtil2.sp("foreach",CodeUtil2.parentheses(CodeUtil.sp(collection.toString(),"as",var.getUsageString()))));
 		sb.append("{\n");
 		for(Instruction i: instructions) {
 			if(enableStacktrace)

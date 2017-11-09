@@ -8,6 +8,7 @@ import php.core.Types;
 import php.core.expression.ArrayInitExpression;
 import php.core.method.Method;
 import php.orm.OrmUtil;
+import util.StringUtil;
 
 public class MethodAddRelatedBean extends Method {
 
@@ -24,8 +25,18 @@ public class MethodAddRelatedBean extends Method {
 		PhpCls parent = (PhpCls) this.parent;
 		Attr a=parent.getAttrByName(OrmUtil.getOneToManyRelationDestAttrName(rel));
 		_if(a.isNull()).addIfInstr(a.assign(new ArrayInitExpression()));
-		addInstr(a.arrayPush(getParam("bean")));
-//		addInstr(parent.getAttrByName("_added"+StringUtil.ucfirst(a.getName())).callMethod("append",getParam("bean")).asInstruction());
+		
+		Param pBean = getParam("bean");
+		if(rel.getDestTable().getPrimaryKey().isMultiColumn()) {
+			throw new RuntimeException("unimplemented");
+		} else {
+			addInstr(a.arrayIndexSet(pBean.callAttrGetter(rel.getDestTable().getPrimaryKey().getFirstColumn().getCamelCaseName()),pBean));
+		}
+		
+		
+		addInstr(
+				parent.getAttrByName(a.getName()+"Added"+StringUtil.ucfirst(a.getName())
+				).arrayPush(pBean));
 	}
 
 }

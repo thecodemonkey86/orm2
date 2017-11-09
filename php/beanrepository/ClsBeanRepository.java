@@ -25,8 +25,12 @@ public class ClsBeanRepository extends PhpCls{
 	public static final String CLSNAME = "BeanRepository";
 	protected static String beanRepositoryNamespace;
 	
-	public static void setBeanRepositoryPackage(String beanRepositoryPackage) {
-		ClsBeanRepository.beanRepositoryNamespace = beanRepositoryPackage;
+	public static void setBeanRepositoryNamespace(String beanRepositoryNamespace) {
+		ClsBeanRepository.beanRepositoryNamespace = beanRepositoryNamespace;
+	}
+	
+	public static String getBeanRepositoryNamespace() {
+		return beanRepositoryNamespace;
 	}
 	
 	public ClsBeanRepository() {

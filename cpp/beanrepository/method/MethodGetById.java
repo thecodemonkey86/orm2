@@ -1,7 +1,6 @@
 package cpp.beanrepository.method;
 
 import generate.CodeUtil2;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +20,6 @@ import cpp.core.Type;
 import cpp.core.expression.BoolExpression;
 import cpp.core.expression.Expression;
 import cpp.core.expression.Expressions;
-import cpp.core.expression.QChar;
 import cpp.core.expression.Var;
 import cpp.core.instruction.DoWhile;
 import cpp.core.instruction.IfBlock;
@@ -63,18 +61,21 @@ public class MethodGetById extends Method {
 		Method mBuildQuery = aSqlCon.getClassType().getMethod("buildQuery");
 		Var sqlQuery = _declare(mBuildQuery.getReturnType(), "query",aSqlCon.callMethod(mBuildQuery));
 		
-		ArrayList<Expression> selectFields = new ArrayList<>();
-		selectFields.add(bean.callStaticMethod("getSelectFields",QString.fromStringConstant("b1")));
-		
+		ArrayList<String> selectFields = new ArrayList<>();
+		for(Column col : bean.getTbl().getAllColumns()) {
+			selectFields.add("b1." + col.getEscapedName() + " as b1__" + col.getName());
+		}
 		List<AbstractRelation> allRelations = new ArrayList<>(oneRelations.size()+oneToManyRelations.size()+manyToManyRelations.size());
 		allRelations.addAll(oneRelations);
 		allRelations.addAll(oneToManyRelations);
 		allRelations.addAll(manyToManyRelations);
 		
 		for(AbstractRelation r:allRelations) {
-			selectFields.add(Beans.get(r.getDestTable()).callStaticMethod("getSelectFields", QString.fromStringConstant(r.getAlias())));
+			for(Column col : r.getDestTable().getAllColumns()) {
+				selectFields.add( r.getAlias()+"." + col.getEscapedName() + " as "+ r.getAlias()+"__" + col.getName());
+			}
 		}
-		Expression exprQSqlQuery = sqlQuery.callMethod("select", Expressions.concat(QChar.fromChar(','), selectFields) )
+		Expression exprQSqlQuery = sqlQuery.callMethod("select", QString.fromStringConstant(CodeUtil.commaSep( selectFields) ))
 									.callMethod("from", bean.callStaticMethod("getTableName",QString.fromStringConstant("b1")));
 		
 		for(OneRelation r:oneRelations) {

@@ -2,11 +2,11 @@ package cpp.bean;
 
 import java.util.ArrayList;
 
-import cpp.Struct;
 import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.Operator;
 import cpp.core.Param;
+import cpp.core.Struct;
 import cpp.core.expression.BinaryOperatorExpression;
 import cpp.core.expression.Expression;
 import cpp.core.expression.Expressions;

@@ -231,23 +231,38 @@ public class ConfigReader implements ContentHandler {
 				
 				
 				break;
-			case "column":
+			case "srcColumn":
 				switch (section) {
 				case MANY_TO_MANY_RELATIONS:
 					int i = currentSourceEntityMapping.getColumnCount();
-					currentSourceEntityMapping.addColumnMapping(currentSrcTable.getColumnByName(atts.getValue("src")),
-							currentMappingTable.getColumnByName(atts.getValue("srcMapping")));
+					currentSourceEntityMapping.addColumnMapping(currentSrcTable.getColumnByName(atts.getValue("entityCol")),
+					currentMappingTable.getColumnByName(atts.getValue("mappingCol")));
 					currentSourceEntityMapping.getEntityColumn(i).setManyToManyRelation(currentManyToManyRelation);
 					currentSourceEntityMapping.getMappingColumn(i).setManyToManyRelation(currentManyToManyRelation);
 
+					break;
+				default:
+					throw new SAXException("Illegal state");
+				}
+				break;
+			case "destColumn":
+				switch (section) {
+				case MANY_TO_MANY_RELATIONS:
+					int i = currentDestEntityMapping.getColumnCount();
 					
-
-					currentDestEntityMapping.addColumnMapping(currentDestTable.getColumnByName(atts.getValue("dest")),
-							currentMappingTable.getColumnByName(atts.getValue("destMapping")));
+					currentDestEntityMapping.addColumnMapping(currentDestTable.getColumnByName(atts.getValue("entityCol")),
+					currentMappingTable.getColumnByName(atts.getValue("mappingCol")));
 					currentDestEntityMapping.getEntityColumn(i).setManyToManyRelation(currentManyToManyRelation);
 					currentDestEntityMapping.getMappingColumn(i).setManyToManyRelation(currentManyToManyRelation);
-
+					
 					break;
+				default:
+					throw new SAXException("Illegal state");
+				}
+				break;
+			case "column":
+				switch (section) {
+				
 				case ONE_TO_MANY_RELATIONS:
 					Pair<Column, Column> columnMapping = new Pair<Column, Column>(null, null);
 					columnMapping.setValue1(currentSrcTable.getColumnByName(atts.getValue("src")));

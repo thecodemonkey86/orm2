@@ -71,4 +71,5 @@ public class Attr extends Var {
 				? "self::$" + name 
 				: "$this->" + name;
 	}
+
 }

@@ -15,7 +15,7 @@ public class ClsBeanQuery extends Cls {
 	
 	public ClsBeanQuery(BeanCls cls) {
 		super(cls.getName()+ "BeanQuery");
-		addSuperclass(Types.beanQuery(cls));
+		addSuperclass(Types.baseBeanQuery(cls));
 		addConstructor(new ConstructorBeanQuery());
 		addMethod(new MethodBeanQueryFetch(cls));
 		addMethod(new MethodBeanQueryFetchOne(cls));
@@ -25,7 +25,7 @@ public class ClsBeanQuery extends Cls {
 		addIncludeHeader("../"+ ClsBeanRepository.CLSNAME.toLowerCase());
 		addAttr(new Attr(Types.BeanRepository.toSharedPtr(), "repository"));
 		
-		addForwardDeclaredClass(Types.BeanRepository.getName());
+		addForwardDeclaredClass(Types.BeanRepository);
 	}
 	
 	@Override

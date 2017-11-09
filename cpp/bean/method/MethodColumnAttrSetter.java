@@ -18,7 +18,7 @@ public class MethodColumnAttrSetter extends Method{
 	Column col;
 	
 	public MethodColumnAttrSetter(BeanCls cls, Column col, Attr a) {
-		super(Public, cls.toRawPointer(), "set"+StringUtil.ucfirst(a.getName()));
+		super(Public, Types.Void, "set"+StringUtil.ucfirst(a.getName()));
 		this.a=a;
 		if (col.isNullable()) {
 			TplCls nullable=(TplCls) a.getType();
@@ -42,7 +42,7 @@ public class MethodColumnAttrSetter extends Method{
 			addInstr(_this().assignAttr(a.getName()+"Modified",BoolExpression.TRUE));
 		else
 			addInstr(_this().assignAttr("primaryKeyModified",BoolExpression.TRUE));
-		_return(_this());
+		//_return(_this());
 		
 	}
 

@@ -38,7 +38,12 @@ public abstract class Expression {
 		if(!(getType() instanceof PhpArray)) {
 			throw new RuntimeException("expression must be an array");
 		}
-		return new PhpFunctionCall( PhpFunctions.unset, arg).asInstruction();
+		return new PhpFunctionCall( PhpFunctions.unset, arrayIndex( arg)).asInstruction();
+	}
+	
+
+	public Instruction arrayIndexSet(Expression arrayIndex, Expression arg) {
+		return new AssignInstruction(this.arrayIndex(arrayIndex), arg);
 	}
 	
 //	public Expression splObjectHash() {
@@ -179,6 +184,10 @@ public abstract class Expression {
 	
 	public Expression concat(Expression e) {
 		return new PhpStringPlusOperatorExpression(this, e);
+	}
+	
+	public Expression cast(Type castType) {
+		return new Cast(castType, this);
 	}
 	
 //	public Expression callMethod(Cls cls, String m) {

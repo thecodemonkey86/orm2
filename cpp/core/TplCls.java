@@ -47,4 +47,9 @@ public class TplCls extends Cls {
 	public Type getElementType() {
 		return element;
 	}
+	
+	@Override
+	public String getForwardDeclaration() {
+		throw new UnsupportedOperationException();
+	}
 }

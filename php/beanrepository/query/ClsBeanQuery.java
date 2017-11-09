@@ -12,14 +12,14 @@ import php.lib.ClsBaseBeanQuery;
 
 public class ClsBeanQuery extends PhpCls {
 
-	protected static String beanQueryPackage;
+	protected static String beanQueryNamespace;
 	
-	public static void setBeanQueryPackage(String beanQueryPackage) {
-		ClsBeanQuery.beanQueryPackage = beanQueryPackage;
+	public static void setBeanQueryNamespace(String beanQueryNamespace) {
+		ClsBeanQuery.beanQueryNamespace = beanQueryNamespace;
 	}
 	
 	public ClsBeanQuery(BeanCls cls) {
-		super(cls.getName()+ "BeanQuery",beanQueryPackage);
+		super(cls.getName()+ "BeanQuery",beanQueryNamespace);
 		setSuperclass(new ClsBaseBeanQuery(cls));
 		setConstructor(new ConstructorBeanQuery());
 		addMethod(new MethodBeanQueryFetch(cls));

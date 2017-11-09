@@ -59,9 +59,11 @@ public class PhpOrm extends OrmCommon {
 	public PhpOrm(OrmConfig cfg) throws Exception {
 		super(cfg);
 		Charset utf8 = Charset.forName("UTF-8");
-		ClsBeanRepository.setBeanRepositoryPackage(cfg.getBasePath().relativize(cfg.getRepositoryPath()).toString().replace("/", "\\"));
+		ClsBeanRepository.setBeanRepositoryNamespace(cfg.getBasePath().relativize(cfg.getRepositoryPath()).toString().replace("/", "\\"));
 		BeanCls.setBeanNamespace(cfg.getBasePath().relativize(cfg.getModelPath()).toString().replace("/", "\\")+"\\Beans");
 		BeanCls.setBeanRepoNamespace(cfg.getBasePath().relativize(cfg.getRepositoryPath()).toString().replace("/", "\\"));
+		ClsBeanQuery.setBeanQueryNamespace(ClsBeanRepository.getBeanRepositoryNamespace()+"\\Query");
+		
 		BeanCls.setSqlQueryCls(getSqlQueryCls(cfg));
 		BeanCls.setDatabase(cfg.getDatabase());
 		BeanCls.setTypeMapper(getTypeMapper(cfg));
@@ -115,6 +117,7 @@ public class PhpOrm extends OrmCommon {
 		Path pathBeanPk = pathBeans.resolve("Pk");
 		Files.createDirectories(pathBeanPk);
 		Files.createDirectories(helperPath);
+		Files.createDirectories(pathRepositoryQuery);
 
 		for (BeanCls c : Beans.getAllBeans()) {
 			if(c.getTbl().getPrimaryKey().isMultiColumn()) {

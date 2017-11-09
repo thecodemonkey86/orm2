@@ -25,7 +25,7 @@ public class AccessExpression extends Expression{
 	
 	@Override
 	public String toString() {
-		return access.toString() +  "->" + attr.getName();
+		return access.getUsageString() +  "->" + attr.getName();
 	}
 
 	public BinaryOperatorExpression isNotNull() {

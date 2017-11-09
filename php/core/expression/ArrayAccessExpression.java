@@ -22,4 +22,5 @@ public class ArrayAccessExpression extends Expression {
 		return expr.getUsageString() + CodeUtil.brackets(arrayIndex);
 	}
 
+
 }

@@ -11,7 +11,7 @@ public class ClsBaseBeanQuery extends PhpPseudoGenericClass{
 	public static final String query = "query";
 
 	public ClsBaseBeanQuery( PhpCls cls) {
-		super("BeanQuery",cls,"Sql\\Orm");
+		super("BeanQuery",cls,"PhpLibs\\Orm\\Query");
 		addMethod(new LibMethod(this, "select"));
 		addMethod(new LibMethod(this, "leftJoin"));
 		addMethod(new LibMethod(Types.mysqli_result, "query"));

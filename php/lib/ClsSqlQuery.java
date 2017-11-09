@@ -11,7 +11,6 @@ public class ClsSqlQuery extends PhpCls{
 	public static final String deleteFrom = "deleteFrom";
 	public static final String setValue = "setValue";
 	public static final String execute = "execute";
-	public static final String executeAndGetGeneratedKeys = "executeAndGetGeneratedKeys";
 	public static final String where = "where";
 	public static final String beginTransaction = "beginTransaction";
 	public static final String commitTransaction = "commitTransaction";
@@ -30,7 +29,6 @@ public class ClsSqlQuery extends PhpCls{
 		addMethod(new LibMethod(this, setValue));
 		addMethod(new LibMethod(this, execute));
 		addMethod(new LibMethod(this, update));
-//		addMethod(new LibMethod(this, executeAndGetGeneratedKeys));
 		addMethod(new LibMethod(this, beginTransaction));
 		addMethod(new LibMethod(this, commitTransaction));
 		addMethod(new LibMethod(this, rollbackTransaction));

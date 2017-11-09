@@ -1,7 +1,6 @@
 package cpp.core;
 
 import codegen.CodeUtil;
-import cpp.IAttributeContainer;
 import generate.CodeUtil2;
 
 public class SharedPtr extends TplCls{
@@ -70,5 +69,10 @@ public class SharedPtr extends TplCls{
 
 	public void setWeak() {
 		this.weak=true;
+	}
+	
+	@Override
+	public String getForwardDeclaration() {
+		return element.getForwardDeclaration();
 	}
 }

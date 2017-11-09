@@ -11,7 +11,6 @@ import config.OrmConfig;
 import cpp.Types;
 import cpp.bean.BeanCls;
 import cpp.bean.Beans;
-import cpp.bean.CustomClassMemberCode;
 import cpp.beanrepository.ClsBeanQuery;
 import cpp.beanrepository.ClsBeanRepository;
 import cpp.orm.DatabaseTypeMapper;
@@ -26,10 +25,6 @@ import database.table.Table;
 import xml.reader.DefaultXMLReader;
 
 public class CppOrm extends OrmCommon {
-	private static final String BEGIN_CUSTOM_CLASS_MEMBERS = "/*BEGIN_CUSTOM_CLASS_MEMBERS*/";
-	private static final String END_CUSTOM_CLASS_MEMBERS = "/*END_CUSTOM_CLASS_MEMBERS*/";
-	private static final String BEGIN_CUSTOM_PREPROCESSOR = "/*BEGIN_CUSTOM_PREPROCESSOR*/";
-	private static final String END_CUSTOM_PREPROCESSOR = "/*END_CUSTOM_PREPROCESSOR*/";
 	
 	private static final StandardOpenOption[] writeOptions={
 			StandardOpenOption.WRITE,StandardOpenOption.CREATE,StandardOpenOption.TRUNCATE_EXISTING
@@ -95,35 +90,46 @@ public class CppOrm extends OrmCommon {
 				String existingHeaderFile = new String(Files.readAllBytes(pathHeader),utf8);
 				String existingSourceFile = new String(Files.readAllBytes(pathSrc),utf8);
 				
-				StringBuilder sbHdr = new StringBuilder();
-				StringBuilder sbSrc = new StringBuilder();
-				int startHdr = existingHeaderFile.indexOf(BEGIN_CUSTOM_CLASS_MEMBERS);
-				int endHdr = existingHeaderFile.indexOf(END_CUSTOM_CLASS_MEMBERS,startHdr+BEGIN_CUSTOM_CLASS_MEMBERS.length());
-				 
-				int startSrc = existingSourceFile.indexOf(BEGIN_CUSTOM_CLASS_MEMBERS);
-				int endSrc = existingSourceFile.indexOf(END_CUSTOM_CLASS_MEMBERS,startSrc+BEGIN_CUSTOM_CLASS_MEMBERS.length());
-				if (startHdr > -1 && endHdr > -1 && startSrc > -1 && endSrc > -1) {
-					String customClassMember = existingHeaderFile.substring(startHdr, endHdr+BEGIN_CUSTOM_CLASS_MEMBERS.length()-1);
-					String implCode = existingSourceFile.substring(startSrc, endSrc+BEGIN_CUSTOM_CLASS_MEMBERS.length()-1);
-					c.addMethod(new CustomClassMemberCode(customClassMember, implCode) );
-					sbHdr.append(customClassMember).append('\n');
-					sbSrc.append(implCode).append('\n');
+			
+				int startHdr = -1;
+				
+				while((startHdr = existingHeaderFile.indexOf(BeanCls.BEGIN_CUSTOM_CLASS_MEMBERS,startHdr+1))>-1) {
+					int endHdr = existingHeaderFile.indexOf(BeanCls.END_CUSTOM_CLASS_MEMBERS,startHdr);
+					if(endHdr == -1) {
+						throw new RuntimeException("Missing custom class members end marker: " + pathHeader);
+					}
+					String customClassMember = existingHeaderFile.substring(startHdr+BeanCls.BEGIN_CUSTOM_CLASS_MEMBERS.length(), endHdr);
+					//c.addMethod(new CustomClassMemberCode(customClassMember, implCode) );
+					c.addCustomHeaderCode(customClassMember);
 				}
-				startHdr = existingHeaderFile.indexOf(BEGIN_CUSTOM_PREPROCESSOR);
-				endHdr = existingHeaderFile.indexOf(END_CUSTOM_PREPROCESSOR,startHdr+BEGIN_CUSTOM_PREPROCESSOR.length());
-					 
-				if (startHdr > -1 && endHdr > -1) {
-					String customClassMember = existingHeaderFile.substring(startHdr, endHdr+BEGIN_CUSTOM_PREPROCESSOR.length()-1);
-					c.addPreprocessorInstruction(customClassMember );
-					sbHdr.append(customClassMember).append('\n');
+				int startSrc = -1;
+				
+				while((startSrc = existingSourceFile.indexOf(BeanCls.BEGIN_CUSTOM_CLASS_MEMBERS,startSrc+1))>-1) {
+					int endSrc = existingSourceFile.indexOf(BeanCls.END_CUSTOM_CLASS_MEMBERS,startSrc);
+					if(endSrc == -1) {
+						throw new RuntimeException("Missing custom class members end marker: " + pathSrc);
+					}
+					String implCode = existingSourceFile.substring(startSrc+BeanCls.BEGIN_CUSTOM_CLASS_MEMBERS.length(), endSrc);
+					
+					//c.addMethod(new CustomClassMemberCode(customClassMember, implCode) );
+					c.addCustomSourceCode(implCode);
+				}
+				startHdr = -1;
+				while((startHdr = existingHeaderFile.indexOf(BeanCls.BEGIN_CUSTOM_PREPROCESSOR,startHdr+1))>-1) {
+					int endHdr = existingHeaderFile.indexOf(BeanCls.END_CUSTOM_PREPROCESSOR,startHdr);
+					if(endHdr == -1) {
+						throw new RuntimeException("Missing custom preprocessor instructions end marker: " + pathHeader);
+					}
+					String customPp = existingHeaderFile.substring(startHdr+BeanCls.BEGIN_CUSTOM_PREPROCESSOR.length(), endHdr);
+					c.addCustomPreprocessorCode(customPp );
 				}
 				
-				if (sbHdr.length()>0)
-					Files.write(Paths.get("bak_custom_class_members", pathHeader.getFileName().toString()),sbHdr.toString().getBytes(utf8), writeOptions);
-				
-				if (sbSrc.length()>0)
-					Files.write(Paths.get("bak_custom_class_members", pathSrc.getFileName().toString()),sbSrc.toString().getBytes(utf8), writeOptions);
-				
+//				if (sbHdr.length()>0)
+//					Files.write(Paths.get("bak_custom_class_members", pathHeader.getFileName().toString()),sbHdr.toString().getBytes(utf8), writeOptions);
+//				
+//				if (sbSrc.length()>0)
+//					Files.write(Paths.get("bak_custom_class_members", pathSrc.getFileName().toString()),sbSrc.toString().getBytes(utf8), writeOptions);
+//				
 			}
 			
 			c.addMethodImplementations();

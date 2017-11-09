@@ -126,6 +126,11 @@ public class Type {
 	public Ref toRef() {
 		return new Ref(this);
 	}
+
+	public String getForwardDeclaration() {
+		System.out.println(this);
+		throw new UnsupportedOperationException();
+	}
 	
 	
 }

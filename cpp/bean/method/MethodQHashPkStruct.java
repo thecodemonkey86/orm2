@@ -1,9 +1,9 @@
 package cpp.bean.method;
 
-import cpp.Struct;
 import cpp.Types;
 import cpp.core.NonMemberMethod;
 import cpp.core.Param;
+import cpp.core.Struct;
 import cpp.core.Type;
 import cpp.core.expression.Expression;
 import cpp.core.expression.NonMemberMethodCallExpression;

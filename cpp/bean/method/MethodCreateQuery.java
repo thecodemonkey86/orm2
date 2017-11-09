@@ -2,7 +2,6 @@ package cpp.bean.method;
 
 import cpp.Types;
 import cpp.bean.BeanCls;
-import cpp.core.Cls;
 import cpp.core.Method;
 import cpp.core.expression.CreateObjectExpression;
 import cpp.core.expression.NewOperator;
@@ -17,7 +16,7 @@ public class MethodCreateQuery extends Method {
 
 	@Override
 	public void addImplementation() {
-		_return(new StdMoveExpression(new CreateObjectExpression(returnType, new NewOperator(Types.beanQuery((Cls)parent), parent.getAttrByName("sqlCon").callMethod("buildQuery")) )));
+		_return(new StdMoveExpression(new CreateObjectExpression(returnType, new NewOperator(Types.beanQuery((BeanCls) parent), parent.getAttrByName("sqlCon").callMethod("buildQuery")) )));
 		//_return(new MakeSharedExpression((SharedPtr)returnType, parent.getStaticAttribute("sqlCon").callMethod("buildQuery")));
 	}
 

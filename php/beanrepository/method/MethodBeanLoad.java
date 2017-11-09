@@ -102,7 +102,7 @@ public class MethodBeanLoad extends Method {
 					joinConditions.add(CodeUtil.sp("b1."+r.getSourceEntityColumn(i).getEscapedName(),'=',r.getAlias("mapping")+"."+ r.getSourceMappingColumn(i).getEscapedName()));
 				}
 				
-				exprSqlQuery = exprSqlQuery.callMethod("leftJoin", new PhpStringLiteral(r.getMappingTable().getName()),new PhpStringLiteral(r.getAlias("mapping")), new PhpStringLiteral(CodeUtil2.concat(joinConditions," AND ")));
+				exprSqlQuery = exprSqlQuery.callMethod("leftJoin", new PhpStringLiteral(r.getMappingTable().getName()+" "+r.getAlias("mapping")), new PhpStringLiteral(CodeUtil2.concat(joinConditions," AND ")));
 				
 				joinConditions.clear();
 				for(int i=0;i<r.getDestColumnCount();i++) {
@@ -124,17 +124,8 @@ public class MethodBeanLoad extends Method {
 					);
 			
 			Var row = _declare(Types.array(Types.Mixed), "row", res.callMethod(ClsMysqliResult.fetch_assoc) );
-			IfBlock ifRowNotNull =
-					_if(row.isNotNull())
-					
-
-						.setIfInstr(
-								pBean.assign(Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(bean),  row, new PhpStringLiteral("b1")))
-								,
-								pBean.callAttrSetterMethodInstr("loaded", BoolExpression.TRUE)//_assignInstruction(b1.accessAttr("loaded"), BoolExpression.TRUE)
-								)
-								;
-			
+			IfBlock ifRowNotNull =	_if(row.isNotNull());
+								
 			
 			DoWhile doWhileQSqlQueryNext = DoWhile.create();
 			

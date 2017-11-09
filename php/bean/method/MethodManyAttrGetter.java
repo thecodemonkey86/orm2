@@ -3,6 +3,7 @@ package php.bean.method;
 import php.core.Attr;
 import php.core.PhpArray;
 import php.core.PhpCls;
+import php.core.PhpFunctions;
 import php.core.PhpPseudoGenericClass;
 import php.core.Types;
 import php.core.expression.ArrayInitExpression;
@@ -32,8 +33,8 @@ public class MethodManyAttrGetter extends Method{
 		
 		IfBlock ifAttrIsNotNull= _if(a.isNotNull());
 		ifAttrIsNotNull.thenBlock().
-			_return(new ArrayInitExpression());
-		ifAttrIsNotNull.elseBlock()._return(Expressions.Null);
+			_return(PhpFunctions.array_values.call(a));
+		ifAttrIsNotNull.elseBlock()._return(new ArrayInitExpression());
 	}
 
 }

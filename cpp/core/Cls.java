@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
 import codegen.CodeUtil;
-import cpp.IAttributeContainer;
 import cpp.core.expression.Expression;
 import cpp.core.expression.NewOperator;
 import cpp.core.expression.StaticMethodCall;
 import cpp.core.expression.ThisExpression;
+import util.StringUtil;
 
 
 public class Cls extends Type implements IAttributeContainer{
@@ -19,7 +19,7 @@ public class Cls extends Type implements IAttributeContainer{
 	protected Destructor destructor;
 	protected ArrayList<Attr> attrs;
 	protected LinkedHashSet<String> includes;
-	protected ArrayList<String> forwardDeclaredClasses;
+	protected ArrayList<Type> forwardDeclaredTypes;
 	protected ArrayList<String> preprocessorInstructions;
 	
 	protected ArrayList<Cls> superclasses;
@@ -55,7 +55,7 @@ public class Cls extends Type implements IAttributeContainer{
 		this.includes=new LinkedHashSet<>();
 		this.operators = new ArrayList<>(); 
 		this.name=name;
-		this.forwardDeclaredClasses = new ArrayList<>(); 
+		this.forwardDeclaredTypes = new ArrayList<>(); 
 	}
 	
 	public void addInclude(String i) {
@@ -124,7 +124,7 @@ public class Cls extends Type implements IAttributeContainer{
 		return name;
 	}
 	
-	protected void addHeaderCodeBeforeClassDefinition(StringBuilder sb){
+	protected void addHeaderCodeBeforeClassDeclaration(StringBuilder sb){
 		
 	}
 	
@@ -134,6 +134,7 @@ public class Cls extends Type implements IAttributeContainer{
 	
 	protected void addBeforeSourceCode(StringBuilder sb){
 		CodeUtil.writeLine(sb, "#include "+CodeUtil.quote(name.toLowerCase()+".h"));
+		sb.append('\n');
 	}
 	
 	public String toHeaderString() {
@@ -141,8 +142,8 @@ public class Cls extends Type implements IAttributeContainer{
 		
 		CodeUtil.writeLine(sb, "#ifndef "+name.toUpperCase()+"_H");
 		CodeUtil.writeLine(sb, "#define "+name.toUpperCase()+"_H");
-		for(String predef:forwardDeclaredClasses) {
-			CodeUtil.writeLine(sb, "class "+predef+";");
+		for(Type predef:forwardDeclaredTypes) {
+			CodeUtil.writeLine(sb, predef.getForwardDeclaration()+";");
 		}
 		for(String incl:includes) {
 			CodeUtil.writeLine(sb, "#include "+incl);
@@ -152,7 +153,7 @@ public class Cls extends Type implements IAttributeContainer{
 				CodeUtil.writeLine(sb, pp);
 			}
 		}
-		addHeaderCodeBeforeClassDefinition(sb);
+		addHeaderCodeBeforeClassDeclaration(sb);
 		sb.append( "class " +name);
 		if (superclasses!=null) {
 			ArrayList<String> superClassDecl = new ArrayList<>();
@@ -248,8 +249,15 @@ public class Cls extends Type implements IAttributeContainer{
 		return constructors;
 	}
 	
-	public void addForwardDeclaredClass(String clsName) {
-		this.forwardDeclaredClasses.add(clsName);
+	public void addForwardDeclaredClass(Cls cls) {
+//		if(cls instanceof TplCls) {
+//			throw new IllegalArgumentException();
+//		}
+		this.forwardDeclaredTypes.add(cls);
+	}
+	
+	public void addForwardDeclaredClass(Struct struct) {
+		this.forwardDeclaredTypes.add(struct);
 	}
 	
 	public void setDestructor(Destructor destructor) {
@@ -414,5 +422,10 @@ public class Cls extends Type implements IAttributeContainer{
 		if(hasHeaderInclude() ) {
 			cls.addInclude(getHeaderInclude());
 		}
+	}
+	
+	@Override
+	public String getForwardDeclaration() {
+		return CodeUtil.sp("class",getName());
 	}
 }
