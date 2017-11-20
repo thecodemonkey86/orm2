@@ -11,8 +11,9 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 	public Method getQVariantConvertMethod(String pgType) {
 		switch(pgType) {
 		case "int":
+			return Types.QVariant.getTemplateMethod("value", Types.Int32);
 		case "bigint":
-			return Types.QVariant.getMethod("toInt");
+			return Types.QVariant.getTemplateMethod("value", Types.Int64);
 		case "smallint":
 			return Types.QVariant.getMethod("toInt");
 		case "varchar":

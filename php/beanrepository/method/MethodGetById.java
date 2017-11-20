@@ -24,7 +24,6 @@ import php.core.Types;
 import php.core.expression.BoolExpression;
 import php.core.expression.Expression;
 import php.core.expression.Expressions;
-import php.core.expression.Operators;
 import php.core.expression.PhpStringLiteral;
 import php.core.expression.Var;
 import php.core.instruction.DoWhile;

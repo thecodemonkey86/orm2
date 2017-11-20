@@ -8,7 +8,6 @@ import php.core.Types;
 import php.core.expression.ArrayInitExpression;
 import php.core.method.Method;
 import php.orm.OrmUtil;
-import util.StringUtil;
 
 public class MethodAddManyToManyRelatedBean extends Method {
 

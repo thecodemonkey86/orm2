@@ -8,7 +8,6 @@ import php.core.expression.Expressions;
 import php.core.expression.PhpStringLiteral;
 import php.core.instruction.IfBlock;
 import php.core.method.Method;
-import php.lib.PhpStringType;
 
 public class MethodGetFieldName extends Method {
 

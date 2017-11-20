@@ -6,7 +6,7 @@ import database.relation.OneToManyRelation;
 import database.table.Table;
 import generate.CodeUtil2;
 
-public class Column {
+public abstract class Column {
 	protected String name;
 	protected String dbType;
 	protected boolean autoIncrement;
@@ -18,11 +18,6 @@ public class Column {
 	protected ManyRelation manyToManyRelation;
 	protected String defaultValue;
 	
-	private static char columnEscapeChar;
-	
-	public static void setColumnEscapeChar(char columnEscapeChar) {
-		Column.columnEscapeChar = columnEscapeChar;
-	}
 	
 	public int getPosition() {
 		return position;
@@ -60,9 +55,7 @@ public class Column {
 		return name;
 	}
 	
-	public String getEscapedName() {
-		return columnEscapeChar + name + columnEscapeChar;
-	}
+	public abstract String getEscapedName() ;
 	
 	public String getDbType() {
 		return dbType;

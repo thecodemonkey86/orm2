@@ -8,12 +8,12 @@ import cpp.core.expression.Expression;
 import cpp.core.expression.NewOperator;
 import cpp.core.expression.StaticMethodCall;
 import cpp.core.expression.ThisExpression;
-import util.StringUtil;
 
 
 public class Cls extends Type implements IAttributeContainer{
 	protected String name;
 	protected ArrayList<Method> methods;
+	protected ArrayList<MethodTemplate> methodTemplates;
 	protected ArrayList<Constructor> constructors;
 	
 	protected Destructor destructor;
@@ -273,6 +273,16 @@ public class Cls extends Type implements IAttributeContainer{
 		}
 		return null;
 	}
+	
+	protected MethodTemplate getMethodTemplateInternal(String name) {
+		for(MethodTemplate m:methodTemplates) {
+			if (m.getName().equals(name)) {
+				return m;
+			}
+		}
+		return null;
+	}
+	
 	public Method getMethod(String name) {
 		for(Method m:methods) {
 			if (m.getName().equals(name)) {
@@ -284,6 +294,24 @@ public class Cls extends Type implements IAttributeContainer{
 				Method m = superclass.getMethodInternal(name);
 				if(m != null) {
 					return m;
+				}
+			}
+		}
+		
+		throw new RuntimeException("no such method "+getClass().getName()+"|"+ getName()+"::"+name);
+	}
+	
+	public Method getTemplateMethod(String name, Type...tplTypes) {
+		for(MethodTemplate m:methodTemplates) {
+			if (m.getName().equals(name)) {
+				return m.getConcreteMethod(tplTypes);
+			}
+		}
+		if (superclasses !=null) {
+			for (Cls superclass : superclasses) {
+				MethodTemplate m = superclass.getMethodTemplateInternal(name);
+				if(m != null) {
+					return m.getConcreteMethod(tplTypes);
 				}
 			}
 		}
@@ -427,5 +455,12 @@ public class Cls extends Type implements IAttributeContainer{
 	@Override
 	public String getForwardDeclaration() {
 		return CodeUtil.sp("class",getName());
+	}
+	
+	public void addMethodTemplate(MethodTemplate tpl) {
+		if(this.methodTemplates == null) {
+			this.methodTemplates = new ArrayList<>();
+		}
+		this.methodTemplates.add(tpl);
 	}
 }

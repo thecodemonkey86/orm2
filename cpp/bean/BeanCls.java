@@ -63,8 +63,6 @@ import database.table.Table;
 
 public class BeanCls extends Cls {
 
-//	public static final String attrPkFieldName = "pkFieldName";
-//	public static final String attrPkFieldNames = "pkFieldNames";
 	public static final String BEGIN_CUSTOM_CLASS_MEMBERS = "/*BEGIN_CUSTOM_CLASS_MEMBERS*/";
 	public static final String END_CUSTOM_CLASS_MEMBERS = "/*END_CUSTOM_CLASS_MEMBERS*/";
 	public static final String BEGIN_CUSTOM_PREPROCESSOR = "/*BEGIN_CUSTOM_PREPROCESSOR*/";
@@ -506,7 +504,7 @@ public class BeanCls extends Cls {
 	}
 	
 	// TODO relation
-	private static String getAttrGetterMethodNameByColumn(Column col) {
+	//private static String getAttrGetterMethodNameByColumn(Column col) {
 //		if (colPk.hasOneRelation()) {
 //			try{
 //			return "get"+colPk.getOneRelationMappedColumn().getUc1stCamelCaseName();
@@ -516,9 +514,9 @@ public class BeanCls extends Cls {
 //				throw e;
 //			}
 //		} else {
-			return "get"+col.getUc1stCamelCaseName();
+		//	return "get"+col.getUc1stCamelCaseName();
 //		}
-	}
+	//}
 	
 	// TODO relation
 	public static String getAccessMethodNameByColumn(Column col) {

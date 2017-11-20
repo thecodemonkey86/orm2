@@ -73,4 +73,8 @@ public abstract class AbstractTable {
 	public String getSchema() {
 		return schema;
 	}
+	
+	public int getColumnCount() {
+		return allColumns.size();
+	}
 }

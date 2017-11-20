@@ -19,8 +19,8 @@ public class MethodGetLimitQueryString extends Method {
 		super(Public, Types.QString, "getLimitQueryString");
 		this.pk = pk;
 		setStatic(true);
-		addParam(new Param(Types.Int64, "limit"));
-		addParam(new Param(Types.Int64, "offset"));
+		addParam(new Param(Types.LongLong, "limit"));
+		addParam(new Param(Types.LongLong, "offset"));
 		addParam(new Param(Types.QString.toConstRef(), "condition"));
 	}
 

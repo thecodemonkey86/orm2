@@ -5,8 +5,8 @@ import generate.CodeUtil2;
 
 public class FirebirdTable extends Table {
 
-	public FirebirdTable(Database db, String name, String schema) {
-		super(db, name, schema);
+	public FirebirdTable(Database db, String name) {
+		super(db, name, null);
 	}
 
 	public String getUc1stCamelCaseName() {

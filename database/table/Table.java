@@ -111,5 +111,7 @@ public class Table extends AbstractTable{
 	public boolean isAutoIncrement() {
 		return primaryKey.isAutoIncrement();
 	}
+
+
 	
 }

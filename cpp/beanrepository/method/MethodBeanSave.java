@@ -128,13 +128,13 @@ public class MethodBeanSave extends Method {
 				
 				// added
 				
-				ArrayList<String> columnsInsert=new ArrayList<>();
-				for(int i=0;i<r.getSourceColumnCount();i++) {
-					columnsInsert.add( r.getSourceMappingColumn(i).getEscapedName() );
-				}
-				for(int i=0;i<r.getDestColumnCount();i++) {
-					columnsInsert.add( r.getDestMappingColumn(i).getEscapedName() );
-				}
+//				ArrayList<String> columnsInsert=new ArrayList<>();
+//				for(int i=0;i<r.getSourceColumnCount();i++) {
+//					columnsInsert.add( r.getSourceMappingColumn(i).getEscapedName() );
+//				}
+//				for(int i=0;i<r.getDestColumnCount();i++) {
+//					columnsInsert.add( r.getDestMappingColumn(i).getEscapedName() );
+//				}
 				
 				Expression attrManyToManyAdded = pBean.callAttrGetter(OrmUtil.getManyRelationDestAttrName(r)+"Added" );
 				IfBlock ifAddBeans = _if(Expressions.not(attrManyToManyAdded
@@ -142,7 +142,12 @@ public class MethodBeanSave extends Method {
 						));
 				
 				if(BeanCls.getDatabase().supportsMultiRowInsert()) {
-					String sqlAdded=BeanCls.getDatabase().sqlInsertOrIgnoreMultiRow(r.getMappingTable(), columnsInsert,"%1");
+					String sqlAdded= BeanCls.getDatabase().supportsInsertOrIgnore() ?
+							
+							BeanCls.getDatabase().sqlInsertOrIgnoreMultiRow(r.getMappingTable(),"%1") :
+								
+								BeanCls.getDatabase().sqlInsert(r.getMappingTable());
+								;
 					Var varAddSql = ifAddBeans.thenBlock()._declare(Types.QString, "addedSql",QString.fromStringConstant(sqlAdded));
 					Type foreachAddElementType = ((ClsQVector) attrManyToManyAdded.getType()).getElementType();
 					Var varParamsForeachAdd = ifAddBeans.thenBlock()._declare( Types.QVariantList, "params");

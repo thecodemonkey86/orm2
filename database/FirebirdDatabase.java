@@ -19,34 +19,11 @@ public class FirebirdDatabase extends Database {
 		super(name);
 	}
 
-	@Override
-	public char getColumnEscapeChar() {
-		return '"';
-	}
+
+	
 
 	@Override
-	public void readPrimaryKey(AbstractTable table, Connection conn) throws SQLException {
-		//select  ix.rdb$index_name as index_name,   rf.rdb$null_flag as null_flag, f.rdb$field_type as field_type , f.rdb$default_value as default_value, sg.rdb$field_name as field_name, sg.rdb$field_position as field_position,    rc.rdb$relation_name as table_name from     rdb$indices ix     left join rdb$index_segments sg on ix.rdb$index_name = sg.rdb$index_name     left join rdb$relation_constraints rc on rc.rdb$index_name = ix.rdb$index_name join rdb$relation_fields rf on rf.rdb$relation_name = rc.rdb$relation_name and rf.rdb$field_name = sg.rdb$field_name join RDB$FIELDS f on rf.RDB$FIELD_SOURCE = f.RDB$FIELD_NAME where     rc.rdb$constraint_type = 'PRIMARY KEY' and rc.rdb$relation_name = ?
-		String sql = "select sg.rdb$field_name as field_name, sg.rdb$field_position as field_position,f.rdb$field_type as field_type , rf.rdb$null_flag as null_flag, f.rdb$default_value as default_value from     rdb$indices ix     left join rdb$index_segments sg on ix.rdb$index_name = sg.rdb$index_name     left join rdb$relation_constraints rc on rc.rdb$index_name = ix.rdb$index_name join rdb$relation_fields rf on rf.rdb$relation_name = rc.rdb$relation_name and rf.rdb$field_name = sg.rdb$field_name join RDB$FIELDS f on rf.RDB$FIELD_SOURCE = f.RDB$FIELD_NAME where     rc.rdb$constraint_type = 'PRIMARY KEY' and rc.rdb$relation_name = ?"; 
-		PreparedStatement stmt = conn.prepareStatement(sql);
-		stmt.setString(1, table.getName().toUpperCase());
-		ResultSet rsColumndata = stmt.executeQuery();
-		PrimaryKey primaryKey = new PrimaryKey();
-		while (rsColumndata.next()) {
-			Column col = new FirebirdColumn();
-			col.setName(rsColumndata.getString("field_name").trim().toLowerCase());
-			col.setPosition(rsColumndata.getInt("field_position"));
-			col.setDbType(rsColumndata.getString("field_type"));
-			col.setNullable(rsColumndata.getInt("null_flag")!=1);
-			col.setDefaultValue( rsColumndata.getString("default_value"));
-			primaryKey.add(col);
-		}
-		table.setPrimaryKey(primaryKey);
-		rsColumndata.close();
-	}
-
-	@Override
-	public void readAllColumns(AbstractTable table, Connection conn) throws SQLException {
+	public void readColumns(AbstractTable table, Connection conn) throws SQLException {
 		String sql = "SELECT rf.rdb$field_name as field_name, rf.rdb$field_position as field_position, f.rdb$field_type as field_type, rf.rdb$null_flag as null_flag, f.rdb$default_value as default_value from rdb$fields f join RDB$RELATION_FIELDS rf on rf.RDB$FIELD_SOURCE = f.RDB$FIELD_NAME where RDB$RELATION_NAME = ?"; 
 		if (stColumndata==null)
 			stColumndata = conn.prepareStatement(sql);
@@ -64,6 +41,23 @@ public class FirebirdDatabase extends Database {
 			table.addColumn(col);
 		}
 		rsColumndata.close();
+		
+		sql = "select sg.rdb$field_name as field_name, sg.rdb$field_position as field_position,f.rdb$field_type as field_type , rf.rdb$null_flag as null_flag, f.rdb$default_value as default_value from     rdb$indices ix     left join rdb$index_segments sg on ix.rdb$index_name = sg.rdb$index_name     left join rdb$relation_constraints rc on rc.rdb$index_name = ix.rdb$index_name join rdb$relation_fields rf on rf.rdb$relation_name = rc.rdb$relation_name and rf.rdb$field_name = sg.rdb$field_name join RDB$FIELDS f on rf.RDB$FIELD_SOURCE = f.RDB$FIELD_NAME where     rc.rdb$constraint_type = 'PRIMARY KEY' and rc.rdb$relation_name = ?"; 
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setString(1, table.getName().toUpperCase());
+		rsColumndata = stmt.executeQuery();
+		PrimaryKey primaryKey = new PrimaryKey();
+		while (rsColumndata.next()) {
+			Column col = new FirebirdColumn();
+			col.setName(rsColumndata.getString("field_name").trim().toLowerCase());
+			col.setPosition(rsColumndata.getInt("field_position"));
+			col.setDbType(rsColumndata.getString("field_type"));
+			col.setNullable(rsColumndata.getInt("null_flag")!=1);
+			col.setDefaultValue( rsColumndata.getString("default_value"));
+			primaryKey.add(col);
+		}
+		table.setPrimaryKey(primaryKey);
+		rsColumndata.close();
 	}
 
 	@Override
@@ -73,7 +67,7 @@ public class FirebirdDatabase extends Database {
 	}
 
 	@Override
-	public String sqlInsertOrIgnoreMultiRow(AbstractTable tbl, List<String> columns, String placeholders) {
+	public String sqlInsertOrIgnoreMultiRow(AbstractTable tbl, String placeholders) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -101,7 +95,7 @@ public class FirebirdDatabase extends Database {
 	}
 
 	@Override
-	public String sqlInsert(AbstractTable tbl, List<String> columns) {
+	public String sqlInsert(AbstractTable tbl) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -119,12 +113,18 @@ public class FirebirdDatabase extends Database {
 	}
 	
 	@Override
-	public Table makeTableInstance(String value, String schema) {
-		return new FirebirdTable(this, value, schema);
+	public Table makeTableInstance(String value) {
+		return new FirebirdTable(this, value);
 	}
 	
 	@Override
 	public String getEscapedTableName(AbstractTable tbl) {
-		return super.getEscapedTableName(tbl).toUpperCase();
+		return String.format("\"%s\"", tbl.getName().toUpperCase());
+	}
+
+
+	@Override
+	public Column makeColumnInstance() {
+		return new FirebirdColumn();
 	}
 }

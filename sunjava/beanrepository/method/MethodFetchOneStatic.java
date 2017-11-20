@@ -4,13 +4,9 @@ import sunjava.bean.BeanCls;
 import sunjava.core.JavaString;
 import sunjava.core.Method;
 import sunjava.core.Param;
-import sunjava.core.Type;
 import sunjava.core.Types;
 import sunjava.core.expression.Expression;
-import sunjava.core.expression.Expressions;
 import sunjava.core.expression.Var;
-import sunjava.core.instruction.IfBlock;
-import sunjava.core.instruction.InstructionBlock;
 
 public class MethodFetchOneStatic extends Method {
 

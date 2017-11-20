@@ -25,11 +25,11 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 		if (!nullable){
 		switch(dbType) {
 			case "integer":
-				return Types.Int;
+				return Types.Int32;
 			case "bigint":
-				return Types.LongLong;
+				return Types.Int64;
 			case "smallint":
-				return Types.Short;
+				return Types.Int16;
 			case "character varying":
 			case "character":	
 			case "text":
@@ -53,11 +53,11 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 		} else {
 			switch(dbType) {
 			case "integer":
-				return Types.nullable(Types.Int);
+				return Types.nullable(Types.Int32);
 			case "bigint":
-				return Types.nullable(Types.LongLong);
+				return Types.nullable(Types.Int64);
 			case "smallint":
-				return Types.nullable(Types.Short);
+				return Types.nullable(Types.Int16);
 			case "character varying":
 			case "character":	
 			case "text":

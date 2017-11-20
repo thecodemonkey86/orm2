@@ -30,7 +30,11 @@ import database.relation.AbstractRelation;
 
 public class Types {
 	
-	public static final PrimitiveType Int=new PrimitiveType("int");
+	public static final PrimitiveType Int32=new PrimitiveType("int32_t");
+	public static final PrimitiveType Int = new PrimitiveType("int");
+	public static final PrimitiveType Int16=new PrimitiveType("int16_t");
+	public static final PrimitiveType Int8=new PrimitiveType("int8_t");
+//	public static final PrimitiveType Long=new PrimitiveType("long");
 	public static final PrimitiveType Int64=new PrimitiveType("int64_t");
 	public static final PrimitiveType LongLong=new PrimitiveType("long long");
 	public static final PrimitiveType Short=new PrimitiveType("short");

@@ -6,7 +6,6 @@ import sunjava.core.Attr;
 import sunjava.core.Method;
 import sunjava.core.Param;
 import sunjava.core.PrimitiveType;
-import sunjava.core.Types;
 import sunjava.core.expression.BoolExpression;
 import sunjava.core.expression.Expression;
 import sunjava.core.instruction.AssignInstruction;

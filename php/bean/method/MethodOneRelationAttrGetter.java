@@ -1,7 +1,6 @@
 package php.bean.method;
 
 import php.core.Attr;
-import php.core.Types;
 
 public class MethodOneRelationAttrGetter extends MethodAttrGetter{
 

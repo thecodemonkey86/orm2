@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import codegen.CodeUtil;
 import cpp.core.expression.Expression;
-import cpp.core.expression.Var;
 import cpp.core.instruction.Comment;
 import cpp.core.instruction.Instruction;
 import cpp.core.instruction.InstructionBlock;
@@ -143,8 +142,8 @@ public abstract class Method extends InstructionBlock{
 		return instructions;
 	}
 	
-	public Expression call(Var var, Expression...args) {
-		return new MethodCall(var, this, args);
+	public Expression call(Expression expression, Expression...args) {
+		return new MethodCall(expression, this, args);
 	}
 
 	public Type getReturnType() {

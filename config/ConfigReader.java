@@ -1,6 +1,7 @@
 package config;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.HashSet;
@@ -12,9 +13,15 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
 import database.Database;
+import database.DbCredentials;
+import database.FirebirdCredentials;
 import database.FirebirdDatabase;
-import database.MysqlDatabase;
+import database.MySqlCredentials;
+import database.MySqlDatabase;
 import database.PgDatabase;
+import database.SqliteCredentials;
+import database.SqliteDatabase;
+import database.PgCredentials;
 import database.column.Column;
 import database.relation.M2MColumns;
 import database.relation.ManyRelation;
@@ -110,33 +117,38 @@ public class ConfigReader implements ContentHandler {
 			case "database":
 				this.cfg.setDbEngine(atts.getValue("engine"));
 				Database database;
+				DbCredentials credentials;
+				
 				if (cfg.isEnginePostgres()) {
 					Class.forName("org.postgresql.Driver");
 					database = new PgDatabase(atts.getValue("name"), atts.getValue("schema"));
+					credentials = new PgCredentials(atts.getValue("user"), atts.getValue("password"), atts.getValue("host"), database);
+					
 				} else if (cfg.isEngineMysql()) {
-					database = new MysqlDatabase(atts.getValue("name"));
+					database = new MySqlDatabase(atts.getValue("name"));
+					credentials = new MySqlCredentials(atts.getValue("user"), atts.getValue("password"), atts.getValue("host"), database);
+					
 				} else if (cfg.isEngineFirebird()) {
 					Class.forName("org.firebirdsql.jdbc.FBDriver");
 					database = new FirebirdDatabase(atts.getValue("name"));
+					credentials = new FirebirdCredentials(atts.getValue("user"), atts.getValue("password"), atts.getValue("host"), atts.getValue("file"), Integer.parseInt(atts.getValue("port")), database);
+				} else if (cfg.isEngineSqlite()) {
+					Class.forName("org.sqlite.JDBC");
+					database = new SqliteDatabase(atts.getValue("name"));
+					credentials = new SqliteCredentials(Paths.get(atts.getValue("file")) ,atts.getValue("password") , database);
+						
 				} else {
 					throw new IOException(
 							"Database engine \"" + atts.getValue("engine") + "\" is currently not supported");
 				}
 				cfg.setDatabase(database);
-				this.cfg.setDbName(atts.getValue("name"));
-				this.cfg.setDbUser(atts.getValue("user"));
-				this.cfg.setDbPass(atts.getValue("password"));
-				this.cfg.setDbUrl(atts.getValue("url"));
-				this.cfg.setSchema(atts.getValue("schema") != null ? atts.getValue("schema")
-						: cfg.getDatabase().getDefaultSchema());
-				Properties props = new Properties();
+				
+				Properties props = credentials.getProperties();
+				props.setProperty("charSet",atts.getValue("charset") == null ? "utf8" :atts.getValue("charset"));
+				
 				// props.setProperty("user", "postgres");
-				// props.setProperty("password", "postgres");
-				props.setProperty("user", cfg.getDbUser());
-				props.setProperty("password", cfg.getDbPass());
-				props.setProperty("charSet",  atts.getValue("charset") == null ? "utf8" :atts.getValue("charset") );
-				conn = DriverManager.getConnection(cfg.getDbUrl(), props);
-
+				
+				conn = DriverManager.getConnection(credentials.getConnectionUrl(), credentials.getProperties());
 				
 				break;
 			case "output":
@@ -149,10 +161,11 @@ public class ConfigReader implements ContentHandler {
 				break;
 			case "entity":
 				if (section == Section.ENTITIES) {
-					currentEntityTable = cfg.getDatabase().makeTableInstance( atts.getValue("table"), cfg.getSchema());
+					currentEntityTable = cfg.getDatabase().makeTableInstance( atts.getValue("table"));
 					cfg.addEntityTable(currentEntityTable);
-					cfg.getDatabase().readAllColumns(currentEntityTable, conn);
-					cfg.getDatabase().readPrimaryKey(currentEntityTable, conn);
+					cfg.getDatabase().readColumns(currentEntityTable, conn);		
+					if(currentEntityTable.getColumnCount()==0)
+						throw new IOException("invalid table " + currentEntityTable.getName());
 					cfg.initRelations(currentEntityTable);
 				} else {
 					throw new SAXException("Illegal state");
@@ -172,9 +185,11 @@ public class ConfigReader implements ContentHandler {
 				break;
 			case "mapping":
 				if (section == Section.MAPPING_TABLES) {
-					MappingTable currentMappingTable = new MappingTable(cfg.getDatabase(), atts.getValue("table"), cfg.getSchema());
-					cfg.getDatabase().readAllColumns(currentMappingTable, conn);
-					cfg.getDatabase().readPrimaryKey(currentMappingTable, conn);
+					MappingTable currentMappingTable = new MappingTable(cfg.getDatabase(), atts.getValue("table"), cfg.getDatabase().getDefaultSchema());
+					cfg.getDatabase().readColumns(currentMappingTable, conn);	
+					if(currentMappingTable.getColumnCount() == 0) {
+						throw new IOException("invalid table " + currentMappingTable.getName());
+					}
 					cfg.addMappingTable(currentMappingTable);
 				}
 				break;

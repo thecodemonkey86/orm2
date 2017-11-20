@@ -9,8 +9,6 @@ import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
 import php.bean.BeanCls;
-import php.bean.Beans;
-import php.beanrepository.ClsBeanRepository;
 import php.core.Types;
 import php.core.expression.Expression;
 import php.core.expression.PhpStringLiteral;

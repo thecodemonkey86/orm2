@@ -17,7 +17,7 @@ import cpp.orm.DatabaseTypeMapper;
 import cpp.orm.FirebirdDatabaseTypeMapper;
 import cpp.orm.MySqlDatabaseMapper;
 import cpp.orm.PgDatabaseTypeMapper;
-import database.column.Column;
+import cpp.orm.SqliteDatabaseMapper;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
@@ -38,6 +38,8 @@ public class CppOrm extends OrmCommon {
 			return new PgDatabaseTypeMapper();
 		} else if(cfg.isEngineMysql()) {
 			return new MySqlDatabaseMapper();
+		} else if(cfg.isEngineSqlite()) {
+			return new SqliteDatabaseMapper();
 		} else {
 			throw new RuntimeException("database not yet supported");
 		}
@@ -52,7 +54,6 @@ public class CppOrm extends OrmCommon {
 		BeanCls.setRepositoryPath(cfg.getBasePath().relativize(cfg.getRepositoryPath()).toString().replace('\\', '/'));
 		BeanCls.setDatabase(cfg.getDatabase());
 		BeanCls.setTypeMapper(getTypeMapper(cfg));
-		Column.setColumnEscapeChar(BeanCls.getDatabase().getColumnEscapeChar());
 		Path pathModel = cfg.getModelPath();
 		
 
@@ -86,7 +87,7 @@ public class CppOrm extends OrmCommon {
 			Path pathSrc = pathBeans.resolve(c.getName().toLowerCase()+".cpp");
 			
 			
-			if (Files.exists(pathHeader)) {
+			if (Files.exists(pathHeader) && Files.exists(pathSrc)) {
 				String existingHeaderFile = new String(Files.readAllBytes(pathHeader),utf8);
 				String existingSourceFile = new String(Files.readAllBytes(pathSrc),utf8);
 				

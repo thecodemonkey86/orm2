@@ -4,12 +4,9 @@ import java.util.List;
 
 import database.column.Column;
 import sunjava.bean.BeanCls;
-import sunjava.core.JavaString;
 import sunjava.core.Method;
 import sunjava.core.Param;
 import sunjava.core.Types;
-import sunjava.core.expression.JavaStringPlusOperatorExpression;
-import sunjava.core.expression.Var;
 
 public class MethodGetByRecordStatic extends Method {
 	protected List<Column> columns;

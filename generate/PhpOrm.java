@@ -8,7 +8,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.List;
 import config.ConfigReader;
 import config.OrmConfig;
-import database.column.Column;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
@@ -21,7 +20,6 @@ import php.beanrepository.query.ClsBeanQuery;
 import php.core.PhpCls;
 import php.core.Types;
 import php.core.instruction.InstructionBlock;
-import php.core.method.Method;
 import php.orm.DatabaseTypeMapper;
 import php.orm.MySqlDatabaseMapper;
 import php.orm.PgDatabaseMapper;
@@ -68,7 +66,7 @@ public class PhpOrm extends OrmCommon {
 		BeanCls.setDatabase(cfg.getDatabase());
 		BeanCls.setTypeMapper(getTypeMapper(cfg));
 		InstructionBlock.setEnableStacktrace(cfg.isEnableStacktrace());
-		Column.setColumnEscapeChar(BeanCls.getDatabase().getColumnEscapeChar());
+		
 		Path pathModel = cfg.getModelPath();
 
 		for (Table tbl : cfg.getEntityTables()) {

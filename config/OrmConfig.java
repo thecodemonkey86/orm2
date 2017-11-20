@@ -15,7 +15,7 @@ import database.table.MappingTable;
 import database.table.Table;
 
 public class OrmConfig {
-	protected String basePath,pathModel, pathRepository, dbUser, dbPass, dbUrl, dbName, schema;
+	protected String basePath,pathModel, pathRepository;
 	
 	protected String dbEngine;
 	protected List<Table> entityTables;
@@ -38,25 +38,12 @@ public class OrmConfig {
 		this.oneRelations = new HashMap<>();
 		this.manyToManyRelations = new HashMap<>();
 	}
-	public void setDbPass(String dbPass) {
-		this.dbPass = dbPass;
-	}
 	
-	public void setDbUser(String dbUser) {
-		this.dbUser = dbUser;
-	}
 	
 	public void setModelPath(String path) {
 		this.pathModel = path;
 	}
 	
-	public String getDbPass() {
-		return dbPass;
-	}
-	
-	public String getDbUser() {
-		return dbUser;
-	}
 	
 	public Path getModelPath() {
 		if(pathModel == null ) {
@@ -66,29 +53,6 @@ public class OrmConfig {
 	}
 
 
-	public String getDbName() {
-		return dbName;
-	}
-
-	public void setDbName(String dbName) {
-		this.dbName = dbName;
-	}
-
-	public void setDbUrl(String dbUrl) {
-		this.dbUrl = dbUrl;
-	}
-	
-	public String getDbUrl() {
-		return dbUrl;
-	}
-
-	public void setSchema(String schema) {
-		this.schema = schema;
-	}
-	
-	public String getSchema() {
-		return schema;
-	}
 	
 	public void setRepositoryPath(String pathRepository) {
 		this.pathRepository = pathRepository;
@@ -206,6 +170,10 @@ public class OrmConfig {
 	}
 	public boolean isEngineMsSqlServer() {
 		return this.dbEngine.equals("mssql");
+	}
+
+	public boolean isEngineSqlite() {
+		return this.dbEngine.equals("sqlite");
 	}
 	
 }

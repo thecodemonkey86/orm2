@@ -1,10 +1,5 @@
 package sunjava.beanrepository.method;
 
-import sunjava.core.Method;
-import sunjava.core.Param;
-import sunjava.core.Types;
-import sunjava.core.expression.Expressions;
-
 
 //public class MethodFetchOne extends Method {
 //

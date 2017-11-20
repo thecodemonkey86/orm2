@@ -10,33 +10,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import database.column.Column;
+import database.column.PgColumn;
 import database.relation.PrimaryKey;
 import database.table.AbstractTable;
+import database.table.Table;
 
 public class PgDatabase extends Database {
-	protected String schema;
+	protected String defaultSchema;
 	
-	
-	public PgDatabase(String name, String schema) {
+	public PgDatabase(String name, String defaultSchema) {
 		super(name);
-		this.schema = schema;
+		this.defaultSchema = defaultSchema;
 	}
-
 	
-
-	@Override
-	public char getColumnEscapeChar() {
-		return '\"';
-	}
 
 	
 	@Override
 	public String getEscapedTableName(AbstractTable tbl) {
-		return schema +"."+ super.getEscapedTableName(tbl);
+		return String.format("%s.\"%s\"", defaultSchema,tbl.getName());
 	}
 
 	@Override
-	public void readAllColumns(AbstractTable tbl, Connection conn)
+	public void readColumns(AbstractTable tbl, Connection conn)
 			throws SQLException {
 		if (stColumndata==null)
 			stColumndata = conn.prepareStatement("select * from information_schema.columns where table_name = ? and TABLE_CATALOG = ?");
@@ -44,7 +39,7 @@ public class PgDatabase extends Database {
 		stColumndata.setString(2, getName());
 		ResultSet rsColumndata = stColumndata.executeQuery();
 		while (rsColumndata.next()) {
-			Column col = new Column();
+			Column col = makeColumnInstance();
 			col.setName(rsColumndata.getString("column_name"));
 			col.setPosition(rsColumndata.getInt("ordinal_position"));
 			col.setDbType(rsColumndata.getString("data_type"));
@@ -54,14 +49,26 @@ public class PgDatabase extends Database {
 		}
 		rsColumndata.close();
 		
-		if (schema.equals("pg_catalog")) {
-			Column col = new Column();
+		if (defaultSchema.equals("pg_catalog")) {
+			Column col = makeColumnInstance();
 			col.setName("oid");
 			col.setPosition(0);
 			col.setDbType("integer");
 			col.setNullable(false);
 			tbl.addColumn(col);
 		}
+		
+		PrimaryKey primaryKey = new PrimaryKey();
+		
+		String sql=String.format("SELECT a.attname as colname , exists(select s.relname as seq, n.nspname as sch, t.relname as tab, a.attname as col from pg_class s  join pg_depend d on d.objid=s.oid and d.classid='pg_class'::regclass and d.refclassid='pg_class'::regclass  join pg_class t on t.oid=d.refobjid  join pg_namespace n on n.oid=t.relnamespace  join pg_attribute a0 on a0.attrelid=t.oid and a0.attnum=d.refobjsubid where s.relkind='S' and d.deptype='a'and n.nspname = '%s' and a.attname = a0.attname )  as autoincrement FROM   pg_index i JOIN   pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey) WHERE  i.indrelid = '%s.%s'::regclass AND    i.indisprimary;", tbl.getSchema(), tbl.getSchema(), tbl.getName());
+		Statement stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_READ_ONLY  );
+		ResultSet rs = stmt.executeQuery(sql);
+		while(rs.next()) {
+			Column c = tbl.getColumnByName(rs.getString("colname"));
+			c.setAutoIncrement(rs.getBoolean("autoincrement"));
+			primaryKey.add(c);
+		}
+		tbl.setPrimaryKey(primaryKey);
 	}
 
 	
@@ -72,14 +79,17 @@ public class PgDatabase extends Database {
 	}
 	
 	@Override
-	public String sqlInsertOrIgnoreMultiRow(AbstractTable tbl,  List<String> columns, String placeholders
+	public String sqlInsertOrIgnoreMultiRow(AbstractTable tbl,String placeholders
 			) {
 		
 		ArrayList<String> pkColNames = new ArrayList<>(); 
 		for(Column c:tbl.getPrimaryKey().getColumns()) {
 			pkColNames.add(c.getEscapedName());
 		}
-				
+		ArrayList<String> columns = new ArrayList<>(); 
+		for(Column c:tbl.getAllColumns()) {
+			columns.add(c.getEscapedName());
+		}	
 		return "insert into " +getEscapedTableName(tbl) + " " + CodeUtil2.parentheses( CodeUtil2.concat(columns, ",")) + " values "+placeholders
 				+ " on conflict "+CodeUtil2.parentheses(CodeUtil2.concat(pkColNames,"," ))
 				+" do nothing"
@@ -93,20 +103,6 @@ public class PgDatabase extends Database {
 
 
 
-	@Override
-	public void readPrimaryKey( AbstractTable table, Connection conn) throws SQLException{
-		PrimaryKey primaryKey = new PrimaryKey();
-	
-		String sql=String.format("SELECT a.attname as colname , exists(select s.relname as seq, n.nspname as sch, t.relname as tab, a.attname as col from pg_class s  join pg_depend d on d.objid=s.oid and d.classid='pg_class'::regclass and d.refclassid='pg_class'::regclass  join pg_class t on t.oid=d.refobjid  join pg_namespace n on n.oid=t.relnamespace  join pg_attribute a0 on a0.attrelid=t.oid and a0.attnum=d.refobjsubid where s.relkind='S' and d.deptype='a'and n.nspname = '%s' and a.attname = a0.attname )  as autoincrement FROM   pg_index i JOIN   pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey) WHERE  i.indrelid = '%s.%s'::regclass AND    i.indisprimary;", table.getSchema(), table.getSchema(), table.getName());
-		Statement stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_READ_ONLY  );
-		ResultSet rs = stmt.executeQuery(sql);
-		while(rs.next()) {
-			Column c = table.getColumnByName(rs.getString("colname"));
-			c.setAutoIncrement(rs.getBoolean("autoincrement"));
-			primaryKey.add(c);
-		}
-		table.setPrimaryKey(primaryKey);
-	}
 
 	@Override
 	public boolean supportsInsertOrIgnore() {
@@ -135,7 +131,7 @@ public class PgDatabase extends Database {
 
 
 	@Override
-	public String sqlInsert(AbstractTable tbl, List<String> columns) {
+	public String sqlInsert(AbstractTable tbl) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -154,4 +150,19 @@ public class PgDatabase extends Database {
 	public boolean supportsMultiRowInsert() {
 		return true;
 	}
+	
+	@Override
+	public Table makeTableInstance(String value) {
+		return new Table(this, value, defaultSchema);
+	}
+
+
+
+	@Override
+	public Column makeColumnInstance() {
+		return new PgColumn();
+	}
+
+	
+
 }

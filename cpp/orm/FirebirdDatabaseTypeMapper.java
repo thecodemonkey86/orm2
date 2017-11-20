@@ -60,11 +60,11 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 		if (!nullable){
 			switch(dbType) {
 				case "8":
-					return Types.Int;
+					return Types.Int32;
 				case "16":
-					return Types.LongLong;
+					return Types.Int64;
 				case "7":
-					return Types.Short;
+					return Types.Int16;
 				case "14":	
 				case "37":
 					return Types.QString;

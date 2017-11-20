@@ -21,7 +21,7 @@ public abstract class Expression {
 	
 	
 	public Expression callMethod(Method m, Expression...args) {
-		return new MethodCall(this, m,args);
+		return m.call(this, args);
 	}
 	
 

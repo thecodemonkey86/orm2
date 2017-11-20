@@ -11,7 +11,6 @@ import php.core.expression.PhpStringLiteral;
 import php.core.expression.Var;
 import php.core.instruction.IfBlock;
 import php.core.method.Method;
-import php.lib.PhpStringType;
 
 public class MethodGetLimitQueryString extends Method {
 	PrimaryKey pk;

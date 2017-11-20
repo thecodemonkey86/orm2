@@ -10,6 +10,9 @@ public class StringConstant extends Expression {
 	protected String str;
 	
 	public StringConstant(String str) {
+		if(str == null) {
+			throw new NullPointerException();
+		}
 		this.str = str;
 	}
 	
