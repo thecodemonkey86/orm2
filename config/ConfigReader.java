@@ -126,7 +126,7 @@ public class ConfigReader implements ContentHandler {
 					
 				} else if (cfg.isEngineMysql()) {
 					database = new MySqlDatabase(atts.getValue("name"));
-					credentials = new MySqlCredentials(atts.getValue("user"), atts.getValue("password"), atts.getValue("host"), database);
+					credentials = new MySqlCredentials(atts.getValue("user"), atts.getValue("password"), atts.getValue("host"), atts.getValue("port") != null ? Integer.parseInt(atts.getValue("port")) : 3306, database);
 					
 				} else if (cfg.isEngineFirebird()) {
 					Class.forName("org.firebirdsql.jdbc.FBDriver");

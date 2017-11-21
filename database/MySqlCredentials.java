@@ -4,13 +4,14 @@ import java.util.Properties;
 
 public class MySqlCredentials extends DbCredentials{
 	protected String user, password, host;
+	protected int port;
 	
-	
-	public MySqlCredentials(String user, String password, String host, Database db) {
+	public MySqlCredentials(String user, String password, String host,int port, Database db) {
 		super(db);
 		this.user = user;
 		this.password = password;
-		this.host = host;		
+		this.host = host;	
+		this.port = port;
 	}
 
 	public String getPassword() {
@@ -32,6 +33,6 @@ public class MySqlCredentials extends DbCredentials{
 
 	@Override
 	public String getConnectionUrl() {
-		return "jdbc:mysql://" + host +"/" + db.getName();
+		return String.format("jdbc:mysql://%s:%d/%s", host ,port, db.getName());
 	}
 }

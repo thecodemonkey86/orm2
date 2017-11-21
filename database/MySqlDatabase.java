@@ -3,12 +3,14 @@ package database;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import database.column.Column;
 import database.column.MySqlColumn;
 import database.relation.PrimaryKey;
 import database.table.AbstractTable;
+import generate.CodeUtil2;
 
 public class MySqlDatabase extends Database {
 	protected String dbUser, dbPass, dbUrl;
@@ -78,11 +80,6 @@ public class MySqlDatabase extends Database {
 		return null;
 	}
 
-	@Override
-	public String sqlInsert(AbstractTable tbl) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public boolean supportsInsertOrIgnore() {
@@ -92,14 +89,17 @@ public class MySqlDatabase extends Database {
 
 	@Override
 	public String sqlInsertMultiRow(AbstractTable tbl, List<String> columns, String placeholders) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<String> columnsNamesEscaped = new ArrayList<>(); 
+		for(Column c:tbl.getAllColumns()) {
+			columnsNamesEscaped.add(c.getEscapedName());
+		}	
+		return "insert into " +getEscapedTableName(tbl) + " " + CodeUtil2.parentheses( CodeUtil2.concat(columnsNamesEscaped, ",")) + " values "+placeholders
+				;
 	}
 
 	@Override
 	public boolean supportsMultiRowInsert() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
