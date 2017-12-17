@@ -1,7 +1,7 @@
 package cpp.core.instruction;
 
 import cpp.core.expression.Expression;
-import generate.CodeUtil2;
+import util.CodeUtil2;
 
 public class AssignInstruction extends Instruction {
 	

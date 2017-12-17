@@ -1,13 +1,12 @@
 package database.table;
 
-import generate.CodeUtil2;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import database.Database;
 import database.column.Column;
 import database.relation.ForeignKey;
+import util.CodeUtil2;
 
 
 public class Table extends AbstractTable{

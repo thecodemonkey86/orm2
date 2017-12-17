@@ -1,12 +1,11 @@
 package cpp.bean.method;
 
-import generate.CodeUtil2;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import codegen.CodeUtil;
+import util.CodeUtil2;
 import util.StringUtil;
 import util.pg.PgCppUtil;
 import cpp.Types;

@@ -1,7 +1,5 @@
 package cpp.bean.method;
 
-import generate.CodeUtil2;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +8,7 @@ import cpp.core.Method;
 import cpp.core.QString;
 import cpp.core.instruction.Instructions;
 import database.column.Column;
+import util.CodeUtil2;
 
 public class MethodGetInsertFields extends Method {
 

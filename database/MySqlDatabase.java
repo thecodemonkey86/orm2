@@ -10,7 +10,7 @@ import database.column.Column;
 import database.column.MySqlColumn;
 import database.relation.PrimaryKey;
 import database.table.AbstractTable;
-import generate.CodeUtil2;
+import util.CodeUtil2;
 
 public class MySqlDatabase extends Database {
 	protected String dbUser, dbPass, dbUrl;

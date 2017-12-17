@@ -1,9 +1,9 @@
 package php.core.expression;
 
 import codegen.CodeUtil;
-import generate.CodeUtil2;
 import php.core.Type;
 import php.core.Types;
+import util.CodeUtil2;
 import util.StringUtil;
 
 public class PhpStringLiteral extends Expression {

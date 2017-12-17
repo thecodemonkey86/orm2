@@ -1,8 +1,8 @@
 package sunjava.core.instruction;
 
 import codegen.CodeUtil;
-import generate.CodeUtil2;
 import sunjava.core.expression.Expression;
+import util.CodeUtil2;
 
 public class SuperConstructorCall extends ScClosedInstruction{
 

@@ -1,9 +1,9 @@
 package cpp.core.instruction;
 
-import generate.CodeUtil2;
 import cpp.core.QStringLiteral;
 import cpp.core.expression.Expression;
 import cpp.core.expression.Var;
+import util.CodeUtil2;
 
 public class DeclareInitConstructInstruction extends Instruction {
 	

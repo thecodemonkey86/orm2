@@ -1,7 +1,7 @@
 package cpp.core.expression;
 
 import cpp.core.UniquePtr;
-import generate.CodeUtil2;
+import util.CodeUtil2;
 
 public class StdMoveExpression extends Expression {
 

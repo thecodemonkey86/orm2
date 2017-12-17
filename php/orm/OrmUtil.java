@@ -5,10 +5,10 @@ import database.relation.IManyRelation;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
-import generate.CodeUtil2;
 import php.bean.BeanCls;
 import php.bean.Beans;
 import php.core.Type;
+import util.CodeUtil2;
 import util.StringUtil;
 
 public class OrmUtil {

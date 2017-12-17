@@ -1,7 +1,7 @@
 package database.table;
 
 import database.Database;
-import generate.CodeUtil2;
+import util.CodeUtil2;
 
 public class FirebirdTable extends Table {
 

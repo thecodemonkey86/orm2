@@ -1,9 +1,9 @@
 package cpp.bean.method;
 
-import generate.CodeUtil2;
 import cpp.Types;
 import cpp.core.Method;
 import cpp.core.QString;
+import util.CodeUtil2;
 
 public class MethodGetInsertValuePlaceholders extends Method {
 

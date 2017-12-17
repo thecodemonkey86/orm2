@@ -1,11 +1,11 @@
 package sunjava.core.expression;
 
-import generate.CodeUtil2;
 import sunjava.core.AbstractJavaCls;
 import sunjava.core.JavaCls;
 import sunjava.core.PrimitiveType;
 import sunjava.core.Type;
 import sunjava.lib.ClsJavaString;
+import util.CodeUtil2;
 
 public class NewOperator extends Expression {
 

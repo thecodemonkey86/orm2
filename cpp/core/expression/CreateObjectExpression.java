@@ -2,7 +2,7 @@ package cpp.core.expression;
 
 import cpp.core.Cls;
 import cpp.core.Type;
-import generate.CodeUtil2;
+import util.CodeUtil2;
 
 public class CreateObjectExpression extends Expression{
 

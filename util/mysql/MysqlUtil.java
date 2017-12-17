@@ -1,6 +1,5 @@
 package util.mysql;
 
-import generate.CodeUtil2;
 import cpp.bean.BeanCls;
 import cpp.core.Attr;
 import cpp.core.ConstRef;
@@ -10,6 +9,7 @@ import cpp.core.SharedPtr;
 import cpp.core.expression.Expression;
 import database.column.Column;
 import database.relation.OneRelation;
+import util.CodeUtil2;
 
 public class MysqlUtil {
 	public static Method mysqlPhpConvertMethod(String dbtype) {

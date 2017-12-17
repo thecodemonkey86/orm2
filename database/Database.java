@@ -10,7 +10,7 @@ import codegen.CodeUtil;
 import database.column.Column;
 import database.table.AbstractTable;
 import database.table.Table;
-import generate.CodeUtil2;
+import util.CodeUtil2;
 
 
 public abstract class Database {

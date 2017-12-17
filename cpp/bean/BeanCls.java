@@ -3,8 +3,8 @@ package cpp.bean;
 import java.util.ArrayList;
 import java.util.List;
 
+import util.CodeUtil2;
 import util.StringUtil;
-import generate.CodeUtil2;
 import cpp.Types;
 import cpp.bean.method.BeanConstructor;
 import cpp.bean.method.BeanDestructor;

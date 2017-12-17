@@ -1,7 +1,5 @@
 package sunjava.beanrepository.method;
 
-import generate.CodeUtil2;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +30,7 @@ import sunjava.core.instruction.IfBlock;
 import sunjava.lib.ClsHashSet;
 import sunjava.lib.ClsResultSet;
 import sunjava.lib.ClsSqlQuery;
+import util.CodeUtil2;
 import util.pg.PgCppUtil;
 
 public class MethodGetById extends Method {

@@ -44,8 +44,8 @@ import php.core.expression.StaticAccessExpression;
 import php.core.method.MethodAttributeGetter;
 import php.orm.DatabaseTypeMapper;
 import php.orm.OrmUtil;
+import util.CodeUtil2;
 import util.StringUtil;
-import generate.CodeUtil2;
 
 public class BeanCls extends PhpCls {
 

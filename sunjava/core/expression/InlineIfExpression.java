@@ -1,8 +1,8 @@
 package sunjava.core.expression;
 
-import generate.CodeUtil2;
 import sunjava.core.AbstractJavaCls;
 import sunjava.core.Type;
+import util.CodeUtil2;
 
 public class InlineIfExpression extends Expression {
 

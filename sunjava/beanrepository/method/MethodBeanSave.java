@@ -1,7 +1,5 @@
 package sunjava.beanrepository.method;
 
-import generate.CodeUtil2;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +31,7 @@ import sunjava.lib.ClsSqlParam;
 import sunjava.lib.ClsSqlQuery;
 import sunjava.lib.ClsSqlUtil;
 import sunjava.orm.OrmUtil;
+import util.CodeUtil2;
 
 public class MethodBeanSave extends Method {
 	protected BeanCls bean;

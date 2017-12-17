@@ -3,7 +3,7 @@ package cpp.core.expression;
 import cpp.core.ConstRef;
 import cpp.core.Ref;
 import cpp.core.Type;
-import generate.CodeUtil2;
+import util.CodeUtil2;
 
 public class ConstCastExpression extends Expression {
 	Expression e;

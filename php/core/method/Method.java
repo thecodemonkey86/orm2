@@ -1,7 +1,5 @@
 package php.core.method;
 
-import generate.CodeUtil2;
-
 import java.util.ArrayList;
 import codegen.CodeUtil;
 import php.core.AbstractPhpCls;
@@ -15,6 +13,7 @@ import php.core.instruction.Comment;
 import php.core.instruction.Instruction;
 import php.core.instruction.InstructionBlock;
 import php.core.instruction.ReturnInstruction;
+import util.CodeUtil2;
 
 public abstract class Method extends InstructionBlock{
 	

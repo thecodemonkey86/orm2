@@ -1,7 +1,5 @@
 package php.bean.method;
 
-import generate.CodeUtil2;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +8,7 @@ import php.core.Types;
 import php.core.expression.PhpStringLiteral;
 import php.core.instruction.Instructions;
 import php.core.method.Method;
+import util.CodeUtil2;
 
 public class MethodGetInsertFields extends Method {
 

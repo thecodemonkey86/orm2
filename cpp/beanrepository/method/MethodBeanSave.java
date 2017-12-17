@@ -1,7 +1,5 @@
 package cpp.beanrepository.method;
 
-import generate.CodeUtil2;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +23,7 @@ import cpp.lib.ClsQVector;
 import cpp.orm.OrmUtil;
 import database.column.Column;
 import database.relation.ManyRelation;
+import util.CodeUtil2;
 
 public class MethodBeanSave extends Method {
 

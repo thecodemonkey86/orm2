@@ -1,13 +1,12 @@
 package cpp.core.instruction;
 
-import generate.CodeUtil2;
-
 import java.util.ArrayList;
 
 import codegen.CodeUtil;
 import cpp.core.expression.BinaryOperatorExpression;
 import cpp.core.expression.Expression;
 import cpp.core.expression.Operators;
+import util.CodeUtil2;
 
 public class IfBlock extends Instruction{
 	Expression condition;

@@ -1,7 +1,5 @@
 package php.beanrepository.method;
 
-import generate.CodeUtil2;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +23,7 @@ import php.core.method.Method;
 import php.lib.ClsBaseBean;
 import php.lib.ClsMysqliResult;
 import php.lib.ClsSqlQuery;
+import util.CodeUtil2;
 import util.StringUtil;
 import util.pg.PgCppUtil;
 import codegen.CodeUtil;

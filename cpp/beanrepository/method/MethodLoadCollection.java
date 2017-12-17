@@ -1,11 +1,10 @@
 package cpp.beanrepository.method;
 
-import generate.CodeUtil2;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import codegen.CodeUtil;
+import util.CodeUtil2;
 import util.pg.PgCppUtil;
 import cpp.Types;
 import cpp.bean.BeanCls;

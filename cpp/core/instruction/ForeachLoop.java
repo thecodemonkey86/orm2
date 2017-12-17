@@ -3,7 +3,7 @@ package cpp.core.instruction;
 import codegen.CodeUtil;
 import cpp.core.expression.Expression;
 import cpp.core.expression.Var;
-import generate.CodeUtil2;
+import util.CodeUtil2;
 
 public class ForeachLoop extends InstructionBlock{
 	

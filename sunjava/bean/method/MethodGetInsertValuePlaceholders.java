@@ -1,9 +1,9 @@
 package sunjava.bean.method;
 
-import generate.CodeUtil2;
 import sunjava.core.JavaString;
 import sunjava.core.Method;
 import sunjava.core.Types;
+import util.CodeUtil2;
 
 public class MethodGetInsertValuePlaceholders extends Method {
 

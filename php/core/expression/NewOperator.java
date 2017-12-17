@@ -2,12 +2,12 @@ package php.core.expression;
 
 import java.util.ArrayList;
 
-import generate.CodeUtil2;
 import php.core.PhpArray;
 import php.core.PhpCls;
 import php.core.PrimitiveType;
 import php.core.Type;
 import php.lib.PhpStringType;
+import util.CodeUtil2;
 
 public class NewOperator extends Expression {
 

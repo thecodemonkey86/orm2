@@ -1,7 +1,5 @@
 package sunjava.core.instruction;
 
-import generate.CodeUtil2;
-
 import java.util.ArrayList;
 
 import codegen.CodeUtil;
@@ -9,6 +7,7 @@ import sunjava.core.AbstractJavaCls;
 import sunjava.core.expression.BinaryOperatorExpression;
 import sunjava.core.expression.Expression;
 import sunjava.core.expression.Operators;
+import util.CodeUtil2;
 
 public class IfBlock extends Instruction{
 	Expression condition;

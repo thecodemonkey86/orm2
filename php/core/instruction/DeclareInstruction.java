@@ -1,8 +1,8 @@
 package php.core.instruction;
 
-import generate.CodeUtil2;
 import php.core.expression.Expression;
 import php.core.expression.Var;
+import util.CodeUtil2;
 
 public class DeclareInstruction extends Instruction {
 	

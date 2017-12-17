@@ -1,4 +1,4 @@
-package generate;
+package util;
 
 import util.StringUtil;
 import codegen.CodeUtil;

@@ -1,7 +1,7 @@
 package cpp.core;
 
 import codegen.CodeUtil;
-import generate.CodeUtil2;
+import util.CodeUtil2;
 
 public class UniquePtr extends TplCls{
 

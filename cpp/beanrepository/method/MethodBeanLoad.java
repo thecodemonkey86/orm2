@@ -1,7 +1,5 @@
 package cpp.beanrepository.method;
 
-import generate.CodeUtil2;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +30,7 @@ import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
 import database.relation.PrimaryKey;
+import util.CodeUtil2;
 
 public class MethodBeanLoad extends Method {
 

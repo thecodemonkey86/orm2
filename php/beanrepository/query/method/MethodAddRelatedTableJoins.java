@@ -1,7 +1,5 @@
 package php.beanrepository.query.method;
 
-import generate.CodeUtil2;
-
 import java.util.ArrayList;
 
 import codegen.CodeUtil;
@@ -13,6 +11,7 @@ import php.core.Types;
 import php.core.expression.Expression;
 import php.core.expression.PhpStringLiteral;
 import php.core.method.Method;
+import util.CodeUtil2;
 
 
 public class MethodAddRelatedTableJoins extends Method {

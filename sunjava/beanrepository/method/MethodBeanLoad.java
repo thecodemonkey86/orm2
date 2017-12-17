@@ -1,7 +1,5 @@
 package sunjava.beanrepository.method;
 
-import generate.CodeUtil2;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +24,7 @@ import sunjava.lib.ClsBaseBean;
 import sunjava.lib.ClsHashSet;
 import sunjava.lib.ClsSqlQuery;
 import sunjava.orm.OrmUtil;
+import util.CodeUtil2;
 import util.pg.PgCppUtil;
 import codegen.CodeUtil;
 import database.column.Column;

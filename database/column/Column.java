@@ -4,7 +4,7 @@ import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
 import database.table.Table;
-import generate.CodeUtil2;
+import util.CodeUtil2;
 
 public abstract class Column {
 	protected String name;

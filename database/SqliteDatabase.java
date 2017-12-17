@@ -12,7 +12,7 @@ import database.column.Column;
 import database.column.SqliteColumn;
 import database.relation.PrimaryKey;
 import database.table.AbstractTable;
-import generate.CodeUtil2;
+import util.CodeUtil2;
 import util.StringUtil;
 
 public class SqliteDatabase extends Database {

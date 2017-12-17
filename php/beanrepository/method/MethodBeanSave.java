@@ -1,7 +1,5 @@
 package php.beanrepository.method;
 
-import generate.CodeUtil2;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +34,7 @@ import php.lib.ClsSqlParam;
 import php.lib.ClsSqlQuery;
 import php.lib.ClsSqlUtil;
 import php.orm.OrmUtil;
+import util.CodeUtil2;
 
 public class MethodBeanSave extends Method {
 	protected BeanCls bean;

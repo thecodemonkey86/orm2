@@ -1,7 +1,5 @@
 package cpp.core;
 
-import generate.CodeUtil2;
-
 import java.util.ArrayList;
 
 import codegen.CodeUtil;
@@ -9,6 +7,7 @@ import cpp.core.expression.Expression;
 import cpp.core.instruction.Comment;
 import cpp.core.instruction.Instruction;
 import cpp.core.instruction.InstructionBlock;
+import util.CodeUtil2;
 
 public abstract class Method extends InstructionBlock{
 	

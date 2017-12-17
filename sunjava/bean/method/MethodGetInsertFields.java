@@ -1,7 +1,5 @@
 package sunjava.bean.method;
 
-import generate.CodeUtil2;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +8,7 @@ import sunjava.core.JavaString;
 import sunjava.core.Method;
 import sunjava.core.Types;
 import sunjava.core.instruction.Instructions;
+import util.CodeUtil2;
 
 public class MethodGetInsertFields extends Method {
 

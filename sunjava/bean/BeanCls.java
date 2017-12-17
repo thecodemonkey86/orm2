@@ -44,8 +44,8 @@ import sunjava.core.expression.StaticAccessExpression;
 import sunjava.core.method.MethodAttributeGetter;
 import sunjava.orm.DatabaseTypeMapper;
 import sunjava.orm.OrmUtil;
+import util.CodeUtil2;
 import util.StringUtil;
-import generate.CodeUtil2;
 
 public class BeanCls extends JavaCls {
 

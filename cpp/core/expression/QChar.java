@@ -1,9 +1,9 @@
 package cpp.core.expression;
 
-import generate.CodeUtil2;
 import codegen.CodeUtil;
 import cpp.Types;
 import cpp.core.Type;
+import util.CodeUtil2;
 
 public class QChar extends Expression{
 	protected char c;

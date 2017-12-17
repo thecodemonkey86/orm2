@@ -1,7 +1,5 @@
 package database;
 
-import generate.CodeUtil2;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,6 +12,7 @@ import database.column.PgColumn;
 import database.relation.PrimaryKey;
 import database.table.AbstractTable;
 import database.table.Table;
+import util.CodeUtil2;
 
 public class PgDatabase extends Database {
 	protected String defaultSchema;

@@ -1,7 +1,5 @@
 package sunjava.beanrepository.query.method;
 
-import generate.CodeUtil2;
-
 import java.util.ArrayList;
 
 import codegen.CodeUtil;
@@ -15,6 +13,7 @@ import sunjava.core.JavaString;
 import sunjava.core.Method;
 import sunjava.core.Types;
 import sunjava.core.expression.Expression;
+import util.CodeUtil2;
 
 
 public class MethodAddRelatedTableJoins extends Method {

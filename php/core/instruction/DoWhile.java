@@ -1,8 +1,8 @@
 package php.core.instruction;
 
-import generate.CodeUtil2;
 import codegen.CodeUtil;
 import php.core.expression.Expression;
+import util.CodeUtil2;
 
 public class DoWhile extends InstructionBlock {
 	Expression condition;

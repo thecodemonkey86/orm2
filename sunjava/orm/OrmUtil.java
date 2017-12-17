@@ -4,7 +4,7 @@ import database.relation.IManyRelation;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
-import generate.CodeUtil2;
+import util.CodeUtil2;
 import util.StringUtil;
 
 public class OrmUtil {

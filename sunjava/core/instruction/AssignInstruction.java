@@ -1,8 +1,8 @@
 package sunjava.core.instruction;
 
-import generate.CodeUtil2;
 import sunjava.core.AbstractJavaCls;
 import sunjava.core.expression.Expression;
+import util.CodeUtil2;
 
 public class AssignInstruction extends Instruction {
 	

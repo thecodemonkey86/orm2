@@ -1,8 +1,8 @@
 package sunjava.core.expression;
 
-import generate.CodeUtil2;
 import sunjava.core.Type;
 import sunjava.core.Types;
+import util.CodeUtil2;
 
 public class CharExpression extends Expression{
 	protected char c;

@@ -1,7 +1,5 @@
 package sunjava.core;
 
-import generate.CodeUtil2;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +11,7 @@ import sunjava.core.instruction.Instruction;
 import sunjava.core.instruction.InstructionBlock;
 import sunjava.core.instruction.ReturnInstruction;
 import sunjava.lib.ClsException;
+import util.CodeUtil2;
 
 public abstract class Method extends InstructionBlock{
 	

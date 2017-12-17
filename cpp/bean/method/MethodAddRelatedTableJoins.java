@@ -1,7 +1,5 @@
 package cpp.bean.method;
 
-import generate.CodeUtil2;
-
 import java.util.ArrayList;
 
 import codegen.CodeUtil;
@@ -15,6 +13,7 @@ import cpp.core.expression.Expression;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
+import util.CodeUtil2;
 
 
 public class MethodAddRelatedTableJoins extends Method {

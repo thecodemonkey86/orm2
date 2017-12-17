@@ -1,13 +1,12 @@
 package php.core.instruction;
 
-import generate.CodeUtil2;
-
 import java.util.ArrayList;
 
 import codegen.CodeUtil;
 import php.core.expression.BinaryOperatorExpression;
 import php.core.expression.Expression;
 import php.core.expression.Operators;
+import util.CodeUtil2;
 
 public class IfBlock extends Instruction{
 	Expression condition;
