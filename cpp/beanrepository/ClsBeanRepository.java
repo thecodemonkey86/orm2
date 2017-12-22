@@ -64,7 +64,12 @@ public class ClsBeanRepository extends Cls{
 		
 	}
 	
-	
+	@Override
+	protected void addHeaderCodeBeforeClassDeclaration(StringBuilder sb) {
+		// TODO Auto-generated method stub
+		super.addHeaderCodeBeforeClassDeclaration(sb);
+		sb.append("using namespace QtCommon2;\n");
+	}
 //	@Override
 //	public String toHeaderString() {
 //		StringBuilder sb=new StringBuilder(super.toHeaderString());

@@ -4,6 +4,7 @@ import java.util.List;
 
 import cpp.Types;
 import cpp.bean.BeanCls;
+import cpp.bean.Nullable;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.QString;
@@ -32,7 +33,11 @@ public class MethodGetUpdateFields extends Method{
 		Var fields = _declare(Types.QStringList, "fields");
 		IfBlock ifIdModified= _if(parent.getAttrByName("primaryKeyModified"));
 		for(Column colPk:pk.getColumns()) {
+			
 			Expression colAttr = parent.accessThisAttrGetterByColumn(colPk); //parent.getAttrByName(colPk.getCamelCaseName());
+			
+			if(colPk.isNullable())
+				colAttr = colAttr.callMethod(Nullable.val);
 			ifIdModified.setIfInstr(
 					fields.callMethodInstruction("append", QString.fromStringConstant(colPk.getEscapedName()+"=?"))
 					,

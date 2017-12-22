@@ -312,7 +312,7 @@ public class BeanCls extends Cls {
 		addIncludeHeader("beanquery");
 		addIncludeHeader(repositoryPath + "beanrepository");
 		addForwardDeclaredClass(Types.BeanRepository);
-		addIncludeHeader("util/orderedset");
+		addIncludeHeader(Types.orderedSet(null).getHeaderInclude());
 		addAttributes(tbl.getAllColumns());
 		addForwardDeclaredClass(this);
 		List<Column> cols = tbl.getColumns(!tbl.getPrimaryKey().isAutoIncrement());

@@ -13,7 +13,7 @@ public class ClsOrderedSet extends TplCls {
 		addMethod(new LibMethod(Types.Bool, "insert"));
 		addMethod(new LibMethod(Types.Bool, "append"));
 		addMethod(new LibMethod(Types.Bool, "size"));
-		headerInclude = "util/orderedset";
+		headerInclude = "util/collection/orderedset";
 	}
 
 

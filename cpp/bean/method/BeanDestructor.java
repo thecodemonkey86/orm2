@@ -12,6 +12,7 @@ public class BeanDestructor extends Destructor {
 	
 	public BeanDestructor(BeanCls bean) {
 		this.bean = bean;
+		setVirtualQualifier(true);
 	}
 
 	@Override

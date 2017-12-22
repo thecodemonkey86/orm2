@@ -2,14 +2,21 @@ package cpp.orm;
 
 import cpp.Types;
 import cpp.core.Method;
+import cpp.core.QString;
 import cpp.core.Type;
+import cpp.core.expression.BoolExpression;
+import cpp.core.expression.CreateObjectExpression;
+import cpp.core.expression.DoubleExpression;
 import cpp.core.expression.Expression;
+import cpp.core.expression.IntExpression;
+import cpp.core.expression.LongLongExpression;
+import cpp.core.expression.ShortExpression;
 import database.column.Column;
 
 public class SqliteDatabaseMapper extends DatabaseTypeMapper {
 	@Override
-	public Method getQVariantConvertMethod(String pgType) {
-		switch (pgType) {
+	public Method getQVariantConvertMethod(String dbType) {
+		switch (dbType) {
 		case "INT":
 		case "INTEGER":
 		case "MEDIUMINT":
@@ -43,7 +50,7 @@ public class SqliteDatabaseMapper extends DatabaseTypeMapper {
 		case "BOOLEAN":
 			return Types.QVariant.getMethod("toBool");
 		default:
-			throw new RuntimeException("type" + pgType + " not implemented");
+			throw new RuntimeException("type" + dbType + " not implemented");
 		}
 	}
 
@@ -143,13 +150,84 @@ public class SqliteDatabaseMapper extends DatabaseTypeMapper {
 
 	@Override
 	public Expression getColumnDefaultValueExpression(Column col) {
-		// TODO Auto-generated method stub
-		return null;
+		/*case "integer":
+					return new IntExpression(0);
+				case "bigint":
+					return new LongLongExpression(0L);
+				case "smallint":
+					return new ShortExpression((short)0);
+				case "character varying":
+				case "character":	
+				case "text":
+					return QString.fromStringConstant("");
+				case "date":
+					return new CreateObjectExpression(Types.QDate) ;
+				case "double precision":
+				case "numeric":
+					return new DoubleExpression(0.0);
+				case "bytea":
+					return new CreateObjectExpression(Types.QByteArray) ;	
+				case "boolean":
+					return BoolExpression.FALSE;
+				case "timestamp with time zone":
+					return new CreateObjectExpression(Types.QDateTime) ;
+				case "time with time zone":
+					return new CreateObjectExpression(Types.QTime) ;
+				default:
+					return new CreateObjectExpression(Types.QVariant) ;*/
+		
+		String dbType = col.getDbType();
+		switch (dbType) {
+		case "INT":
+		case "INTEGER":
+		case "MEDIUMINT":
+			return new IntExpression(0);
+		case "BIGINT":
+			return new LongLongExpression(0L);
+		case "SMALLINT":
+			return new ShortExpression((short)0);
+		case "CHARACTER":
+		case "VARCHAR":
+		case "VARYING CHARACTER":
+		case "NCHAR":
+		case "NATIVE CHARACTER":
+		case "NVARCHAR":
+		case "TEXT":
+			return QString.fromStringConstant("");
+		case "DATE":
+			return new CreateObjectExpression(Types.QDate) ;
+		case "DATETIME":
+		case "TIMESTAMP":
+			return new CreateObjectExpression(Types.QDateTime) ;
+		case "NUMERIC":
+		case "DECIMAL":
+		 case "REAL":
+		 case "DOUBLE":
+		 case "DOUBLE PRECISION":
+		 case "FLOAT":
+			 return new DoubleExpression(0.0);
+		case "BLOB":
+			return new CreateObjectExpression(Types.QByteArray) ;	
+		case "BOOLEAN":
+			return BoolExpression.FALSE;
+		default:
+			throw new RuntimeException("type" + dbType + " not implemented");
+		}
 	}
 
 	@Override
 	public Expression getGenericDefaultValueExpression(Column col) {
-		// TODO Auto-generated method stub
+		String string = col.getDefaultValue();
+		if (string == null) {
+			Type type = getTypeFromDbDataType(col.getDbType(), col.isNullable());
+			if (!col.isNullable()) {
+				if (type.equals(Types.Int)) {
+					return new IntExpression(0);
+				} else if (type.equals(Types.Double)) {
+					return new DoubleExpression(0.0);
+				}
+			}
+		}
 		return null;
 	}
 

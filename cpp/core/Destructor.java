@@ -28,7 +28,7 @@ public class Destructor extends Method{
 	
 	@Override
 	public String toHeaderString() {
-		return CodeUtil.sp("public:","~"+ parent.getName(),"()",";");
+		return CodeUtil.sp("public:", (virtualQualifier ? "virtual" : null) ,"~"+ parent.getName(),"()",";");
 	}
 
 

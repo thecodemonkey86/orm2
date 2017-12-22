@@ -76,9 +76,6 @@ public class SqliteDatabase extends Database {
 			boolean endOfColumnList = false;
 			int index=0;
 			int ordinalPosition = 0;
-			if(tbl.getName().equals("artist_track_mapping")) {
-				System.out.println(l);
-			}
 		
 			expectToken(l, index++, "CREATE");
 			expectToken(l, index++, "TABLE");
