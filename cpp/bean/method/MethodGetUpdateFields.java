@@ -13,6 +13,7 @@ import cpp.core.expression.Expression;
 import cpp.core.expression.InlineIfExpression;
 import cpp.core.expression.Var;
 import cpp.core.instruction.IfBlock;
+import cpp.lib.ClsQString;
 import database.column.Column;
 import database.relation.OneRelation;
 import database.relation.PrimaryKey;
@@ -38,6 +39,8 @@ public class MethodGetUpdateFields extends Method{
 			
 			if(colPk.isNullable())
 				colAttr = colAttr.callMethod(Nullable.val);
+			else if(colAttr.getType().equals(Types.QString))
+				colAttr = new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), QString.fromStringConstant(""), colAttr);
 			ifIdModified.setIfInstr(
 					fields.callMethodInstruction("append", QString.fromStringConstant(colPk.getEscapedName()+"=?"))
 					,
@@ -47,6 +50,8 @@ public class MethodGetUpdateFields extends Method{
 		}
 		for(Column col: cols) {
 				Expression colAttr = parent.accessThisAttrGetterByColumn(col);
+				if(colAttr.getType().equals(Types.QString))
+					colAttr = new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), QString.fromStringConstant(""), colAttr);
 				
 				if (!col.hasOneRelation()) {
 				_if(parent.getAttrByName(col.getCamelCaseName()+"Modified"))

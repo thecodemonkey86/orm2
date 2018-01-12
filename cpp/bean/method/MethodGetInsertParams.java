@@ -7,9 +7,12 @@ import cpp.Types;
 import cpp.bean.BeanCls;
 import cpp.core.Attr;
 import cpp.core.Method;
+import cpp.core.QString;
 import cpp.core.expression.CreateObjectExpression;
+import cpp.core.expression.Expression;
 import cpp.core.expression.InlineIfExpression;
 import cpp.core.expression.Var;
+import cpp.lib.ClsQString;
 import database.column.Column;
 
 public class MethodGetInsertParams extends Method {
@@ -65,7 +68,9 @@ public class MethodGetInsertParams extends Method {
 				//colPk.getRelation().getDestTable().getCamelCaseName()
 				addInstr(params.callMethodInstruction("append",parent.getAttrByName(PgCppUtil.getOneRelationDestAttrName(col.getOneRelation())).callMethod("get"+col.getOneRelationMappedColumn().getUc1stCamelCaseName()) )); 
 			}else{
-				Attr colAttr = parent.getAttrByName(col.getCamelCaseName());
+				Expression colAttr = parent.getAttrByName(col.getCamelCaseName());
+				if(colAttr.getType().equals(Types.QString))
+					colAttr = new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), QString.fromStringConstant(""), colAttr);
 				addInstr(params.callMethodInstruction("append",col.isNullable() ? new InlineIfExpression(colAttr.callMethod("isNull"), new CreateObjectExpression(Types.QVariant), colAttr.callMethod("val"))   : colAttr));	
 			}
 	}

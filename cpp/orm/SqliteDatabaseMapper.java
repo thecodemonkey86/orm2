@@ -16,7 +16,7 @@ import database.column.Column;
 public class SqliteDatabaseMapper extends DatabaseTypeMapper {
 	@Override
 	public Method getQVariantConvertMethod(String dbType) {
-		switch (dbType) {
+		switch (dbType.toUpperCase()) {
 		case "INT":
 		case "INTEGER":
 		case "MEDIUMINT":
@@ -67,7 +67,7 @@ public class SqliteDatabaseMapper extends DatabaseTypeMapper {
 		 */
 
 		if (!nullable) {
-			switch (dbType) {
+			switch (dbType.toUpperCase()) {
 			case "INT":
 			case "INTEGER":
 			case "MEDIUMINT":
@@ -106,113 +106,59 @@ public class SqliteDatabaseMapper extends DatabaseTypeMapper {
 
 			}
 		} else {
-			switch (dbType) {
-			case "INT":
-			case "INTEGER":
-			case "MEDIUMINT":
-				return Types.nullable(Types.Int32);
-			case "TINYINT":
-				return Types.nullable(Types.Int8);
-			case "SMALLINT":
-				return Types.nullable(Types.Int16);
-
-			case "BIGINT":
-				return Types.nullable(Types.Int64);
-			case "CHARACTER":
-			 case "VARCHAR":
-			 case "VARYING CHARACTER":
-			 case "NCHAR":
-			 case "NATIVE CHARACTER":
-			 case "NVARCHAR":
-			 case "TEXT":
-				 return Types.nullable(Types.QString);
-			 case "DATETIME":
-			 case "TIMESTAMP":
-				return Types.nullable(Types.QDateTime);
-			 case "NUMERIC":
-			 case "DECIMAL":
-			 case "REAL":
-			 case "DOUBLE":
-			 case "DOUBLE PRECISION":
-			 case "FLOAT":
-				return Types.nullable(Types.Double);
-			 case "BLOB":
-				 return Types.nullable(Types.QByteArray);
-			 case "BOOLEAN":
-					return Types.nullable(Types.Bool);
-			default:
-				return Types.nullable(Types.QVariant);
-
-			}
+			return Types.nullable(getTypeFromDbDataType(dbType, false));
 		}
 
+	}
+	
+	private Expression getColumnDefaultValueExpressionImpl(String dbType, boolean nullable) {
+		if (!nullable) {
+			switch (dbType.toUpperCase()) {
+				case "INT":
+				case "INTEGER":
+				case "MEDIUMINT":
+					return new IntExpression(0);
+				case "BIGINT":
+					return new LongLongExpression(0L);
+				case "SMALLINT":
+					return new ShortExpression((short)0);
+				case "CHARACTER":
+				case "VARCHAR":
+				case "VARYING CHARACTER":
+				case "NCHAR":
+				case "NATIVE CHARACTER":
+				case "NVARCHAR":
+				case "TEXT":
+					return QString.fromStringConstant("");
+				case "DATE":
+					return new CreateObjectExpression(Types.QDate) ;
+				case "DATETIME":
+				case "TIMESTAMP":
+					return new CreateObjectExpression(Types.QDateTime) ;
+				case "NUMERIC":
+				case "DECIMAL":
+				 case "REAL":
+				 case "DOUBLE":
+				 case "DOUBLE PRECISION":
+				 case "FLOAT":
+					 return new DoubleExpression(0.0);
+				case "BLOB":
+					return new CreateObjectExpression(Types.QByteArray) ;	
+				case "BOOLEAN":
+					return BoolExpression.FALSE;
+				default:
+					throw new RuntimeException("type" + dbType + " not implemented");
+				}
+		} else {
+			Expression e = getColumnDefaultValueExpressionImpl(dbType, false);
+			return new CreateObjectExpression(Types.nullable(e.getType()));
+		}
 	}
 
 	@Override
 	public Expression getColumnDefaultValueExpression(Column col) {
-		/*case "integer":
-					return new IntExpression(0);
-				case "bigint":
-					return new LongLongExpression(0L);
-				case "smallint":
-					return new ShortExpression((short)0);
-				case "character varying":
-				case "character":	
-				case "text":
-					return QString.fromStringConstant("");
-				case "date":
-					return new CreateObjectExpression(Types.QDate) ;
-				case "double precision":
-				case "numeric":
-					return new DoubleExpression(0.0);
-				case "bytea":
-					return new CreateObjectExpression(Types.QByteArray) ;	
-				case "boolean":
-					return BoolExpression.FALSE;
-				case "timestamp with time zone":
-					return new CreateObjectExpression(Types.QDateTime) ;
-				case "time with time zone":
-					return new CreateObjectExpression(Types.QTime) ;
-				default:
-					return new CreateObjectExpression(Types.QVariant) ;*/
-		
 		String dbType = col.getDbType();
-		switch (dbType) {
-		case "INT":
-		case "INTEGER":
-		case "MEDIUMINT":
-			return new IntExpression(0);
-		case "BIGINT":
-			return new LongLongExpression(0L);
-		case "SMALLINT":
-			return new ShortExpression((short)0);
-		case "CHARACTER":
-		case "VARCHAR":
-		case "VARYING CHARACTER":
-		case "NCHAR":
-		case "NATIVE CHARACTER":
-		case "NVARCHAR":
-		case "TEXT":
-			return QString.fromStringConstant("");
-		case "DATE":
-			return new CreateObjectExpression(Types.QDate) ;
-		case "DATETIME":
-		case "TIMESTAMP":
-			return new CreateObjectExpression(Types.QDateTime) ;
-		case "NUMERIC":
-		case "DECIMAL":
-		 case "REAL":
-		 case "DOUBLE":
-		 case "DOUBLE PRECISION":
-		 case "FLOAT":
-			 return new DoubleExpression(0.0);
-		case "BLOB":
-			return new CreateObjectExpression(Types.QByteArray) ;	
-		case "BOOLEAN":
-			return BoolExpression.FALSE;
-		default:
-			throw new RuntimeException("type" + dbType + " not implemented");
-		}
+		return getColumnDefaultValueExpressionImpl(dbType, col.isNullable());
 	}
 
 	@Override
