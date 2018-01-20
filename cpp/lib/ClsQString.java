@@ -6,7 +6,8 @@ import cpp.core.QStringPlusEqOperator;
 public class ClsQString extends Cls {
 
 	public static final String arg = "arg";
-
+	public static final String isNull = "isNull";
+	
 	public ClsQString() {
 		super("QString");
 		addOperator(new QStringPlusEqOperator());
@@ -14,6 +15,7 @@ public class ClsQString extends Cls {
 		addMethod(new LibMethod(this, "reserve"));
 		addMethod(new LibMethod(this, "mid"));
 		addMethod(new LibMethod(this, "isEmpty"));
+		addMethod(new LibMethod(this, isNull));
 	}
 
 }
