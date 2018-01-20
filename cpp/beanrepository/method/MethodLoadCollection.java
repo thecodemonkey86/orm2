@@ -7,6 +7,7 @@ import codegen.CodeUtil;
 import util.CodeUtil2;
 import util.pg.PgCppUtil;
 import cpp.Types;
+import cpp.CoreTypes;
 import cpp.bean.BeanCls;
 import cpp.bean.Beans;
 import cpp.bean.method.MethodAttrSetterInternal;
@@ -120,7 +121,7 @@ public class MethodLoadCollection extends Method{
 		
 		
 		
-		Var params= _declare(Types.QVariantList, "params");
+		Var params= _declare(CoreTypes.QVariantList, "params");
 		_callMethodInstr(params, "reserve", collection.callMethod("size"));
 		Var varForeachBean = new Var(bean.toSharedPtr().toConstRef(), "bean");
 		ForeachLoop foreach= _foreach(varForeachBean, collection.deref());

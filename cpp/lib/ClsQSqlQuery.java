@@ -1,6 +1,6 @@
 package cpp.lib;
 
-import cpp.Types;
+import cpp.CoreTypes;
 import cpp.core.Cls;
 import cpp.core.RawPtr;
 import cpp.core.UniquePtr;
@@ -10,7 +10,7 @@ public class ClsQSqlQuery extends Cls{
 	public ClsQSqlQuery() {
 		super("QSqlQuery");
 		addMethod(new LibMethod(new ClsQSqlRecord(), "record") );
-		addMethod(new LibMethod(Types.Bool, "next") );
+		addMethod(new LibMethod(CoreTypes.Bool, "next") );
 	}
 	
 	public static RawPtr rawPtr() {

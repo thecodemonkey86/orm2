@@ -1,13 +1,13 @@
 package cpp.core;
 
-import cpp.Types;
+import cpp.CoreTypes;
 import cpp.lib.LibOperator;
 
 public class QStringPlusEqOperator extends LibOperator {
 
 	
 	public QStringPlusEqOperator() {
-		super("+=",Types.QString,false);
+		super("+=",CoreTypes.QString,false);
 	}
 
 

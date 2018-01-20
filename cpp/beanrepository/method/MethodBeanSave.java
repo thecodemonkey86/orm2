@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cpp.Types;
+import cpp.CoreTypes;
 import cpp.bean.BeanCls;
 import cpp.core.Method;
 import cpp.core.Param;
@@ -88,7 +89,7 @@ public class MethodBeanSave extends Method {
 				sql += " in (%1)";
 				Var varDeleteSql = ifRemoveBeans.thenBlock()._declare(Types.QString, "deleteSql",QString.fromStringConstant(sql));
 				Type foreachRemoveElementType = ((ClsQVector) attrManyToManyRemoved.getType()).getElementType();
-				Var varParamsForeachRemove = ifRemoveBeans.thenBlock()._declare( Types.QVariantList, "params");
+				Var varParamsForeachRemove = ifRemoveBeans.thenBlock()._declare( CoreTypes.QVariantList, "params");
 				Var varPlaceholdersForeachRemove = ifRemoveBeans.thenBlock()._declare( Types.QString, "placeholders");
 				
 				Expression exprReservePlaceholders = attrManyToManyRemoved.callMethod("size"); // n ?s + (n-1) commas, minus one see below
@@ -149,7 +150,7 @@ public class MethodBeanSave extends Method {
 								;
 					Var varAddSql = ifAddBeans.thenBlock()._declare(Types.QString, "addedSql",QString.fromStringConstant(sqlAdded));
 					Type foreachAddElementType = ((ClsQVector) attrManyToManyAdded.getType()).getElementType();
-					Var varParamsForeachAdd = ifAddBeans.thenBlock()._declare( Types.QVariantList, "params");
+					Var varParamsForeachAdd = ifAddBeans.thenBlock()._declare( CoreTypes.QVariantList, "params");
 					Var varPlaceholdersForeachAdd = ifAddBeans.thenBlock()._declare( Types.QString, "placeholders");
 					ifAddBeans.thenBlock()._callMethodInstr(varPlaceholdersForeachAdd, "reserve", attrManyToManyAdded.callMethod("size").binOp("*", new IntExpression(2)));
 					ifAddBeans.thenBlock()._callMethodInstr(varParamsForeachAdd, "reserve", attrManyToManyAdded.callMethod("size"));

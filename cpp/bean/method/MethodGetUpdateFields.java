@@ -3,6 +3,7 @@ package cpp.bean.method;
 import java.util.List;
 
 import cpp.Types;
+import cpp.CoreTypes;
 import cpp.bean.BeanCls;
 import cpp.bean.Nullable;
 import cpp.core.Method;
@@ -22,7 +23,7 @@ public class MethodGetUpdateFields extends Method{
 	protected PrimaryKey pk;
 	public MethodGetUpdateFields(List<Column> cols,PrimaryKey pk) {
 		super(Public, Types.QStringList, "getUpdateFields");
-		addParam(new Param(Types.QVariantList.toRawPointer(), "params"));
+		addParam(new Param(CoreTypes.QVariantList.toRawPointer(), "params"));
 		this.cols = cols;
 		this.pk = pk;
 	}
@@ -53,7 +54,7 @@ public class MethodGetUpdateFields extends Method{
 					.setIfInstr(
 							fields.callMethodInstruction("append", QString.fromStringConstant(col.getEscapedName()+"=?"))
 							,
-							paramByName("params").callMethodInstruction("append", col.isNullable() ? new InlineIfExpression(colAttr.callMethod("isNull"), new CreateObjectExpression(Types.QVariant), colAttr.callMethod("val"))   : colAttr)
+							paramByName("params").callMethodInstruction("append", col.isNullable() ? new InlineIfExpression(colAttr.callMethod("isNull"), new CreateObjectExpression(CoreTypes.QVariant), colAttr.callMethod("val"))   : colAttr)
 							
 							);
 				}

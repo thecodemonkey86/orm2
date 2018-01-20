@@ -1,12 +1,12 @@
 package cpp.lib;
 
-import cpp.Types;
+import cpp.CoreTypes;
 import cpp.core.NonMemberMethod;
 
 public class MethodDefaultQHash extends NonMemberMethod {
 
 	public MethodDefaultQHash() {
-		super(Types.Uint, "qHash");
+		super(CoreTypes.Uint, "qHash");
 	}
 
 	@Override

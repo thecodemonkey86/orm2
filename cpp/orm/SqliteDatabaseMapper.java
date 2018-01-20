@@ -1,6 +1,7 @@
 package cpp.orm;
 
 import cpp.Types;
+import cpp.CoreTypes;
 import cpp.core.Method;
 import cpp.core.QString;
 import cpp.core.Type;
@@ -20,11 +21,11 @@ public class SqliteDatabaseMapper extends DatabaseTypeMapper {
 		case "INT":
 		case "INTEGER":
 		case "MEDIUMINT":
-			return Types.QVariant.getTemplateMethod("value", Types.Int32);
+			return CoreTypes.QVariant.getTemplateMethod("value", Types.Int32);
 		case "BIGINT":
-			return Types.QVariant.getTemplateMethod("value", Types.Int64);
+			return CoreTypes.QVariant.getTemplateMethod("value", Types.Int64);
 		case "SMALLINT":
-			return Types.QVariant.getTemplateMethod("value", Types.Int16);
+			return CoreTypes.QVariant.getTemplateMethod("value", Types.Int16);
 		case "CHARACTER":
 		case "VARCHAR":
 		case "VARYING CHARACTER":
@@ -32,23 +33,23 @@ public class SqliteDatabaseMapper extends DatabaseTypeMapper {
 		case "NATIVE CHARACTER":
 		case "NVARCHAR":
 		case "TEXT":
-			return Types.QVariant.getMethod("toString");
+			return CoreTypes.QVariant.getMethod("toString");
 		case "DATE":
-			return Types.QVariant.getMethod("toDate");
+			return CoreTypes.QVariant.getMethod("toDate");
 		case "DATETIME":
 		case "TIMESTAMP":
-			return Types.QVariant.getMethod("toDateTime");
+			return CoreTypes.QVariant.getMethod("toDateTime");
 		case "NUMERIC":
 		case "DECIMAL":
 		 case "REAL":
 		 case "DOUBLE":
 		 case "DOUBLE PRECISION":
 		 case "FLOAT":
-			return Types.QVariant.getMethod("toDouble");
+			return CoreTypes.QVariant.getMethod("toDouble");
 		case "BLOB":
-			return Types.QVariant.getMethod("toByteArray");
+			return CoreTypes.QVariant.getMethod("toByteArray");
 		case "BOOLEAN":
-			return Types.QVariant.getMethod("toBool");
+			return CoreTypes.QVariant.getMethod("toBool");
 		default:
 			throw new RuntimeException("type" + dbType + " not implemented");
 		}
@@ -102,7 +103,7 @@ public class SqliteDatabaseMapper extends DatabaseTypeMapper {
 			 case "BOOLEAN":
 				return Types.Bool;
 			default:
-				return Types.QVariant;
+				return CoreTypes.QVariant;
 
 			}
 		} else {
@@ -141,7 +142,7 @@ public class SqliteDatabaseMapper extends DatabaseTypeMapper {
 			 case "BOOLEAN":
 					return Types.nullable(Types.Bool);
 			default:
-				return Types.nullable(Types.QVariant);
+				return Types.nullable(CoreTypes.QVariant);
 
 			}
 		}
@@ -174,7 +175,7 @@ public class SqliteDatabaseMapper extends DatabaseTypeMapper {
 				case "time with time zone":
 					return new CreateObjectExpression(Types.QTime) ;
 				default:
-					return new CreateObjectExpression(Types.QVariant) ;*/
+					return new CreateObjectExpression(CoreTypes.QVariant) ;*/
 		
 		String dbType = col.getDbType();
 		switch (dbType) {

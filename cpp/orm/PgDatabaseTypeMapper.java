@@ -2,6 +2,7 @@ package cpp.orm;
 
 import util.pg.PgCppUtil;
 import cpp.Types;
+import cpp.CoreTypes;
 import cpp.core.Method;
 import cpp.core.QString;
 import cpp.core.Type;
@@ -48,7 +49,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 			case "time with time zone":
 				return Types.QTime;
 			default:
-				return Types.QVariant;
+				return CoreTypes.QVariant;
 			}
 		} else {
 			switch(dbType) {
@@ -74,7 +75,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 			case "bytea":
 				return Types.nullable(Types.QByteArray);	
 			default:
-				return Types.nullable(Types.QVariant);
+				return Types.nullable(CoreTypes.QVariant);
 			}
 		}
 	}
@@ -109,7 +110,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 				case "time with time zone":
 					return new CreateObjectExpression(Types.QTime) ;
 				default:
-					return new CreateObjectExpression(Types.QVariant) ;
+					return new CreateObjectExpression(CoreTypes.QVariant) ;
 				}
 			} else {
 				switch(dbType) {
@@ -136,7 +137,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 				case "bytea":
 					return new CreateObjectExpression(Types.nullable(Types.QByteArray)) ;		
 				default:
-					return new CreateObjectExpression(Types.nullable(Types.QVariant)) ;
+					return new CreateObjectExpression(Types.nullable(CoreTypes.QVariant)) ;
 				}
 			}
 	}

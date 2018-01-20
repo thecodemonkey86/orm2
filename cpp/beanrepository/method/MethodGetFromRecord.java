@@ -3,6 +3,7 @@ package cpp.beanrepository.method;
 import java.util.List;
 
 import cpp.Types;
+import cpp.CoreTypes;
 import cpp.bean.BeanCls;
 import cpp.core.Method;
 import cpp.core.Param;
@@ -61,7 +62,7 @@ public class MethodGetFromRecord extends Method {
 				
 				if (!col.hasOneRelation()) {
 					if (col.isNullable()) {
-						Var val = _declare(Types.QVariant, "_val"+col.getUc1stCamelCaseName(),getParam("record").callMethod("value", new QStringPlusOperatorExpression(getParam("alias"), QString.fromStringConstant("__"+ col.getName()))));
+						Var val = _declare(CoreTypes.QVariant, "_val"+col.getUc1stCamelCaseName(),getParam("record").callMethod("value", new QStringPlusOperatorExpression(getParam("alias"), QString.fromStringConstant("__"+ col.getName()))));
 						IfBlock ifIsNull = _if(val.callMethod(ClsQVariant.isNull));
 						ifIsNull.thenBlock().addInstr(vBean.callMethodInstruction("set"+col.getUc1stCamelCaseName()+"NullInternal"));
 						ifIsNull.elseBlock().addInstr(vBean.callMethodInstruction("set"+col.getUc1stCamelCaseName()+"Internal",getParam("record").callMethod("value", new QStringPlusOperatorExpression(getParam("alias"), QString.fromStringConstant("__"+ col.getName()))).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(col.getDbType()))));

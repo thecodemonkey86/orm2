@@ -1,6 +1,6 @@
 package util.pg;
 
-import cpp.Types;
+import cpp.CoreTypes;
 import cpp.bean.BeanCls;
 import cpp.core.Attr;
 import cpp.core.ConstRef;
@@ -20,32 +20,32 @@ public class PgCppUtil {
 	public static Method pgToQVariantConvertMethod(String pgType) {
 		switch(pgType) {
 		case "integer":
-			return Types.QVariant.getMethod("toInt");
+			return CoreTypes.QVariant.getMethod("toInt");
 		case "bigint":
 		case "xid":
 		case "oid":
-			return Types.QVariant.getMethod("toLongLong");
+			return CoreTypes.QVariant.getMethod("toLongLong");
 		case "smallint":
-			return Types.QVariant.getMethod("toInt");
+			return CoreTypes.QVariant.getMethod("toInt");
 		case "character varying":
 		case "character":	
 		case "text":
 		case "name":
-			return Types.QVariant.getMethod("toString");
+			return CoreTypes.QVariant.getMethod("toString");
 		case "date":
-			return Types.QVariant.getMethod("toDate");
+			return CoreTypes.QVariant.getMethod("toDate");
 		case "timestamp with time zone":
-			return Types.QVariant.getMethod("toDateTime");
+			return CoreTypes.QVariant.getMethod("toDateTime");
 		case "time with time zone":
-			return Types.QVariant.getMethod("toTime");
+			return CoreTypes.QVariant.getMethod("toTime");
 		case "double precision":
 		case "numeric":
-			return Types.QVariant.getMethod("toDouble");
+			return CoreTypes.QVariant.getMethod("toDouble");
 		case "bytea":
 		case "ARRAY":
-			return Types.QVariant.getMethod("toByteArray");
+			return CoreTypes.QVariant.getMethod("toByteArray");
 		case "boolean":
-			return Types.QVariant.getMethod("toBool");
+			return CoreTypes.QVariant.getMethod("toBool");
 		default:
 			throw new RuntimeException("type " + pgType+" not implemented");
 		}

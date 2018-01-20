@@ -1,6 +1,6 @@
 package cpp.lib;
 
-import cpp.Types;
+import cpp.CoreTypes;
 import cpp.core.Cls;
 import cpp.core.TplSymbol;
 import cpp.core.Type;
@@ -13,17 +13,17 @@ public class ClsQVariant extends Cls{
 
 	public ClsQVariant() {
 		super("QVariant");
-		addMethod(new LibMethod(Types.QString, "toString"));
-		addMethod(new LibMethod(Types.QDate, "toDate"));
-		addMethod(new LibMethod(Types.QDate, "toTime"));
-		addMethod(new LibMethod(Types.QDateTime, "toDateTime"));
-		addMethod(new LibMethod(Types.Double, "toDouble"));
-		addMethod(new LibMethod(Types.QByteArray, "toByteArray"));
-		addMethod(new LibMethod(Types.Bool, "toBool"));
-		addMethod(new LibMethod(Types.Int, "toInt"));
-		addMethod(new LibMethod(Types.Short, "toShort"));
-		addMethod(new LibMethod(Types.Bool, isNull));
-		addMethod(new LibMethod(Types.LongLong, "toLongLong"));
+		addMethod(new LibMethod(CoreTypes.QString, "toString"));
+		addMethod(new LibMethod(CoreTypes.QDate, "toDate"));
+		addMethod(new LibMethod(CoreTypes.QDate, "toTime"));
+		addMethod(new LibMethod(CoreTypes.QDateTime, "toDateTime"));
+		addMethod(new LibMethod(CoreTypes.Double, "toDouble"));
+		addMethod(new LibMethod(CoreTypes.QByteArray, "toByteArray"));
+		addMethod(new LibMethod(CoreTypes.Bool, "toBool"));
+		addMethod(new LibMethod(CoreTypes.Int, "toInt"));
+		addMethod(new LibMethod(CoreTypes.Short, "toShort"));
+		addMethod(new LibMethod(CoreTypes.Bool, isNull));
+		addMethod(new LibMethod(CoreTypes.LongLong, "toLongLong"));
 		addMethodTemplate(new LibMethodTemplate(new TplSymbol("T"), value) {
 
 			@Override

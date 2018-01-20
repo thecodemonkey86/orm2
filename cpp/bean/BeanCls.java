@@ -6,6 +6,7 @@ import java.util.List;
 import util.CodeUtil2;
 import util.StringUtil;
 import cpp.Types;
+import cpp.CoreTypes;
 import cpp.bean.method.BeanConstructor;
 import cpp.bean.method.BeanDestructor;
 import cpp.bean.method.MethodAddManyToManyRelatedBean;
@@ -298,7 +299,7 @@ public class BeanCls extends Cls {
 	//	addPreprocessorInstruction("#define " + getName()+ " "+CodeUtil2.uc1stCamelCase(tbl.getName()));
 		addIncludeHeader("basebean");
 		addIncludeLib(Types.QString);
-		addIncludeLib(Types.QVariant);
+		addIncludeLib(CoreTypes.QVariant);
 		addIncludeLib(Types.QDate);
 		addIncludeLib("memory");
 		addIncludeHeader("nullable");

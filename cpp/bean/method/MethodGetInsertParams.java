@@ -3,7 +3,7 @@ package cpp.bean.method;
 import java.util.List;
 
 import util.pg.PgCppUtil;
-import cpp.Types;
+import cpp.CoreTypes;
 import cpp.bean.BeanCls;
 import cpp.core.Attr;
 import cpp.core.Method;
@@ -17,21 +17,21 @@ public class MethodGetInsertParams extends Method {
 	protected List<Column> cols;
 	
 	public MethodGetInsertParams(List<Column> cols) {
-		super(Method.Public,Types.QVariantList, "getInsertParams");
+		super(Method.Public,CoreTypes.QVariantList, "getInsertParams");
 		this.cols = cols;
 	}
 
 	@Override
 	public void addImplementation() {
 		BeanCls parent = (BeanCls) this.parent;
-		Var params = _declare(Types.QVariantList, "params");
+		Var params = _declare(CoreTypes.QVariantList, "params");
 		/*for(Column col: cols) {
 			if (!col.hasOneRelation()) {
 				Attr colAttr = parent.getAttrByName(col.getCamelCaseName());
-				_callMethodInstr(params,Types.QVariantList.getMethod("append"),
+				_callMethodInstr(params,CoreTypes.QVariantList.getMethod("append"),
 						col.isNullable() 
 						? _inlineIf(colAttr.callMethod("isNull"), 
-							new CreateObjectExpression(Types.QVariant), 
+							new CreateObjectExpression(CoreTypes.QVariant), 
 							colAttr.callMethod("val"))
 						: colAttr);
 									
@@ -44,9 +44,9 @@ public class MethodGetInsertParams extends Method {
 					Expression  e= col.hasOneRelation() 
 					? colAttr.callMethod("get"+ col.getRelation().getDestTable().getUc1stCamelCaseName()).callMethod("get"+col.getOneRelationMappedColumn().getUc1stCamelCaseName())  
 							:  colAttr.callMethod("get"+ col.getUc1stCamelCaseName());
-					_callMethodInstr(params,Types.QVariantList.getMethod("append"),e);
+					_callMethodInstr(params,CoreTypes.QVariantList.getMethod("append"),e);
 //					for(Column pkCol:pkForeign.getColumns()) {
-//						_callMethodInstr(params,Types.QVariantList.getMethod("append"),colAttr.callMethod("get"+pkCol.getUc1stCamelCaseName()));	
+//						_callMethodInstr(params,CoreTypes.QVariantList.getMethod("append"),colAttr.callMethod("get"+pkCol.getUc1stCamelCaseName()));	
 //					}
 //				}
 				
@@ -66,7 +66,7 @@ public class MethodGetInsertParams extends Method {
 				addInstr(params.callMethodInstruction("append",parent.getAttrByName(PgCppUtil.getOneRelationDestAttrName(col.getOneRelation())).callMethod("get"+col.getOneRelationMappedColumn().getUc1stCamelCaseName()) )); 
 			}else{
 				Attr colAttr = parent.getAttrByName(col.getCamelCaseName());
-				addInstr(params.callMethodInstruction("append",col.isNullable() ? new InlineIfExpression(colAttr.callMethod("isNull"), new CreateObjectExpression(Types.QVariant), colAttr.callMethod("val"))   : colAttr));	
+				addInstr(params.callMethodInstruction("append",col.isNullable() ? new InlineIfExpression(colAttr.callMethod("isNull"), new CreateObjectExpression(CoreTypes.QVariant), colAttr.callMethod("val"))   : colAttr));	
 			}
 	}
 		_return(params);

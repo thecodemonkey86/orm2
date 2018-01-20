@@ -1,6 +1,7 @@
 package cpp.orm;
 
 import cpp.Types;
+import cpp.CoreTypes;
 import cpp.core.Method;
 import cpp.core.QString;
 import cpp.core.Type;
@@ -19,25 +20,25 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 	public Method getQVariantConvertMethod(String dbType) {
 		switch(dbType) {
 		case "8":
-			return Types.QVariant.getMethod("toInt");
+			return CoreTypes.QVariant.getMethod("toInt");
 		case "16":
-			return Types.QVariant.getMethod("toLongLong");
+			return CoreTypes.QVariant.getMethod("toLongLong");
 		case "7":
-			return Types.QVariant.getMethod("toInt");
+			return CoreTypes.QVariant.getMethod("toInt");
 		case "14":	
 		case "37":
-			return Types.QVariant.getMethod("toString");
+			return CoreTypes.QVariant.getMethod("toString");
 		case "12":
-			return Types.QVariant.getMethod("toDate");
+			return CoreTypes.QVariant.getMethod("toDate");
 		case "35":
-			return Types.QVariant.getMethod("toDateTime");
+			return CoreTypes.QVariant.getMethod("toDateTime");
 		case "13":
-			return Types.QVariant.getMethod("toTime");
+			return CoreTypes.QVariant.getMethod("toTime");
 		case "10":
 		case "27":
-			return Types.QVariant.getMethod("toDouble");
+			return CoreTypes.QVariant.getMethod("toDouble");
 		case "261":
-			return Types.QVariant.getMethod("toByteArray");
+			return CoreTypes.QVariant.getMethod("toByteArray");
 		default:
 			throw new RuntimeException("type " + dbType+" not implemented");
 		}
@@ -82,7 +83,7 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 				case "13":
 					return Types.QTime;
 				default:
-					return Types.QVariant;
+					return CoreTypes.QVariant;
 				}
 			} else {
 				switch(dbType) {
@@ -107,7 +108,7 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 				case "261":
 					return Types.nullable(Types.QByteArray);	
 				default:
-					return Types.nullable(Types.QVariant);
+					return Types.nullable(CoreTypes.QVariant);
 				}
 			}
 	}
@@ -152,7 +153,7 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 				case "13":
 					return new CreateObjectExpression(Types.QTime) ;
 				default:
-					return new CreateObjectExpression(Types.QVariant) ;
+					return new CreateObjectExpression(CoreTypes.QVariant) ;
 				}
 			} else {
 				switch(dbType) {
@@ -178,7 +179,7 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 				case "261":
 					return new CreateObjectExpression(Types.nullable(Types.QByteArray)) ;		
 				default:
-					return new CreateObjectExpression(Types.nullable(Types.QVariant)) ;
+					return new CreateObjectExpression(Types.nullable(CoreTypes.QVariant)) ;
 				}
 			}
 	}

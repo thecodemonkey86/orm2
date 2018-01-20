@@ -1,7 +1,7 @@
 package cpp.bean.method;
 
 import util.pg.PgCppUtil;
-import cpp.Types;
+import cpp.CoreTypes;
 import cpp.core.Method;
 import cpp.core.expression.Var;
 import cpp.core.instruction.IfBlock;
@@ -13,13 +13,13 @@ public class MethodGetUpdateConditionParams extends Method {
 	protected PrimaryKey pk;
 	
 	public MethodGetUpdateConditionParams(PrimaryKey pk) {
-		super(Public, Types.QVariantList, "getUpdateConditionParams");
+		super(Public, CoreTypes.QVariantList, "getUpdateConditionParams");
 		this.pk = pk;
 	}
 
 	@Override
 	public void addImplementation() {
-		Var params = _declare(Types.QVariantList, "params");
+		Var params = _declare(CoreTypes.QVariantList, "params");
 		IfBlock ifIdModified = _if(parent.getAttrByName("primaryKeyModified"));
 		
 		for(Column colPk:this.pk.getColumns()) {

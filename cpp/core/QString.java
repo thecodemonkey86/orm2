@@ -1,7 +1,7 @@
 package cpp.core;
 
 import codegen.CodeUtil;
-import cpp.Types;
+import cpp.CoreTypes;
 import cpp.core.expression.Expression;
 import cpp.core.expression.QChar;
 import cpp.core.expression.QStringPlusOperatorExpression;
@@ -23,12 +23,12 @@ public class QString extends Expression {
 	
 	@Override
 	public Type getType() {
-		return Types.QString;
+		return CoreTypes.QString;
 	}
 	
 	@Override
 	public String toString() {
-		return expression.getType() == Types.QString ? expression.toString() : "QString"+CodeUtil.parentheses(expression.toString());
+		return expression.getType() == CoreTypes.QString ? expression.toString() : "QString"+CodeUtil.parentheses(expression.toString());
 	}
 	
 	public Expression getExpression() {

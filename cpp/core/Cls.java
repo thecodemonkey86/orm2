@@ -463,4 +463,23 @@ public class Cls extends Type implements IAttributeContainer{
 		}
 		this.methodTemplates.add(tpl);
 	}
+	
+	public boolean hasAttr(String name) {
+		if (superclasses!=null) {
+			for (Cls superclass : superclasses) {
+				for(Attr a:superclass.attrs ) {
+					if (a.getName().equals(name)) {
+						return true;
+					}
+				}
+			}
+			
+		}
+		for(Attr a:attrs ) {
+			if (a.getName().equals(name)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

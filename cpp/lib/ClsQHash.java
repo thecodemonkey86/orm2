@@ -1,7 +1,7 @@
 package cpp.lib;
 
 import codegen.CodeUtil;
-import cpp.Types;
+import cpp.CoreTypes;
 import cpp.core.TplCls;
 import cpp.core.Type;
 import cpp.core.expression.IArrayAccessible;
@@ -15,8 +15,8 @@ public class ClsQHash extends TplCls implements IArrayAccessible {
 			throw new NullPointerException();
 		}
 		valType= val;
-		addMethod(new LibMethod(Types.Void, "insert"));
-		addMethod(new LibMethod(Types.Bool, "contains"));
+		addMethod(new LibMethod(CoreTypes.Void, "insert"));
+		addMethod(new LibMethod(CoreTypes.Bool, "contains"));
 	}
 	
 	@Override

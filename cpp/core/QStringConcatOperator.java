@@ -1,12 +1,12 @@
 package cpp.core;
 
-import cpp.Types;
+import cpp.CoreTypes;
 import cpp.lib.LibOperator;
 
 public class QStringConcatOperator extends LibOperator {
 
 	public QStringConcatOperator() {
-		super("+", Types.QString, false);
+		super("+", CoreTypes.QString, false);
 	}
 
 }

@@ -3,6 +3,7 @@ package cpp.orm;
 import cpp.Types;
 import cpp.core.Method;
 import cpp.core.Type;
+import cpp.CoreTypes;
 import cpp.core.expression.Expression;
 import database.column.Column;
 
@@ -11,26 +12,26 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 	public Method getQVariantConvertMethod(String pgType) {
 		switch(pgType) {
 		case "int":
-			return Types.QVariant.getTemplateMethod("value", Types.Int32);
+			return CoreTypes.QVariant.getTemplateMethod("value", Types.Int32);
 		case "bigint":
-			return Types.QVariant.getTemplateMethod("value", Types.Int64);
+			return CoreTypes.QVariant.getTemplateMethod("value", Types.Int64);
 		case "smallint":
-			return Types.QVariant.getMethod("toInt");
+			return CoreTypes.QVariant.getMethod("toInt");
 		case "varchar":
 		case "character":	
 		case "text":
-			return Types.QVariant.getMethod("toString");
+			return CoreTypes.QVariant.getMethod("toString");
 		case "date":
-			return Types.QVariant.getMethod("toDate");
+			return CoreTypes.QVariant.getMethod("toDate");
 		case "timestamp with time zone":
-			return Types.QVariant.getMethod("toDateTime");
+			return CoreTypes.QVariant.getMethod("toDateTime");
 		case "double precision":
 		case "decimal":
-			return Types.QVariant.getMethod("toDouble");
+			return CoreTypes.QVariant.getMethod("toDouble");
 		case "bytea":
-			return Types.QVariant.getMethod("toByteArray");
+			return CoreTypes.QVariant.getMethod("toByteArray");
 		case "boolean":
-			return Types.QVariant.getMethod("toBool");
+			return CoreTypes.QVariant.getMethod("toBool");
 		default:
 			throw new RuntimeException("type" + pgType+" not implemented");
 		}
@@ -61,7 +62,7 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 				case "timestamp with time zone":
 					return Types.QDateTime;
 				default:
-					return Types.QVariant;
+					return CoreTypes.QVariant;
 				}
 			} else {
 				switch(dbType) {
@@ -82,7 +83,7 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 				case "bytea":
 					return Types.nullable(Types.QByteArray);	
 				default:
-					return Types.nullable(Types.QVariant);
+					return Types.nullable(CoreTypes.QVariant);
 				}
 			}
 	}

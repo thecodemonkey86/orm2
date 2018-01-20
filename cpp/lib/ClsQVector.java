@@ -1,6 +1,6 @@
 package cpp.lib;
 
-import cpp.Types;
+import cpp.CoreTypes;
 import cpp.core.TplCls;
 import cpp.core.Type;
 
@@ -10,11 +10,11 @@ public class ClsQVector extends TplCls {
 	
 	public ClsQVector(Type element) {
 		super(CLSNAME, element);
-		addMethod(new LibMethod(Types.Void, "append"));
-		addMethod(new LibMethod(Types.Void, "remove"));
-		addMethod(new LibMethod(Types.Void, "removeOne"));
-		addMethod(new LibMethod(Types.Bool, "empty"));
-		addMethod(new LibMethod(Types.Int, "size"));
+		addMethod(new LibMethod(CoreTypes.Void, "append"));
+		addMethod(new LibMethod(CoreTypes.Void, "remove"));
+		addMethod(new LibMethod(CoreTypes.Void, "removeOne"));
+		addMethod(new LibMethod(CoreTypes.Bool, "empty"));
+		addMethod(new LibMethod(CoreTypes.Int, "size"));
 		addMethod(new LibMethod(element.toRef(), "at"));
 	}
 
