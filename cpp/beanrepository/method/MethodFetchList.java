@@ -151,7 +151,7 @@ public class MethodFetchList extends Method {
 					}
 				} else {
 					Column colPk=r.getDestTable().getPrimaryKey().getFirstColumn();
-					pkForeign = ifNotPkForeignIsNull.thenBlock()._declare(beanPk, "pkForeignB"+r.getAlias(),QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName()).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType())));
+					pkForeign = ifNotPkForeignIsNull.thenBlock()._declare(beanPk, "pkForeignB"+r.getAlias(),recDoWhile.callMethod("value",QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType())));
 				}
 				IfBlock ifRecValueIsNotNull = ifNotPkForeignIsNull.thenBlock()._if(
 						Expressions.not(fkHelper

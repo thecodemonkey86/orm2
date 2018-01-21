@@ -21,7 +21,7 @@ public class MethodAttrGetter extends Method{
 //				a.getType().isPrimitiveType() ? a.getType()	: a.getType().toRef()
 						, getMethodName(a));
 		this.a=a;
-//		setConstQualifier(true);
+		setConstQualifier(true);
 		this.loadIfNotLoaded= loadIfNotLoaded;
 //		if (loadIfNotLoaded) {
 //			addParam(new Param(Types.Bool , "noLoading", BoolExpression.FALSE));
