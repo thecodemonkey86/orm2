@@ -64,7 +64,9 @@ public abstract class Method extends InstructionBlock{
 		
 		StringBuilder sb=new StringBuilder();
 		
-		sb.append(CodeUtil.sp(visibility,(isStatic() ? "static" : null),"function" ,name,CodeUtil.parentheses(CodeUtil.commaSep(params)), (!getReturnType().equals(Types.Void)? ": "+retType():null)));
+		sb.append(CodeUtil.sp(visibility,(isStatic() ? "static" : null),"function" ,name,CodeUtil.parentheses(CodeUtil.commaSep(params))
+				//, (!getReturnType().equals(Types.Void)? ": "+retType():null)
+				));
 		
 		sb.append(" {\n");
 		for(Instruction i:instructions) {

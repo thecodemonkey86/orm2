@@ -28,15 +28,15 @@ public class PhpConfigReader extends ConfigReader{
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
 		super.startElement(uri, localName, qName, atts);
-		switch (this.tag) {
-		case "java":
-			((PhpOrmOutputConfig)cfg).setBeanPackageName(atts.getValue("beanPackageName"));
-			((PhpOrmOutputConfig)cfg).setRepositoryPackageName(atts.getValue("repositoryPhpPackage"));
-			break;
-		default:
-			break;
-			
-		}
+//		switch (this.tag) {
+//		case "php":
+//			((PhpOrmOutputConfig)cfg).setBeanPackageName(atts.getValue("namespace"));
+//			((PhpOrmOutputConfig)cfg).setRepositoryPackageName(atts.getValue("repositoryPhpPackage"));
+//			break;
+//		default:
+//			break;
+//			
+//		}
 	}
 	
 	protected void createConfig() {

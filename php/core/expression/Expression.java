@@ -7,6 +7,7 @@ import php.core.PhpArray;
 import php.core.PhpCls;
 import php.core.PhpFunctions;
 import php.core.Type;
+import php.core.Types;
 import php.core.instruction.AssignInstruction;
 import php.core.instruction.Instruction;
 import php.core.instruction.MethodCallInstruction;
@@ -155,7 +156,7 @@ public abstract class Expression {
 
 
 	public Expression _equals(Expression other) {
-		if (other.getType().isPrimitiveType()) {
+		if (other.getType().isPrimitiveType() || other.getType().equals(Types.String)) {
 			return equalsOp(other);
 		} else {
 			return callMethod("equals", other);
