@@ -138,7 +138,7 @@ public class PgDatabase extends Database {
 
 
 	@Override
-	public String sqlInsertMultiRow(AbstractTable tbl, List<String> columns, String placeholders) {
+	public String sqlInsertMultiRow(AbstractTable tbl,  String placeholders) {
 		// TODO Auto-generated method stub
 		return null;
 	}

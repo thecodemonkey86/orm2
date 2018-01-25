@@ -38,6 +38,7 @@ import cpp.bean.method.MethodOneRelationBeanIsNull;
 import cpp.bean.method.MethodQHashBean;
 import cpp.bean.method.MethodQHashBeanSharedPtr;
 import cpp.bean.method.MethodQHashPkStruct;
+import cpp.bean.method.MethodRemoveAllManyToManyRelatedBeans;
 import cpp.bean.method.MethodRemoveManyToManyRelatedBean;
 import cpp.bean.method.MethodSetAutoIncrementId;
 import cpp.bean.method.MethodUnload;
@@ -194,6 +195,7 @@ public class BeanCls extends Cls {
 			addMethod(new MethodAddManyToManyRelatedBeanInternal(r, new Param(attr.getElementType().toConstRef(), "bean")));
 			
 			addMethod(new MethodRemoveManyToManyRelatedBean(r, new Param(attr.getElementType().toConstRef(), "bean")));
+			addMethod(new MethodRemoveAllManyToManyRelatedBeans(r));
 		}
 		
 		

@@ -88,7 +88,7 @@ public class MySqlDatabase extends Database {
 	}
 
 	@Override
-	public String sqlInsertMultiRow(AbstractTable tbl, List<String> columns, String placeholders) {
+	public String sqlInsertMultiRow(AbstractTable tbl, String placeholders) {
 		ArrayList<String> columnsNamesEscaped = new ArrayList<>(); 
 		for(Column c:tbl.getAllColumns()) {
 			columnsNamesEscaped.add(c.getEscapedName());

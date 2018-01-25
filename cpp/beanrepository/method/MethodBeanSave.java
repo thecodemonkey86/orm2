@@ -66,13 +66,6 @@ public class MethodBeanSave extends Method {
 				if (r.getDestColumnCount()==0) {
 					throw new RuntimeException();
 				}
-				// removed
-				Expression attrManyToManyRemoved = pBean.callAttrGetter(OrmUtil.getManyRelationDestAttrName(r)+"Removed" );
-				IfBlock ifRemoveBeans = _if(Expressions.not(attrManyToManyRemoved
-						.callMethod("empty")
-						));
-				String sql="delete from "+r.getMappingTable().getEscapedName();
-				
 				ArrayList<String> columnsIn=new ArrayList<>();
 				ArrayList<String> mappingColumnsMatching=new ArrayList<>();
 				for(int i=0;i<r.getSourceColumnCount();i++) {
@@ -81,6 +74,15 @@ public class MethodBeanSave extends Method {
 				for(int i=0;i<r.getDestColumnCount();i++) {
 					columnsIn.add( r.getDestMappingColumn(i).getEscapedName() );
 				}
+				
+				// removed
+				Expression attrManyToManyRemoved = pBean.callAttrGetter(OrmUtil.getManyRelationDestAttrName(r)+"Removed" );
+				IfBlock ifRemoveBeans = _if(Expressions.not(attrManyToManyRemoved
+						.callMethod("empty")
+						));
+				String sql="delete from "+r.getMappingTable().getEscapedName();
+				
+				
 				
 				sql += " where " ;
 //				
@@ -146,7 +148,7 @@ public class MethodBeanSave extends Method {
 							
 							BeanCls.getDatabase().sqlInsertOrIgnoreMultiRow(r.getMappingTable(),"%1") :
 								
-								BeanCls.getDatabase().sqlInsert(r.getMappingTable());
+								BeanCls.getDatabase().sqlInsertMultiRow(r.getMappingTable(),"%1");
 								;
 					Var varAddSql = ifAddBeans.thenBlock()._declare(Types.QString, "addedSql",QString.fromStringConstant(sqlAdded));
 					Type foreachAddElementType = ((ClsQVector) attrManyToManyAdded.getType()).getElementType();

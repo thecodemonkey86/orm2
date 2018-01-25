@@ -43,7 +43,7 @@ public abstract class Database {
 		return getDefaultSqlInsert(tbl);
 	}
 	public abstract String sqlInsertOrIgnoreMultiRow(AbstractTable tbl,  String placeholders);
-	public abstract String sqlInsertMultiRow(AbstractTable tbl, List<String> columns, String placeholders);
+	public abstract String sqlInsertMultiRow(AbstractTable tbl, String placeholders);
 	public abstract String getBooleanExpressionTrue();
 
 	public abstract String getDefaultSchema() ;

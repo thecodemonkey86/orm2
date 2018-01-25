@@ -213,9 +213,13 @@ public class SqliteDatabase extends Database {
 	}
 
 	@Override
-	public String sqlInsertMultiRow(AbstractTable tbl, List<String> columns, String placeholders) {
-		// TODO Auto-generated method stub
-		return null;
+	public String sqlInsertMultiRow(AbstractTable tbl, String placeholders) {
+		ArrayList<String> columnsNamesEscaped = new ArrayList<>(); 
+		for(Column c:tbl.getAllColumns()) {
+			columnsNamesEscaped.add(c.getEscapedName());
+		}	
+		return "insert into " +getEscapedTableName(tbl) + " " + CodeUtil2.parentheses( CodeUtil2.concat(columnsNamesEscaped, ",")) + " values "+placeholders
+				;
 	}
 
 	@Override
