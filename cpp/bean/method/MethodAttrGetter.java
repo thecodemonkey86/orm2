@@ -5,7 +5,9 @@ import util.pg.PgCppUtil;
 import cpp.bean.BeanCls;
 import cpp.core.Attr;
 import cpp.core.Method;
+import cpp.core.expression.BoolExpression;
 import cpp.core.expression.Expressions;
+import cpp.core.instruction.IfBlock;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
@@ -21,7 +23,7 @@ public class MethodAttrGetter extends Method{
 //				a.getType().isPrimitiveType() ? a.getType()	: a.getType().toRef()
 						, getMethodName(a));
 		this.a=a;
-		setConstQualifier(true);
+		setConstQualifier(!loadIfNotLoaded);
 		this.loadIfNotLoaded= loadIfNotLoaded;
 //		if (loadIfNotLoaded) {
 //			addParam(new Param(Types.Bool , "noLoading", BoolExpression.FALSE));
@@ -31,13 +33,15 @@ public class MethodAttrGetter extends Method{
 	@Override
 	public void addImplementation() {
 		if ( loadIfNotLoaded) {
-			_if(Expressions.and(
+			IfBlock ifNotLoaded = _if(Expressions.and(
 					Expressions.not(parent.getAttrByName("loaded"))
 //					Expressions.not(paramByName("noLoading"))
 				)
 					
 					
-			).thenBlock()._callMethodInstr(_this().accessAttr(BeanCls.repository), "load", _this());
+			);
+			ifNotLoaded.thenBlock()._callMethodInstr(_this().accessAttr(BeanCls.repository), "load", _this());
+			ifNotLoaded.thenBlock()._assign(parent.getAttrByName("loaded"), BoolExpression.TRUE);
 		}
 		_return(a);
 		

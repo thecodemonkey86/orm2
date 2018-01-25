@@ -6,7 +6,9 @@ import cpp.beanrepository.method.MethodBeanLoad;
 import cpp.core.Attr;
 import cpp.core.Method;
 import cpp.core.TplCls;
+import cpp.core.expression.BoolExpression;
 import cpp.core.expression.Expressions;
+import cpp.core.instruction.IfBlock;
 import cpp.lib.ClsQVector;
 
 public class MethodManyAttrGetter extends Method{
@@ -25,7 +27,10 @@ public class MethodManyAttrGetter extends Method{
 		
 //		ClsOrderedSet orderedSet = Types.orderedSet(((TplCls)a.getType()).getElementType());
 //		_return(a.callMethod( orderedSet.getMethod("toList")));
-		_if(Expressions.not(parent.getAttrByName("loaded"))).thenBlock()._callMethodInstr(_this().accessAttr(BeanCls.repository), MethodBeanLoad.getMethodName(), _this());
+		IfBlock ifNotLoaded = _if(Expressions.not(parent.getAttrByName("loaded")));
+		
+		ifNotLoaded.thenBlock()._callMethodInstr(_this().accessAttr(BeanCls.repository), MethodBeanLoad.getMethodName(), _this());
+		ifNotLoaded.thenBlock()._assign(parent.getAttrByName("loaded"), BoolExpression.TRUE);
 		_return(a); 
 	}
 

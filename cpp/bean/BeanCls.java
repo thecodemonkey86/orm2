@@ -40,6 +40,7 @@ import cpp.bean.method.MethodQHashBeanSharedPtr;
 import cpp.bean.method.MethodQHashPkStruct;
 import cpp.bean.method.MethodRemoveManyToManyRelatedBean;
 import cpp.bean.method.MethodSetAutoIncrementId;
+import cpp.bean.method.MethodUnload;
 import cpp.core.Attr;
 import cpp.core.Cls;
 import cpp.core.Constructor;
@@ -334,6 +335,7 @@ public class BeanCls extends Cls {
 		//addMethod(new MethodBeanLoad(oneRelations, oneToManyRelations,manyRelations, tbl));
 		addMethod(new MethodGetPrimaryKeyColumns(tbl.getPrimaryKey()));
 		addMethod(new MethodGetLimitQueryString(tbl.getPrimaryKey()));
+		addMethod(new MethodUnload(oneRelations, oneToManyRelations, manyRelations));
 		//addMethod(new MethodLoad2Levels(oneRelations, oneToManyRelations,manyRelations, tbl));
 		
 //		if (manyRelations.size()>0) {

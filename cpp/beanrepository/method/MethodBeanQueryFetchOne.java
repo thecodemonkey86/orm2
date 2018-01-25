@@ -10,6 +10,8 @@ public class MethodBeanQueryFetchOne extends Method{
 	public MethodBeanQueryFetchOne(BeanCls bean) {
 		super(Public, bean.toSharedPtr(), "queryOne");
 		this.bean=bean;
+		setVirtualQualifier(true);
+		setOverrideQualifier(true);
 	}
 
 	@Override

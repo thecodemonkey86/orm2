@@ -3,7 +3,10 @@ package cpp.bean.method;
 import util.StringUtil;
 import util.pg.PgCppUtil;
 import cpp.bean.BeanCls;
+import cpp.bean.OneAttr;
+import cpp.core.expression.BoolExpression;
 import cpp.core.method.MethodAttributeSetter;
+import database.column.Column;
 import database.relation.OneRelation;
 
 
@@ -23,7 +26,7 @@ public class MethodOneRelationAttrSetter extends MethodAttributeSetter {
 		return "set"+StringUtil.ucfirst(PgCppUtil.getOneRelationDestAttrName(r)) +(internal ? "Internal":"");
 	}
 
-	/*@Override
+	@Override
 	public void addImplementation() {
 		super.addImplementation();
 		OneRelation r = ((OneAttr) attr).getRelation();
@@ -41,5 +44,5 @@ public class MethodOneRelationAttrSetter extends MethodAttributeSetter {
 				_return(_this());
 			}
 		}
-	}*/
+	}
 }

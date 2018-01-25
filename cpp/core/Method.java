@@ -17,6 +17,7 @@ public abstract class Method extends InstructionBlock{
 	protected boolean constQualifier;
 	protected boolean inlineQualifier;
 	protected boolean virtualQualifier;
+	protected boolean overrideQualifier;
 	
 	protected String visibility;
 	protected Type returnType;
@@ -42,6 +43,15 @@ public abstract class Method extends InstructionBlock{
 	public Method setConstQualifier(boolean constQualifier) {
 		this.constQualifier = constQualifier;
 		return this;
+	}
+	
+	public Method setOverrideQualifier(boolean overrideQualifier) {
+		this.overrideQualifier = overrideQualifier;
+		return this;
+	}
+	
+	public boolean isOverrideQualifier() {
+		return overrideQualifier;
 	}
 	
 	public Method setInlineQualifier(boolean inlineQualifier) {
@@ -92,7 +102,7 @@ public abstract class Method extends InstructionBlock{
 		for(Param p:this.params) {
 			params.add(p.toDeclarationString());
 		}
-		return CodeUtil.sp(getVisibility()+":",(inlineQualifier?"inline":null), (isStatic?"static":(virtualQualifier?"virtual":null)),retType() ,getName(),CodeUtil.parentheses(CodeUtil.commaSep(params)),(constQualifier?"const":null), ";");
+		return CodeUtil.sp(getVisibility()+":",(inlineQualifier?"inline":null), (isStatic?"static":(virtualQualifier?"virtual":null)),retType() ,getName(),CodeUtil.parentheses(CodeUtil.commaSep(params)),(constQualifier?"const":null), (overrideQualifier ? "override":null), ";");
 	}
 	
 	public void setReturnType(Type returnType) {

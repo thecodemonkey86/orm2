@@ -87,6 +87,8 @@ public class SqliteDatabaseMapper extends DatabaseTypeMapper {
 			 case "NVARCHAR":
 			 case "TEXT":
 				 return Types.QString;
+			 case "DATE":
+				 return Types.QDate;
 			 case "DATETIME":
 			 case "TIMESTAMP":
 				return Types.QDateTime;

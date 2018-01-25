@@ -149,10 +149,21 @@ public class SqliteDatabase extends Database {
 					} while(l.get(index).equals(","));
 					expectToken(l, index++, ")");
 					
+					
+					if(isTokenAt(l, index, "ON")) {
+						index++;
+						expectToken(l, index++, "DELETE", "UPDATE");
+						expectToken(l, index++, "CASCADE", "RESTRICT");
+						expectToken(l, index++, "ON");
+						expectToken(l, index++, "DELETE", "UPDATE");
+						expectToken(l, index++, "CASCADE", "RESTRICT");
+					}
+					
 					if(isTokenAt(l, index, ")")) {
 						break;
 					} else {
 						expectToken(l, index++, ",");
+						
 					}
 				} else if(isTokenAt(l, index, "PRIMARY")) {
 					index++;
@@ -244,7 +255,7 @@ public class SqliteDatabase extends Database {
 			throw new IllegalArgumentException();
 		}
 		for(String e:expect) {
-			if(l.get(index).equals(e)) {
+			if(l.get(index).toUpperCase().equals(e.toUpperCase())) {
 				return;
 			}
 		}
@@ -256,7 +267,7 @@ public class SqliteDatabase extends Database {
 	
 	private static boolean isTokenAt(List<String> l, int index, String...expect) {
 		for(String e:expect) {
-			if(l.get(index).equals(e)) {
+			if(l.get(index).toUpperCase().equals(e.toUpperCase())) {
 				return true;
 			}
 		}

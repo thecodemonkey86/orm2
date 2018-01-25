@@ -79,7 +79,7 @@ protected Expression getExpressionQuery() {
 		Var fkHelper = null;
 		if (!manyRelations.isEmpty()) {
 			fkHelper = ifInstr._declare(bean.getFetchListHelperCls(), "fkHelper");		
-			
+			ifInstr._assign(fkHelper.accessAttr("b1"), b1);
 		}
 		
 		
