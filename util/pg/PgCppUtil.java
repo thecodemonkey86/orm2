@@ -35,11 +35,13 @@ public class PgCppUtil {
 		case "date":
 			return CoreTypes.QVariant.getMethod("toDate");
 		case "timestamp with time zone":
+		case "timestamp without time zone":
 			return CoreTypes.QVariant.getMethod("toDateTime");
 		case "time with time zone":
 			return CoreTypes.QVariant.getMethod("toTime");
 		case "double precision":
 		case "numeric":
+		case "real":
 			return CoreTypes.QVariant.getMethod("toDouble");
 		case "bytea":
 		case "ARRAY":

@@ -4,13 +4,14 @@ import java.util.Properties;
 
 public class PgCredentials extends DbCredentials{
 	protected String user, password, host;
+	protected int port;
 	
-	
-	public PgCredentials(String user, String password, String host, Database db) {
+	public PgCredentials(String user, String password, String host,int port, Database db) {
 		super(db);
 		this.user = user;
 		this.password = password;
 		this.host = host;		
+		this.port = port;
 	}
 
 	public String getPassword() {
@@ -32,6 +33,6 @@ public class PgCredentials extends DbCredentials{
 
 	@Override
 	public String getConnectionUrl() {
-		return "jdbc:postgresql://" + host +"/" + db.getName();
+		return "jdbc:postgresql://" + host +   ":"+ port+ "/" + db.getName();
 	}
 }

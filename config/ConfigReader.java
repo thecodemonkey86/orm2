@@ -122,7 +122,7 @@ public class ConfigReader implements ContentHandler {
 				if (cfg.isEnginePostgres()) {
 					Class.forName("org.postgresql.Driver");
 					database = new PgDatabase(atts.getValue("name"), atts.getValue("schema"));
-					credentials = new PgCredentials(atts.getValue("user"), atts.getValue("password"), atts.getValue("host"), database);
+					credentials = new PgCredentials(atts.getValue("user"), atts.getValue("password"), atts.getValue("host"),atts.getValue("port") != null ? Integer.parseInt(atts.getValue("port")) : 5432, database);
 					
 				} else if (cfg.isEngineMysql()) {
 					database = new MySqlDatabase(atts.getValue("name"));

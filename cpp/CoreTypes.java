@@ -4,6 +4,7 @@ import cpp.core.Cls;
 import cpp.core.PrimitiveType;
 import cpp.core.TplCls;
 import cpp.core.Type;
+import cpp.lib.ClsQByteArray;
 import cpp.lib.ClsQDate;
 import cpp.lib.ClsQDateTime;
 import cpp.lib.ClsQSet;
@@ -34,7 +35,7 @@ public class CoreTypes {
 	public static final ClsQDateTime QDateTime = new ClsQDateTime(); 
 	public static final ClsQTime QTime = new ClsQTime(); 
 	public static final PrimitiveType Double = new PrimitiveType("double");
-	public static final Type QByteArray = Type.nonPtr("QByteArray");
+	public static final Type QByteArray = new ClsQByteArray();
 	public static final ClsQVariant QVariant = new ClsQVariant();
 	public static final PrimitiveType Void = new PrimitiveType("void");
 	public static final Cls QChar = new Cls("QChar");

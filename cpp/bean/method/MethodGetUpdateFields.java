@@ -72,6 +72,9 @@ public class MethodGetUpdateFields extends Method{
 				for(int i=0;i<r.getColumnCount();i++) {
 					Column col = r.getColumns(i).getValue1();
 					Expression colAttr = parent.accessThisAttrGetterByColumn(col);
+					if(col.isNullable()) {
+						colAttr = colAttr.callMethod(Nullable.val);
+					}
 					ifBlock.setIfInstr(fields.callMethodInstruction("append", QString.fromStringConstant(col.getEscapedName()+"=?")),
 							paramByName("params").callMethodInstruction("append", colAttr));
 				}
