@@ -163,6 +163,7 @@ public class SqliteDatabaseMapper extends DatabaseTypeMapper {
 		return getColumnDefaultValueExpressionImpl(dbType, col.isNullable());
 	}
 
+	@Deprecated
 	@Override
 	public Expression getGenericDefaultValueExpression(Column col) {
 		String string = col.getDefaultValue();

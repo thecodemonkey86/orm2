@@ -172,10 +172,26 @@ public class MethodBeanSave extends Method {
 					} else {
 						foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction("append", foreachAttrAdd.getVar()));
 					}
+					int propertyColumnCount=0;
+					for(Column col:r.getMappingTable().getAllColumns()) {
+						// TODO FIXME col.isPartOfPk() not set
+						boolean isPartOfPk = false;
+						for(Column colPk:r.getMappingTable().getPrimaryKey().getColumns()) {
+							if(col.getName().equals(colPk.getName())) {
+								isPartOfPk = true;
+								break;
+							}
+						}
+						
+						if(!isPartOfPk) {
+							propertyColumnCount++;
+							foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction("append", BeanCls.getDatabaseMapper().getColumnDefaultValueExpression(col)));
+						}
+					}
 					
 				//	foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction("append", _this().accessAttr(new Attr( bean.getPkType(),  bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName()))));
 	//				foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction("append", foreachAttrAdd.getVar()));
-					foreachAttrAdd.addInstr(new BinaryOperatorExpression(varPlaceholdersForeachAdd, new QStringPlusEqOperator(), QString.fromStringConstant(","+ CodeUtil2.parentheses( CodeUtil2.strMultiply("?", ",", r.getSourceColumnCount()+r.getDestColumnCount())) )).asInstruction() );
+					foreachAttrAdd.addInstr(new BinaryOperatorExpression(varPlaceholdersForeachAdd, new QStringPlusEqOperator(), QString.fromStringConstant(","+ CodeUtil2.parentheses( CodeUtil2.strMultiply("?", ",", r.getSourceColumnCount()+r.getDestColumnCount()+propertyColumnCount)) )).asInstruction() );
 					ifAddBeans.thenBlock().addInstr(new cpp.core.instruction.ScClosedInstruction("qDebug()<<addedSql.arg(placeholders.mid(1))"));
 					ifAddBeans.thenBlock()._callMethodInstr(_this().accessAttr("sqlCon"), "execute", varAddSql.callMethod("arg", varPlaceholdersForeachAdd.callMethod("mid", new IntExpression(1))), varParamsForeachAdd);
 				} else {
