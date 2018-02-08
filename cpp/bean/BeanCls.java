@@ -591,4 +591,7 @@ public class BeanCls extends Cls {
 		return mapper;
 	}
 
+	public boolean hasRelations() {
+		return oneRelations.size() > 0 || oneToManyRelations.size() > 0 || manyRelations.size()>0;
+	}
 }

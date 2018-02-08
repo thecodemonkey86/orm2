@@ -5,6 +5,7 @@ import cpp.core.Cls;
 
 public class ClsSqlQuery extends Cls{
 
+	public static String orderBy = "orderBy";
 
 	public ClsSqlQuery() {
 		super("SqlQuery");
@@ -16,6 +17,7 @@ public class ClsSqlQuery extends Cls{
 		addMethod(new LibMethod(this.toRawPointer(), "where"));
 		addMethod(new LibMethod(this.toRawPointer(), "andWhereIn"));
 		addMethod(new LibMethod(this.toRawPointer(), "whereIn"));
+		addMethod(new LibMethod(this.toRawPointer(), orderBy));
 	}
 
 }

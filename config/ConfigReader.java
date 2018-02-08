@@ -131,7 +131,7 @@ public class ConfigReader implements ContentHandler {
 				} else if (cfg.isEngineFirebird()) {
 					Class.forName("org.firebirdsql.jdbc.FBDriver");
 					database = new FirebirdDatabase(atts.getValue("name"));
-					credentials = new FirebirdCredentials(atts.getValue("user"), atts.getValue("password"), atts.getValue("host"), atts.getValue("file"), Integer.parseInt(atts.getValue("port")), database);
+					credentials = new FirebirdCredentials(atts.getValue("user"), atts.getValue("password"), atts.getValue("host"), atts.getValue("file"), Integer.parseInt(atts.getValue("port")), atts.getValue("charSet")  != null ?  atts.getValue("charSet")  : "UTF-8", database);
 				} else if (cfg.isEngineSqlite()) {
 					Class.forName("org.sqlite.JDBC");
 					database = new SqliteDatabase(atts.getValue("name"));

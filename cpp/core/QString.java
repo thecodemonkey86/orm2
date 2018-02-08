@@ -42,6 +42,10 @@ public class QString extends Expression {
 	public QStringPlusOperatorExpression concat(QChar chr) {
 		return new QStringPlusOperatorExpression(this, chr);
 	}
+	
+	public QStringPlusOperatorExpression concat(Expression e) {
+		return new QStringPlusOperatorExpression(this, e);
+	}
 
 
 }

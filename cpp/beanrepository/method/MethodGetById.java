@@ -22,6 +22,7 @@ import cpp.core.expression.Expressions;
 import cpp.core.expression.Var;
 import cpp.core.instruction.DoWhile;
 import cpp.core.instruction.IfBlock;
+import cpp.lib.ClsSqlQuery;
 import database.column.Column;
 import database.relation.AbstractRelation;
 import database.relation.ManyRelation;
@@ -32,6 +33,18 @@ import util.CodeUtil2;
 public class MethodGetById extends Method {
 
 	protected BeanCls bean;
+	protected boolean addSortingParam;
+	
+	
+	public MethodGetById(BeanCls cls,boolean addSortingParams) {
+		this(cls);
+		this.addSortingParam = addSortingParams;
+		
+		if(addSortingParams) {
+			addParam(new Param(Types.QString.toConstRef(), "orderBy"));
+		}
+		
+	}
 	public MethodGetById(BeanCls cls) {
 //		super(Public, cls.toRawPointer(), "getById");
 		super(Public, cls.toSharedPtr(), "get"+cls.getName()+"ById");
@@ -117,6 +130,12 @@ public class MethodGetById extends Method {
 			exprQSqlQuery = exprQSqlQuery.callMethod("where", QString.fromStringConstant("b1."+ col.getEscapedName()+"=?"),getParam(col.getCamelCaseName()));
 					
 		}
+		
+		if(addSortingParam) {
+		
+			exprQSqlQuery = exprQSqlQuery.callMethod(ClsSqlQuery.orderBy,getParam("orderBy"));
+		}
+		
 		exprQSqlQuery = exprQSqlQuery.callMethod("execQuery");
 		Var qSqlQuery = _declare(exprQSqlQuery.getType(),
 				"qSqlQuery", exprQSqlQuery

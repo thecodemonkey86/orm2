@@ -45,6 +45,7 @@ public class ClsBeanRepository extends Cls{
 			addIncludeHeader("query/"+bean.getName().toLowerCase()+"beanquery");
 //			addAttr(new Attr(new ClsQHash(bean.getPkType(), bean.toRawPointer()), "loadedBeans"+bean.getName()));
 			addMethod(new MethodGetById(bean));
+			addMethod(new MethodGetById(bean,true));
 //			addMethod(new MethodGetByRecord(bean.getTbl().getColumns(true), bean));
 			addMethod(new MethodFetchList(bean.getOneRelations(), bean.getOneToManyRelations(), bean, bean.getTbl().getPrimaryKey()));
 //			addMethod(new MethodFetchListStatic(bean));
