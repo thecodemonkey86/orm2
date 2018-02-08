@@ -5,6 +5,7 @@ import util.CodeUtil2;
 
 public class FirebirdTable extends Table {
 
+	
 	public FirebirdTable(Database db, String name) {
 		super(db, name, null);
 	}

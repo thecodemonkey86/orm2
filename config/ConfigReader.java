@@ -27,6 +27,7 @@ import database.relation.M2MColumns;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
+import database.relation.PrimaryKey;
 import database.table.MappingTable;
 import database.table.Table;
 import util.Pair;
@@ -131,7 +132,7 @@ public class ConfigReader implements ContentHandler {
 				} else if (cfg.isEngineFirebird()) {
 					Class.forName("org.firebirdsql.jdbc.FBDriver");
 					database = new FirebirdDatabase(atts.getValue("name"));
-					credentials = new FirebirdCredentials(atts.getValue("user"), atts.getValue("password"), atts.getValue("host"), atts.getValue("file"), Integer.parseInt(atts.getValue("port")), atts.getValue("charSet")  != null ?  atts.getValue("charSet")  : "UTF-8", database);
+					credentials = new FirebirdCredentials(atts.getValue("user"), atts.getValue("password"), atts.getValue("host"), atts.getValue("file"),atts.getValue("port") != null ? Integer.parseInt(atts.getValue("port")) : 23053, atts.getValue("charSet")  != null ?  atts.getValue("charSet")  : "UTF-8", database);
 				} else if (cfg.isEngineSqlite()) {
 					Class.forName("org.sqlite.JDBC");
 					database = new SqliteDatabase(atts.getValue("name"));
@@ -163,7 +164,18 @@ public class ConfigReader implements ContentHandler {
 				if (section == Section.ENTITIES) {
 					currentEntityTable = cfg.getDatabase().makeTableInstance( atts.getValue("table"));
 					cfg.addEntityTable(currentEntityTable);
-					cfg.getDatabase().readColumns(currentEntityTable, conn);		
+					cfg.getDatabase().readColumns(currentEntityTable, conn);
+					
+					if(atts.getValue("overridePrimaryKey")!=null) {
+						String[] pkColNames = atts.getValue("overridePrimaryKey").split(",");
+						PrimaryKey pk = new PrimaryKey();
+						for(String pkCol : pkColNames) {
+							pk.add(currentEntityTable.getColumnByName(pkCol));
+						}
+						currentEntityTable.setPrimaryKey(pk);
+					}
+	
+					
 					if(currentEntityTable.getColumnCount()==0)
 						throw new IOException("invalid table " + currentEntityTable.getName());
 					cfg.initRelations(currentEntityTable);

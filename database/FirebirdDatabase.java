@@ -42,6 +42,7 @@ public class FirebirdDatabase extends Database {
 		}
 		rsColumndata.close();
 		
+		
 		sql = "select sg.rdb$field_name as field_name, sg.rdb$field_position as field_position,f.rdb$field_type as field_type , rf.rdb$null_flag as null_flag, f.rdb$default_value as default_value from     rdb$indices ix     left join rdb$index_segments sg on ix.rdb$index_name = sg.rdb$index_name     left join rdb$relation_constraints rc on rc.rdb$index_name = ix.rdb$index_name join rdb$relation_fields rf on rf.rdb$relation_name = rc.rdb$relation_name and rf.rdb$field_name = sg.rdb$field_name join RDB$FIELDS f on rf.RDB$FIELD_SOURCE = f.RDB$FIELD_NAME where     rc.rdb$constraint_type = 'PRIMARY KEY' and rc.rdb$relation_name = ?"; 
 		PreparedStatement stmt = conn.prepareStatement(sql);
 		stmt.setString(1, table.getName().toUpperCase());
@@ -56,7 +57,8 @@ public class FirebirdDatabase extends Database {
 			col.setDefaultValue( rsColumndata.getString("default_value"));
 			primaryKey.add(col);
 		}
-		table.setPrimaryKey(primaryKey);
+		if(primaryKey.getColumnCount()>0)
+			table.setPrimaryKey(primaryKey);
 		rsColumndata.close();
 	}
 

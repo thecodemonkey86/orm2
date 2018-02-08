@@ -13,7 +13,7 @@ public class Table extends AbstractTable{
 	protected int oid;
 	
 	protected ArrayList<ForeignKey> foreignKeys;
-
+	
 
 
 	public boolean addForeignKey(ForeignKey e) {
@@ -68,6 +68,7 @@ public class Table extends AbstractTable{
 		super(db,name,schema);
 		foreignKeys = new ArrayList<>();
 	}
+	
 	
 	public void setOid(int oid) {
 		this.oid = oid;
