@@ -23,6 +23,7 @@ import cpp.core.expression.QChar;
 import cpp.core.expression.Var;
 import cpp.core.instruction.IfBlock;
 import cpp.core.instruction.While;
+import cpp.lib.ClsQSqlQuery;
 import cpp.lib.ClsSql;
 import database.column.Column;
 import database.relation.AbstractRelation;
@@ -262,6 +263,7 @@ public class MethodBeanLoad extends Method {
 			}
 			//bCount++;
 		}
+		_callMethodInstr(qSqlQuery, ClsQSqlQuery.clear); 
 	}
 
 }

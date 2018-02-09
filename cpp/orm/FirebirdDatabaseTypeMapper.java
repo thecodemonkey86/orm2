@@ -123,40 +123,44 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 				return new DoubleExpression(0.0);
 			}
 		}
-		return Expressions.Nullptr;
+		return null;
 	}
 
+	private Expression getGenericDefaultValueExpression(String dbType){
+		switch(dbType) {
+		case "8":
+			return new IntExpression(0);
+		case "16":
+			return new LongLongExpression(0L);
+		case "7":
+			return new ShortExpression((short)0);
+		case "14":	
+		case "37":
+			return QString.fromStringConstant("");
+		case "12":
+			return new CreateObjectExpression(Types.QDate) ;
+		case "10":
+		case "27":
+			return new DoubleExpression(0.0);
+		case "261":
+			return new CreateObjectExpression(Types.QByteArray) ;	
+		case "35":
+			return new CreateObjectExpression(Types.QDateTime) ;
+		case "13":
+			return new CreateObjectExpression(Types.QTime) ;
+		default:
+			return new CreateObjectExpression(CoreTypes.QVariant) ;
+		}
+	}
+	
 	@Override
 	public Expression getGenericDefaultValueExpression(Column col) {
 		boolean nullable = col.isNullable();
 		String dbType = col.getDbType();
 		if (!nullable){
-			switch(dbType) {
-				case "8":
-					return new IntExpression(0);
-				case "16":
-					return new LongLongExpression(0L);
-				case "7":
-					return new ShortExpression((short)0);
-				case "14":	
-				case "37":
-					return QString.fromStringConstant("");
-				case "12":
-					return new CreateObjectExpression(Types.QDate) ;
-				case "10":
-				case "27":
-					return new DoubleExpression(0.0);
-				case "261":
-					return new CreateObjectExpression(Types.QByteArray) ;	
-				case "35":
-					return new CreateObjectExpression(Types.QDateTime) ;
-				case "13":
-					return new CreateObjectExpression(Types.QTime) ;
-				default:
-					return new CreateObjectExpression(CoreTypes.QVariant) ;
-				}
+				return getGenericDefaultValueExpression(dbType);
 			} else {
-				switch(dbType) {
+				/*switch(dbType) {
 				case "8":
 					IntExpression intExpression = new IntExpression(0);
 					return new CreateObjectExpression( Types.nullable(intExpression.getType()),intExpression);
@@ -180,7 +184,8 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 					return new CreateObjectExpression(Types.nullable(Types.QByteArray)) ;		
 				default:
 					return new CreateObjectExpression(Types.nullable(CoreTypes.QVariant)) ;
-				}
+				}*/
+				return new CreateObjectExpression(getTypeFromDbDataType(dbType, nullable),getGenericDefaultValueExpression(dbType));
 			}
 	}
 

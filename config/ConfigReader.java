@@ -170,7 +170,9 @@ public class ConfigReader implements ContentHandler {
 						String[] pkColNames = atts.getValue("overridePrimaryKey").split(",");
 						PrimaryKey pk = new PrimaryKey();
 						for(String pkCol : pkColNames) {
-							pk.add(currentEntityTable.getColumnByName(pkCol));
+							Column col = currentEntityTable.getColumnByName(pkCol);
+							col.setNullable(false);
+							pk.add(col);
 						}
 						currentEntityTable.setPrimaryKey(pk);
 					}

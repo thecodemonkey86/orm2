@@ -64,6 +64,7 @@ public class PgDatabase extends Database {
 		ResultSet rs = stmt.executeQuery(sql);
 		while(rs.next()) {
 			Column c = tbl.getColumnByName(rs.getString("colname"));
+			c.setNullable(false);
 			c.setAutoIncrement(rs.getBoolean("autoincrement"));
 			primaryKey.add(c);
 		}

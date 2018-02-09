@@ -464,6 +464,10 @@ public class Cls extends Type implements IAttributeContainer{
 		this.methodTemplates.add(tpl);
 	}
 	
+	public Type toRValueRef() {
+		return new RValueRef(this);
+	}
+	
 	public boolean hasAttr(String name) {
 		if (superclasses!=null) {
 			for (Cls superclass : superclasses) {

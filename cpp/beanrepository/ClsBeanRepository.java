@@ -5,6 +5,7 @@ import java.util.Collection;
 import cpp.Types;
 import cpp.bean.BeanCls;
 import cpp.beanrepository.method.ConstructorBeanRepository;
+import cpp.beanrepository.method.MethodBeanRemove;
 import cpp.beanrepository.method.MethodBeanLoad;
 import cpp.beanrepository.method.MethodBeanSave;
 import cpp.beanrepository.method.MethodCreateQuery;
@@ -61,6 +62,7 @@ public class ClsBeanRepository extends Cls{
 			addMethod(new MethodBeanSave(bean));
 			addMethod(new MethodGetFromRecord(bean,false));
 			addMethod(new MethodRepoCreateNew(bean));
+			addMethod(new MethodBeanRemove(bean,false));
 		}
 		
 	}

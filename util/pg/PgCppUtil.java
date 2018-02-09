@@ -49,7 +49,8 @@ public class PgCppUtil {
 		case "boolean":
 			return CoreTypes.QVariant.getMethod("toBool");
 		default:
-			throw new RuntimeException("type " + pgType+" not implemented");
+			return null;
+			//throw new RuntimeException("type " + pgType+" not implemented");
 		}
 	}
 	

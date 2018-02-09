@@ -42,6 +42,10 @@ public abstract class Database {
 	public String sqlInsert(AbstractTable tbl) {
 		return getDefaultSqlInsert(tbl);
 	}
+	public String sqlDelete(AbstractTable tbl, String condition) {
+		return String.format("DELETE FROM %s WHERE %s",tbl.getEscapedName(), condition);
+	}
+	
 	public abstract String sqlInsertOrIgnoreMultiRow(AbstractTable tbl,  String placeholders);
 	public abstract String sqlInsertMultiRow(AbstractTable tbl, String placeholders);
 	public abstract String getBooleanExpressionTrue();

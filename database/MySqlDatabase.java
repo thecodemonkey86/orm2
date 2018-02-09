@@ -51,6 +51,7 @@ public class MySqlDatabase extends Database {
 		PrimaryKey pk = new PrimaryKey();
 		while (rsColumndata.next()) {
 			Column col = tbl.getColumnByName(rsColumndata.getString("column_name"));
+			col.setNullable(false);
 			col.setAutoIncrement(rsColumndata.getString("extra").equals("auto_increment"));
 			pk.add(col);
 		}

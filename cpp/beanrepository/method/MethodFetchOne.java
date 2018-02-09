@@ -21,6 +21,7 @@ import cpp.core.expression.Var;
 import cpp.core.instruction.DoWhile;
 import cpp.core.instruction.IfBlock;
 import cpp.core.instruction.InstructionBlock;
+import cpp.lib.ClsQSqlQuery;
 import cpp.lib.ClsQSqlRecord;
 import cpp.orm.OrmUtil;
 import database.column.Column;
@@ -38,7 +39,7 @@ public class MethodFetchOne extends Method {
 	
 	public MethodFetchOne(List<OneRelation> oneRelations,List<OneToManyRelation> manyRelations, BeanCls bean,PrimaryKey pk) {
 		super(Public, bean.toSharedPtr(),  getMethodName(bean));
-		addParam(new Param(Types.QSqlQuery, "query"));	
+		addParam(new Param(Types.QSqlQuery.toRValueRef(), "query"));	
 		this.oneRelations = oneRelations;
 		this.manyRelations = manyRelations;
 		this.pk = pk;
@@ -183,6 +184,7 @@ protected Expression getExpressionQuery() {
 		doWhileQueryNext.addInstr(recDoWhile.assign(query.callMethod("record")));
 		ifInstr._callMethodInstr(b1, "setLoaded", BoolExpression.TRUE);
 		ifInstr._return(b1);
+		_callMethodInstr(query, ClsQSqlQuery.clear); 
 		_return(Expressions.Nullptr);
 	}
 	

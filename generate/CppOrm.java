@@ -1,6 +1,7 @@
 package generate;
 
 import java.nio.charset.Charset;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -144,6 +145,26 @@ public class CppOrm extends OrmCommon {
 		Path pathRepositoryQuery = pathRepository.resolve("query");
 		Files.createDirectories(pathBeans);
 		Files.createDirectories(pathRepositoryQuery);
+
+		try(DirectoryStream<Path> dsPathBeans = Files.newDirectoryStream(pathBeans)) {
+			for(Path f : dsPathBeans) {
+				if(f.toString().endsWith(".h") || f.toString().endsWith(".cpp")) {
+					Files.delete(f);
+				}
+			}
+		} finally {
+			
+		}
+		try(DirectoryStream<Path> dsPathQuery = Files.newDirectoryStream(pathRepositoryQuery)) {
+			for(Path f : dsPathQuery) {
+				if(f.toString().endsWith(".h") || f.toString().endsWith(".cpp")) {
+					Files.delete(f);
+				}
+			}
+		} finally {
+			
+		}
+		
 		
 		for (BeanCls c : Beans.getAllBeans()) {
 			

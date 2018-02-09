@@ -49,12 +49,9 @@ public class FirebirdDatabase extends Database {
 		rsColumndata = stmt.executeQuery();
 		PrimaryKey primaryKey = new PrimaryKey();
 		while (rsColumndata.next()) {
-			Column col = new FirebirdColumn();
-			col.setName(rsColumndata.getString("field_name").trim().toLowerCase());
-			col.setPosition(rsColumndata.getInt("field_position"));
-			col.setDbType(rsColumndata.getString("field_type"));
-			col.setNullable(rsColumndata.getInt("null_flag")!=1);
-			col.setDefaultValue( rsColumndata.getString("default_value"));
+			Column col = table.getColumnByName(rsColumndata.getString("field_name").trim().toLowerCase());
+			//col.setNullable(rsColumndata.getInt("null_flag")!=1);
+			col.setNullable(false);
 			primaryKey.add(col);
 		}
 		if(primaryKey.getColumnCount()>0)

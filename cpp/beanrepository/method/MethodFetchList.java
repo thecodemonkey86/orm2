@@ -23,6 +23,7 @@ import cpp.core.instruction.IfBlock;
 import cpp.core.instruction.InstructionBlock;
 import cpp.lib.ClsQHash;
 import cpp.lib.ClsQSet;
+import cpp.lib.ClsQSqlQuery;
 import cpp.orm.OrmUtil;
 import database.column.Column;
 import database.relation.AbstractRelation;
@@ -39,7 +40,7 @@ public class MethodFetchList extends Method {
 	
 	public MethodFetchList(List<OneRelation> oneRelations,List<OneToManyRelation> manyRelations, BeanCls bean,PrimaryKey pk) {
 		super(Public, Types.qvector(bean.toSharedPtr()),getMethodName(bean) );
-		addParam(new Param(Types.QSqlQuery, "query"));	
+		addParam(new Param(Types.QSqlQuery.toRValueRef(), "query"));	
 		this.oneRelations = oneRelations;
 		this.manyRelations = manyRelations;
 		this.pk = pk;
@@ -219,6 +220,7 @@ public class MethodFetchList extends Method {
 		}
 		ifNotB1SetContains.thenBlock()._callMethodInstr(b1DoWhile, "setLoaded", BoolExpression.TRUE);
 		ifNotB1SetContains.thenBlock()._callMethodInstr(result, "append", b1DoWhile);
+		_callMethodInstr(query, ClsQSqlQuery.clear); 
 		_return(result);
 		
 	}
