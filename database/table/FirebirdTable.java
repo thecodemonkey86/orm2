@@ -18,4 +18,8 @@ public class FirebirdTable extends Table {
 		return CodeUtil2.camelCase(getName().toLowerCase());
 	}
 	
+	public String getEscapedName() {
+		return name;
+	}
+	
 }
