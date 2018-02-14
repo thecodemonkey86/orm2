@@ -18,7 +18,7 @@ public class MethodGetTableNameAlias extends Method{
 	@Override
 	public void addImplementation() {
 		BeanCls bean=(BeanCls) parent;
-		_return(QString.fromStringConstant(BeanCls.getDatabase().getEscapedTableName(bean.getTbl())+" %1").callMethod("arg", getParam("alias"))); 
+		_return(QString.fromStringConstant(bean.getTbl().getEscapedName() +" %1").callMethod("arg", getParam("alias"))); 
 		//_return(QString.fromExpression(aTableName).concat(QChar.fromChar(' ')).concat(QString.fromExpression(getParam("alias"))));
 	}
 

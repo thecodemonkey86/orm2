@@ -42,13 +42,24 @@ public class MethodOneRelationAttrSetter extends MethodAttributeSetter {
 			Column srcCol = r.getColumns(i).getValue1();
 			
 			if(destCol.isNullable() == srcCol.isNullable()) {
-				addInstr( _this().assignAttr(srcCol.getCamelCaseName(), pRelationBean.callMethod("get"+destCol.getUc1stCamelCaseName())));
+				if(destCol.isNullable()) {
+					IfBlock ifParamOneRelationIsNull = _if(pRelationBean._equals(Expressions.Nullptr));
+					ifParamOneRelationIsNull.thenBlock().addInstr( _this().assignAttr(srcCol.getCamelCaseName(), new CreateObjectExpression(Types.nullable(BeanCls.getDatabaseMapper().columnToType(destCol)))));
+					ifParamOneRelationIsNull.elseBlock().addInstr( _this().assignAttr(srcCol.getCamelCaseName(), pRelationBean.callMethod("get"+destCol.getUc1stCamelCaseName())));
+					
+				} else {
+					addInstr( _this().assignAttr(srcCol.getCamelCaseName(), pRelationBean.callMethod("get"+destCol.getUc1stCamelCaseName())));
+				}
+				
+				
 			} else if(destCol.isNullable()) {
 				
 				IfBlock ifBeanNotNull = _if(pRelationBean._equals(Expressions.Nullptr));
 					ifBeanNotNull.thenBlock().addInstr( _this().assignAttr(srcCol.getCamelCaseName(), pRelationBean.callMethod("get"+destCol.getUc1stCamelCaseName()).callMethod(Nullable.val)));
 			} else {
-				addInstr( _this().assignAttr(srcCol.getCamelCaseName(), new CreateObjectExpression(BeanCls.getDatabaseMapper().columnToType(srcCol), pRelationBean.callMethod("get"+destCol.getUc1stCamelCaseName()))));
+				IfBlock ifParamOneRelationIsNull = _if(pRelationBean._equals(Expressions.Nullptr));
+				ifParamOneRelationIsNull.thenBlock().addInstr( _this().assignAttr(srcCol.getCamelCaseName(), new CreateObjectExpression(BeanCls.getDatabaseMapper().columnToType(srcCol))));
+				ifParamOneRelationIsNull.elseBlock().addInstr( _this().assignAttr(srcCol.getCamelCaseName(), new CreateObjectExpression(BeanCls.getDatabaseMapper().columnToType(srcCol), pRelationBean.callMethod("get"+destCol.getUc1stCamelCaseName()))));
 			}
 			
 			if (!this.internal) {
