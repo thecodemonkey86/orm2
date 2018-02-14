@@ -1,6 +1,9 @@
 package cpp.core.expression;
 
 import util.StringUtil;
+
+import java.util.List;
+
 import cpp.core.Attr;
 import cpp.core.Cls;
 import cpp.core.IAttributeContainer;
@@ -93,6 +96,12 @@ public abstract class Expression {
 			System.out.println(e);
 			throw e;
 		}
+	}
+	
+	public MethodCall callMethod(String m, List<Expression>args) {
+		Expression[] argsArray = new Expression[args.size()];
+		args.toArray(argsArray);
+		return callMethod( m,argsArray);
 	}
 	
 	public String getWriteAccessString() {

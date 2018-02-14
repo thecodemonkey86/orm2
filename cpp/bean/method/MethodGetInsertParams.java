@@ -12,7 +12,9 @@ import cpp.core.expression.CreateObjectExpression;
 import cpp.core.expression.Expression;
 import cpp.core.expression.InlineIfExpression;
 import cpp.core.expression.Var;
+import cpp.core.instruction.ForeachLoop;
 import cpp.lib.ClsQString;
+import cpp.lib.ClsQVector;
 import database.column.Column;
 
 public class MethodGetInsertParams extends Method {
@@ -66,12 +68,19 @@ public class MethodGetInsertParams extends Method {
 //			}
 			if(col.hasOneRelation()){
 				//colPk.getRelation().getDestTable().getCamelCaseName()
-				addInstr(params.callMethodInstruction("append",parent.getAttrByName(PgCppUtil.getOneRelationDestAttrName(col.getOneRelation())).callMethod("get"+col.getOneRelationMappedColumn().getUc1stCamelCaseName()) )); 
+				addInstr(params.callMethodInstruction(ClsQVector.append,parent.getAttrByName(PgCppUtil.getOneRelationDestAttrName(col.getOneRelation())).callMethod("get"+col.getOneRelationMappedColumn().getUc1stCamelCaseName()) )); 
 			}else{
-				Expression colAttr = parent.getAttrByName(col.getCamelCaseName());
-				if(colAttr.getType().equals(Types.QString))
-					colAttr = new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), QString.fromStringConstant(""), colAttr);
-				addInstr(params.callMethodInstruction("append",col.isNullable() ? new InlineIfExpression(colAttr.callMethod("isNull"), new CreateObjectExpression(Types.QVariant), colAttr.callMethod("val"))   : colAttr));	
+				if(!col.isRawValueEnabled()) {
+					Expression colAttr = parent.getAttrByName(col.getCamelCaseName());
+					if(colAttr.getType().equals(Types.QString))
+						colAttr = new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), QString.fromStringConstant(""), colAttr);
+					addInstr(params.callMethodInstruction(ClsQVector.append,col.isNullable() ? new InlineIfExpression(colAttr.callMethod("isNull"), new CreateObjectExpression(Types.QVariant), colAttr.callMethod("val"))   : colAttr));
+				} else {
+					Attr attrRawExpressionParams = parent.getAttrByName("insertParamsForRawExpression"+col.getUc1stCamelCaseName());
+					ForeachLoop foreachAttrRawExpressionParams = _foreach(new Var(Types.QVariant, name), attrRawExpressionParams);
+					foreachAttrRawExpressionParams.addInstr(params.callMethodInstruction(ClsQVector.append,foreachAttrRawExpressionParams.getVar()));
+					
+				}
 			}
 	}
 		_return(params);

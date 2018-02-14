@@ -36,7 +36,9 @@ public class FirebirdDatabase extends Database {
 			col.setName(rsColumndata.getString("field_name").trim().toLowerCase());
 			col.setPosition(rsColumndata.getInt("field_position"));
 			col.setDbType(rsColumndata.getString("field_type"));
-			col.setNullable(rsColumndata.getInt("null_flag")!=1);
+
+			rsColumndata.getInt("null_flag");
+			col.setNullable(rsColumndata.wasNull());
 			col.setDefaultValue( rsColumndata.getString("default_value"));
 			table.addColumn(col);
 		}

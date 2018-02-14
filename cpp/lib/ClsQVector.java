@@ -9,10 +9,11 @@ public class ClsQVector extends TplCls {
 	public static final String CLSNAME="QVector";
 	
 	public static final String clear = "clear";
+	public static final String append = "append";
 	
 	public ClsQVector(Type element) {
 		super(CLSNAME, element);
-		addMethod(new LibMethod(CoreTypes.Void, "append"));
+		addMethod(new LibMethod(CoreTypes.Void, append));
 		addMethod(new LibMethod(CoreTypes.Void, "remove"));
 		addMethod(new LibMethod(CoreTypes.Void, "removeOne"));
 		addMethod(new LibMethod(CoreTypes.Bool, "empty"));

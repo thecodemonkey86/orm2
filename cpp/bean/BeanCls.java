@@ -9,6 +9,7 @@ import cpp.Types;
 import cpp.CoreTypes;
 import cpp.bean.method.BeanConstructor;
 import cpp.bean.method.BeanDestructor;
+import cpp.bean.method.MethodAddInsertParamForRawExpression;
 import cpp.bean.method.MethodAddManyToManyRelatedBean;
 import cpp.bean.method.MethodAddManyToManyRelatedBeanInternal;
 import cpp.bean.method.MethodAddRelatedBean;
@@ -49,11 +50,13 @@ import cpp.core.Destructor;
 import cpp.core.Method;
 import cpp.core.Operator;
 import cpp.core.Param;
+import cpp.core.QString;
 import cpp.core.Struct;
 import cpp.core.Type;
 import cpp.core.expression.Expression;
 import cpp.core.expression.StaticAccessExpression;
 import cpp.core.method.MethodAttributeGetter;
+import cpp.core.method.MethodAttributeSetter;
 import cpp.orm.DatabaseTypeMapper;
 import cpp.orm.OrmUtil;
 import database.Database;
@@ -222,6 +225,14 @@ public class BeanCls extends Cls {
 					Attr attrModified = new Attr(Types.Bool, col.getCamelCaseName()+"Modified");
 					addAttr(attrModified);
 				}
+				if(col.isRawValueEnabled()) {
+					Attr attrInsertExpression = new Attr(Attr.Protected, Types.QString,"insertExpression"+col.getUc1stCamelCaseName(), null,false);
+					addAttr(attrInsertExpression);
+					addMethod(new MethodAttributeSetter(attrInsertExpression));
+					Attr attrInsertParams = new Attr(Attr.Protected, Types.QVariantList,"insertParamsForRawExpression"+col.getUc1stCamelCaseName(),null,false);
+					addAttr(attrInsertParams);
+					addMethod(new MethodAddInsertParamForRawExpression(col));
+				}
 			} else {
 				Attr attr = new Attr(BeanCls.getDatabaseMapper().getTypeFromDbDataType(col.getDbType(), col.isNullable()), col.getCamelCaseName());
 				addAttr(attr);
@@ -322,7 +333,7 @@ public class BeanCls extends Cls {
 		List<Column> cols = tbl.getColumns(!tbl.getPrimaryKey().isAutoIncrement());
 		List<Column> allCols = tbl.getColumns(true);
 		addMethod(new MethodGetInsertFields(cols));
-		addMethod(new MethodGetInsertValuePlaceholders(cols.size()));
+		addMethod(new MethodGetInsertValuePlaceholders(tbl));
 		addMethod(new MethodGetInsertParams(cols));
 		addMethod(new MethodGetUpdateFields(tbl.getColumnsWithoutPrimaryKey(),tbl.getPrimaryKey()));
 		addMethod(new MethodGetUpdateConditionParams(tbl.getPrimaryKey()));

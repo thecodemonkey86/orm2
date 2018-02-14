@@ -77,4 +77,13 @@ public abstract class AbstractTable {
 	public int getColumnCount() {
 		return allColumns.size();
 	}
+	
+	public boolean hasColumnWithRawValueEnabled() {
+		for(Column c : allColumns) {
+			if(c.isRawValueEnabled()) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
