@@ -24,7 +24,7 @@ public class FirebirdDatabase extends Database {
 
 	@Override
 	public void readColumns(AbstractTable table, Connection conn) throws SQLException {
-		String sql = "SELECT rf.rdb$field_name as field_name, rf.rdb$field_position as field_position, f.rdb$field_type as field_type, rf.rdb$null_flag as null_flag, f.rdb$default_value as default_value from rdb$fields f join RDB$RELATION_FIELDS rf on rf.RDB$FIELD_SOURCE = f.RDB$FIELD_NAME where RDB$RELATION_NAME = ?"; 
+		String sql = "SELECT rf.rdb$field_name as field_name, rf.rdb$field_position as field_position, f.rdb$field_type as field_type, iif(rf.rdb$null_flag=1 or f.rdb$null_flag=1,1,0) as null_flag, f.rdb$default_value as default_value from rdb$fields f join RDB$RELATION_FIELDS rf on rf.RDB$FIELD_SOURCE = f.RDB$FIELD_NAME where RDB$RELATION_NAME = ?"; 
 		if (stColumndata==null)
 			stColumndata = conn.prepareStatement(sql);
 		
