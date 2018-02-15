@@ -8,7 +8,6 @@ import cpp.core.Type;
 import cpp.core.expression.CreateObjectExpression;
 import cpp.core.expression.DoubleExpression;
 import cpp.core.expression.Expression;
-import cpp.core.expression.Expressions;
 import cpp.core.expression.IntExpression;
 import cpp.core.expression.LongLongExpression;
 import cpp.core.expression.ShortExpression;
@@ -185,7 +184,7 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 				default:
 					return new CreateObjectExpression(Types.nullable(CoreTypes.QVariant)) ;
 				}*/
-				return new CreateObjectExpression(getTypeFromDbDataType(dbType, nullable),getGenericDefaultValueExpression(dbType));
+				return new CreateObjectExpression(getTypeFromDbDataType(dbType, nullable));
 			}
 	}
 

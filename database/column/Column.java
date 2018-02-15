@@ -12,6 +12,7 @@ public abstract class Column {
 	protected boolean autoIncrement;
 	protected boolean partOfPk;
 	protected boolean nullable;
+	protected boolean enableRawValue;
 	protected int position;
 	protected OneRelation oneRelation;
 	protected OneToManyRelation oneToManyRelation;
@@ -167,5 +168,13 @@ public abstract class Column {
 //	public Expression getGenericDefaultValue() {
 //		return BeanCls.getDatabaseMapper().getGenericDefaultValueExpression(this);
 //	}
+	
+	public void setEnableRawValue(boolean enableRawValue) {
+		this.enableRawValue = enableRawValue;
+	}
+	
+	public boolean isRawValueEnabled() {
+		return enableRawValue;
+	}
 	
 }

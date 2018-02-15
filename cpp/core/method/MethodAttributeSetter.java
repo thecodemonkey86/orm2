@@ -11,7 +11,7 @@ public class MethodAttributeSetter extends Method{
 	public MethodAttributeSetter(Attr a) {
 		super(Public, Types.Void, "set"+StringUtil.ucfirst(a.getName()));
 		this.attr=a;
-		addParam(new Param(a.getType(), a.getName()));
+		addParam(new Param(a.getType().isPrimitiveType() ? a.getType() : a.getType().toConstRef() , a.getName()));
 	}
 
 	

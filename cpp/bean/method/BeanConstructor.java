@@ -4,6 +4,7 @@ import java.util.List;
 
 import cpp.Types;
 import cpp.bean.BeanCls;
+import cpp.core.Attr;
 import cpp.core.Constructor;
 import cpp.core.Param;
 import cpp.core.expression.BoolExpression;
@@ -44,6 +45,11 @@ public class BeanConstructor extends Constructor{
 				} else {
 					_assign(parent.getAttrByName(col.getCamelCaseName()), BeanCls.getDatabaseMapper().getGenericDefaultValueExpression(col)); 
 				}
+			}
+			if(col.isRawValueEnabled()) {
+				Attr a = parent.getAttrByName("insertExpression"+col.getUc1stCamelCaseName());
+				if(a.getInitValue() != null)
+					_assign(a, a.getInitValue());
 			}
 		    
 		}

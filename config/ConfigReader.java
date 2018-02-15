@@ -181,6 +181,13 @@ public class ConfigReader implements ContentHandler {
 					if(currentEntityTable.getColumnCount()==0)
 						throw new IOException("invalid table " + currentEntityTable.getName());
 					cfg.initRelations(currentEntityTable);
+					
+					if(atts.getValue("enableRawValue") !=null) {
+						String[] enableRawValueColumns = atts.getValue("enableRawValue").split(",");
+						for(String enableRawValueColumn : enableRawValueColumns) {
+							currentEntityTable.getColumnByName(enableRawValueColumn.trim()).setEnableRawValue(true);
+						}
+					}
 				} else {
 					throw new SAXException("Illegal state");
 				}
