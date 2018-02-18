@@ -42,6 +42,7 @@ import cpp.bean.method.MethodQHashPkStruct;
 import cpp.bean.method.MethodRemoveAllManyToManyRelatedBeans;
 import cpp.bean.method.MethodRemoveManyToManyRelatedBean;
 import cpp.bean.method.MethodSetAutoIncrementId;
+import cpp.bean.method.MethodToggleAddRemoveRelatedBean;
 import cpp.bean.method.MethodUnload;
 import cpp.core.Attr;
 import cpp.core.Cls;
@@ -50,7 +51,6 @@ import cpp.core.Destructor;
 import cpp.core.Method;
 import cpp.core.Operator;
 import cpp.core.Param;
-import cpp.core.QString;
 import cpp.core.Struct;
 import cpp.core.Type;
 import cpp.core.expression.Expression;
@@ -179,6 +179,7 @@ public class BeanCls extends Cls {
 			addMethod(new MethodManyAttrGetter(attr));
 			addMethod(new MethodAddRelatedBean(r, new Param(attr.getElementType().toConstRef(), "bean")));
 			addMethod(new MethodAddRelatedBeanInternal(r, new Param(attr.getElementType().toConstRef(), "bean")));
+			addMethod(new MethodToggleAddRemoveRelatedBean(r));
 		}
 		
 		for(ManyRelation r:manyRelations) {
@@ -199,6 +200,7 @@ public class BeanCls extends Cls {
 			
 			addMethod(new MethodRemoveManyToManyRelatedBean(r, new Param(attr.getElementType().toConstRef(), "bean")));
 			addMethod(new MethodRemoveAllManyToManyRelatedBeans(r));
+			addMethod(new MethodToggleAddRemoveRelatedBean(r));
 		}
 		
 		
