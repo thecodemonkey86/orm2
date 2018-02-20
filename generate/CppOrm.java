@@ -74,7 +74,9 @@ public class CppOrm extends OrmCommon {
 		
 		ClsBeanRepository repo=Types.BeanRepository;
 		repo.addDeclarations(Beans.getAllBeans());
-		
+		for (BeanCls c : Beans.getAllBeans()) {
+			c.setPrimaryKeyType();
+		}
 		
 		for (BeanCls c : Beans.getAllBeans()) {
 			c.addDeclarations();

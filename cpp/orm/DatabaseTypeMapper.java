@@ -10,7 +10,6 @@ public abstract class DatabaseTypeMapper {
 	public abstract Type getTypeFromDbDataType(String dbType, boolean nullable);
 	
 	public abstract Expression getColumnDefaultValueExpression(Column col);
-	@Deprecated
 	public abstract Expression getGenericDefaultValueExpression(Column col);
 	
 	public abstract Type columnToType(Column c);

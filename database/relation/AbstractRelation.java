@@ -7,6 +7,7 @@ public class AbstractRelation {
 	protected Table sourceTable;
 	protected Table destTable;
 	protected String alias;
+	protected String substituteName;
 	
 	public AbstractRelation(String alias) {
 		this.alias = alias;
@@ -43,5 +44,17 @@ public class AbstractRelation {
 	
 	public void setDestTable(Table destTable) {
 		this.destTable = destTable;
+	}
+	
+	public void setSubstituteName(String substituteName) {
+		this.substituteName = substituteName;
+	}
+	
+	public String getSubstituteName() {
+		return substituteName;
+	}
+	
+	public boolean hasSubstituteName() {
+		return substituteName!=null;
 	}
 }

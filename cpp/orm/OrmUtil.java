@@ -8,9 +8,12 @@ import util.StringUtil;
 
 public class OrmUtil {
 	public static String getOneRelationDestAttrName(OneRelation relation) {
-		return (relation.getColumnCount() == 1 && relation.getColumns(0).getValue1().getName().endsWith("_id")
-				? CodeUtil2.camelCase(relation.getColumns(0).getValue1().getName().substring(0, relation.getColumns(0).getValue1().getName().length() - 3))
-				: relation.getDestTable().getCamelCaseName());
+		return relation.hasSubstituteName() 
+				?relation.getSubstituteName() 
+				:(  (relation.getColumnCount() == 1 && relation.getColumns(0).getValue1().getName().endsWith("_id")
+					? CodeUtil2.camelCase(relation.getColumns(0).getValue1().getName().substring(0, relation.getColumns(0).getValue1().getName().length() - 3))
+					: relation.getDestTable().getCamelCaseName())
+				);
 	}
 
 	public static String getOneToManyRelationDestAttrName(OneToManyRelation relation) {

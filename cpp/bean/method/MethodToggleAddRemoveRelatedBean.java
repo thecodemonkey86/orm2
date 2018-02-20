@@ -17,9 +17,7 @@ import util.StringUtil;
 public class MethodToggleAddRemoveRelatedBean extends Method {
 
 	ManyAttr manyAttr;
-	
-	Param pElement;
-	Param pAdd;
+	AbstractRelation r;
 	
 	public MethodToggleAddRemoveRelatedBean(AbstractRelation r) {
 		super(Public, Types.Void, "toggleAddRemoveRelatedBean" +r.getDestTable().getUc1stCamelCaseName()+StringUtil.ucfirst( r.getAlias()));
@@ -30,15 +28,16 @@ public class MethodToggleAddRemoveRelatedBean extends Method {
 		} else {
 			throw new IllegalArgumentException("illegal argument");
 		}
-		Type tElement =Types.getRelationForeignPrimaryKeyType(r);
-		pElement = addParam(new Param(tElement.isPrimitiveType() ? tElement : tElement.toConstRef(), "elem"));
-		pAdd = addParam(new Param( Types.Bool, "add"));
+		this.r=r;
+		
 	}
 
 	@Override
 	public void addImplementation() {
-		
-		
+		// may not work if in contructor
+		Type tElement =Types.getRelationForeignPrimaryKeyType(r);
+		Param pElement = addParam(new Param(tElement.isPrimitiveType() ? tElement : tElement.toConstRef(), "elem"));
+		Param pAdd = addParam(new Param( Types.Bool, "add"));
 		Attr aRemoved = parent.getAttrByName(manyAttr.getName()+"Removed");
 		Attr aAdded = parent.getAttrByName(manyAttr.getName()+"Added");
 		IfBlock ifAdd = _if(pAdd);

@@ -174,12 +174,17 @@ public class BeanCls extends Cls {
 		for(OneToManyRelation r:oneToManyRelations) {
 			ManyAttr attr = new ManyAttr(r);
 			addAttr(attr);
+			Attr attrManyToManyAdded = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Added");
+			addAttr(attrManyToManyAdded);
+			addMethod(new MethodAttributeGetter(attrManyToManyAdded));
+			
+			Attr attrManyToManyRemoved = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Removed");
+			addAttr(attrManyToManyRemoved);
 			addIncludeHeader(attr.getClassType().getIncludeHeader());
 			addForwardDeclaredClass((Cls) attr.getElementType());
 			addMethod(new MethodManyAttrGetter(attr));
 			addMethod(new MethodAddRelatedBean(r, new Param(attr.getElementType().toConstRef(), "bean")));
 			addMethod(new MethodAddRelatedBeanInternal(r, new Param(attr.getElementType().toConstRef(), "bean")));
-			addMethod(new MethodToggleAddRemoveRelatedBean(r));
 		}
 		
 		for(ManyRelation r:manyRelations) {
@@ -200,7 +205,6 @@ public class BeanCls extends Cls {
 			
 			addMethod(new MethodRemoveManyToManyRelatedBean(r, new Param(attr.getElementType().toConstRef(), "bean")));
 			addMethod(new MethodRemoveAllManyToManyRelatedBeans(r));
-			addMethod(new MethodToggleAddRemoveRelatedBean(r));
 		}
 		
 		
@@ -249,24 +253,13 @@ public class BeanCls extends Cls {
 //			}
 			
 		}
-		if (tbl.getPrimaryKey().isMultiColumn()) {
-			pkType = new Struct("Pk"+tbl.getUc1stCamelCaseName()); 
-			for(Column col: tbl.getPrimaryKey().getColumns()) {
-				Attr attrPrev = new Attr(BeanCls.getDatabaseMapper().getTypeFromDbDataType(col.getDbType(), col.isNullable()), col.getCamelCaseName()+"Previous");
-				addAttr(attrPrev);
-				getStructPk().addAttr(!col.hasOneRelation() ? getAttrByName(col.getCamelCaseName() ) : new Attr(BeanCls.getDatabaseMapper().columnToType(col), col.getCamelCaseName()));
-			}
-		} else {
-			if (tbl.getPrimaryKey().getColumns().size()==0) {
-				throw new RuntimeException("pk info missing for "+name);
-			}
-			Column col= tbl.getPrimaryKey().getFirstColumn();
-			Attr attrPrev = new Attr(BeanCls.getDatabaseMapper().getTypeFromDbDataType(col.getDbType(), col.isNullable()), col.getCamelCaseName()+"Previous");
-			addAttr(attrPrev);
-			pkType =BeanCls.getDatabaseMapper().columnToType(col);
+		
+		for(OneToManyRelation r:oneToManyRelations) {
+			addMethod(new MethodToggleAddRemoveRelatedBean(r));
 		}
-		
-		
+		for(ManyRelation r:manyRelations) {
+			addMethod(new MethodToggleAddRemoveRelatedBean(r));
+		}
 //		addAttr(new RepositoryAttr());
 	}
 	
@@ -606,5 +599,25 @@ public class BeanCls extends Cls {
 
 	public boolean hasRelations() {
 		return oneRelations.size() > 0 || oneToManyRelations.size() > 0 || manyRelations.size()>0;
+	}
+
+	public void setPrimaryKeyType() {
+		if (tbl.getPrimaryKey().isMultiColumn()) {
+			pkType = new Struct("Pk"+tbl.getUc1stCamelCaseName()); 
+			for(Column col: tbl.getPrimaryKey().getColumns()) {
+				Attr attrPrev = new Attr(BeanCls.getDatabaseMapper().getTypeFromDbDataType(col.getDbType(), col.isNullable()), col.getCamelCaseName()+"Previous");
+				addAttr(attrPrev);
+				getStructPk().addAttr(  new Attr(BeanCls.getDatabaseMapper().columnToType(col), col.getCamelCaseName()));
+			}
+		} else {
+			if (tbl.getPrimaryKey().getColumns().size()==0) {
+				throw new RuntimeException("pk info missing for "+name);
+			}
+			Column col= tbl.getPrimaryKey().getFirstColumn();
+			Attr attrPrev = new Attr(BeanCls.getDatabaseMapper().getTypeFromDbDataType(col.getDbType(), col.isNullable()), col.getCamelCaseName()+"Previous");
+			addAttr(attrPrev);
+			pkType =BeanCls.getDatabaseMapper().columnToType(col);
+		}
+		
 	}
 }

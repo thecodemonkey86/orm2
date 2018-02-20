@@ -85,7 +85,7 @@ public class Expressions {
 			return expressions.get(0);
 		}
 		Expression res = new BinaryOperatorExpression(expressions.get(0), Operators.AND, expressions.get(1));
-		for(int i=3;i<expressions.size();i++) {
+		for(int i=2;i<expressions.size();i++) {
 			res = new BinaryOperatorExpression(res, Operators.AND, expressions.get(i));
 		}
 		return res;

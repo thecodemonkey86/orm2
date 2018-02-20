@@ -217,9 +217,10 @@ public class ConfigReader implements ContentHandler {
 			case "relation":
 				currentSrcTable = cfg.getEntityTable(atts.getValue("src"));
 				currentDestTable = cfg.getEntityTable(atts.getValue("dest"));
-			
+				String substituteName = atts.getValue("name");
 				switch (section) {
 				case MANY_TO_MANY_RELATIONS:
+					
 					String relQueryNameManyToManyRelation = atts.getValue("queryName");
 					currentManyToManyRelation = new ManyRelation(
 							relQueryNameManyToManyRelation == null || relQueryNameManyToManyRelation.isEmpty()
@@ -235,6 +236,7 @@ public class ConfigReader implements ContentHandler {
 					currentManyToManyRelation.setDestTable(currentDestTable);
 					currentMappingTable = cfg.getMappingTable(atts.getValue("mappingTable"));
 					currentManyToManyRelation.setMappingTable(currentMappingTable);
+					currentManyToManyRelation.setSubstituteName(substituteName);
 					manyToManyAliasCounter++;
 					break;
 				case ONE_TO_MANY_RELATIONS:
@@ -247,6 +249,7 @@ public class ConfigReader implements ContentHandler {
 					cfg.addOneToManyRelation(currentOneToManyRelation, currentSrcTable);
 					currentOneToManyRelation.setSourceTable(currentSrcTable);
 					currentOneToManyRelation.setDestTable(currentDestTable);
+					currentOneToManyRelation.setSubstituteName(substituteName);
 					oneToManyAliasCounter++;
 					break;
 				case ONE_RELATIONS:
@@ -259,6 +262,7 @@ public class ConfigReader implements ContentHandler {
 					cfg.addOneRelation(currentOneRelation, currentSrcTable);
 					currentOneRelation.setSourceTable(currentSrcTable);
 					currentOneRelation.setDestTable(currentDestTable);
+					currentOneRelation.setSubstituteName(substituteName);
 					oneAliasCounter++;
 					break;
 				default:
