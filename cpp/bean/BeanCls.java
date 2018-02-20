@@ -21,6 +21,7 @@ import cpp.bean.method.MethodColumnAttrSetter;
 import cpp.bean.method.MethodColumnAttrSetterInternal;
 import cpp.bean.method.MethodGetAllSelectFields;
 import cpp.bean.method.MethodGetFieldName;
+import cpp.bean.method.MethodGetFieldNameAlias;
 import cpp.bean.method.MethodGetInsertFields;
 import cpp.bean.method.MethodGetInsertParams;
 import cpp.bean.method.MethodGetInsertValuePlaceholders;
@@ -225,6 +226,7 @@ public class BeanCls extends Cls {
 				}
 				
 				addMethod(new MethodGetFieldName(col));
+				addMethod(new MethodGetFieldNameAlias(col));
 				addMethod(new MethodGetFieldName(col, true));
 				if (!col.isPartOfPk()) {
 					

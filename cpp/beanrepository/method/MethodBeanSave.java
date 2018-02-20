@@ -192,7 +192,7 @@ public class MethodBeanSave extends Method {
 				//	foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction("append", _this().accessAttr(new Attr( bean.getPkType(),  bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName()))));
 	//				foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction("append", foreachAttrAdd.getVar()));
 					foreachAttrAdd.addInstr(new BinaryOperatorExpression(varPlaceholdersForeachAdd, new QStringPlusEqOperator(), QString.fromStringConstant(","+ CodeUtil2.parentheses( CodeUtil2.strMultiply("?", ",", r.getSourceColumnCount()+r.getDestColumnCount()+propertyColumnCount)) )).asInstruction() );
-					ifAddBeans.thenBlock().addInstr(new cpp.core.instruction.ScClosedInstruction("qDebug()<<addedSql.arg(placeholders.mid(1))"));
+//					ifAddBeans.thenBlock().addInstr(new cpp.core.instruction.ScClosedInstruction("qDebug()<<addedSql.arg(placeholders.mid(1))"));
 					ifAddBeans.thenBlock()._callMethodInstr(_this().accessAttr("sqlCon"), "execute", varAddSql.callMethod("arg", varPlaceholdersForeachAdd.callMethod("mid", new IntExpression(1))), varParamsForeachAdd);
 				} else {
 					throw new RuntimeException("not implemented");
