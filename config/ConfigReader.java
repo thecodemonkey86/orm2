@@ -326,6 +326,7 @@ public class ConfigReader implements ContentHandler {
 				break;
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new SAXException(e);
 		}
 

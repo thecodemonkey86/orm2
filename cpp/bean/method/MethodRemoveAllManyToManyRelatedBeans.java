@@ -7,7 +7,6 @@ import cpp.bean.Beans;
 import cpp.bean.ManyAttr;
 import cpp.core.Attr;
 import cpp.core.Method;
-import cpp.core.Param;
 import cpp.core.Struct;
 import cpp.core.expression.Var;
 import cpp.core.instruction.ForeachLoop;
@@ -29,23 +28,40 @@ public class MethodRemoveAllManyToManyRelatedBeans extends Method {
 	public void addImplementation() {
 		Attr a=parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
 		BeanCls relationBean = Beans.get( rel.getDestTable());
-		
+		Var varForeach = new Var(((ManyAttr)a).getElementType().toConstRef(), "_relationBean");
 		if (relationBean.getTbl().getPrimaryKey().isMultiColumn()) {
-			throw new RuntimeException("not implemented");
+			ForeachLoop foreachRelationBeans = _foreach(varForeach, a);	
+			Struct pkType=relationBean.getStructPk();
+			Var idRemoved = foreachRelationBeans._declare(pkType, "idRemoved");
+			for(Column col:relationBean.getTbl().getPrimaryKey().getColumns()) {
 				
-		} else {
-			Var varForeach = new Var(((ManyAttr)a).getElementType().toConstRef(), "_relationBean");
-			ForeachLoop foreachRelationBeans = _foreach(varForeach, a);
-			
-			
+				foreachRelationBeans._assign(idRemoved.accessAttr(col
+						.getCamelCaseName()), varForeach
+						.callAttrGetter(
+								col
+								.getCamelCaseName()
+						));
+			}
 			foreachRelationBeans.addInstr(
 					parent.getAttrByName(
 							a.getName()+"Removed")
 							.callMethod("append",
-									varForeach.callMethod("get" + relationBean.getTbl().getPrimaryKey().getFirstColumn().getUc1stCamelCaseName())
-																	
+									idRemoved
 								).asInstruction());	
+		} else {
+			ForeachLoop foreachRelationBeans = _foreach(varForeach, a);	
+			
+			foreachRelationBeans.addInstr(
+				parent.getAttrByName(
+						a.getName()+"Removed")
+						.callMethod("append",
+								varForeach.callMethod("get" + relationBean.getTbl().getPrimaryKey().getFirstColumn().getUc1stCamelCaseName())
+																
+							).asInstruction());	
+			
 		}
+		
+
 		_callMethodInstr(a, ClsQVector.clear);
 	}
 

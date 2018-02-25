@@ -73,9 +73,10 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 					return Types.QByteArray;	
 				case "boolean":
 					return Types.Bool;
-				case "timestamp with time zone":
+				case "datetime":
 					return Types.QDateTime;
 				default:
+					System.out.println(dbType);
 					return CoreTypes.QVariant;
 				}
 			} else {

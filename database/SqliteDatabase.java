@@ -87,7 +87,7 @@ public class SqliteDatabase extends Database {
 				col.setName(getColName(l.get(index++)));
 				
 				String type = l.get(index++);
-				switch(type) {
+				switch(type.toUpperCase()) {
 				case "VARYING":
 					expectToken(l, index++, "CHARACTER");
 					type += " " + l.get(index);
@@ -101,6 +101,13 @@ public class SqliteDatabase extends Database {
 						type += " " + l.get(index);
 						index++;
 					}
+					break;
+				case "DECIMAL":
+					expectToken(l, index++, "(");
+					expectInteger(l, index++);
+					expectToken(l, index++, ",");
+					expectInteger(l, index++);
+					expectToken(l, index++, ")");
 					break;
 				default:
 						break;
@@ -255,6 +262,12 @@ public class SqliteDatabase extends Database {
 		return new SqliteColumn();
 	}
 
+	private static void expectInteger(List<String> l, int index) {
+		if(!l.get(index).matches("[0-9]*")) {
+			throw new RuntimeException("expected integer at "+ index);
+		}
+	}
+	
 	private static void expectToken(List<String> l, int index, String...expect) {
 		if(expect.length == 0) {
 			throw new IllegalArgumentException();
