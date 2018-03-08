@@ -9,7 +9,7 @@ import cpp.core.Param;
 public class MethodAttributeSetter extends Method{
 	protected Attr attr;
 	public MethodAttributeSetter(Attr a) {
-		super(Public, Types.Void, "set"+StringUtil.ucfirst(a.getName()));
+		super(Public, Types.Void,getMethodName(a) );
 		this.attr=a;
 		addParam(new Param(a.getType().isPrimitiveType() ? a.getType() : a.getType().toConstRef() , a.getName()));
 	}
@@ -19,6 +19,10 @@ public class MethodAttributeSetter extends Method{
 	public void addImplementation() {
 		//_return(_this().accessAttr(a));
 		addInstr(_this().accessAttr(attr).assign(getParam(attr.getName())));
+	}
+	
+	public static String getMethodName(Attr a) {
+		return "set"+StringUtil.ucfirst(a.getName());
 	}
 
 }

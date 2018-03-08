@@ -14,6 +14,7 @@ import cpp.core.expression.InlineIfExpression;
 import cpp.core.expression.Var;
 import cpp.core.instruction.ForeachLoop;
 import cpp.lib.ClsQString;
+import cpp.lib.ClsQVariant;
 import cpp.lib.ClsQVector;
 import database.column.Column;
 
@@ -74,7 +75,7 @@ public class MethodGetInsertParams extends Method {
 					Expression colAttr = parent.getAttrByName(col.getCamelCaseName());
 					if(colAttr.getType().equals(Types.QString))
 						colAttr = new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), QString.fromStringConstant(""), colAttr);
-					addInstr(params.callMethodInstruction(ClsQVector.append,col.isNullable() ? new InlineIfExpression(colAttr.callMethod("isNull"), new CreateObjectExpression(Types.QVariant), colAttr.callMethod("val"))   : colAttr));
+					addInstr(params.callMethodInstruction(ClsQVector.append,col.isNullable() ? new InlineIfExpression(colAttr.callMethod("isNull"), new CreateObjectExpression(Types.QVariant), Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr.callMethod("val")))   : Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr)));
 				} else {
 					Attr attrRawExpressionParams = parent.getAttrByName("insertParamsForRawExpression"+col.getUc1stCamelCaseName());
 					ForeachLoop foreachAttrRawExpressionParams = _foreach(new Var(Types.QVariant, name), attrRawExpressionParams);

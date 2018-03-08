@@ -21,7 +21,7 @@ public class MethodAddRelatedBeanInternal extends Method {
 	
 		
 	public static String getMethodName(OneToManyRelation r) {
-		return "add"+StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrNameSingular(r))+"Internal";
+		return "add"+StringUtil.ucfirst(OrmUtil.getOneToManyRelationDestAttrNameSingular(r))+"Internal";
 	}
 	
 	public static String getMethodName(ManyRelation r) {

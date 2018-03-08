@@ -27,16 +27,16 @@ public class OrmUtil {
 		return CodeUtil2.plural(relation.getDestTable().getCamelCaseName());
 	}
 
-	public static String getManyRelationDestAttrNameSingular(OneRelation relation) {
-		if (relation.getColumnCount() == 1 && relation.getColumns(0).getValue2().getName().endsWith(relation.getSourceTable() + "_id")) {
-			String name = CodeUtil2.camelCase(relation.getColumns(0).getValue2().getName().substring(0,
-					relation.getColumns(0).getValue2().getName().length() - (relation.getSourceTable().getName() + "_id").length()) + relation.getDestTable());
-			return name;
-		}
-
-		return relation.getDestTable().getCamelCaseName();
-	}
-	public static String getManyRelationDestAttrNameSingular(OneToManyRelation relation) {
+//	public static String getManyRelationDestAttrNameSingular(OneRelation relation) {
+//		if (relation.getColumnCount() == 1 && relation.getColumns(0).getValue2().getName().endsWith(relation.getSourceTable() + "_id")) {
+//			String name = CodeUtil2.camelCase(relation.getColumns(0).getValue2().getName().substring(0,
+//					relation.getColumns(0).getValue2().getName().length() - (relation.getSourceTable().getName() + "_id").length()) + relation.getDestTable());
+//			return name;
+//		}
+//
+//		return relation.getDestTable().getCamelCaseName();
+//	}
+	public static String getOneToManyRelationDestAttrNameSingular(OneToManyRelation relation) {
 		if (relation.getColumnCount() == 1 && relation.getColumns(0).getValue2().getName().endsWith(relation.getSourceTable() + "_id")) {
 			String name = CodeUtil2.camelCase(relation.getColumns(0).getValue2().getName().substring(0,
 					relation.getColumns(0).getValue2().getName().length() - (relation.getSourceTable().getName() + "_id").length()) + relation.getDestTable());

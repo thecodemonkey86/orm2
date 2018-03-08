@@ -15,6 +15,7 @@ import cpp.core.expression.InlineIfExpression;
 import cpp.core.expression.Var;
 import cpp.core.instruction.IfBlock;
 import cpp.lib.ClsQString;
+import cpp.lib.ClsQVariant;
 import database.column.Column;
 import database.relation.OneRelation;
 import database.relation.PrimaryKey;
@@ -45,7 +46,7 @@ public class MethodGetUpdateFields extends Method{
 			ifIdModified.setIfInstr(
 					fields.callMethodInstruction("append", QString.fromStringConstant(colPk.getEscapedName()+"=?"))
 					,
-					paramByName("params").callMethodInstruction("append",  colAttr)
+					paramByName("params").callMethodInstruction("append", Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr) )
 					
 					);
 		}
@@ -59,7 +60,7 @@ public class MethodGetUpdateFields extends Method{
 					.setIfInstr(
 							fields.callMethodInstruction("append", QString.fromStringConstant(col.getEscapedName()+"=?"))
 							,
-							paramByName("params").callMethodInstruction("append", col.isNullable() ? new InlineIfExpression(colAttr.callMethod("isNull"), new CreateObjectExpression(CoreTypes.QVariant), colAttr.callMethod("val"))   : colAttr)
+							paramByName("params").callMethodInstruction("append", col.isNullable() ? new InlineIfExpression(colAttr.callMethod("isNull"), new CreateObjectExpression(CoreTypes.QVariant), colAttr.callMethod("val"))   : Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr))
 							
 							);
 				}
@@ -76,7 +77,7 @@ public class MethodGetUpdateFields extends Method{
 						colAttr = colAttr.callMethod(Nullable.val);
 					}
 					ifBlock.setIfInstr(fields.callMethodInstruction("append", QString.fromStringConstant(col.getEscapedName()+"=?")),
-							paramByName("params").callMethodInstruction("append", colAttr));
+							paramByName("params").callMethodInstruction("append", Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr)));
 				}
 			}
 			

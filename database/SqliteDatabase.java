@@ -117,6 +117,11 @@ public class SqliteDatabase extends Database {
 				if(!col.isNullable()) {
 					index += 2;
 				}
+				if(isTokenAt(l, index, "DEFAULT")) {
+					index++;
+					col.setDefaultValue(l.get(index++));
+				}
+				
 				if(isTokenAt(l, index, "PRIMARY")) {
 					index++;
 					expectToken(l, index++, "KEY");

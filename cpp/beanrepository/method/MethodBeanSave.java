@@ -20,6 +20,8 @@ import cpp.core.expression.Var;
 import cpp.core.instruction.ForeachLoop;
 import cpp.core.instruction.IfBlock;
 import cpp.lib.ClsBaseRepository;
+import cpp.lib.ClsQVariant;
+import cpp.lib.ClsQVariantList;
 import cpp.lib.ClsQVector;
 import cpp.orm.OrmUtil;
 import database.column.Column;
@@ -109,20 +111,22 @@ public class MethodBeanSave extends Method {
 				
 				if (bean.getTbl().getPrimaryKey().isMultiColumn()) {
 					for(Column col:bean.getTbl().getPrimaryKey().getColumns()) {
-						ifRemoveBeans.thenBlock().addInstr(varParamsForeachRemove.callMethodInstruction("append", pBean.callAttrGetter(col.getCamelCaseName())));
+						ifRemoveBeans.thenBlock().addInstr(varParamsForeachRemove.callMethodInstruction(ClsQVariantList.append, Types.QVariant.callStaticMethod(ClsQVariant.fromValue, pBean.callAttrGetter(col.getCamelCaseName()))));
 					}
 				} else {
-					ifRemoveBeans.thenBlock().addInstr(varParamsForeachRemove.callMethodInstruction("append", pBean.callAttrGetter( bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())));
+					Expression e = pBean.callAttrGetter( bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName());
+					ifRemoveBeans.thenBlock().addInstr(varParamsForeachRemove.callMethodInstruction(ClsQVariantList.append,e.getType().equals(Types.QVariant) ?e : Types.QVariant.callStaticMethod(ClsQVariant.fromValue,e) ));
 				}
 				
 				ForeachLoop foreachAttrRemove = ifRemoveBeans.thenBlock()._foreach(new Var(foreachRemoveElementType.isPrimitiveType()?foreachRemoveElementType: foreachRemoveElementType.toConstRef(), "rem"), attrManyToManyRemoved);
 			
 				if (r.getDestTable().getPrimaryKey().isMultiColumn()) {
 					for(Column col:r.getDestTable().getPrimaryKey().getColumns()) {
-						foreachAttrRemove.addInstr(varParamsForeachRemove.callMethodInstruction("append", foreachAttrRemove.getVar().accessAttr(col.getCamelCaseName())));
+						Expression e = foreachAttrRemove.getVar().accessAttr(col.getCamelCaseName());
+						foreachAttrRemove.addInstr(varParamsForeachRemove.callMethodInstruction(ClsQVariantList.append, e.getType().equals(Types.QVariant) ?e : Types.QVariant.callStaticMethod(ClsQVariant.fromValue,e) ));
 					}
 				} else {
-					foreachAttrRemove.addInstr(varParamsForeachRemove.callMethodInstruction("append", foreachAttrRemove.getVar()));
+					foreachAttrRemove.addInstr(varParamsForeachRemove.callMethodInstruction(ClsQVariantList.append, Types.QVariant.callStaticMethod(ClsQVariant.fromValue, foreachAttrRemove.getVar())));
 				}
 				
 				foreachAttrRemove.addInstr(new BinaryOperatorExpression(varPlaceholdersForeachRemove, new QStringPlusEqOperator(), QString.fromStringConstant(bean.getTbl().getPrimaryKey().isMultiColumn() ? ","+CodeUtil2.parentheses( CodeUtil2.strMultiply("?", ",", r.getDestTable().getPrimaryKey().getColumns().size())):",?" )).asInstruction() );
@@ -160,17 +164,20 @@ public class MethodBeanSave extends Method {
 					ForeachLoop foreachAttrAdd = ifAddBeans.thenBlock()._foreach(new Var(foreachAddElementType.isPrimitiveType()?foreachAddElementType: foreachAddElementType.toConstRef(), "rem"),  attrManyToManyAdded);
 					if (bean.getTbl().getPrimaryKey().isMultiColumn()) {
 						for(Column col:bean.getTbl().getPrimaryKey().getColumns()) {
-							foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction("append", pBean.callAttrGetter(  col.getCamelCaseName())));
+							Expression e =pBean.callAttrGetter(  col.getCamelCaseName());
+							foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction(ClsQVariantList.append, e.getType().equals(Types.QVariant) ? e : Types.QVariant.callStaticMethod(ClsQVariant.fromValue, e)  ));
 						}
 					} else {
-						foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction("append", pBean.callAttrGetter(  bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())));
+						Expression e =pBean.callAttrGetter(  bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName());
+						foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction(ClsQVariantList.append, e.getType().equals(Types.QVariant) ? e : Types.QVariant.callStaticMethod(ClsQVariant.fromValue, e)));
 					}
 					if (r.getDestTable().getPrimaryKey().isMultiColumn()) {
 						for(Column col:r.getDestTable().getPrimaryKey().getColumns()) {
-							foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction("append", foreachAttrAdd.getVar().accessAttr(col.getCamelCaseName())));
+							Expression e = foreachAttrAdd.getVar().accessAttr(col.getCamelCaseName()); 
+							foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction(ClsQVariantList.append, e.getType().equals(Types.QVariant) ? e : Types.QVariant.callStaticMethod(ClsQVariant.fromValue, e)  ));
 						}
 					} else {
-						foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction("append", foreachAttrAdd.getVar()));
+						foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction(ClsQVariantList.append, foreachAttrAdd.getVar().getType().equals(Types.QVariant) ? foreachAttrAdd.getVar() :  Types.QVariant.callStaticMethod(ClsQVariant.fromValue,foreachAttrAdd.getVar())));
 					}
 					int propertyColumnCount=0;
 					for(Column col:r.getMappingTable().getAllColumns()) {
@@ -185,12 +192,12 @@ public class MethodBeanSave extends Method {
 						
 						if(!isPartOfPk) {
 							propertyColumnCount++;
-							foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction("append", BeanCls.getDatabaseMapper().getColumnDefaultValueExpression(col)));
+							foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction(ClsQVariantList.append, BeanCls.getDatabaseMapper().getColumnDefaultValueExpression(col)));
 						}
 					}
 					
-				//	foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction("append", _this().accessAttr(new Attr( bean.getPkType(),  bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName()))));
-	//				foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction("append", foreachAttrAdd.getVar()));
+				//	foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction(ClsQVariantList.append, _this().accessAttr(new Attr( bean.getPkType(),  bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName()))));
+	//				foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction(ClsQVariantList.append, foreachAttrAdd.getVar()));
 					foreachAttrAdd.addInstr(new BinaryOperatorExpression(varPlaceholdersForeachAdd, new QStringPlusEqOperator(), QString.fromStringConstant(","+ CodeUtil2.parentheses( CodeUtil2.strMultiply("?", ",", r.getSourceColumnCount()+r.getDestColumnCount()+propertyColumnCount)) )).asInstruction() );
 //					ifAddBeans.thenBlock().addInstr(new cpp.core.instruction.ScClosedInstruction("qDebug()<<addedSql.arg(placeholders.mid(1))"));
 					ifAddBeans.thenBlock()._callMethodInstr(_this().accessAttr("sqlCon"), "execute", varAddSql.callMethod("arg", varPlaceholdersForeachAdd.callMethod("mid", new IntExpression(1))), varParamsForeachAdd);

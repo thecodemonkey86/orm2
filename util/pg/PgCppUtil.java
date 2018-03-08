@@ -64,9 +64,9 @@ public class PgCppUtil {
 	public static String getManyRelationDestAttrName(ManyRelation relation) {
 		return OrmUtil.getManyRelationDestAttrName(relation);
 	}
-	public static String getManyRelationDestAttrNameSingular(OneRelation relation) {
-		return OrmUtil.getManyRelationDestAttrNameSingular(relation);
-	}
+//	public static String getManyRelationDestAttrNameSingular(OneRelation relation) {
+//		return OrmUtil.getManyRelationDestAttrNameSingular(relation);
+//	}
 	public static String getManyRelationDestAttrNameSingular(ManyRelation relation) {
 		return OrmUtil.getManyRelationDestAttrNameSingular(relation);
 	}

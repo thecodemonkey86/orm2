@@ -28,6 +28,7 @@ import cpp.core.instruction.IfBlock;
 import cpp.core.instruction.InstructionBlock;
 import cpp.lib.ClsQHash;
 import cpp.lib.ClsQSet;
+import cpp.lib.ClsQVariant;
 import cpp.lib.LibEqualsOperator;
 import cpp.orm.OrmUtil;
 import database.column.Column;
@@ -129,9 +130,9 @@ public class MethodLoadCollection extends Method{
 			
 			if(pkCol.hasOneRelation()){
 				//colPk.getRelation().getDestTable().getCamelCaseName()
-				foreach._callMethodInstr(params, "append",varForeachBean.callAttrGetter(PgCppUtil.getOneRelationDestAttrName(pkCol.getOneRelation())).callMethod("get"+pkCol.getOneRelationMappedColumn().getUc1stCamelCaseName()) ); 
+				foreach._callMethodInstr(params, "append",Types.QVariant.callStaticMethod(ClsQVariant.fromValue, varForeachBean.callAttrGetter(PgCppUtil.getOneRelationDestAttrName(pkCol.getOneRelation())).callMethod("get"+pkCol.getOneRelationMappedColumn().getUc1stCamelCaseName())) ); 
 			}else{
-				foreach._callMethodInstr(params, "append",varForeachBean.callAttrGetter(pkCol.getCamelCaseName()));	
+				foreach._callMethodInstr(params, "append",Types.QVariant.callStaticMethod(ClsQVariant.fromValue, varForeachBean.callAttrGetter(pkCol.getCamelCaseName())));	
 			}
 			
 //			foreach._callMethodInstr(params, "append", varForeachBean.callAttrGetter(pkCol.getCamelCaseName()));

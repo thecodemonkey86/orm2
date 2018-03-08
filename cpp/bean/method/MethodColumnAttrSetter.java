@@ -18,7 +18,7 @@ public class MethodColumnAttrSetter extends Method{
 	Column col;
 	
 	public MethodColumnAttrSetter(BeanCls cls, Column col, Attr a) {
-		super(Public, Types.Void, "set"+StringUtil.ucfirst(a.getName()));
+		super(Public, Types.Void, getMethodName(col));
 		this.a=a;
 		if (col.isNullable()) {
 			TplCls nullable=(TplCls) a.getType();
@@ -46,6 +46,8 @@ public class MethodColumnAttrSetter extends Method{
 		
 	}
 
-	
+	public static String getMethodName(Column col) {
+		return "set"+StringUtil.ucfirst(col.getCamelCaseName());
+	}
 
 }

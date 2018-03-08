@@ -18,9 +18,13 @@ public class MethodAddManyToManyRelatedBean extends Method {
 	protected ManyRelation rel;
 	
 	public MethodAddManyToManyRelatedBean(ManyRelation r, Param p) {
-		super(Public, Types.Void, "add"+StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrNameSingular(r)));
+		super(Public, Types.Void, getMethodName(r));
 		addParam(p);
 		rel=r;
+	}
+	
+	public static String getMethodName(ManyRelation r) {
+		return "add"+StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrNameSingular(r));
 	}
 
 	@Override

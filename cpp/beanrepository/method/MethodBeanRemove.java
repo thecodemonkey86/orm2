@@ -8,6 +8,7 @@ import cpp.core.Param;
 import cpp.core.QStringLiteral;
 import cpp.core.expression.Expression;
 import cpp.core.expression.QVectorInitList;
+import cpp.lib.ClsQVariant;
 import database.column.Column;
 import util.CodeUtil2;
 
@@ -50,7 +51,9 @@ public class MethodBeanRemove extends Method {
 					} else {
 						varParams = new QVectorInitList(Types.QVariant);
 						for(Column colPk : bean.getTbl().getPrimaryKey().getColumns()) {
-							((QVectorInitList)varParams).addExpression(pBean.callAttrGetter(colPk.getCamelCaseName()));
+							Expression e = pBean.callAttrGetter(colPk.getCamelCaseName());
+							
+							((QVectorInitList)varParams).addExpression(e.getType().equals(Types.QVariant) ?e : Types.QVariant.callStaticMethod(ClsQVariant.fromValue,e));
 						}
 					}
 					

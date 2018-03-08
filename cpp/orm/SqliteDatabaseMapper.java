@@ -25,6 +25,8 @@ public class SqliteDatabaseMapper extends DatabaseTypeMapper {
 			return Types.QVariant.getTemplateMethod("value", Types.Int64);
 		case "SMALLINT":
 			return Types.QVariant.getTemplateMethod("value", Types.Int16);
+		case "TINYINT":
+			return Types.QVariant.getTemplateMethod("value", Types.Int8);
 		case "CHARACTER":
 		case "VARCHAR":
 		case "VARYING CHARACTER":
@@ -123,6 +125,7 @@ public class SqliteDatabaseMapper extends DatabaseTypeMapper {
 				case "BIGINT":
 					return new LongLongExpression(0L);
 				case "SMALLINT":
+				case "TINYINT":
 					return new ShortExpression((short)0);
 				case "CHARACTER":
 				case "VARCHAR":
@@ -149,7 +152,7 @@ public class SqliteDatabaseMapper extends DatabaseTypeMapper {
 				case "BOOLEAN":
 					return BoolExpression.FALSE;
 				default:
-					throw new RuntimeException("type" + dbType + " not implemented");
+					throw new RuntimeException("type " + dbType + " not implemented");
 				}
 		} else {
 			Expression e = getColumnDefaultValueExpressionImpl(dbType, false);

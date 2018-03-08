@@ -11,6 +11,7 @@ public class ClsQVariant extends Cls{
 	public static final String isNull = "isNull";
 	public static final String value = "value";
 	public static final String toShort = "toShort";
+	public static final String fromValue = "fromValue";
 
 	public ClsQVariant() {
 		super("QVariant");
@@ -24,6 +25,7 @@ public class ClsQVariant extends Cls{
 		addMethod(new LibMethod(CoreTypes.Int, "toInt"));
 		addMethod(new LibMethod(CoreTypes.Short, toShort));
 		addMethod(new LibMethod(CoreTypes.Bool, isNull));
+		addMethod(new LibMethod(this, fromValue,true));
 		addMethod(new LibMethod(CoreTypes.LongLong, "toLongLong"));
 		addMethodTemplate(new LibMethodTemplate(new TplSymbol("T"), value) {
 

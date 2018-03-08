@@ -19,6 +19,7 @@ import cpp.bean.method.MethodAttrGetter;
 import cpp.bean.method.MethodColumnAttrSetNull;
 import cpp.bean.method.MethodColumnAttrSetter;
 import cpp.bean.method.MethodColumnAttrSetterInternal;
+import cpp.bean.method.MethodCopyFields;
 import cpp.bean.method.MethodGetAllSelectFields;
 import cpp.bean.method.MethodGetFieldName;
 import cpp.bean.method.MethodGetFieldNameAlias;
@@ -346,6 +347,7 @@ public class BeanCls extends Cls {
 		addMethod(new MethodGetPrimaryKeyColumns(tbl.getPrimaryKey()));
 		addMethod(new MethodGetLimitQueryString(tbl.getPrimaryKey()));
 		addMethod(new MethodUnload(oneRelations, oneToManyRelations, manyRelations));
+		addMethod(new MethodCopyFields(this));
 		//addMethod(new MethodLoad2Levels(oneRelations, oneToManyRelations,manyRelations, tbl));
 		
 //		if (manyRelations.size()>0) {
@@ -587,7 +589,7 @@ public class BeanCls extends Cls {
 	
 	public static String getRelatedBeanMethodName(AbstractRelation r) {
 		 if (r instanceof OneToManyRelation) {
-			return "add"+StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrNameSingular((OneToManyRelation) r))+"Internal";
+			return "add"+StringUtil.ucfirst(OrmUtil.getOneToManyRelationDestAttrNameSingular((OneToManyRelation) r))+"Internal";
 		} else  if (r instanceof ManyRelation) {
 			return "add"+StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrNameSingular((ManyRelation) r))+"Internal";
 		} else {

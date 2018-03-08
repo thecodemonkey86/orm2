@@ -13,7 +13,7 @@ public class MethodAddRelatedBean extends Method {
 	protected OneToManyRelation rel;
 	
 	public MethodAddRelatedBean(OneToManyRelation r, Param p) {
-		super(Public, Types.Void, "add"+StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrNameSingular(r)));
+		super(Public, Types.Void, getMethodName(r));
 		addParam(p);
 		rel=r;
 	}
@@ -25,4 +25,7 @@ public class MethodAddRelatedBean extends Method {
 //		addInstr(parent.getAttrByName("_added"+StringUtil.ucfirst(a.getName())).callMethod("append",getParam("bean")).asInstruction());
 	}
 
+	public static String getMethodName(OneToManyRelation r) {
+		return "add"+StringUtil.ucfirst(OrmUtil.getOneToManyRelationDestAttrNameSingular(r));
+	}
 }
