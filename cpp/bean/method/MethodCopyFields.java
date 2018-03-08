@@ -22,11 +22,12 @@ import database.relation.OneToManyRelation;
 
 public class MethodCopyFields extends Method{
 
-	Param pSrc,pExclude;
+	Param pSrc,pExclude,pRelations;
 	
 	public MethodCopyFields(BeanCls bean) {
 		super(Public, CoreTypes.Void, "copyFieldsFrom");
 		pSrc = addParam(new Param(bean.toSharedPtr().toConstRef(), "src"));
+		pRelations = addParam(new Param(CoreTypes.Bool, "copyRelations"));
 		pExclude = addParam(new Param(Types.qset(Types.QString).toConstRef(), "exclude",new CreateObjectExpression(Types.qset(Types.QString))));
 	}
 
@@ -69,15 +70,16 @@ public class MethodCopyFields extends Method{
 				ifNotExclude.thenBlock()._callMethodInstr(_this(), MethodColumnAttrSetter.getMethodName(col), pSrc.callAttrGetter(col.getCamelCaseName()));
 			}
 		}
+		IfBlock ifCopyRelations = _if(pRelations);
 		for(OneRelation r : bean.getOneRelations()) {
-			_callMethodInstr(_this(), MethodAttributeSetter.getMethodName(bean.getAttrByName(OrmUtil.getOneRelationDestAttrName(r))), pSrc.callAttrGetter(bean.getAttrByName(OrmUtil.getOneRelationDestAttrName(r))));
+			ifCopyRelations.thenBlock()._callMethodInstr(_this(), MethodAttributeSetter.getMethodName(bean.getAttrByName(OrmUtil.getOneRelationDestAttrName(r))), pSrc.callAttrGetter(bean.getAttrByName(OrmUtil.getOneRelationDestAttrName(r))));
 		}
 		for(OneToManyRelation r : bean.getOneToManyRelations()) {
-			ForeachLoop foreachRelationEntity = _foreach(new Var(Beans.get(r.getDestTable()).toSharedPtr().toConstRef(), OrmUtil.getOneToManyRelationDestAttrNameSingular(r)), pSrc.callAttrGetter(OrmUtil.getOneToManyRelationDestAttrName(r)));
+			ForeachLoop foreachRelationEntity = ifCopyRelations.thenBlock()._foreach(new Var(Beans.get(r.getDestTable()).toSharedPtr().toConstRef(), OrmUtil.getOneToManyRelationDestAttrNameSingular(r)), pSrc.callAttrGetter(OrmUtil.getOneToManyRelationDestAttrName(r)));
 			foreachRelationEntity._callMethodInstr(_this(), MethodAddRelatedBean.getMethodName(r), foreachRelationEntity.getVar());
 		}
 		for(ManyRelation r : bean.getManyRelations()) {
-			ForeachLoop foreachRelationEntity = _foreach(new Var(Beans.get(r.getDestTable()).toSharedPtr().toConstRef(), OrmUtil.getManyRelationDestAttrNameSingular(r)), pSrc.callAttrGetter(OrmUtil.getManyRelationDestAttrName(r)));
+			ForeachLoop foreachRelationEntity = ifCopyRelations.thenBlock()._foreach(new Var(Beans.get(r.getDestTable()).toSharedPtr().toConstRef(), OrmUtil.getManyRelationDestAttrNameSingular(r)), pSrc.callAttrGetter(OrmUtil.getManyRelationDestAttrName(r)));
 			foreachRelationEntity._callMethodInstr(_this(), MethodAddManyToManyRelatedBean.getMethodName(r), foreachRelationEntity.getVar());
 		}
 	}
