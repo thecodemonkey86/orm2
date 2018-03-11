@@ -14,7 +14,7 @@ public class MethodColumnAttrSetNull extends Method{
 	boolean internal;
 	
 	public MethodColumnAttrSetNull(BeanCls cls, Column col, Attr a, boolean internal) {
-		super(Public, cls.toRawPointer(), "set"+StringUtil.ucfirst(a.getName()+"Null"+(internal?"Internal":"")));
+		super(Public, cls.toRawPointer(), getMethodName(a)+(internal?"Internal":""));
 		this.a=a;
 		this.col=col;
 		this.internal = internal;
@@ -31,6 +31,12 @@ public class MethodColumnAttrSetNull extends Method{
 		
 	}
 
+	public static String getMethodName(Column col) {
+		return "set"+col.getUc1stCamelCaseName()+"Null";
+	}
 	
+	public static String getMethodName(Attr a) {
+		return "set"+StringUtil.ucfirst(a.getName()+"Null");
+	}
 
 }

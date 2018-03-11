@@ -4,6 +4,7 @@ import cpp.CoreTypes;
 import cpp.Types;
 import cpp.bean.BeanCls;
 import cpp.bean.Beans;
+import cpp.bean.Nullable;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.QString;
@@ -66,8 +67,17 @@ public class MethodCopyFields extends Method{
 		
 		
 			if(!hasRelation) {
+				
 				IfBlock ifNotExclude = _if(Expressions.not(pExclude.callMethod(ClsQSet.contains, QString.fromStringConstant(col.getName()))));
-				ifNotExclude.thenBlock()._callMethodInstr(_this(), MethodColumnAttrSetter.getMethodName(col), pSrc.callAttrGetter(col.getCamelCaseName()));
+				if(col.isNullable()) {
+					IfBlock ifValIsNull = ifNotExclude.thenBlock()._if( pSrc.callAttrGetter(col.getCamelCaseName()).callMethod(Nullable.isNull));
+					ifValIsNull.thenBlock()._callMethodInstr(_this(),  MethodColumnAttrSetNull.getMethodName(col));
+					ifValIsNull.elseBlock()._callMethodInstr(_this(), MethodColumnAttrSetter.getMethodName(col), pSrc.callAttrGetter(col.getCamelCaseName()).callMethod(Nullable.val));
+				} else {
+					ifNotExclude.thenBlock()._callMethodInstr(_this(), MethodColumnAttrSetter.getMethodName(col), pSrc.callAttrGetter(col.getCamelCaseName()));
+				}
+				
+				
 			}
 		}
 		IfBlock ifCopyRelations = _if(pRelations);
