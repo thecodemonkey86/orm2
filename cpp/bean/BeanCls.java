@@ -441,22 +441,13 @@ public class BeanCls extends Cls {
 	}
 
 	@Override
-	protected void addBeforeSourceCode(StringBuilder sb) {
-		super.addBeforeSourceCode(sb);
-//		if (structPk!=null) {
-//			sb.append(structPk.toSourceString()).append('\n');
-//		}
-		
-//		if (fetchListHelper!=null) {
-//			sb.append(fetchListHelper.toSourceString()).append('\n').append('\n');
-//		}
-		
+	protected void addAfterSourceCode(StringBuilder sb) {
 		if(customSourceCode != null) {
 			sb.append('\n').append(BEGIN_CUSTOM_CLASS_MEMBERS).append('\n');
 			for(String cc : customSourceCode) {
 				sb.append(cc.trim());
 			}
-			sb.append('\n').append(BEGIN_CUSTOM_CLASS_MEMBERS).append('\n');
+			sb.append('\n').append(END_CUSTOM_CLASS_MEMBERS).append('\n');
 		}
 	}
 	

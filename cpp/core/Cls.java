@@ -137,6 +137,10 @@ public class Cls extends Type implements IAttributeContainer{
 		sb.append('\n');
 	}
 	
+	protected void addAfterSourceCode(StringBuilder sb){
+		
+	}
+	
 	public String toHeaderString() {
 		StringBuilder sb=new StringBuilder();
 		
@@ -166,7 +170,7 @@ public class Cls extends Type implements IAttributeContainer{
 			sb.append(CodeUtil.commaSep(superClassDecl));
 		}
 		sb.append("{\n");
-		addClassHeaderCode(sb);
+		
 		for(Attr a:attrs) {
 			CodeUtil.writeLine(sb, a.toDeclarationString());
 		}
@@ -183,6 +187,7 @@ public class Cls extends Type implements IAttributeContainer{
 			CodeUtil.writeLine(sb, o.toHeaderString());
 		}
 		
+		addClassHeaderCode(sb);
 		CodeUtil.writeLine(sb, "};");
 		
 		if (nonMemberMethods!=null) {
@@ -198,6 +203,7 @@ public class Cls extends Type implements IAttributeContainer{
 				CodeUtil.writeLine(sb, op.toHeaderString());
 			}
 		}
+		
 		sb.append("#endif");
 		return sb.toString();
 	}
@@ -242,6 +248,7 @@ public class Cls extends Type implements IAttributeContainer{
 				CodeUtil.writeLine(sb, op.toString());
 			}
 		}
+		addAfterSourceCode(sb);
 		return sb.toString();
 	}
 	
