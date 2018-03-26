@@ -104,6 +104,7 @@ public class CppOrm extends OrmCommon {
 					}
 					String customClassMember = existingHeaderFile.substring(startHdr+BeanCls.BEGIN_CUSTOM_CLASS_MEMBERS.length(), endHdr);
 					//c.addMethod(new CustomClassMemberCode(customClassMember, implCode) );
+					Files.write(Paths.get("bak_custom_class_members", pathHeader.getFileName().toString()),customClassMember.getBytes(utf8), writeOptions);
 					c.addCustomHeaderCode(customClassMember);
 				}
 				int startSrc = -1;
@@ -114,6 +115,7 @@ public class CppOrm extends OrmCommon {
 						throw new RuntimeException("Missing custom class members end marker: " + pathSrc);
 					}
 					String implCode = existingSourceFile.substring(startSrc+BeanCls.BEGIN_CUSTOM_CLASS_MEMBERS.length(), endSrc);
+					Files.write(Paths.get("bak_custom_class_members", pathSrc.getFileName().toString()),implCode.getBytes(utf8), writeOptions);
 					
 					//c.addMethod(new CustomClassMemberCode(customClassMember, implCode) );
 					c.addCustomSourceCode(implCode);
