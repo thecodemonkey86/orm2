@@ -17,7 +17,9 @@ public class OrmUtil {
 	}
 
 	public static String getOneToManyRelationDestAttrName(OneToManyRelation relation) {
-		
+		if(relation.hasSubstituteName() 
+				)
+			return relation.getSubstituteName();
 		if (relation.getColumnCount() == 1 && relation.getColumns(0).getValue2().getName().endsWith(relation.getSourceTable() + "_id")) {
 			String name = CodeUtil2.plural(CodeUtil2.camelCase(relation.getColumns(0).getValue2().getName().substring(0,
 					relation.getColumns(0).getValue2().getName().length() - (relation.getSourceTable().getName() + "_id").length()) + relation.getDestTable()));
