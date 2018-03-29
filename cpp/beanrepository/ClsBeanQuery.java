@@ -5,13 +5,11 @@ import cpp.bean.BeanCls;
 import cpp.beanrepository.method.ConstructorBeanQuery;
 import cpp.beanrepository.method.MethodBeanQueryFetch;
 import cpp.beanrepository.method.MethodBeanQueryFetchOne;
-import cpp.beanrepository.method.MethodBeanQueryWhereEquals;
 import cpp.beanrepository.method.MethodOrderByPrimaryKey;
 import cpp.core.Attr;
 import cpp.core.Cls;
 import cpp.lib.ClsQVector;
 import cpp.lib.ClsTemplateAbstractBeanQuery;
-import database.column.Column;
 
 public class ClsBeanQuery extends Cls {
 
