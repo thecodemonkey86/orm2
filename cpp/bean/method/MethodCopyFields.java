@@ -80,6 +80,7 @@ public class MethodCopyFields extends Method{
 				
 			}
 		}
+		if(bean.hasRelations() ) {
 		IfBlock ifCopyRelations = _if(pRelations);
 		for(OneRelation r : bean.getOneRelations()) {
 			ifCopyRelations.thenBlock()._callMethodInstr(_this(), MethodAttributeSetter.getMethodName(bean.getAttrByName(OrmUtil.getOneRelationDestAttrName(r))), pSrc.callAttrGetter(bean.getAttrByName(OrmUtil.getOneRelationDestAttrName(r))));
@@ -91,6 +92,7 @@ public class MethodCopyFields extends Method{
 		for(ManyRelation r : bean.getManyRelations()) {
 			ForeachLoop foreachRelationEntity = ifCopyRelations.thenBlock()._foreach(new Var(Beans.get(r.getDestTable()).toSharedPtr().toConstRef(), OrmUtil.getManyRelationDestAttrNameSingular(r)), pSrc.callAttrGetter(OrmUtil.getManyRelationDestAttrName(r)));
 			foreachRelationEntity._callMethodInstr(_this(), MethodAddManyToManyRelatedBean.getMethodName(r), foreachRelationEntity.getVar());
+		}
 		}
 	}
 

@@ -4,24 +4,33 @@ import cpp.Types;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.QString;
-import cpp.lib.ClsQString;
+import cpp.core.expression.PlusOperator;
 import database.column.Column;
 
 public class MethodGetFieldNameAlias extends Method {
 
 	protected Column col;
 	Param pAlias;
+	boolean mainAlias;
 	
-	public MethodGetFieldNameAlias(Column col) {
+	public MethodGetFieldNameAlias(Column col, boolean mainAlias) {
 		super(Public, Types.QString, getMethodName(col));
 		setStatic(true);
 		this.col = col;
-		pAlias = addParam(new Param(Types.QString.toConstRef(), "alias"));	
+		if(!mainAlias)
+			pAlias = addParam(new Param(Types.QString.toConstRef(), "alias"));
+		
+		this.mainAlias = mainAlias;
 	}
 
 	@Override
 	public void addImplementation() {
-		_return(QString.fromStringConstant("%1.%2").callMethod(ClsQString.arg, pAlias, QString.fromStringConstant(col.getName())));	
+		if(mainAlias) {
+			_return(QString.fromStringConstant("b1." + col.getEscapedName()));
+		} else {
+			_return(  pAlias.binOp(PlusOperator.SYMBOL, QString.fromStringConstant("." + col.getEscapedName())));	
+		}
+			
 	}
 	
 	public static String getMethodName(Column col) {

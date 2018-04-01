@@ -227,7 +227,8 @@ public class BeanCls extends Cls {
 				}
 				
 				addMethod(new MethodGetFieldName(col));
-				addMethod(new MethodGetFieldNameAlias(col));
+				addMethod(new MethodGetFieldNameAlias(col, true));
+				addMethod(new MethodGetFieldNameAlias(col, false));
 				addMethod(new MethodGetFieldName(col, true));
 				if (!col.isPartOfPk()) {
 					
