@@ -1,5 +1,7 @@
 package config.php;
 
+import java.nio.file.Path;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -24,6 +26,11 @@ public class PhpConfigReader extends ConfigReader{
 //			}
 //		}
 //	}
+
+	public PhpConfigReader(Path xmlDirectory) {
+		super(xmlDirectory);
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {

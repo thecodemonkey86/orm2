@@ -1,6 +1,7 @@
 package config;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -57,15 +58,16 @@ public class ConfigReader implements ContentHandler {
 	private M2MColumns currentDestEntityMapping;
 	private MappingTable currentMappingTable;
 	private Section section;
-	
+	private Path xmlDirectory;
 	
 	public OrmConfig getCfg() {
 		return cfg;
 	}
 
-	public ConfigReader() {
+	public ConfigReader(Path xmlDirectory) {
 		createConfig();
 		relationQueryNames = new HashSet<>();
+		this.xmlDirectory = xmlDirectory;
 	}
 
 	protected void createConfig() {
@@ -94,7 +96,11 @@ public class ConfigReader implements ContentHandler {
 
 	@Override
 	public void endDocument() throws SAXException {
-		// TODO Auto-generated method stub
+		if(!cfg.hasBasePath()) {
+			cfg.setBasePath(xmlDirectory.toString());
+			cfg.setModelPath("model");
+			cfg.setRepositoryPath("repository");
+		}
 
 	}
 

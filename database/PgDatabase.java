@@ -1,5 +1,6 @@
 package database;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,7 +18,7 @@ import util.CodeUtil2;
 public class PgDatabase extends Database {
 	protected String defaultSchema;
 	
-	public PgDatabase(String name, String defaultSchema) {
+	public PgDatabase(String name, String defaultSchema) throws IOException {
 		super(name);
 		this.defaultSchema = defaultSchema;
 	}

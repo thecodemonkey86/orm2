@@ -139,8 +139,9 @@ public class PhpOrm extends OrmCommon {
 		if (args.length == 0) {
 			throw new Exception("Please provide xml config file");
 		}
-		ConfigReader cfgReader = new ConfigReader();
-		DefaultXMLReader.read(Paths.get(args[0]), cfgReader);
+		Path xmlFile = Paths.get(args[0]);
+		ConfigReader cfgReader = new ConfigReader(xmlFile.getParent());
+		DefaultXMLReader.read(xmlFile, cfgReader);
 		OrmConfig cfg = cfgReader.getCfg();
 		new PhpOrm(cfg);
 		

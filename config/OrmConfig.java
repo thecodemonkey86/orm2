@@ -175,5 +175,9 @@ public class OrmConfig {
 	public boolean isEngineSqlite() {
 		return this.dbEngine.equals("sqlite");
 	}
+
+	boolean hasBasePath() {
+		return basePath != null;
+	}
 	
 }

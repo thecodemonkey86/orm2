@@ -1,5 +1,6 @@
 package database;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,7 +18,7 @@ import util.StringUtil;
 
 public class SqliteDatabase extends Database {
 	
-	public SqliteDatabase(String name) {
+	public SqliteDatabase(String name) throws IOException {
 		super(name);
 		// TODO Auto-generated constructor stub
 	}

@@ -1,5 +1,6 @@
 package database;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +16,7 @@ import util.CodeUtil2;
 public class MySqlDatabase extends Database {
 	protected String dbUser, dbPass, dbUrl;
 
-	public MySqlDatabase(String name) {
+	public MySqlDatabase(String name) throws IOException {
 		super(name);
 		// TODO Auto-generated constructor stub
 	}

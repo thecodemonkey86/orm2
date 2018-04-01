@@ -1,5 +1,6 @@
 package database;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -21,7 +22,10 @@ public abstract class Database {
 	protected PreparedStatement stColumndata = null;
 	protected PreparedStatement stPkColumndata = null;
 	
-	public Database(String name) {
+	public Database(String name) throws IOException {
+		if(name == null) {
+			throw new IOException("Database name missing");
+		}
 		this.name = name;
 	}
 	

@@ -1,5 +1,7 @@
 package sunjava.config;
 
+import java.nio.file.Path;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -24,6 +26,10 @@ public class JavaConfigReader extends ConfigReader{
 //			}
 //		}
 //	}
+
+	public JavaConfigReader(Path xmlDirectory) {
+		super(xmlDirectory);
+	}
 
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
