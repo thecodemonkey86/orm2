@@ -27,6 +27,8 @@ import cpp.bean.method.MethodGetInsertFields;
 import cpp.bean.method.MethodGetInsertParams;
 import cpp.bean.method.MethodGetInsertValuePlaceholders;
 import cpp.bean.method.MethodGetLimitQueryString;
+import cpp.bean.method.MethodGetManyRelatedAtIndex;
+import cpp.bean.method.MethodGetManyRelatedCount;
 import cpp.bean.method.MethodGetPrimaryKeyColumns;
 import cpp.bean.method.MethodGetSelectFields;
 import cpp.bean.method.MethodGetTableName;
@@ -187,6 +189,8 @@ public class BeanCls extends Cls {
 			addMethod(new MethodManyAttrGetter(attr));
 			addMethod(new MethodAddRelatedBean(r, new Param(attr.getElementType().toConstRef(), "bean")));
 			addMethod(new MethodAddRelatedBeanInternal(r, new Param(attr.getElementType().toConstRef(), "bean")));
+			addMethod(new MethodGetManyRelatedAtIndex(attr, r));
+			addMethod(new MethodGetManyRelatedCount(attr, r));
 		}
 		
 		for(ManyRelation r:manyRelations) {

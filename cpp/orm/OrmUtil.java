@@ -1,5 +1,6 @@
 package cpp.orm;
 
+import database.relation.IManyRelation;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
@@ -63,7 +64,7 @@ public class OrmUtil {
 		return CodeUtil2.plural(relation.getDestTable().getCamelCaseName());
 	}
 
-	public static String getManyRelationDestAttrNameSingular(ManyRelation relation) {
+	public static String getManyRelationDestAttrNameSingular(IManyRelation relation) {
 		if (relation.getDestColumnCount() == 1 && relation.getDestMappingColumn(0).getName().endsWith(relation.getSourceTable() + "_id")) {
 			String name = CodeUtil2.camelCase(relation.getDestMappingColumn(0).getName().substring(0,
 					relation.getDestMappingColumn(0).getName().length() - (relation.getSourceTable().getName() + "_id").length()) + relation.getDestTable());

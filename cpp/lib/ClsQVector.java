@@ -3,8 +3,9 @@ package cpp.lib;
 import cpp.CoreTypes;
 import cpp.core.TplCls;
 import cpp.core.Type;
+import cpp.core.expression.IArrayAccessible;
 
-public class ClsQVector extends TplCls {
+public class ClsQVector extends TplCls implements IArrayAccessible{
 
 	public static final String CLSNAME="QVector";
 	
@@ -12,6 +13,7 @@ public class ClsQVector extends TplCls {
 	public static final String append = "append";
 	public static final String removeOne = "removeOne";
 	public static final String contains = "contains";
+	public static final String size = "size";
 	
 	public ClsQVector(Type element) {
 		super(CLSNAME, element);
@@ -19,10 +21,15 @@ public class ClsQVector extends TplCls {
 		addMethod(new LibMethod(CoreTypes.Void, "remove"));
 		addMethod(new LibMethod(CoreTypes.Void, removeOne));
 		addMethod(new LibMethod(CoreTypes.Bool, "empty"));
-		addMethod(new LibMethod(CoreTypes.Int, "size"));
+		addMethod(new LibMethod(CoreTypes.Int, size));
 		addMethod(new LibMethod(CoreTypes.Void, clear));
 		addMethod(new LibMethod(CoreTypes.Bool, contains));
 		addMethod(new LibMethod(element.toRef(), "at"));
+	}
+
+	@Override
+	public Type getAccessType() {
+		return element;
 	}
 
 }
