@@ -18,9 +18,8 @@ import util.StringUtil;
 
 public class SqliteDatabase extends Database {
 	
-	public SqliteDatabase(String name) throws IOException {
-		super(name);
-		// TODO Auto-generated constructor stub
+	public SqliteDatabase() throws IOException {
+		super(null);
 	}
 
 	private static List<String> getTokenList(String sql) {
@@ -56,9 +55,9 @@ public class SqliteDatabase extends Database {
 	}
 	
 	private static String getColName(String raw)  {
-		if(!raw.startsWith("`")) {
-			throw new RuntimeException();
-		}
+//		if(!raw.startsWith("`")) {
+//			throw new RuntimeException();
+//		}
 		return StringUtil.dropAll(raw, '`');
 	}
 

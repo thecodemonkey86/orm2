@@ -1,6 +1,5 @@
 package database;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,7 +15,7 @@ import database.table.Table;
 
 public class FirebirdDatabase extends Database {
 
-	public FirebirdDatabase(String name) throws IOException {
+	public FirebirdDatabase(String name) {
 		super(name);
 	}
 

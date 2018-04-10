@@ -22,14 +22,14 @@ public abstract class Database {
 	protected PreparedStatement stColumndata = null;
 	protected PreparedStatement stPkColumndata = null;
 	
-	public Database(String name) throws IOException {
-		if(name == null) {
-			throw new IOException("Database name missing");
-		}
+	public Database(String name) {
 		this.name = name;
 	}
 	
 	public String getName() {
+		if(name == null) {
+			throw new RuntimeException("Database name missing");
+		}
 		return name;
 	}
 	
