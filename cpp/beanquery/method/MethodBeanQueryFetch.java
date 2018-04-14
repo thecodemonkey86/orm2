@@ -1,14 +1,16 @@
-package cpp.beanrepository.method;
+package cpp.beanquery.method;
 
+import cpp.Types;
 import cpp.bean.BeanCls;
+import cpp.beanrepository.method.MethodFetchList;
 import cpp.core.Method;
 import cpp.core.expression.Expression;
 
-public class MethodBeanQueryFetchOne extends Method{
+public class MethodBeanQueryFetch extends Method{
 	BeanCls bean;
 	
-	public MethodBeanQueryFetchOne(BeanCls bean) {
-		super(Public, bean.toSharedPtr(), "queryOne");
+	public MethodBeanQueryFetch(BeanCls bean) {
+		super(Public, Types.qvector(bean.toSharedPtr()), "query");
 		this.bean=bean;
 		setVirtualQualifier(true);
 		setOverrideQualifier(true);
@@ -23,9 +25,7 @@ public class MethodBeanQueryFetchOne extends Method{
 //			}
 //		});
 		Expression aRepository = _this().accessAttr("repository");
-		_return(aRepository.callMethod(MethodFetchOne.getMethodName(bean), _this().callMethod("execQuery")));
-		//_return(_nullptr());
-		
+		_return(aRepository.callMethod(MethodFetchList.getMethodName(bean),  _this().callMethod("execQuery")));
 	}
 	@Override
 	public boolean includeIfEmpty() {

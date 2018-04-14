@@ -3,7 +3,7 @@ package cpp;
 import cpp.bean.BeanCls;
 import cpp.bean.Beans;
 import cpp.bean.Nullable;
-import cpp.beanrepository.ClsBeanQuery;
+import cpp.beanquery.ClsBeanQuery;
 import cpp.beanrepository.ClsBeanRepository;
 import cpp.core.Cls;
 import cpp.core.Type;

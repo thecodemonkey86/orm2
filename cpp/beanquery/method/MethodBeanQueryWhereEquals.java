@@ -1,8 +1,8 @@
-package cpp.beanrepository.method;
+package cpp.beanquery.method;
 
 import cpp.Types;
 import cpp.bean.BeanCls;
-import cpp.beanrepository.ClsBeanQuery;
+import cpp.beanquery.ClsBeanQuery;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.QString;

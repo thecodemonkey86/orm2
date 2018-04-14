@@ -73,32 +73,11 @@ public class ClsBeanRepository extends Cls{
 		super.addHeaderCodeBeforeClassDeclaration(sb);
 		sb.append("using namespace QtCommon2;\n");
 	}
-//	@Override
-//	public String toHeaderString() {
-//		StringBuilder sb=new StringBuilder(super.toHeaderString());
-//		sb.append("\n\n");
-//		for(ClsBeanQuery beanQuery:beanQueryClasses) {
-//			sb.append(beanQuery.toHeaderString()).append("\n\n");
-//		}
-//		return sb.toString();
-//	}
-	
-//	@Override
-//	public String toSourceString() {
-//		StringBuilder sb=new StringBuilder(super.toSourceString());
-//		sb.append("\n\n");
-//		for(ClsBeanQuery beanQuery:beanQueryClasses) {
-//			sb.append(beanQuery.toSourceString()).append("\n\n");
-//		}
-//		return sb.toString();
-//	}
-//	
-//	@Override
-//	public void addMethodImplementations() {
-//		super.addMethodImplementations();
-//		for(ClsBeanQuery beanQuery:beanQueryClasses) {
-//			beanQuery.addMethodImplementations();
-//		}
-//	}
+
+	@Override
+		public String toSourceString() {
+			// TODO Auto-generated method stub
+			return super.toSourceString();
+		}
 
 }

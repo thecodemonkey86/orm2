@@ -1,4 +1,4 @@
-package cpp.beanrepository.method;
+package cpp.beanquery.method;
 
 import cpp.Types;
 import cpp.core.Constructor;

@@ -12,7 +12,7 @@ import config.OrmConfig;
 import cpp.Types;
 import cpp.bean.BeanCls;
 import cpp.bean.Beans;
-import cpp.beanrepository.ClsBeanQuery;
+import cpp.beanquery.ClsBeanQuery;
 import cpp.beanrepository.ClsBeanRepository;
 import cpp.orm.DatabaseTypeMapper;
 import cpp.orm.FirebirdDatabaseTypeMapper;

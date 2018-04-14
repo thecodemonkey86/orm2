@@ -1,7 +1,7 @@
 package cpp.beanrepository.method;
 
 import cpp.bean.BeanCls;
-import cpp.beanrepository.ClsBeanQuery;
+import cpp.beanquery.ClsBeanQuery;
 import cpp.core.Method;
 import cpp.core.expression.CreateObjectExpression;
 import cpp.lib.EnableSharedFromThis;

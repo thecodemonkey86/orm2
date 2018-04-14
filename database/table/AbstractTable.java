@@ -30,10 +30,14 @@ public abstract class AbstractTable {
 	
 	
 	public AbstractTable(Database db, String name, String schema) {
+		if(name == null) {
+			throw new RuntimeException("table name is missing");
+		}
 		allColumns = new ArrayList<>();
 		this.db = db;
 		this.schema = schema;
 		this.name = name;
+		
 	}
 	
 	public boolean addColumn(Column e) {

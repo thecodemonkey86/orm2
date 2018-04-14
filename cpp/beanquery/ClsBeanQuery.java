@@ -1,11 +1,12 @@
-package cpp.beanrepository;
+package cpp.beanquery;
 
 import cpp.Types;
 import cpp.bean.BeanCls;
-import cpp.beanrepository.method.ConstructorBeanQuery;
-import cpp.beanrepository.method.MethodBeanQueryFetch;
-import cpp.beanrepository.method.MethodBeanQueryFetchOne;
-import cpp.beanrepository.method.MethodOrderByPrimaryKey;
+import cpp.beanquery.method.ConstructorBeanQuery;
+import cpp.beanquery.method.MethodBeanQueryFetch;
+import cpp.beanquery.method.MethodBeanQueryFetchOne;
+import cpp.beanquery.method.MethodOrderByPrimaryKey;
+import cpp.beanrepository.ClsBeanRepository;
 import cpp.core.Attr;
 import cpp.core.Cls;
 import cpp.lib.ClsQVector;
