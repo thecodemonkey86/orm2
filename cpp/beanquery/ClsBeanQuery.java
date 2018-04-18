@@ -6,11 +6,13 @@ import cpp.beanquery.method.ConstructorBeanQuery;
 import cpp.beanquery.method.MethodBeanQueryFetch;
 import cpp.beanquery.method.MethodBeanQueryFetchOne;
 import cpp.beanquery.method.MethodOrderByPrimaryKey;
+import cpp.beanquery.method.MethodSqlFieldEquals;
 import cpp.beanrepository.ClsBeanRepository;
 import cpp.core.Attr;
 import cpp.core.Cls;
 import cpp.lib.ClsQVector;
 import cpp.lib.ClsTemplateAbstractBeanQuery;
+import database.column.Column;
 
 public class ClsBeanQuery extends Cls {
 
@@ -27,6 +29,9 @@ public class ClsBeanQuery extends Cls {
 		/*for(Column c : cls.getTbl().getAllColumns()) {
 			addMethod(new MethodBeanQueryWhereEquals(this,cls, c));
 		}*/
+		for(Column c : cls.getTbl().getAllColumns()) {
+			addMethod(new MethodSqlFieldEquals(c));
+		}
 		
 		addIncludeLib(ClsQVector.CLSNAME);
 		addIncludeHeader(BeanCls.getModelPath() + "beans/"+cls.getIncludeHeader());
