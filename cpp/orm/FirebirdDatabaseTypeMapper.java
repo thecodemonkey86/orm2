@@ -11,6 +11,7 @@ import cpp.core.expression.Expression;
 import cpp.core.expression.IntExpression;
 import cpp.core.expression.LongLongExpression;
 import cpp.core.expression.ShortExpression;
+import cpp.lib.ClsQVariant;
 import database.column.Column;
 
 public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
@@ -23,7 +24,7 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 		case "16":
 			return CoreTypes.QVariant.getMethod("toLongLong");
 		case "7":
-			return CoreTypes.QVariant.getMethod("toInt");
+			return CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value,CoreTypes.Int16);
 		case "14":	
 		case "37":
 			return CoreTypes.QVariant.getMethod("toString");

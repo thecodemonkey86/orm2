@@ -22,7 +22,7 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 		case "bigint":
 			return CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.Int64);
 		case "smallint":
-			return CoreTypes.QVariant.getMethod(ClsQVariant.toShort);
+			return CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.Int16);
 		case "tinyint":
 			return CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.Int8);
 		case "varchar":
