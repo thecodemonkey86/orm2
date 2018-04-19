@@ -53,7 +53,10 @@ public class OrmUtil {
 		return "get" + StringUtil.ucfirst(getOneRelationDestAttrName(oneRelation));
 	}
 
-	public static String getManyRelationDestAttrName(ManyRelation relation) {
+	public static String getManyRelationDestAttrName(IManyRelation relation) {
+		if(relation.hasSubstituteName() 
+				)
+			return relation.getSubstituteName(); 
 		if (relation.getDestColumnCount() == 1 && relation.getDestMappingColumn(0).getName().endsWith(relation.getSourceTable() + "_id")) {
 			String name = CodeUtil2.plural(CodeUtil2.camelCase(relation.getDestMappingColumn(0).getName().substring(0,
 					relation.getDestMappingColumn(0).getName().length() - (relation.getSourceTable().getName() + "_id").length()) + relation.getDestTable()));

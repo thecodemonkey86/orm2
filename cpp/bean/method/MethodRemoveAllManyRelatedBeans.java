@@ -13,13 +13,13 @@ import cpp.core.instruction.ForeachLoop;
 import cpp.lib.ClsQVector;
 import cpp.orm.OrmUtil;
 import database.column.Column;
-import database.relation.ManyRelation;
+import database.relation.IManyRelation;
 
-public class MethodRemoveAllManyToManyRelatedBeans extends Method {
+public class MethodRemoveAllManyRelatedBeans extends Method {
 
-	protected ManyRelation rel;
+	protected IManyRelation rel;
 	
-	public MethodRemoveAllManyToManyRelatedBeans(ManyRelation r) {
+	public MethodRemoveAllManyRelatedBeans(IManyRelation r) {
 		super(Public, Types.Void, "removeAll"+StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrName(r)));
 		rel=r;
 	}

@@ -15,5 +15,9 @@ public interface IManyRelation {
 
 	String getAlias();
 
+	boolean hasSubstituteName();
+
+	String getSubstituteName();
+
 
 }

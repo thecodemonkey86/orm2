@@ -109,6 +109,13 @@ public class SqliteDatabase extends Database {
 					expectInteger(l, index++);
 					expectToken(l, index++, ")");
 					break;
+				case "NUMERIC":
+					expectToken(l, index++, "(");
+					expectInteger(l, index++);
+					expectToken(l, index++, ",");
+					expectInteger(l, index++);
+					expectToken(l, index++, ")");
+					break;	
 				default:
 						break;
 				}

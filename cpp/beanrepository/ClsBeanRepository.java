@@ -61,7 +61,14 @@ public class ClsBeanRepository extends Cls{
 			addMethod(new MethodBeanLoad(bean));
 			addMethod(new MethodBeanSave(bean));
 			addMethod(new MethodGetFromRecord(bean,false));
-			addMethod(new MethodRepoCreateNew(bean));
+			addMethod(new MethodRepoCreateNew(bean,false));
+			
+			int countInitializeFields = bean.getTbl().getFieldColumns().size();
+			if(!bean.getTbl().getPrimaryKey().isAutoIncrement()) {
+				countInitializeFields += bean.getTbl().getPrimaryKey().getColumnCount();
+			}
+			if(countInitializeFields > 0)
+				addMethod(new MethodRepoCreateNew(bean,true));
 			addMethod(new MethodBeanRemove(bean,false));
 		}
 		
