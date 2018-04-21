@@ -11,9 +11,7 @@ public class MethodOrderByPrimaryKey extends Method{
 	
 	public MethodOrderByPrimaryKey(BeanCls cls) {
 		super(Protected, Types.QString, "orderByPrimaryKey");
-		setVirtualQualifier(true);
 		setConstQualifier(true);
-		setOverrideQualifier(true);
 		this.cls = cls;
 	}
 

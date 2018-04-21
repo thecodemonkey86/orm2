@@ -23,9 +23,11 @@ import database.relation.PrimaryKey;
 public class MethodGetUpdateFields extends Method{
 	protected List<Column> cols;
 	protected PrimaryKey pk;
+	protected Param pParams;
+	
 	public MethodGetUpdateFields(List<Column> cols,PrimaryKey pk) {
 		super(Public, Types.QStringList, "getUpdateFields");
-		addParam(new Param(CoreTypes.QVariantList.toRawPointer(), "params"));
+		pParams = addParam(CoreTypes.QVariantList.toRawPointer(), "params");
 		this.cols = cols;
 		this.pk = pk;
 	}
@@ -46,7 +48,7 @@ public class MethodGetUpdateFields extends Method{
 			ifIdModified.setIfInstr(
 					fields.callMethodInstruction("append", QString.fromStringConstant(colPk.getEscapedName()+"=?"))
 					,
-					paramByName("params").callMethodInstruction("append", Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr) )
+					pParams.callMethodInstruction("append", Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr) )
 					
 					);
 		}
@@ -60,7 +62,7 @@ public class MethodGetUpdateFields extends Method{
 					.setIfInstr(
 							fields.callMethodInstruction("append", QString.fromStringConstant(col.getEscapedName()+"=?"))
 							,
-							paramByName("params").callMethodInstruction("append", col.isNullable() ? new InlineIfExpression(colAttr.callMethod("isNull"), new CreateObjectExpression(CoreTypes.QVariant), colAttr.callMethod("val"))   : Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr))
+							pParams.callMethodInstruction("append", col.isNullable() ? new InlineIfExpression(colAttr.callMethod("isNull"), new CreateObjectExpression(CoreTypes.QVariant), colAttr.callMethod("val"))   : Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr))
 							
 							);
 				}
@@ -77,7 +79,7 @@ public class MethodGetUpdateFields extends Method{
 						colAttr = colAttr.callMethod(Nullable.val);
 					}
 					ifBlock.setIfInstr(fields.callMethodInstruction("append", QString.fromStringConstant(col.getEscapedName()+"=?")),
-							paramByName("params").callMethodInstruction("append", Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr)));
+							pParams.callMethodInstruction("append", Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr)));
 				}
 			}
 			

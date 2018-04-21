@@ -37,10 +37,11 @@ public class MethodFetchList extends Method {
 	protected List<OneToManyRelation> manyRelations;
 	protected PrimaryKey pk;
 	protected BeanCls bean;
+	protected Param pQuery;
 	
 	public MethodFetchList(List<OneRelation> oneRelations,List<OneToManyRelation> manyRelations, BeanCls bean,PrimaryKey pk) {
 		super(Public, Types.qvector(bean.toSharedPtr()),getMethodName(bean) );
-		addParam(new Param(Types.QSqlQuery.toRValueRef(), "query"));	
+		pQuery = addParam(Types.QSqlQuery.toRValueRef(), "query");	
 		this.oneRelations = oneRelations;
 		this.manyRelations = manyRelations;
 		this.pk = pk;
@@ -53,18 +54,16 @@ public class MethodFetchList extends Method {
 	}
 	
 	protected Expression getExpressionQuery() {
-	return  getParam("query");
-}
+		return  pQuery;
+	}
 
 	protected Expression getByRecordExpression(BeanCls bean, Var record, QString alias) {
-	//return new ThisBeanRepositoryExpression((BeanRepository) parent);
-	return _this().callMethod(MethodGetFromRecord.getMethodName(bean),  record, alias);
-}
-	
+		//return new ThisBeanRepositoryExpression((BeanRepository) parent);
+		return _this().callMethod(MethodGetFromRecord.getMethodName(bean),  record, alias);
+	}
+		
 	@Override
 	public void addImplementation() {
-		//_return(_this().callMethod(MethodFetchList.getMethodName(bean), _this().accessAttr("sqlCon"), new StdMoveExpression(getParam("query"))));
-		//BeanCls cls = (BeanCls) parent;
 		List<OneRelation> oneRelations = bean.getOneRelations();
 		PrimaryKey pk=bean.getTbl().getPrimaryKey();
 		

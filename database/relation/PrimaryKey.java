@@ -1,10 +1,11 @@
 package database.relation;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import database.column.Column;
 
-public class PrimaryKey {
+public class PrimaryKey implements Iterable<Column>{
 	protected ArrayList<Column> columns;
 	
 	public PrimaryKey() {
@@ -49,6 +50,11 @@ public class PrimaryKey {
 	@Override
 	public String toString() {
 		return columns.toString();
+	}
+
+	@Override
+	public Iterator<Column> iterator() {
+		return columns.iterator();
 	}
 	
 }

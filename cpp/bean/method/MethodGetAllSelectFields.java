@@ -22,10 +22,14 @@ public class MethodGetAllSelectFields extends Method  {
 	protected List<Column> cols;
 	
 	public MethodGetAllSelectFields(List<Column> cols) {
-		super(Public, Types.QString, "getAllSelectFields");
+		super(Public, Types.QString, getMethodName());
 		setStatic(true);
 		addParam(new Param(Types.QString.toConstRef(), "alias"));
 		this.cols = cols;
+	}
+	
+	public static String getMethodName() {
+		return "getAllSelectFields";
 	}
 
 	@Override

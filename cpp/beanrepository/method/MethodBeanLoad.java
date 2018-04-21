@@ -40,6 +40,7 @@ public class MethodBeanLoad extends Method {
 	protected List<ManyRelation> manyRelations;
 	protected PrimaryKey primaryKey;
 	protected BeanCls bean;
+	protected Param pBean;
 	
 	public static String getMethodName() {
 		return "load";
@@ -53,7 +54,7 @@ public class MethodBeanLoad extends Method {
 		this.manyRelations = bean.getManyRelations();
 		this.primaryKey = bean.getTbl().getPrimaryKey();
 		this.bean = bean;
-		addParam(new Param(bean.toRawPointer(), "bean"));
+		pBean = addParam(bean.toRawPointer(), "bean");
 //		setConstQualifier(true);
 	}
 
@@ -67,7 +68,6 @@ public class MethodBeanLoad extends Method {
 		BeanCls bean = this.bean;
 		
 		Attr aSqlCon = this.parent.getAttrByName(ClsBeanRepository.sqlCon);
-		Param pBean = getParam("bean");
 		Method mBuildQuery = aSqlCon.getClassType().getMethod(ClsSql.buildQuery);
 		Var sqlQuery = _declare(mBuildQuery.getReturnType(), "query",aSqlCon.callMethod(mBuildQuery));
 		

@@ -39,7 +39,7 @@ public class PgDatabase extends Database {
 		stColumndata.setString(2, getName());
 		ResultSet rsColumndata = stColumndata.executeQuery();
 		while (rsColumndata.next()) {
-			Column col = makeColumnInstance();
+			Column col = makeColumnInstance(tbl);
 			col.setName(rsColumndata.getString("column_name"));
 			col.setPosition(rsColumndata.getInt("ordinal_position"));
 			col.setDbType(rsColumndata.getString("data_type"));
@@ -50,7 +50,7 @@ public class PgDatabase extends Database {
 		rsColumndata.close();
 		
 		if (defaultSchema.equals("pg_catalog")) {
-			Column col = makeColumnInstance();
+			Column col = makeColumnInstance(tbl);
 			col.setName("oid");
 			col.setPosition(0);
 			col.setDbType("integer");
@@ -160,8 +160,8 @@ public class PgDatabase extends Database {
 
 
 	@Override
-	public Column makeColumnInstance() {
-		return new PgColumn();
+	public Column makeColumnInstance(AbstractTable tbl) {
+		return new PgColumn(tbl);
 	}
 
 	

@@ -32,7 +32,7 @@ public class MethodBeanSave extends Method {
 
 //	protected boolean overloadCascadeSaveRelations;
 	protected BeanCls bean;
-	
+	protected Param pBean;
 	
 	
 	public MethodBeanSave(BeanCls bean
@@ -43,7 +43,7 @@ public class MethodBeanSave extends Method {
 //			this.addParam(new Param(Types.Bool, "cascadeSaveRelations"));
 //		this.setVirtualQualifier(true);
 //		this.overloadCascadeSaveRelations = overloadCascadeSaveRelations;
-		addParam(new Param(bean.toSharedPtr().toConstRef(), "bean"));
+		pBean = addParam(bean.toSharedPtr().toConstRef(), "bean");
 		this.bean = bean;
 	}
 
@@ -51,8 +51,6 @@ public class MethodBeanSave extends Method {
 
 	@Override
 	public void addImplementation() {
-		Param pBean = getParam("bean");
-		
 //		if (overloadCascadeSaveRelations) {
 //			addInstr(new StaticMethodCall(bean, parent.getMethod("save"), BoolExpression.FALSE).asInstruction()) ;
 //			
@@ -181,16 +179,8 @@ public class MethodBeanSave extends Method {
 					}
 					int propertyColumnCount=0;
 					for(Column col:r.getMappingTable().getAllColumns()) {
-						// TODO FIXME col.isPartOfPk() not set
-						boolean isPartOfPk = false;
-						for(Column colPk:r.getMappingTable().getPrimaryKey().getColumns()) {
-							if(col.getName().equals(colPk.getName())) {
-								isPartOfPk = true;
-								break;
-							}
-						}
-						
-						if(!isPartOfPk) {
+												
+						if(!col.isPartOfPk()) {
 							propertyColumnCount++;
 							foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction(ClsQVariantList.append, BeanCls.getDatabaseMapper().getColumnDefaultValueExpression(col)));
 						}

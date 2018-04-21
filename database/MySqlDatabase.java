@@ -31,7 +31,7 @@ public class MySqlDatabase extends Database {
 		stColumndata.setString(2, getName());
 		ResultSet rsColumndata = stColumndata.executeQuery();
 		while (rsColumndata.next()) {
-			Column col = makeColumnInstance();
+			Column col = makeColumnInstance(tbl);
 			col.setName(rsColumndata.getString("column_name"));
 			col.setPosition(rsColumndata.getInt("ordinal_position"));
 			col.setDbType(rsColumndata.getString("data_type"));
@@ -111,8 +111,8 @@ public class MySqlDatabase extends Database {
 
 
 	@Override
-	public Column makeColumnInstance() {
-		return new MySqlColumn();
+	public Column makeColumnInstance(AbstractTable tbl) {
+		return new MySqlColumn(tbl);
 	}
 
 

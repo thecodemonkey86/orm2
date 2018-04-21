@@ -3,7 +3,6 @@ package cpp.beanrepository.method;
 import cpp.Types;
 import cpp.bean.BeanCls;
 import cpp.core.Method;
-import cpp.core.QStringLiteral;
 import database.relation.OneToManyRelation;
 import util.StringUtil;
 

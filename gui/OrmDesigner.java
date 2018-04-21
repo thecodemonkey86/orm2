@@ -33,7 +33,7 @@ public class OrmDesigner extends JFrame{
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(designerPanel,BorderLayout.CENTER);
 		
-		JPanel bottomPanel = new JPanel();;
+		JPanel bottomPanel = new JPanel();
 		JButton btnAdd = new JButton("Add Entity");
 		btnAdd.addActionListener(new ActionListener() {
 			

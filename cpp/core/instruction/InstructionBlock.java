@@ -122,6 +122,10 @@ public class InstructionBlock extends Instruction implements Iterable<Instructio
 		return ifBlock;
 	}
 	
+	public IfBlock _ifNot(Expression condition) {
+		return _if(Expressions.not(condition));
+	}
+	
 	public Expression _nullptr() {
 		return Expressions.Nullptr;
 	}

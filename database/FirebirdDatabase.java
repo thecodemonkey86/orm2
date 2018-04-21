@@ -32,7 +32,7 @@ public class FirebirdDatabase extends Database {
 		ResultSet rsColumndata = stColumndata.executeQuery();
 		
 		while (rsColumndata.next()) {
-			Column col = new FirebirdColumn();
+			Column col = new FirebirdColumn(table);
 			col.setName(rsColumndata.getString("field_name").trim().toLowerCase());
 			col.setPosition(rsColumndata.getInt("field_position"));
 			col.setDbType(rsColumndata.getString("field_type"));
@@ -125,7 +125,7 @@ public class FirebirdDatabase extends Database {
 
 
 	@Override
-	public Column makeColumnInstance() {
-		return new FirebirdColumn();
+	public Column makeColumnInstance(AbstractTable table) {
+		return new FirebirdColumn(table);
 	}
 }

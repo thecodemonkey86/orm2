@@ -6,13 +6,15 @@ import cpp.core.Param;
 
 public class ConstructorBeanRepository extends Constructor {
 
+	Param pSqlCon;
+	
 	public ConstructorBeanRepository() {
-		addParam(new Param(Types.Sql.toRawPointer(), "sqlCon"));
+		pSqlCon = addParam(Types.Sql.toRawPointer(), "sqlCon");
 	}
 	
 	@Override
 	public void addImplementation() {
-		addPassToSuperConstructor(getParam("sqlCon"));
+		addPassToSuperConstructor(pSqlCon);
 		//addInstr(_this().assignAttr("sqlCon",getParam("sqlCon")));		
 	}
 

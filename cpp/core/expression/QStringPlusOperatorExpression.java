@@ -5,6 +5,10 @@ import cpp.core.QStringConcatOperator;
 
 public class QStringPlusOperatorExpression extends BinaryOperatorExpression {
 
+	public QStringPlusOperatorExpression(Expression q1, Expression q2) {
+		super(q1, new QStringConcatOperator(), q2);
+	}
+	
 	public QStringPlusOperatorExpression(Var q1, Var q2) {
 		super(q1, new QStringConcatOperator(), q2);
 	}

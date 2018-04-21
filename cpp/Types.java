@@ -11,7 +11,7 @@ import cpp.lib.ClsBaseBean;
 import cpp.lib.ClsOrderedSet;
 import cpp.lib.ClsSql;
 import cpp.lib.ClsSqlQuery;
-import cpp.lib.ClsTemplateAbstractBeanQuery;
+import cpp.lib.EnumSqlQueryOrderDirection;
 import database.relation.AbstractRelation;
 
 
@@ -23,12 +23,8 @@ public class Types extends CoreTypes{
 	public static final ClsSql Sql = 	new ClsSql();
 	public static final ClsBeanRepository BeanRepository = new ClsBeanRepository();
 	public static final ClsBaseBean BaseBean = new ClsBaseBean();
-
-//	
+	public static final EnumSqlQueryOrderDirection OrderDirection = EnumSqlQueryOrderDirection.INSTANCE;
 	
-	public static Cls baseBeanQuery(BeanCls cls) {
-		return new ClsTemplateAbstractBeanQuery().getConcreteClass(cls);
-	}
 	public static Cls beanQuery(BeanCls cls) {
 		return new ClsBeanQuery(cls); //
 	}

@@ -12,8 +12,6 @@ public class MethodBeanQueryFetch extends Method{
 	public MethodBeanQueryFetch(BeanCls bean) {
 		super(Public, Types.qvector(bean.toSharedPtr()), "query");
 		this.bean=bean;
-		setVirtualQualifier(true);
-		setOverrideQualifier(true);
 	}
 
 	@Override

@@ -39,15 +39,7 @@ public class MethodRepoCreateNew extends Method {
 				}
 			}
 			for(Column col : cls.getTbl().getFieldColumns()) {
-				// FIXME getFieldColumns enthält auch die PK-Felder, da isPartOfPk derzeit nicht funktioniert
-				boolean found = false;
-				for(Column pkCol : cls.getTbl().getPrimaryKey().getColumns()) {
-					if(pkCol.equals(col)) {
-						found = true;
-						break;
-					}
-				}
-				if(!found) {
+				
 					Type t = BeanCls.getDatabaseMapper().columnToType(col);
 					initializeFieldsParams.add(addParam(new Param(col.isNullable() 
 							? (((TplCls) t).getElementType().isPrimitiveType() 
@@ -57,7 +49,7 @@ public class MethodRepoCreateNew extends Method {
 									? t 
 									: t.toConstRef()), col.getCamelCaseName())));
 					
-				}
+				
 			}
 		}
 	}

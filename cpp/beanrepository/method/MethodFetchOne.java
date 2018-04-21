@@ -36,10 +36,11 @@ public class MethodFetchOne extends Method {
 	protected List<OneToManyRelation> manyRelations;
 	protected PrimaryKey pk;
 	protected BeanCls bean;
+	protected Param pQuery;
 	
 	public MethodFetchOne(List<OneRelation> oneRelations,List<OneToManyRelation> manyRelations, BeanCls bean,PrimaryKey pk) {
 		super(Public, bean.toSharedPtr(),  getMethodName(bean));
-		addParam(new Param(Types.QSqlQuery.toRValueRef(), "query"));	
+		pQuery = addParam(Types.QSqlQuery.toRValueRef(), "query");	
 		this.oneRelations = oneRelations;
 		this.manyRelations = manyRelations;
 		this.pk = pk;
@@ -57,7 +58,7 @@ public class MethodFetchOne extends Method {
 }
 
 protected Expression getExpressionQuery() {
-	return  getParam("query");
+	return pQuery;
 }
 
 	@Override

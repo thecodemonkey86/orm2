@@ -82,7 +82,7 @@ public class SqliteDatabase extends Database {
 			index++;
 			expectToken(l, index++, "(");
 			while(!endOfColumnList) {
-				Column col = makeColumnInstance();
+				Column col = makeColumnInstance(tbl);
 				tbl.addColumn(col);
 				col.setName(getColName(l.get(index++)));
 				
@@ -270,8 +270,8 @@ public class SqliteDatabase extends Database {
 
 
 	@Override
-	public Column makeColumnInstance() {
-		return new SqliteColumn();
+	public Column makeColumnInstance(AbstractTable tbl) {
+		return new SqliteColumn(tbl);
 	}
 
 	private static void expectInteger(List<String> l, int index) {

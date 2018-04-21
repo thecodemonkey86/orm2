@@ -37,7 +37,12 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 		case "double precision":
 		case "decimal":
 			return CoreTypes.QVariant.getMethod("toDouble");
-		case "bytea":
+		case "blob":
+		case "mediumblob":
+		case "longblob":
+		case "tinyblob":
+		case "binary":
+		case "varbinary":
 			return CoreTypes.QVariant.getMethod("toByteArray");
 		case "boolean":
 			return CoreTypes.QVariant.getMethod("toBool");
@@ -69,7 +74,12 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 				case "double precision":
 				case "numeric":
 					return Types.Double;
-				case "bytea":
+				case "blob":
+				case "mediumblob":
+				case "longblob":
+				case "tinyblob":
+				case "binary":
+				case "varbinary":
 					return Types.QByteArray;	
 				case "boolean":
 					return Types.Bool;
@@ -114,7 +124,12 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 			case "double precision":
 			case "numeric":
 				return new DoubleExpression(0.0);
-			case "bytea":
+			case "blob":
+			case "mediumblob":
+			case "longblob":
+			case "tinyblob":
+			case "binary":
+			case "varbinary":
 				return new CreateObjectExpression(Types.QByteArray);	
 			case "boolean":
 				return BoolExpression.FALSE;

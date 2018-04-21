@@ -1,7 +1,6 @@
 package cpp.orm;
 
 import database.relation.IManyRelation;
-import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
 import util.CodeUtil2;

@@ -19,8 +19,8 @@ import util.CodeUtil2;
 public class MethodAddRelatedTableJoins extends Method {
 	
 	public MethodAddRelatedTableJoins(BeanCls cls) {
-		super(Public, Types.Void, "addRelatedTableJoins");
-		addParam(new Param(Types.baseBeanQuery(cls).toRef(), "query"));
+		super(Public, Types.Void, getMethodName());
+		addParam(new Param(Types.beanQuery(cls).toRef(), "query"));
 		setStatic(true);
 	}
 
@@ -72,6 +72,10 @@ public class MethodAddRelatedTableJoins extends Method {
 	@Override
 	public boolean includeIfEmpty() {
 		return true;
+	}
+
+	public static String getMethodName() {
+		return "addRelatedTableJoins";
 	}
 
 }

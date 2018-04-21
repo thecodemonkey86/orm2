@@ -3,6 +3,7 @@ package cpp.bean;
 import java.util.ArrayList;
 import java.util.List;
 
+import codegen.CodeUtil;
 import util.CodeUtil2;
 import util.StringUtil;
 import cpp.Types;
@@ -77,6 +78,7 @@ public class BeanCls extends Cls {
 	public static final String END_CUSTOM_CLASS_MEMBERS = "/*END_CUSTOM_CLASS_MEMBERS*/";
 	public static final String BEGIN_CUSTOM_PREPROCESSOR = "/*BEGIN_CUSTOM_PREPROCESSOR*/";
 	public static final String END_CUSTOM_PREPROCESSOR = "/*END_CUSTOM_PREPROCESSOR*/";
+	public static final String APILEVEL = "1.1";
 	
 	static Database database;
 	static DatabaseTypeMapper mapper;
@@ -328,7 +330,7 @@ public class BeanCls extends Cls {
 		addMethod(new MethodGetTableName());
 		addMethod(new MethodGetTableNameAlias());
 		addMethod(new MethodGetTableNameInternal());
-		addIncludeHeader("beanquery");
+		//addIncludeHeader("beanquery");
 		addIncludeHeader(repositoryPath + "beanrepository");
 		addForwardDeclaredClass(Types.BeanRepository);
 		addIncludeHeader(Types.orderedSet(null).getHeaderInclude());
@@ -620,6 +622,15 @@ public class BeanCls extends Cls {
 			addAttr(attrPrev);
 			pkType =BeanCls.getDatabaseMapper().columnToType(col);
 		}
+		
+	}
+	
+	@Override
+	protected void addBeforeHeader(StringBuilder sb) {
+		CodeUtil.writeLine(sb, "/*Dies ist eine automatisch generierte Datei des C++ ORM Systems https://github.com/thecodemonkey86/orm2*/");
+		CodeUtil.writeLine(sb, "/*Generator (Java-basiert): https://github.com/thecodemonkey86/orm2*/");
+		CodeUtil.writeLine(sb, "/*Abhängigkeiten (C++ libraries): https://github.com/thecodemonkey86/libcpporm, https://github.com/thecodemonkey86/QtCommonLibs2, https://github.com/thecodemonkey86/SqlUtil2*/");
+		CodeUtil.writeLine(sb, "/*API Level " + APILEVEL + "*/\n");
 		
 	}
 }

@@ -1,6 +1,5 @@
 package database;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -37,9 +36,6 @@ public abstract class Database {
 
 	
 	public abstract String getEscapedTableName(AbstractTable tbl) ;
-	
-	
-	//public abstract void readPrimaryKey(AbstractTable table,Connection conn) throws SQLException;
 	public abstract void readColumns(AbstractTable tbl,Connection conn) throws SQLException;
 	
 	public abstract String sqlInsertOrUpdate(AbstractTable tbl, List<String> matchingColumns);
@@ -63,7 +59,7 @@ public abstract class Database {
 		return new Table(this, name, null);
 	}
 	
-	public abstract Column makeColumnInstance();
+	public abstract Column makeColumnInstance(AbstractTable parentTable);
 
 	protected String getDefaultSqlInsert(AbstractTable tbl) {
 		ArrayList<String> colNames = new ArrayList<>(); 

@@ -3,14 +3,15 @@ package database.column;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
+import database.table.AbstractTable;
 import database.table.Table;
 import util.CodeUtil2;
 
 public abstract class Column {
+	protected AbstractTable parentTable;
 	protected String name;
 	protected String dbType;
 	protected boolean autoIncrement;
-	protected boolean partOfPk;
 	protected boolean nullable;
 	protected boolean enableRawValue;
 	protected int position;
@@ -28,8 +29,9 @@ public abstract class Column {
 		this.position = position;
 	}
 	
-	public Column() {
+	public Column(AbstractTable parentTable) {
 		oneRelation = null;
+		this.parentTable = parentTable;
 	}
 	
 	public void setNullable(boolean nullable) {
@@ -48,9 +50,9 @@ public abstract class Column {
 		this.name = name;
 	}
 	
-	public void setPartOfPk(boolean partOfPk) {
-		this.partOfPk = partOfPk;
-	}
+//	public void setPartOfPk(boolean partOfPk) {
+//		this.partOfPk = partOfPk;
+//	}
 	
 	public String getName() {
 		return name;
@@ -63,7 +65,12 @@ public abstract class Column {
 	}
 	
 	public boolean isPartOfPk() {
-		return partOfPk;
+		for(Column pkCol : parentTable.getPrimaryKey()) { 
+			if(pkCol.equals(this)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	@Override

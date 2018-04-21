@@ -16,7 +16,7 @@ public class MethodBeanRemove extends Method {
 
 	protected BeanCls bean;
 	protected boolean overloadCascadeDeleteRelations;
-	
+	protected Param pBean;
 	
 	public MethodBeanRemove(BeanCls bean,
 			 boolean overloadCascadeDeleteRelations
@@ -26,7 +26,7 @@ public class MethodBeanRemove extends Method {
 			this.addParam(new Param(Types.Bool, "overloadCascadeDeleteRelations"));
 //		this.setVirtualQualifier(true);
 		this.overloadCascadeDeleteRelations = overloadCascadeDeleteRelations;
-		addParam(new Param(bean.toSharedPtr().toConstRef(), "bean"));
+		pBean = addParam(bean.toSharedPtr().toConstRef(), "bean");
 		this.bean = bean;
 	}
 
@@ -34,7 +34,6 @@ public class MethodBeanRemove extends Method {
 
 	@Override
 	public void addImplementation() {
-		Param pBean = getParam("bean");
 				if(!overloadCascadeDeleteRelations) {
 					ArrayList<String> pkCondition = new ArrayList<>();
 					

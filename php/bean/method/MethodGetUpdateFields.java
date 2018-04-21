@@ -18,9 +18,11 @@ import php.lib.ClsSqlParam;
 public class MethodGetUpdateFields extends Method{
 	protected List<Column> cols;
 	protected PrimaryKey pk;
+	protected Param pParams;
+	
 	public MethodGetUpdateFields(List<Column> cols,PrimaryKey pk) {
 		super(Public, Types.array(Types.String), "getUpdateFields");
-		addParam(new Param(Types.array(Types.SqlParam), "params"));
+		pParams = addParam(Types.array(Types.SqlParam), "params");
 		this.cols = cols;
 		this.pk = pk;
 	}
@@ -35,7 +37,7 @@ public class MethodGetUpdateFields extends Method{
 			ifIdModified.setIfInstr(
 					fields.arrayPush( new PhpStringLiteral(colPk.getEscapedName()+"=?"))
 					,
-					paramByName("params").arrayPush( Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(colPk)),colAttr))
+					getParam("params").arrayPush( Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(colPk)),colAttr))
 					
 					);
 		}
@@ -47,7 +49,7 @@ public class MethodGetUpdateFields extends Method{
 					.setIfInstr(
 							fields.arrayPush(  new PhpStringLiteral(col.getEscapedName()+"=?"))
 							,
-							paramByName("params").arrayPush(  Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(col)),colAttr))
+							getParam("params").arrayPush(  Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(col)),colAttr))
 							
 							);
 				}
@@ -61,7 +63,7 @@ public class MethodGetUpdateFields extends Method{
 					Column col = r.getColumns(i).getValue1();
 					Expression colAttr = parent.accessThisAttrByColumn(col);
 					ifBlock.setIfInstr(fields.arrayPush( new PhpStringLiteral(col.getEscapedName()+"=?")),
-							paramByName("params").arrayPush(  colAttr));
+							getParam("params").arrayPush(  colAttr));
 				}
 			}
 			

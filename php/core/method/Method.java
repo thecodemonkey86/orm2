@@ -51,9 +51,13 @@ public abstract class Method extends InstructionBlock{
 		return a;
 	}
 	
-	private String retType() {
-		return  getReturnType().toDeclarationString();
+	public Param addParam(Type type, String name ) {
+		return addParam(new Param(type, name));
 	}
+	
+//	private String retType() {
+//		return  getReturnType().toDeclarationString();
+//	}
 	
 	@Override
 	public String toString() {
@@ -104,14 +108,15 @@ public abstract class Method extends InstructionBlock{
 		
 	}
 	
-	public Param paramByName(String name) {
-		for(Param p:params) {
-			if (p.getName().equals(name)) {
-				return p;
-			}
-		}
-		throw new RuntimeException("no such param "+name);
-	}
+//	@Deprecated
+//	public Param paramByName(String name) {
+//		for(Param p:params) {
+//			if (p.getName().equals(name)) {
+//				return p;
+//			}
+//		}
+//		throw new RuntimeException("no such param "+name);
+//	}
 
 	public ArrayList<Param> getParams() {
 		return params;
@@ -143,7 +148,6 @@ public abstract class Method extends InstructionBlock{
 	}
 	
 	public abstract void addImplementation();
-	
 	
 	
 	public Param getParam(String name) {

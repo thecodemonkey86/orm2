@@ -34,14 +34,14 @@ public class MethodGetById extends Method {
 
 	protected BeanCls bean;
 	protected boolean addSortingParam;
-	
+	protected Param pOrderBy;
 	
 	public MethodGetById(BeanCls cls,boolean addSortingParams) {
 		this(cls);
 		this.addSortingParam = addSortingParams;
 		
 		if(addSortingParams) {
-			addParam(new Param(Types.QString.toConstRef(), "orderBy"));
+			pOrderBy = addParam(Types.QString.toConstRef(), "orderBy");
 		}
 		
 	}
@@ -133,7 +133,7 @@ public class MethodGetById extends Method {
 		
 		if(addSortingParam) {
 		
-			exprQSqlQuery = exprQSqlQuery.callMethod(ClsSqlQuery.orderBy,getParam("orderBy"));
+			exprQSqlQuery = exprQSqlQuery.callMethod(ClsSqlQuery.orderBy,pOrderBy);
 		}
 		
 		exprQSqlQuery = exprQSqlQuery.callMethod("execQuery");

@@ -5,11 +5,14 @@ import cpp.CoreTypes;
 import cpp.core.expression.Expression;
 import cpp.core.expression.QChar;
 import cpp.core.expression.QStringPlusOperatorExpression;
+import cpp.lib.ClsQString;
 
 public class QString extends Expression {
 
 	protected Expression expression;
-	
+	public QString() {
+		
+	}
 	public QString(Expression expression) {
 		this.expression = expression;
 	}
@@ -28,13 +31,17 @@ public class QString extends Expression {
 	
 	@Override
 	public String toString() {
-		return expression.getType() == CoreTypes.QString ? expression.toString() : "QString"+CodeUtil.parentheses(expression.toString());
+		return expression != null ? expression.getType() == CoreTypes.QString ? expression.toString() : "QString"+CodeUtil.parentheses(expression.toString()) : "QString()";
 	}
 	
 	public Expression getExpression() {
 		return expression;
 	}
 
+	public static Expression concat(Expression e1,Expression e2) {
+		return new QStringPlusOperatorExpression(e1, e2);
+	}
+	
 	public QStringPlusOperatorExpression concat(QString qString) {
 		return new QStringPlusOperatorExpression(this, qString);
 	}
@@ -45,6 +52,10 @@ public class QString extends Expression {
 	
 	public QStringPlusOperatorExpression concat(Expression e) {
 		return new QStringPlusOperatorExpression(this, e);
+	}
+	
+	public MethodCall arg(Expression...args ) {
+		return callMethod(ClsQString.arg, args);
 	}
 
 

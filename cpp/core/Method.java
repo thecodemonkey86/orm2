@@ -44,7 +44,10 @@ public abstract class Method extends InstructionBlock{
 		this.constQualifier = constQualifier;
 		return this;
 	}
-	
+	public Method setConstQualifier() {
+		this.constQualifier = true;
+		return this;
+	}
 	public Method setOverrideQualifier(boolean overrideQualifier) {
 		this.overrideQualifier = overrideQualifier;
 		return this;
@@ -70,6 +73,10 @@ public abstract class Method extends InstructionBlock{
 	public Param addParam(Param a) {
 		params.add(a);
 		return a;
+	}
+	
+	public Param addParam(Type type, String name) {
+		return addParam(new Param(type, name));
 	}
 	
 	private String retType() {
@@ -130,14 +137,14 @@ public abstract class Method extends InstructionBlock{
 		
 	}
 	
-	public Param paramByName(String name) {
-		for(Param p:params) {
-			if (p.getName().equals(name)) {
-				return p;
-			}
-		}
-		throw new RuntimeException("no such param "+name);
-	}
+//	public Param paramByName(String name) {
+//		for(Param p:params) {
+//			if (p.getName().equals(name)) {
+//				return p;
+//			}
+//		}
+//		throw new RuntimeException("no such param "+name);
+//	}
 
 	public ArrayList<Param> getParams() {
 		return params;
@@ -172,7 +179,6 @@ public abstract class Method extends InstructionBlock{
 	}
 	
 	public abstract void addImplementation();
-	
 	
 	
 	public Param getParam(String name) {

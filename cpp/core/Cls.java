@@ -6,6 +6,7 @@ import java.util.LinkedHashSet;
 import codegen.CodeUtil;
 import cpp.core.expression.Expression;
 import cpp.core.expression.NewOperator;
+import cpp.core.expression.StaticAccessExpression;
 import cpp.core.expression.StaticMethodCall;
 import cpp.core.expression.ThisExpression;
 
@@ -18,7 +19,7 @@ public class Cls extends Type implements IAttributeContainer{
 	
 	protected Destructor destructor;
 	protected ArrayList<Attr> attrs;
-	protected LinkedHashSet<String> includes;
+	protected LinkedHashSet<Include> includes;
 	protected ArrayList<Type> forwardDeclaredTypes;
 	protected ArrayList<String> preprocessorInstructions;
 	
@@ -30,6 +31,10 @@ public class Cls extends Type implements IAttributeContainer{
 	
 	public void setUseNamespace(String useNamespace) {
 		this.useNamespace = useNamespace;
+	}
+	
+	public Expression accessStaticAttr(String name) {
+		return new StaticAccessExpression(this, getStaticAttribute(name));
 	}
 	
 	public void addSuperclass(Cls superclass) {
@@ -59,22 +64,51 @@ public class Cls extends Type implements IAttributeContainer{
 	}
 	
 	public void addInclude(String i) {
-		includes.add(i);
+		includes.add(new HeaderFileInclude(i));
+	}
+	
+	public void addInclude(String i,boolean debugOnly) {
+		if(debugOnly) {
+			includes.add(new DebugOnlyInclude(new HeaderFileInclude(i)));
+		} else {
+			includes.add(new HeaderFileInclude(i));
+		}
+		
 	}
 	
 	public void addIncludeHeader(String i) {
 		if(i==null) {
 			throw new NullPointerException();
 		}
-		includes.add(CodeUtil.quote(i+".h"));
+		addInclude(i+".h");
+	}
+	
+	public void addInclude(Include i) {
+		this.includes.add(i);
 	}
 	
 	public void addIncludeLib(String i) {
-		includes.add(CodeUtil.abr(i));
+		includes.add(new LibInclude(i));
+	}
+	
+	public void addIncludeLib(String i,boolean debugOnly) {
+		if(debugOnly) {
+			includes.add(new DebugOnlyInclude(new LibInclude(i)));
+		} else {
+			includes.add(new LibInclude(i));
+		}
 	}
 	
 	public void addIncludeLib(Type i) {
-		includes.add(CodeUtil.abr(i.getName()));
+		includes.add(new LibInclude(i.getName()));
+	}
+	
+	public void addIncludeLib(Type i,boolean debugOnly) {
+		if(debugOnly) {
+			includes.add(new DebugOnlyInclude(new LibInclude(i)));
+		} else {
+			includes.add(new LibInclude(i));
+		}
 	}
 	
 	public void addMethod(Method m) {
@@ -141,16 +175,20 @@ public class Cls extends Type implements IAttributeContainer{
 		
 	}
 	
+	protected void addBeforeHeader(StringBuilder sb) {
+		
+	}
+	
 	public String toHeaderString() {
 		StringBuilder sb=new StringBuilder();
-		
+		addBeforeHeader(sb);
 		CodeUtil.writeLine(sb, "#ifndef "+name.toUpperCase()+"_H");
 		CodeUtil.writeLine(sb, "#define "+name.toUpperCase()+"_H");
 		for(Type predef:forwardDeclaredTypes) {
 			CodeUtil.writeLine(sb, predef.getForwardDeclaration()+";");
 		}
-		for(String incl:includes) {
-			CodeUtil.writeLine(sb, "#include "+incl);
+		for(Include incl:includes) {
+			CodeUtil.writeLine(sb, incl);
 		}
 		if (this.preprocessorInstructions != null) {
 			for(String pp:this.preprocessorInstructions) {

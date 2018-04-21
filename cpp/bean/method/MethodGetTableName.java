@@ -9,7 +9,7 @@ public class MethodGetTableName extends Method{
 
 	
 	public MethodGetTableName() {
-		super(Method.Public, Types.QString, "getTableName");
+		super(Method.Public, Types.QString, getMethodName());
 		setStatic(true);
 	}
 
@@ -17,6 +17,10 @@ public class MethodGetTableName extends Method{
 	public void addImplementation() {
 		BeanCls bean=(BeanCls) parent;
 		_return(QString.fromStringConstant(bean.getTbl().getEscapedName()));
+	}
+
+	public static String getMethodName() {
+		return "getTableName";
 	}
 
 }
