@@ -15,7 +15,9 @@ import cpp.beanquery.method.MethodAndWhere9;
 import cpp.beanquery.method.MethodBeanQueryFetch;
 import cpp.beanquery.method.MethodBeanQueryFetchOne;
 import cpp.beanquery.method.MethodBeanQueryWhereEquals;
+import cpp.beanquery.method.MethodDeleteFrom;
 import cpp.beanquery.method.MethodExecQuery;
+import cpp.beanquery.method.MethodExecute;
 import cpp.beanquery.method.MethodGetDebugString;
 import cpp.beanquery.method.MethodJoin1;
 import cpp.beanquery.method.MethodJoin2;
@@ -137,6 +139,8 @@ public class ClsBeanQuery extends Cls {
 		addMethod(new MethodSelect1(cls,this));
 		addMethod(new MethodSelect2(cls,this));
 		addMethod(new MethodSelect3(cls,this));
+		addMethod(new MethodDeleteFrom(cls, this));
+		addMethod(new MethodExecute());
 		addMethod(new MethodGetDebugString());
 	}
 	
