@@ -27,6 +27,7 @@ import cpp.bean.method.MethodGetFieldNameAlias;
 import cpp.bean.method.MethodGetInsertFields;
 import cpp.bean.method.MethodGetInsertParams;
 import cpp.bean.method.MethodGetInsertValuePlaceholders;
+import cpp.bean.method.MethodGetLastItem;
 import cpp.bean.method.MethodGetLimitQueryString;
 import cpp.bean.method.MethodGetManyRelatedAtIndex;
 import cpp.bean.method.MethodGetManyRelatedCount;
@@ -194,6 +195,7 @@ public class BeanCls extends Cls {
 			addMethod(new MethodGetManyRelatedAtIndex(attr, r));
 			addMethod(new MethodGetManyRelatedCount(attr, r));
 			addMethod(new MethodRemoveAllManyRelatedBeans(r));
+			addMethod(new MethodGetLastItem(attr.getElementType(), r));
 		}
 		
 		for(ManyRelation r:manyRelations) {

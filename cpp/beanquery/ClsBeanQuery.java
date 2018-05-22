@@ -79,7 +79,7 @@ public class ClsBeanQuery extends Cls {
 		addIncludeHeader(BeanCls.getModelPath() + "beans/"+cls.getIncludeHeader());
 		addIncludeHeader("../"+ ClsBeanRepository.CLSNAME.toLowerCase());
 		addIncludeLib("QSqlError",true);
-		addIncludeLib("QSqlDriver",true);
+		addIncludeLib("QSqlDriver");
 		addAttr(new Attr(Types.BeanRepository.toSharedPtr(), "repository"));
 		addAttr(new Attr(Types.QString,"mainBeanAlias"));
 		addAttr(new Attr(Types.QString,"selectFields"));
