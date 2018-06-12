@@ -36,6 +36,7 @@ public class MethodBeanQueryFetchOne extends Method{
 	public MethodBeanQueryFetchOne(BeanCls bean) {
 		super(Public, bean, "fetchOne");
 		this.bean=bean;
+		setReturnNullable();
 	}
 
 	@Override
@@ -108,11 +109,13 @@ public class MethodBeanQueryFetchOne extends Method{
 		
 		ifRowNotNull.addIfInstr(doWhileQSqlQueryNext);
 		
-		if(bean.getTbl().getPrimaryKey().isMultiColumn()) {
-			
-		} else {
-			doWhileQSqlQueryNext.setCondition(Expressions.and( ifRowNotNull.getCondition() , row.arrayIndex(new PhpStringLiteral("b1__" + bean.getTbl().getPrimaryKey().getFirstColumn().getName())).cast(BeanCls.getTypeMapper().columnToType(bean.getTbl().getPrimaryKey().getFirstColumn()))._equals(b1.callAttrGetter(bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())) ));	
+		ArrayList<Expression> condExpressions = new ArrayList<>();
+		condExpressions.add(ifRowNotNull.getCondition());
+		for(Column colPk :  bean.getTbl().getPrimaryKey()) {
+			condExpressions.add(row.arrayIndex(new PhpStringLiteral("b1__" + colPk.getName())).cast(BeanCls.getTypeMapper().columnToType(colPk))._equals(b1.callAttrGetter(colPk.getCamelCaseName())));
 		}
+		
+		doWhileQSqlQueryNext.setCondition(Expressions.and( condExpressions ));
 		
 		doWhileQSqlQueryNext.addInstr(row.assign(res.callMethod(ClsMysqliResult.fetch_assoc)));
 		_return(b1);

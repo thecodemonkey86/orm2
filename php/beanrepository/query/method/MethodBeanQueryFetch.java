@@ -37,6 +37,7 @@ public class MethodBeanQueryFetch extends Method{
 	public MethodBeanQueryFetch(BeanCls bean) {
 		super(Public, Types.array(bean), "fetch");
 		this.bean=bean;
+		setReturnNullable();
 	}
 
 	@Override

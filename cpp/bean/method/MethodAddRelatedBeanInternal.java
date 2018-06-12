@@ -5,6 +5,7 @@ import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.Method;
 import cpp.core.Param;
+import cpp.lib.ClsQVector;
 import cpp.orm.OrmUtil;
 import database.relation.ManyRelation;
 import database.relation.OneToManyRelation;
@@ -12,10 +13,10 @@ import database.relation.OneToManyRelation;
 public class MethodAddRelatedBeanInternal extends Method {
 
 	protected OneToManyRelation rel;
-	
+	Param pBean; 
 	public MethodAddRelatedBeanInternal(OneToManyRelation r, Param p) {
 		super(Public, Types.Void, getMethodName(r) );
-		addParam(p);
+		pBean = addParam(p);
 		rel=r;
 	}
 	
@@ -43,7 +44,7 @@ public class MethodAddRelatedBeanInternal extends Method {
 	@Override
 	public void addImplementation() {
 		Attr a=parent.getAttrByName(OrmUtil.getOneToManyRelationDestAttrName(rel));
-		addInstr(a.callMethod("append",getParam("bean")).asInstruction());
+		addInstr(a.callMethod(ClsQVector.append,pBean).asInstruction());
 //		addInstr(parent.getAttrByName("_added"+StringUtil.ucfirst(a.getName())).callMethod("append",getParam("bean")).asInstruction());
 	}
 	

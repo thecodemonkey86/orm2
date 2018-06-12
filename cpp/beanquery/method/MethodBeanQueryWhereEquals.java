@@ -11,6 +11,7 @@ import cpp.core.instruction.IfBlock;
 import cpp.lib.ClsAbstractBeanQuery;
 import cpp.lib.ClsQVariant;
 import database.column.Column;
+import cpp.core.Type;
 
 public class MethodBeanQueryWhereEquals extends Method{
 	BeanCls bean;
@@ -19,7 +20,8 @@ public class MethodBeanQueryWhereEquals extends Method{
 	public MethodBeanQueryWhereEquals(ClsBeanQuery query, BeanCls bean,Column c) {
 		super(Public, query.toRef(), "where"+c.getUc1stCamelCaseName()+"Equals");
 		this.bean=bean;
-		pValue = addParam(new Param(BeanCls.getDatabaseMapper().columnToType(c), "value"));
+		Type t = BeanCls.getDatabaseMapper().columnToType(c);
+		pValue = addParam(new Param(t.isPrimitiveType() ? t : t.toConstRef(), "value"));
 		this.c = c;
 	}
 

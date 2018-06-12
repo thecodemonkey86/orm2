@@ -52,4 +52,11 @@ public class TplCls extends Cls {
 	public String getForwardDeclaration() {
 		throw new UnsupportedOperationException();
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof TplCls)
+			return super.equals(obj) && element.equals( ((TplCls)obj).element);
+		return false;
+	}
 }

@@ -39,6 +39,7 @@ import cpp.bean.method.MethodGetTableNameInternal;
 import cpp.bean.method.MethodGetUpdateCondition;
 import cpp.bean.method.MethodGetUpdateConditionParams;
 import cpp.bean.method.MethodGetUpdateFields;
+import cpp.bean.method.MethodIsNullOrEmpty;
 import cpp.bean.method.MethodManyAttrGetter;
 import cpp.bean.method.MethodOneRelationAttrSetter;
 import cpp.bean.method.MethodOneRelationBeanIsNull;
@@ -47,6 +48,7 @@ import cpp.bean.method.MethodQHashBeanSharedPtr;
 import cpp.bean.method.MethodQHashPkStruct;
 import cpp.bean.method.MethodRemoveAllManyRelatedBeans;
 import cpp.bean.method.MethodRemoveManyToManyRelatedBean;
+import cpp.bean.method.MethodReplaceAllManyRelatedBeans;
 import cpp.bean.method.MethodSetAutoIncrementId;
 import cpp.bean.method.MethodToggleAddRemoveRelatedBean;
 import cpp.bean.method.MethodUnload;
@@ -68,6 +70,7 @@ import cpp.orm.OrmUtil;
 import database.Database;
 import database.column.Column;
 import database.relation.AbstractRelation;
+import database.relation.IManyRelation;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
@@ -75,6 +78,7 @@ import database.table.Table;
 
 public class BeanCls extends Cls {
 
+	private static final String BEAN_PARAM_NAME = "bean";
 	public static final String BEGIN_CUSTOM_CLASS_MEMBERS = "/*BEGIN_CUSTOM_CLASS_MEMBERS*/";
 	public static final String END_CUSTOM_CLASS_MEMBERS = "/*END_CUSTOM_CLASS_MEMBERS*/";
 	public static final String BEGIN_CUSTOM_PREPROCESSOR = "/*BEGIN_CUSTOM_PREPROCESSOR*/";
@@ -190,11 +194,14 @@ public class BeanCls extends Cls {
 			addIncludeHeader(attr.getClassType().getIncludeHeader());
 			addForwardDeclaredClass((Cls) attr.getElementType());
 			addMethod(new MethodManyAttrGetter(attr));
-			addMethod(new MethodAddRelatedBean(r, new Param(attr.getElementType().toConstRef(), "bean")));
-			addMethod(new MethodAddRelatedBeanInternal(r, new Param(attr.getElementType().toConstRef(), "bean")));
+			addMethod(new MethodAddRelatedBean(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
+			addMethod(new MethodAddRelatedBean(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
+			addMethod(new MethodAddRelatedBeanInternal(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
+			addMethod(new MethodAddRelatedBeanInternal(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
 			addMethod(new MethodGetManyRelatedAtIndex(attr, r));
 			addMethod(new MethodGetManyRelatedCount(attr, r));
 			addMethod(new MethodRemoveAllManyRelatedBeans(r));
+			addMethod(new MethodReplaceAllManyRelatedBeans(r));
 			addMethod(new MethodGetLastItem(attr.getElementType(), r));
 		}
 		
@@ -211,14 +218,16 @@ public class BeanCls extends Cls {
 			Attr attrManyToManyRemoved = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Removed");
 			addAttr(attrManyToManyRemoved);
 			addMethod(new MethodAttributeGetter(attrManyToManyRemoved));
-			addMethod(new MethodAddManyToManyRelatedBean(r, new Param(attr.getElementType().toConstRef(), "bean")));
-			addMethod(new MethodAddManyToManyRelatedBeanInternal(r, new Param(attr.getElementType().toConstRef(), "bean")));
+			addMethod(new MethodAddManyToManyRelatedBean(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
+			addMethod(new MethodAddManyToManyRelatedBean(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
+			addMethod(new MethodAddManyToManyRelatedBeanInternal(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
+			addMethod(new MethodAddManyToManyRelatedBeanInternal(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
 			
-			addMethod(new MethodRemoveManyToManyRelatedBean(r, new Param(attr.getElementType().toConstRef(), "bean")));
+			addMethod(new MethodRemoveManyToManyRelatedBean(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
 			addMethod(new MethodRemoveAllManyRelatedBeans(r));
 		}
 		
-		
+		Type nullstring = Types.nullable(Types.QString);
 //		structPk.setScope(name);
 		for(Column col:allColumns) {
 						
@@ -227,10 +236,13 @@ public class BeanCls extends Cls {
 					) {
 				Attr attr = new Attr(BeanCls.getDatabaseMapper().getTypeFromDbDataType(col.getDbType(), col.isNullable()), col.getCamelCaseName());
 				addAttr(attr);
+				
 				addMethod(new MethodAttrGetter(attr,false));	
 				addMethod(new MethodColumnAttrSetter(this,col,attr));
 				addMethod(new MethodColumnAttrSetterInternal(this,col,attr));
 				if (col.isNullable()) {
+					if(attr.getType().equals(nullstring))
+						addMethod(new MethodIsNullOrEmpty(col));
 					addMethod(new MethodColumnAttrSetNull(this, col, attr, true));
 					addMethod(new MethodColumnAttrSetNull(this, col, attr, false));
 				}
@@ -561,6 +573,12 @@ public class BeanCls extends Cls {
 	
 	public List<ManyRelation> getManyRelations() {
 		return manyRelations;
+	}
+	
+	public List<IManyRelation> getAllManyRelations() {
+		List<IManyRelation> list = new ArrayList<>(manyRelations);
+		list.addAll(oneToManyRelations);
+		return list;
 	}
 	
 	public Table getTbl() {

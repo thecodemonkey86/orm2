@@ -3,6 +3,7 @@ package cpp.bean.method;
 import util.StringUtil;
 import cpp.Types;
 import cpp.bean.BeanCls;
+import cpp.bean.Nullable;
 import cpp.core.Attr;
 import cpp.core.ConstRef;
 import cpp.core.Method;
@@ -10,6 +11,11 @@ import cpp.core.Param;
 import cpp.core.TplCls;
 import cpp.core.expression.BoolExpression;
 import cpp.core.expression.CreateObjectExpression;
+import cpp.core.expression.Expression;
+import cpp.core.expression.Expressions;
+import cpp.core.expression.Operators;
+import cpp.core.expression.ParenthesesExpression;
+import cpp.core.instruction.IfBlock;
 import database.column.Column;
 
 public class MethodColumnAttrSetter extends Method{
@@ -33,15 +39,28 @@ public class MethodColumnAttrSetter extends Method{
 	@Override
 	public void addImplementation() {
 		Param param = getParam(a.getName());
-		if (col.isNullable()) {
-			_assign(_accessThis(a), new CreateObjectExpression(Types.nullable(param.getType().isPrimitiveType() ? param.getType() : ((ConstRef)param.getType()).getBase()), param));
+		Expression cond = null;
+		
+		if(col.isNullable()) {
+			cond = _this().accessAttr(a).callMethod(Nullable.isNull).binOp(Operators.OR, param._notEquals(_this().accessAttr(a).callMethod(Nullable.val)));
 		} else {
-			_assign(_accessThis(a), param);
+			cond = param._notEquals(_this().accessAttr(a));
 		}
+		
+	
+		 IfBlock ifNotEquals = _if(cond);
 		if (!col.isPartOfPk())
-			addInstr(_this().assignAttr(a.getName()+"Modified",BoolExpression.TRUE));
-		else
-			addInstr(_this().assignAttr("primaryKeyModified",BoolExpression.TRUE));
+			ifNotEquals.thenBlock(). addInstr(_this().assignAttr(a.getName()+"Modified",BoolExpression.TRUE));
+		else {
+			IfBlock ifNotInsert=ifNotEquals.thenBlock()._ifNot(_this().accessAttr("insert"));
+			ifNotInsert.thenBlock().
+				addInstr(_this().assignAttr("primaryKeyModified",BoolExpression.TRUE));
+		}
+		if (col.isNullable()) {
+			ifNotEquals.thenBlock()._assign(_accessThis(a), new CreateObjectExpression(Types.nullable(param.getType().isPrimitiveType() ? param.getType() : ((ConstRef)param.getType()).getBase()), param));
+		} else {
+			ifNotEquals.thenBlock()._assign(_accessThis(a), param);
+		}
 		//_return(_this());
 		
 	}
