@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Properties;
 
 import org.xml.sax.Attributes;
@@ -38,7 +39,7 @@ public class ConfigReader implements ContentHandler {
 	protected Connection conn;
 	protected OrmConfig cfg;
 	
-	protected String tag;
+	protected LinkedList<String> tags;
 
 	private enum Section {
 		ENTITIES, MAPPING_TABLES, ONE_TO_MANY_RELATIONS, MANY_TO_MANY_RELATIONS, ONE_RELATIONS
@@ -59,6 +60,8 @@ public class ConfigReader implements ContentHandler {
 	private MappingTable currentMappingTable;
 	private Section section;
 	private Path xmlDirectory;
+	private PrimaryKey overrideColsPrimaryKey;
+	private String[] enableRawValueColumns;
 	
 	public OrmConfig getCfg() {
 		return cfg;
@@ -68,6 +71,7 @@ public class ConfigReader implements ContentHandler {
 		createConfig();
 		relationQueryNames = new HashSet<>();
 		this.xmlDirectory = xmlDirectory;
+		this.tags = new LinkedList<>();
 	}
 
 	protected void createConfig() {
@@ -90,18 +94,19 @@ public class ConfigReader implements ContentHandler {
 
 	@Override
 	public void startDocument() throws SAXException {
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void endDocument() throws SAXException {
+		
 		if(!cfg.hasBasePath()) {
 			cfg.setBasePath(xmlDirectory.toString());
 			cfg.setModelPath("model");
 			cfg.setRepositoryPath("repository");
 		}
-
+		overrideColsPrimaryKey = null;
 	}
 
 	@Override
@@ -119,11 +124,11 @@ public class ConfigReader implements ContentHandler {
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
 		try {
-			this.tag = localName;
-			switch (this.tag) {
+			this.tags.push(localName);
+			switch (this.tags.peek()) {
 			case "database":
 				this.cfg.setDbEngine(atts.getValue("engine"));
-				Database database;
+				Database database=null; 
 				DbCredentials credentials;
 				
 				if (cfg.isEnginePostgres()) {
@@ -168,31 +173,35 @@ public class ConfigReader implements ContentHandler {
 				break;
 			case "entity":
 				if (section == Section.ENTITIES) {
+					enableRawValueColumns = null;
 					currentEntityTable = cfg.getDatabase().makeTableInstance( atts.getValue("table"));
 					cfg.addEntityTable(currentEntityTable);
-					cfg.getDatabase().readColumns(currentEntityTable, conn);
+					currentEntityTable.setOverrideColumnsFromConfig(atts.getValue("overrideColumns")!=null && atts.getValue("overrideColumns").equals("true"));
+					if(!currentEntityTable.isOverrideColumnsFromConfig()) {
+						overrideColsPrimaryKey = null;
+						cfg.getDatabase().readColumns(currentEntityTable, conn);
 					
-					if(atts.getValue("overridePrimaryKey")!=null) {
-						String[] pkColNames = atts.getValue("overridePrimaryKey").split(",");
-						PrimaryKey pk = new PrimaryKey();
-						for(String pkCol : pkColNames) {
-							Column col = currentEntityTable.getColumnByName(pkCol);
-							col.setNullable(false);
-							pk.add(col);
+						if(atts.getValue("overridePrimaryKey")!=null) {
+							String[] pkColNames = atts.getValue("overridePrimaryKey").split(",");
+							PrimaryKey pk = new PrimaryKey();
+							for(String pkCol : pkColNames) {
+								Column col = currentEntityTable.getColumnByName(pkCol);
+								col.setNullable(false);
+								pk.add(col);
+							}
+							currentEntityTable.setPrimaryKey(pk);
 						}
-						currentEntityTable.setPrimaryKey(pk);
+						if(currentEntityTable.getColumnCount()==0)
+							throw new IOException("invalid table " + currentEntityTable.getName());
+					} else {
+						overrideColsPrimaryKey = new PrimaryKey();
 					}
-	
 					
-					if(currentEntityTable.getColumnCount()==0)
-						throw new IOException("invalid table " + currentEntityTable.getName());
+				
 					cfg.initRelations(currentEntityTable);
 					
 					if(atts.getValue("enableRawValue") !=null) {
-						String[] enableRawValueColumns = atts.getValue("enableRawValue").split(",");
-						for(String enableRawValueColumn : enableRawValueColumns) {
-							currentEntityTable.getColumnByName(enableRawValueColumn.trim()).setEnableRawValue(true);
-						}
+						enableRawValueColumns = atts.getValue("enableRawValue").split(",");
 					}
 				} else {
 					throw new SAXException("Illegal state");
@@ -325,6 +334,15 @@ public class ConfigReader implements ContentHandler {
 					destTblColOneRelation.setOneToManyRelation(currentOneToManyRelation);
 					currentOneRelation.add(columnMappingOneRelation);
 					break;
+				case ENTITIES:
+					Column col = cfg.getDatabase().makeColumnInstance(currentEntityTable); 
+					col.setName(atts.getValue("name"));
+					col.setDbType(atts.getValue("type"));
+					if(atts.getValue("primaryKey") != null && atts.getValue("primaryKey").equals("true") ) {
+						overrideColsPrimaryKey.add(col);
+					}
+					currentEntityTable.addColumn(col);
+					break;
 				default:
 					throw new SAXException("Illegal state");
 				}
@@ -340,18 +358,27 @@ public class ConfigReader implements ContentHandler {
 
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
-		if(tag!=null) {
-			switch (tag) {
+		if(tags.peek()!=null) {
+			switch (tags.peek()) {
 			case "relation":
 				currentSrcTable = null;
-				currentDestTable	 = null;	
+				currentDestTable = null;	
 				break;
-	
+			case "entity":
+				if(overrideColsPrimaryKey != null) {
+					currentEntityTable.setPrimaryKey(overrideColsPrimaryKey);
+				}
+				if(enableRawValueColumns!=null) {
+					for(String enableRawValueColumn : enableRawValueColumns) {
+						currentEntityTable.getColumnByName(enableRawValueColumn.trim()).setEnableRawValue(true);
+					}
+				}
+				break;
 			default:
 				break;
 			}
 			
-			this.tag = null;
+			this.tags.pop();
 		}	
 	}
 
