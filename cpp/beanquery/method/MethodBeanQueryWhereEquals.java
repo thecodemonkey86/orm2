@@ -23,7 +23,7 @@ public class MethodBeanQueryWhereEquals extends Method{
 
 	@Override
 	public void addImplementation() {
-		_return( _this().callMethod(ClsAbstractBeanQuery.where, QString.fromStringConstant( c.getEscapedName()+"=?"), Types.QVariant.callStaticMethod(ClsQVariant.fromValue, pValue) ));
+		_return( _this().callMethod(ClsAbstractBeanQuery.where, QString.fromStringConstant("b1."+ c.getEscapedName()+"=?"), Types.QVariant.callStaticMethod(ClsQVariant.fromValue, pValue) ));
 	}
 	@Override
 	public boolean includeIfEmpty() {
