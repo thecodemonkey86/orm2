@@ -9,6 +9,7 @@ import cpp.core.Cls;
 import cpp.core.IAttributeContainer;
 import cpp.core.Method;
 import cpp.core.MethodCall;
+import cpp.core.Operator;
 import cpp.core.RawPtr;
 import cpp.core.SharedPtr;
 import cpp.core.Type;
@@ -144,6 +145,16 @@ public abstract class Expression {
 	public Expression _equals(Expression e) {
 		return new BinaryOperatorExpression(this, new LibEqualsOperator(), e);
 	}
+	
+	public Expression _notEquals(Expression e) {
+		return new BinaryOperatorExpression(this, new NotEqualOperator(), e);
+	}
+	
+	public Expression binOp(Operator op, Expression arg) {
+		BinaryOperatorExpression e=new BinaryOperatorExpression(this, op, arg);
+		return e ;
+	}
+	
 	public Expression binOp(String symbol, Expression arg) {
 		BinaryOperatorExpression e=new BinaryOperatorExpression(this, new LibOperator(symbol, arg.getType(), false), arg);
 		return e ;

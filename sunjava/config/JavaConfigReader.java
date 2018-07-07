@@ -34,7 +34,7 @@ public class JavaConfigReader extends ConfigReader{
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
 		super.startElement(uri, localName, qName, atts);
-		switch (this.tag) {
+		switch (this.tags.peek()) {
 		case "java":
 			((JavaOrmOutputConfig)cfg).setBeanPackageName(atts.getValue("beanPackageName"));
 			((JavaOrmOutputConfig)cfg).setRepositoryPackageName(atts.getValue("repositoryJavaPackage"));

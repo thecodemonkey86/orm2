@@ -14,6 +14,7 @@ public class ClsQVector extends TplCls implements IArrayAccessible{
 	public static final String removeOne = "removeOne";
 	public static final String contains = "contains";
 	public static final String size = "size";
+	public static final String last = "last";
 	
 	public ClsQVector(Type element) {
 		super(CLSNAME, element);
@@ -24,6 +25,7 @@ public class ClsQVector extends TplCls implements IArrayAccessible{
 		addMethod(new LibMethod(CoreTypes.Int, size));
 		addMethod(new LibMethod(CoreTypes.Void, clear));
 		addMethod(new LibMethod(CoreTypes.Bool, contains));
+		addMethod(new LibMethod(element.toRef(), last));
 		addMethod(new LibMethod(element.toRef(), "at"));
 	}
 

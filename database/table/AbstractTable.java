@@ -13,6 +13,22 @@ public abstract class AbstractTable {
 	protected ArrayList<Column> allColumns;
 	protected PrimaryKey primaryKey;
 	protected Database db;
+	protected boolean overrideColumnsFromConfig;
+	//protected ArrayList<String> overrideColumnNames;
+	
+	public void setOverrideColumnsFromConfig(boolean overrideColumnsFromConfig) {
+		this.overrideColumnsFromConfig = overrideColumnsFromConfig;
+	}
+	
+	public boolean isOverrideColumnsFromConfig() {
+		return overrideColumnsFromConfig;
+	}
+	
+	/*public void addOverrideColumn(String col) {
+		if(overrideColumnNames == null)
+			overrideColumnNames = new ArrayList<>();
+		overrideColumnNames.add(col);
+	}*/
 	
 	public void setPrimaryKey(PrimaryKey primaryKey) {
 		if (primaryKey.getColumns().size() == 0) {

@@ -9,6 +9,7 @@ import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.Struct;
 import cpp.core.expression.Var;
+import cpp.lib.ClsQVector;
 import cpp.orm.OrmUtil;
 import database.column.Column;
 import database.relation.ManyRelation;
@@ -16,10 +17,10 @@ import database.relation.ManyRelation;
 public class MethodAddManyToManyRelatedBean extends Method {
 
 	protected ManyRelation rel;
-	
+	Param pBean;
 	public MethodAddManyToManyRelatedBean(ManyRelation r, Param p) {
 		super(Public, Types.Void, getMethodName(r));
-		addParam(p);
+		pBean = addParam(p);
 		rel=r;
 	}
 	
@@ -30,7 +31,7 @@ public class MethodAddManyToManyRelatedBean extends Method {
 	@Override
 	public void addImplementation() {
 		Attr a=parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
-		addInstr(a.callMethod("append",getParam("bean")).asInstruction());
+		addInstr(a.callMethod(ClsQVector.append,pBean).asInstruction());
 		BeanCls relationBean = Beans.get( rel.getDestTable());
 		
 		if (relationBean.getTbl().getPrimaryKey().isMultiColumn()) {
@@ -38,7 +39,7 @@ public class MethodAddManyToManyRelatedBean extends Method {
 			Var idAdded = _declare(pkType, "idAdded");
 			for(Column col:relationBean.getTbl().getPrimaryKey().getColumns()) {
 				_assign(idAdded.accessAttr(col
-						.getCamelCaseName()), getParam("bean")
+						.getCamelCaseName()), pBean
 						.callAttrGetter(
 								col
 								.getCamelCaseName()
@@ -47,7 +48,7 @@ public class MethodAddManyToManyRelatedBean extends Method {
 			addInstr(
 					parent.getAttrByName(
 							a.getName()+"Added")
-							.callMethod("append",
+							.callMethod(ClsQVector.append,
 									idAdded
 								).asInstruction());	
 				
@@ -55,8 +56,8 @@ public class MethodAddManyToManyRelatedBean extends Method {
 			addInstr(
 					parent.getAttrByName(
 							a.getName()+"Added")
-							.callMethod("append",
-									getParam("bean")
+							.callMethod(ClsQVector.append,
+									pBean
 									.callAttrGetter(
 											relationBean.getTbl().getPrimaryKey().getFirstColumn()
 											.getCamelCaseName()

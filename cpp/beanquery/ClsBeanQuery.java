@@ -15,7 +15,9 @@ import cpp.beanquery.method.MethodAndWhere9;
 import cpp.beanquery.method.MethodBeanQueryFetch;
 import cpp.beanquery.method.MethodBeanQueryFetchOne;
 import cpp.beanquery.method.MethodBeanQueryWhereEquals;
+import cpp.beanquery.method.MethodDeleteFrom;
 import cpp.beanquery.method.MethodExecQuery;
+import cpp.beanquery.method.MethodExecute;
 import cpp.beanquery.method.MethodGetDebugString;
 import cpp.beanquery.method.MethodJoin1;
 import cpp.beanquery.method.MethodJoin2;
@@ -77,7 +79,7 @@ public class ClsBeanQuery extends Cls {
 		addIncludeHeader(BeanCls.getModelPath() + "beans/"+cls.getIncludeHeader());
 		addIncludeHeader("../"+ ClsBeanRepository.CLSNAME.toLowerCase());
 		addIncludeLib("QSqlError",true);
-		addIncludeLib("QSqlDriver",true);
+		addIncludeLib("QSqlDriver");
 		addAttr(new Attr(Types.BeanRepository.toSharedPtr(), "repository"));
 		addAttr(new Attr(Types.QString,"mainBeanAlias"));
 		addAttr(new Attr(Types.QString,"selectFields"));
@@ -137,6 +139,8 @@ public class ClsBeanQuery extends Cls {
 		addMethod(new MethodSelect1(cls,this));
 		addMethod(new MethodSelect2(cls,this));
 		addMethod(new MethodSelect3(cls,this));
+		addMethod(new MethodDeleteFrom(cls, this));
+		addMethod(new MethodExecute());
 		addMethod(new MethodGetDebugString());
 	}
 	

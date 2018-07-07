@@ -59,6 +59,7 @@ public class MethodBeanSave extends Method {
 			
 			addInstr(_this().callMethodInstruction(ClsBaseRepository.saveBean,pBean));
 		
+			// TODO FIXME one to many relations @see BeanCls.getAllManyRelations
 			List<ManyRelation> manyRelations = bean.getManyToManyRelations();
 			
 			

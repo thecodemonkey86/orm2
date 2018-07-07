@@ -30,6 +30,9 @@ public class DoWhile extends InstructionBlock {
 
 	@Override
 	public String toString() {
+		if(condition == null) {
+			throw new IllegalStateException();
+		}
 		StringBuilder sb=new StringBuilder("do {\n");
 		
 		for(Instruction i:instructions) {

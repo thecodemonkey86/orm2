@@ -19,8 +19,12 @@ public class MethodRemoveAllManyRelatedBeans extends Method {
 
 	protected IManyRelation rel;
 	
+	public static String getMethodName(IManyRelation r) {
+		return "removeAll"+StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrName(r));
+	}
+	
 	public MethodRemoveAllManyRelatedBeans(IManyRelation r) {
-		super(Public, Types.Void, "removeAll"+StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrName(r)));
+		super(Public, Types.Void, getMethodName(r));
 		rel=r;
 	}
 

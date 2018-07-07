@@ -2,6 +2,7 @@ package php.core.method;
 
 import java.util.ArrayList;
 import codegen.CodeUtil;
+import php.Php;
 import php.core.AbstractPhpCls;
 import php.core.Param;
 import php.core.Type;
@@ -24,12 +25,19 @@ public abstract class Method extends InstructionBlock{
 	protected String visibility;
 	protected Type returnType;
 	protected String name;
+	protected boolean returnNullable;
 	
 	public static final String Protected = "protected";
 	public static final String Private = "private";
 	public static final String Public = "public";
 	
+	public void setReturnNullable(boolean returnNullable) {
+		this.returnNullable = returnNullable;
+	}
 	
+	public void setReturnNullable() {
+		this.returnNullable = true;
+	}
 	
 	public boolean isStatic() {
 		return isStatic;
@@ -55,9 +63,9 @@ public abstract class Method extends InstructionBlock{
 		return addParam(new Param(type, name));
 	}
 	
-//	private String retType() {
-//		return  getReturnType().toDeclarationString();
-//	}
+	private String retType() {
+		return returnNullable ? "?"+getReturnType().toDeclarationString()  : getReturnType().toDeclarationString() ;
+	}
 	
 	@Override
 	public String toString() {
@@ -69,7 +77,7 @@ public abstract class Method extends InstructionBlock{
 		StringBuilder sb=new StringBuilder();
 		
 		sb.append(CodeUtil.sp(visibility,(isStatic() ? "static" : null),"function" ,name,CodeUtil.parentheses(CodeUtil.commaSep(params))
-				//, (!getReturnType().equals(Types.Void)? ": "+retType():null)
+				, ( (!returnNullable || Php.phpVersion.supportsNullableReturnTypes()) && Php.phpVersion.supportsTypeHints() && !getReturnType().equals(Types.Void)? ": "+retType():null)
 				));
 		
 		sb.append(" {\n");
