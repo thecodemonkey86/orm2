@@ -29,10 +29,10 @@ public class MethodBeanQueryWhereEquals extends Method{
 	public void addImplementation() {
 		if(c.isNullable()) {
 			IfBlock ifNull = _if(pValue.callMethod(Nullable.isNull));
-			ifNull.thenBlock()._return( _this().callMethod(ClsAbstractBeanQuery.where, QString.fromStringConstant( c.getEscapedName()+" is null")) );
-			ifNull.elseBlock()._return( _this().callMethod(ClsAbstractBeanQuery.where, QString.fromStringConstant( c.getEscapedName()+"=?"), Types.QVariant.callStaticMethod(ClsQVariant.fromValue,  pValue.callMethod(Nullable.val) )) );
+			ifNull.thenBlock()._return( _this().callMethod(ClsAbstractBeanQuery.where, QString.fromStringConstant("b1." + c.getEscapedName()+" is null")) );
+			ifNull.elseBlock()._return( _this().callMethod(ClsAbstractBeanQuery.where, QString.fromStringConstant("b1." + c.getEscapedName()+"=?"), Types.QVariant.callStaticMethod(ClsQVariant.fromValue,  pValue.callMethod(Nullable.val) )) );
 		} else {
-			_return( _this().callMethod(ClsAbstractBeanQuery.where, QString.fromStringConstant( c.getEscapedName()+"=?"), Types.QVariant.callStaticMethod(ClsQVariant.fromValue, pValue) ));
+			_return( _this().callMethod(ClsAbstractBeanQuery.where, QString.fromStringConstant( "b1." + c.getEscapedName()+"=?"), Types.QVariant.callStaticMethod(ClsQVariant.fromValue, pValue) ));
 		}
 		
 	}
