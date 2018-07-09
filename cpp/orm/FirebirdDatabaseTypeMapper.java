@@ -76,8 +76,8 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 					return Types.Double;
 				case "261":
 					return Types.QByteArray;	
-				case "boolean":
-					return Types.Bool;
+				/*case "boolean":
+					return Types.Bool;*/
 				case "35":
 					return Types.QDateTime;
 				case "13":
