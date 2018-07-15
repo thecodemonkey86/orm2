@@ -86,4 +86,8 @@ public class Type {
 		return "%s";
 	}
 	
+	public boolean typeHinting() {
+		return true;
+	}
+	
 }

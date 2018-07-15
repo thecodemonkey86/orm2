@@ -1,6 +1,7 @@
 package generate;
 
 import java.nio.charset.Charset;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,8 +22,9 @@ import php.core.PhpCls;
 import php.core.Types;
 import php.core.instruction.InstructionBlock;
 import php.orm.DatabaseTypeMapper;
-import php.orm.MySqlDatabaseMapper;
-import php.orm.PgDatabaseMapper;
+import php.orm.FirebirdDatabaseTypeMapper;
+import php.orm.MySqlDatabaseTypeMapper;
+import php.orm.PgDatabaseTypeMapper;
 import xml.reader.DefaultXMLReader;
 
 public class PhpOrm extends OrmCommon {
@@ -36,9 +38,11 @@ public class PhpOrm extends OrmCommon {
 
 	private DatabaseTypeMapper getTypeMapper(OrmConfig cfg) {
 		if (cfg.isEnginePostgres()) {
-			return new PgDatabaseMapper();
+			return new PgDatabaseTypeMapper();
 		} else if (cfg.isEngineMysql()) {
-			return new MySqlDatabaseMapper();
+			return new MySqlDatabaseTypeMapper();
+		} else if (cfg.isEngineFirebird()) {
+			return new FirebirdDatabaseTypeMapper();
 		} else {
 			throw new RuntimeException("database not yet supported");
 		}
@@ -49,6 +53,8 @@ public class PhpOrm extends OrmCommon {
 			return Types.PgSqlQuery;
 		} else if (cfg.isEngineMysql()) {
 			return Types.MysqlSqlQuery;
+		} else if (cfg.isEngineFirebird()) {
+			return Types.FirebirdSqlQuery;
 		} else {
 			throw new RuntimeException("database not yet supported");
 		}
@@ -56,6 +62,7 @@ public class PhpOrm extends OrmCommon {
 
 	public PhpOrm(OrmConfig cfg) throws Exception {
 		super(cfg);
+		BeanCls.setTypeMapper(getTypeMapper(cfg));
 		Charset utf8 = Charset.forName("UTF-8");
 		ClsBeanRepository.setBeanRepositoryNamespace(cfg.getBasePath().relativize(cfg.getRepositoryPath()).toString().replace("/", "\\"));
 		BeanCls.setBeanNamespace(cfg.getBasePath().relativize(cfg.getModelPath()).toString().replace("/", "\\")+"\\Beans");
@@ -64,7 +71,7 @@ public class PhpOrm extends OrmCommon {
 		
 		BeanCls.setSqlQueryCls(getSqlQueryCls(cfg));
 		BeanCls.setDatabase(cfg.getDatabase());
-		BeanCls.setTypeMapper(getTypeMapper(cfg));
+	
 		InstructionBlock.setEnableStacktrace(cfg.isEnableStacktrace());
 		
 		Path pathModel = cfg.getModelPath();
@@ -86,6 +93,39 @@ public class PhpOrm extends OrmCommon {
 		}
 
 		Path pathBeans = pathModel.resolve("Beans");
+		Path pathRepository = cfg.getRepositoryPath();
+		Path helperPath = pathRepository.resolve("Helper");
+		Path pathRepositoryQuery = pathRepository.resolve("Query");
+		Path pathBeanPk = pathBeans.resolve("Pk");
+		
+		try(DirectoryStream<Path> dsPathBeans = Files.newDirectoryStream(pathBeans)) {
+			for(Path f : dsPathBeans) {
+				if(f.toString().endsWith(".php")) {
+					Files.delete(f);
+				}
+			}
+		} finally {
+			
+		}
+		try(DirectoryStream<Path> dsPathRepo = Files.newDirectoryStream(pathRepository)) {
+			for(Path f : dsPathRepo) {
+				if(f.toString().endsWith(".php")) {
+					Files.delete(f);
+				}
+			}
+		} finally {
+			
+		}
+		try(DirectoryStream<Path> dsPathQuery = Files.newDirectoryStream(pathRepositoryQuery)) {
+			for(Path f : dsPathQuery) {
+				if(f.toString().endsWith(".php")) {
+					Files.delete(f);
+				}
+			}
+		} finally {
+			
+		}
+		
 		for (BeanCls c : Beans.getAllBeans()) {
 			Path pathSrc = pathBeans.resolve(c.getName() + ".php");
 			if (Files.exists(pathSrc)) {
@@ -109,10 +149,6 @@ public class PhpOrm extends OrmCommon {
 		}
 		repo.addMethodImplementations();
 		
-		Path pathRepository = cfg.getRepositoryPath();
-		Path helperPath = pathRepository.resolve("Helper");
-		Path pathRepositoryQuery = pathRepository.resolve("Query");
-		Path pathBeanPk = pathBeans.resolve("Pk");
 		Files.createDirectories(pathBeanPk);
 		Files.createDirectories(helperPath);
 		Files.createDirectories(pathRepositoryQuery);

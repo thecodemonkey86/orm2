@@ -8,6 +8,6 @@ public abstract class Php {
 	}
 	
 	public abstract boolean supportsTypeHints(); 
-	public abstract boolean supportsNullableReturnTypes(); 
+	public abstract boolean supportsNullableTypeHint(); 
 	
 }

@@ -3,6 +3,7 @@ package php.core;
 import php.beanrepository.ClsBeanRepository;
 import php.lib.ClsBaseBean;
 import php.lib.ClsDateTime;
+import php.lib.ClsFirebirdSqlQuery;
 import php.lib.ClsMySqlQuery;
 import php.lib.ClsMysqli;
 import php.lib.ClsMysqliResult;
@@ -15,7 +16,7 @@ import php.lib.PhpStringType;
 
 
 public class Types {
-	
+	public static final Resource Resource = new Resource();
 	public static final PrimitiveType Int=new PrimitiveType("int") {
 		@Override
 		public String getSprintfType() {
@@ -31,7 +32,11 @@ public class Types {
 			return "%f";
 		}
 	};
-	public static final PrimitiveType Void = new PrimitiveType("void");
+	public static final PrimitiveType Void = new PrimitiveType("void") {
+		public boolean typeHinting() {
+			return false;
+		}
+	};
 	public static final PrimitiveType Uint = new PrimitiveType("uint");
 	public static final PhpStringType String = new PhpStringType();
 	public static final Type Mixed = new Type("mixed");
@@ -43,11 +48,13 @@ public class Types {
 	public static final ClsSqlQuery SqlQuery = new ClsSqlQuery();
 	public static final ClsPgSqlQuery PgSqlQuery = new ClsPgSqlQuery();
 	public static final ClsMySqlQuery MysqlSqlQuery = new ClsMySqlQuery();
+	public static final ClsFirebirdSqlQuery FirebirdSqlQuery = new ClsFirebirdSqlQuery();
 	
 	public static final ClsBeanRepository BeanRepository = new ClsBeanRepository();
 	
 	public static final ClsSqlParam SqlParam = new ClsSqlParam();
 	public static final ClsSqlUtil SqlUtil = new ClsSqlUtil();
+	
 	
 	public static PhpArray array(Type valueType) {
 		return new PhpArray(valueType) ;

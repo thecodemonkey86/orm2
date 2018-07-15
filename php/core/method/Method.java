@@ -77,7 +77,7 @@ public abstract class Method extends InstructionBlock{
 		StringBuilder sb=new StringBuilder();
 		
 		sb.append(CodeUtil.sp(visibility,(isStatic() ? "static" : null),"function" ,name,CodeUtil.parentheses(CodeUtil.commaSep(params))
-				, ( (!returnNullable || Php.phpVersion.supportsNullableReturnTypes()) && Php.phpVersion.supportsTypeHints() && !getReturnType().equals(Types.Void)? ": "+retType():null)
+				, ( (!returnNullable || Php.phpVersion.supportsNullableTypeHint()) && Php.phpVersion.supportsTypeHints() && getReturnType().typeHinting()? ": "+retType():null)
 				));
 		
 		sb.append(" {\n");

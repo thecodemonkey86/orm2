@@ -35,7 +35,7 @@ public class ClsBeanRepository extends PhpCls{
 	
 	public ClsBeanRepository() {
 		super(CLSNAME,beanRepositoryNamespace);
-		Attr sqlCon = new Attr(Types.mysqli, "sqlCon");
+		Attr sqlCon = new Attr(BeanCls.getTypeMapper().getDatabaseLinkType(), "sqlCon");
 		sqlCon.setStatic(true);
 		addAttr(sqlCon);
 		addMethod(new MethodAttributeGetter(sqlCon));

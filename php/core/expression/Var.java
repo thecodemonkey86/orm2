@@ -83,6 +83,10 @@ public class Var extends Expression{
 	public Instruction assign(Expression val) {
 		return new AssignInstruction(this, val);
 	}
+
+	public Expression notOperator() {
+		return new NotExpression(this);
+	}
 	
 	
 	

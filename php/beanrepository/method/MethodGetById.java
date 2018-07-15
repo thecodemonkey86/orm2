@@ -27,7 +27,6 @@ import php.core.expression.Var;
 import php.core.instruction.DoWhile;
 import php.core.instruction.IfBlock;
 import php.core.method.Method;
-import php.lib.ClsMysqliResult;
 import php.lib.ClsSqlQuery;
 import php.orm.OrmUtil;
 import util.CodeUtil2;
@@ -53,6 +52,11 @@ public class MethodGetById extends Method {
 //	public ThisBeanRepositoryExpression _this() {
 //		return new ThisBeanRepositoryExpression((ClsBeanRepository) parent);
 //	}
+	
+	private Expression getFetchExpression(Var res) {
+		return BeanCls.getTypeMapper().getDefaultFetchExpression(res);
+		
+	}
 	
 	@Override
 	public void addImplementation() {
@@ -82,7 +86,7 @@ public class MethodGetById extends Method {
 				joinConditions.add(CodeUtil.sp("b1."+r.getColumns(i).getValue1().getEscapedName(),'=',(r.getAlias())+"."+ r.getColumns(i).getValue2().getEscapedName()));
 			}
 			
-			exprSqlQuery = exprSqlQuery.callMethod("leftJoin", Types.BeanRepository.callStaticMethod(ClsBeanRepository.getMethodNameGetTableName(Beans.get(r.getDestTable()))),new PhpStringLiteral(r.getAlias()), new PhpStringLiteral(CodeUtil2.concat(joinConditions," AND ")));
+			exprSqlQuery = exprSqlQuery.callMethod("leftJoin", Types.BeanRepository.callStaticMethod(ClsBeanRepository.getMethodNameGetTableName(Beans.get(r.getDestTable())),new PhpStringLiteral(r.getAlias())), new PhpStringLiteral(CodeUtil2.concat(joinConditions," AND ")));
 		}
 		for(OneToManyRelation r:oneToManyRelations) {
 			ArrayList<String> joinConditions=new ArrayList<>();
@@ -90,7 +94,7 @@ public class MethodGetById extends Method {
 				joinConditions.add(CodeUtil.sp("b1."+r.getColumns(i).getValue1().getEscapedName(),'=',(r.getAlias())+"."+ r.getColumns(i).getValue2().getEscapedName()));
 			}
 			
-			exprSqlQuery = exprSqlQuery.callMethod("leftJoin", Types.BeanRepository.callStaticMethod(ClsBeanRepository.getMethodNameGetTableName(Beans.get(r.getDestTable()))),new PhpStringLiteral(r.getAlias()), new PhpStringLiteral(CodeUtil2.concat(joinConditions," AND ")));
+			exprSqlQuery = exprSqlQuery.callMethod("leftJoin", Types.BeanRepository.callStaticMethod(ClsBeanRepository.getMethodNameGetTableName(Beans.get(r.getDestTable())),new PhpStringLiteral(r.getAlias())), new PhpStringLiteral(CodeUtil2.concat(joinConditions," AND ")));
 		}
 		for(ManyRelation r:manyToManyRelations) {
 			ArrayList<String> joinConditions=new ArrayList<>();
@@ -119,9 +123,9 @@ public class MethodGetById extends Method {
 				"res", exprSqlQuery
 				);
 		Var b1 = _declare(returnType, "b1", Expressions.Null);
-		Var row = _declare(Types.array(Types.Mixed), "row", res.callMethod(ClsMysqliResult.fetch_assoc) );
+		Var row = _declare(Types.array(Types.Mixed), "row", getFetchExpression(res) );
 		IfBlock ifRowNotNull =
-				_if(row.isNotNull())
+				_if(row)
 				
 
 					.setIfInstr(
@@ -141,7 +145,7 @@ public class MethodGetById extends Method {
 	
 		for(OneRelation r:oneRelations) {
 //			BeanCls foreignCls = Beans.get(r.getDestTable()); 
-			IfBlock ifBlock= doWhileRowIsNotNull._if(Expressions.and( b1.callMethod(new MethodOneRelationBeanIsNull(r)),row.arrayIndex(new PhpStringLiteral(r.getAlias() + "__" + r.getDestTable().getPrimaryKey().getFirstColumn().getName())).isNotNull()) );
+			IfBlock ifBlock= doWhileRowIsNotNull._if(Expressions.and( b1.callMethod(new MethodOneRelationBeanIsNull(r)),row.arrayIndex(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias() + "__" + r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull()) );
 			ifBlock.thenBlock().
 			_callMethodInstr(b1, new MethodOneRelationAttrSetter( b1.getClassConcreteType().getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)), true,r.isPartOfPk()), 
 					Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Beans.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
@@ -156,7 +160,7 @@ public class MethodGetById extends Method {
 				Expression[] foreignPkArgs = new Expression[r.getDestTable().getPrimaryKey().getColumnCount()];
 				
 				for(int i=0; i < r.getDestTable().getPrimaryKey().getColumnCount(); i++) {
-					foreignPkArgs[i] = row.arrayIndex(new PhpStringLiteral( r.getAlias()+"__"+r.getDestTable().getPrimaryKey().getColumn(i).getName()));
+					foreignPkArgs[i] = row.arrayIndex(new PhpStringLiteral( BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+r.getDestTable().getPrimaryKey().getColumn(i).getName())));
 				}
 				Var foreignPk = ifRowNotNull.thenBlock()._declareNew(beanPk, "foreignPk"+StringUtil.ucfirst(r.getAlias()),foreignPkArgs);
 							
@@ -167,9 +171,9 @@ public class MethodGetById extends Method {
 				Column colPk = r.getDestTable().getPrimaryKey().getFirstColumn();
 				
 				Var pkSet = ifRowNotNull.thenBlock()._declareNewArray(Types.array(Types.Mixed), "pkSet"+StringUtil.ucfirst(r.getAlias()));
-				pkArrayIndex = pkSet.arrayIndex(row.arrayIndex(new PhpStringLiteral( r.getAlias()+"__"+colPk.getName())));
+				pkArrayIndex = pkSet.arrayIndex(row.arrayIndex(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey( r.getAlias()+"__"+colPk.getName()))));
 			}
-			IfBlock ifNotIssetPk = doWhileRowIsNotNull._if(Expressions.and(_not(PhpFunctions.isset.call(pkArrayIndex)), row.arrayIndex( new PhpStringLiteral(r.getAlias()+"__"+r.getDestTable().getPrimaryKey().getFirstColumn().getName())).isNotNull()));
+			IfBlock ifNotIssetPk = doWhileRowIsNotNull._if(Expressions.and(_not(PhpFunctions.isset.call(pkArrayIndex)), row.arrayIndex( new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull()));
 			Var foreignBean = ifNotIssetPk.thenBlock()._declare(foreignCls, "b" + r.getAlias(),  Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Beans.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
 			ifNotIssetPk.thenBlock()._assign(pkArrayIndex, foreignBean);
 			ifNotIssetPk.thenBlock()._callMethodInstr(b1, BeanCls.getAddRelatedBeanMethodName(r), foreignBean);
@@ -178,7 +182,7 @@ public class MethodGetById extends Method {
 		
 		ifRowNotNull.addIfInstr(doWhileRowIsNotNull);
 		doWhileRowIsNotNull.setCondition(ifRowNotNull.getCondition());
-		doWhileRowIsNotNull.addInstr(row.assign(res.callMethod(ClsMysqliResult.fetch_assoc)));
+		doWhileRowIsNotNull.addInstr(row.assign(getFetchExpression(res)));
 		_return(b1);
 	}
 

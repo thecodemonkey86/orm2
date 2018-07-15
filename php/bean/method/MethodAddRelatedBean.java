@@ -1,11 +1,17 @@
 package php.bean.method;
 
+import database.column.Column;
 import database.relation.OneToManyRelation;
+import database.relation.PrimaryKey;
+import php.bean.Beans;
 import php.core.Attr;
 import php.core.Param;
 import php.core.PhpCls;
+import php.core.PhpFunctions;
 import php.core.Types;
 import php.core.expression.ArrayInitExpression;
+import php.core.expression.Expression;
+import php.core.expression.Var;
 import php.core.method.Method;
 import php.orm.OrmUtil;
 import util.StringUtil;
@@ -27,15 +33,23 @@ public class MethodAddRelatedBean extends Method {
 		_if(a.isNull()).addIfInstr(a.assign(new ArrayInitExpression()));
 		
 		Param pBean = getParam("bean");
-		if(rel.getDestTable().getPrimaryKey().isMultiColumn()) {
-			throw new RuntimeException("unimplemented");
+		PrimaryKey pk = rel.getDestTable().getPrimaryKey();
+		if(pk.isMultiColumn()) {
+			Expression[] b1PkArgs = new Expression[pk.getColumnCount()];
+			int i=0;
+			for(Column colPk : pk) {
+				b1PkArgs[i++] = pBean.callAttrGetter(colPk.getCamelCaseName());
+			}
+			
+			Var relPk = _declareNew(Beans.get( rel.getDestTable() ), "relPk", b1PkArgs);
+			addInstr(a.arrayIndexSet(PhpFunctions.spl_object_hash.call(relPk),pBean));
 		} else {
 			addInstr(a.arrayIndexSet(pBean.callAttrGetter(rel.getDestTable().getPrimaryKey().getFirstColumn().getCamelCaseName()),pBean));
 		}
 		
 		
 		addInstr(
-				parent.getAttrByName(a.getName()+"Added"+StringUtil.ucfirst(a.getName())
+				parent.getAttrByName(a.getName()+"Added"
 				).arrayPush(pBean));
 	}
 

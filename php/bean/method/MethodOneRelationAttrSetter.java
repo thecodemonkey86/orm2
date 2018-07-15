@@ -20,6 +20,7 @@ public class MethodOneRelationAttrSetter extends MethodAttributeSetter {
 			this.name = this.name + "Internal";
 		}
 		this.partOfPrimaryKey = partOfPrimaryKey;
+		getParams().get(0).setNullable();
 	}
 
 	
