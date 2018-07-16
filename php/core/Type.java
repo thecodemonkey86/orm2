@@ -90,4 +90,8 @@ public class Type {
 		return true;
 	}
 	
+	public Type toNullable() {
+		return new NullableType(this);
+	}
+	
 }

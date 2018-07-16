@@ -27,7 +27,6 @@ import php.core.instruction.InstructionBlock;
 import php.core.method.Method;
 import php.lib.ClsBaseBean;
 import php.lib.ClsBaseBeanQuery;
-import php.lib.ClsMysqliResult;
 import php.orm.OrmUtil;
 import util.StringUtil;
 
@@ -35,9 +34,8 @@ public class MethodBeanQueryFetch extends Method{
 	BeanCls bean;
 	
 	public MethodBeanQueryFetch(BeanCls bean) {
-		super(Public, Types.array(bean), "fetch");
+		super(Public, Types.array(bean).toNullable(), "fetch");
 		this.bean=bean;
-		setReturnNullable();
 	}
 	
 	private Expression getFetchExpression(Var res) {

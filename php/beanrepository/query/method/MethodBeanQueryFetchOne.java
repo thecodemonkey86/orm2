@@ -25,7 +25,6 @@ import php.core.instruction.DoWhile;
 import php.core.instruction.IfBlock;
 import php.core.method.Method;
 import php.lib.ClsBaseBeanQuery;
-import php.lib.ClsMysqliResult;
 import php.orm.OrmUtil;
 import util.StringUtil;
 import util.pg.PgCppUtil;
@@ -34,9 +33,8 @@ public class MethodBeanQueryFetchOne extends Method{
 	BeanCls bean;
 	
 	public MethodBeanQueryFetchOne(BeanCls bean) {
-		super(Public, bean, "fetchOne");
+		super(Public, bean.toNullable(), "fetchOne");
 		this.bean=bean;
-		setReturnNullable();
 	}
 	
 	private Expression getFetchExpression(Var res) {

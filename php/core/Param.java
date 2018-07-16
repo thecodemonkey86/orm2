@@ -8,7 +8,6 @@ import php.core.expression.Var;
 public class Param extends Var{
 
 	Expression defaultValue;
-	boolean nullable;
 	
 	public Param(Type type, String name) {
 		super(type,name);
@@ -16,11 +15,6 @@ public class Param extends Var{
 	public Param(Type type, String name,Expression defaultValue) {
 		super(type,name);
 		this.defaultValue=defaultValue;
-	}
-	
-	public Param setNullable() {
-		nullable = true;
-		return this;
 	}
 	
 	@Override
@@ -40,7 +34,7 @@ public class Param extends Var{
 		if (name.equals("noLoading")) {
 			System.out.println();
 		}
-		return defaultValue == null? CodeUtil.sp(type.typeHinting() && (!nullable || Php.phpVersion.supportsNullableTypeHint()) ? "?"+ type.toDeclarationString() : null,"$"+name):CodeUtil.sp(type.typeHinting() ? type.toDeclarationString() : null,"$"+name,'=',defaultValue);
+		return defaultValue == null? CodeUtil.sp(type.typeHinting() && (!(type instanceof NullableType) || Php.phpVersion.supportsNullableTypeHint()) ? "?"+ type.toDeclarationString() : null,"$"+name):CodeUtil.sp(type.typeHinting() ? type.toDeclarationString() : null,"$"+name,'=',defaultValue);
 	}
 	
 	
