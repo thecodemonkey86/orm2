@@ -55,6 +55,8 @@ public abstract class Database {
 	public abstract boolean supportsInsertOrIgnore();
 	public abstract boolean supportsMultiRowInsert();
 
+	
+	
 	public Table makeTableInstance( String name) {
 		return new Table(this, name, null);
 	}

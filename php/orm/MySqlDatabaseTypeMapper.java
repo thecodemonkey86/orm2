@@ -11,8 +11,9 @@ import php.core.expression.Expressions;
 import php.core.expression.IntExpression;
 import php.core.expression.NewOperator;
 import php.core.expression.PhpStringLiteral;
+import php.lib.ClsMysqliResult;
 
-public class MySqlDatabaseMapper extends DatabaseTypeMapper{
+public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 	
 	@Override
 	public Type getTypeFromDbDataType(String dbType) {
@@ -93,5 +94,22 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 	public Type getLibBeanQueryClass(BeanCls beanCls) {
 		throw new RuntimeException("not implemented");
 	}
+
+	@Override
+	public Type getDatabaseLinkType() {
+		return Types.mysqli;
+	}
+
+	@Override
+	public Expression getDefaultFetchExpression(Expression res) {
+		return res.callMethod(ClsMysqliResult.fetch_assoc);
+	}
+
+	@Override
+	public Expression getConvertTypeExpression(Expression e,String dbType, boolean nullable) {
+		// TODO Auto-generated method stub
+		return e;
+	}
+
 	
 }

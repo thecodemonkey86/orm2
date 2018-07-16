@@ -5,6 +5,8 @@ import java.util.List;
 import database.column.Column;
 import php.bean.BeanCls;
 import php.core.Param;
+import php.core.PhpFunction;
+import php.core.PhpFunctions;
 import php.core.Types;
 import php.core.expression.BoolExpression;
 import php.core.expression.PhpStringLiteral;
@@ -54,7 +56,7 @@ public class MethodGetFromQueryAssocArray extends Method{
 						
 					}*/
 					
-					addInstr(bean.getClassConcreteType().getMethod("set"+col.getUc1stCamelCaseName()+"Internal").call(bean, array.arrayIndex( alias.concat(new PhpStringLiteral("__"+col.getName())))).asInstruction());
+					addInstr(bean.getClassConcreteType().getMethod("set"+col.getUc1stCamelCaseName()+"Internal").call(bean, BeanCls.getTypeMapper().getConvertTypeExpression( array.arrayIndex(BeanCls.getTypeMapper().filterFetchAssocArrayKeyExpression(alias).concat(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey("__"+col.getName())))),col)).asInstruction());
 				} catch (Exception e) {
 					e.printStackTrace();
 					System.out.println(parent);

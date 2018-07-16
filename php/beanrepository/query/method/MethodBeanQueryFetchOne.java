@@ -38,6 +38,11 @@ public class MethodBeanQueryFetchOne extends Method{
 		this.bean=bean;
 		setReturnNullable();
 	}
+	
+	private Expression getFetchExpression(Var res) {
+		return BeanCls.getTypeMapper().getDefaultFetchExpression(res);
+		
+	}
 
 	@Override
 	public void addImplementation() {
@@ -47,11 +52,11 @@ public class MethodBeanQueryFetchOne extends Method{
 		List<ManyRelation> manyToManyRelations = bean.getManyToManyRelations();
 		
 		Var b1 = _declare(returnType, "b1", Expressions.Null);
-		Var res =_declare(Types.mysqli_result, "res",_this().callMethod(ClsBaseBeanQuery.query) );
+		Var res =_declare(Types.Mixed, "res",_this().callMethod(ClsBaseBeanQuery.query) );
 		
-		Var row = _declare(Types.array(Types.Mixed), "row", res.callMethod(ClsMysqliResult.fetch_assoc) );
+		Var row = _declare(Types.array(Types.Mixed), "row", getFetchExpression(res) );
 		IfBlock ifRowNotNull =
-				_if(row.isNotNull())
+				_if(row)
 				
 
 					.setIfInstr(
@@ -72,7 +77,7 @@ public class MethodBeanQueryFetchOne extends Method{
 		
 		for(OneRelation r:oneRelations) {
 //			BeanCls foreignCls = Beans.get(r.getDestTable()); 
-			IfBlock ifBlock= doWhileQSqlQueryNext._if(Expressions.and( b1.callMethod(new MethodOneRelationBeanIsNull(r)),row.arrayIndex(new PhpStringLiteral(r.getAlias() + "__" + r.getDestTable().getPrimaryKey().getFirstColumn().getName())).isNotNull()) );
+			IfBlock ifBlock= doWhileQSqlQueryNext._if(Expressions.and( b1.callMethod(new MethodOneRelationBeanIsNull(r)),row.arrayIndex(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias() + "__" + r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull()) );
 			ifBlock.thenBlock().
 			_callMethodInstr(b1, new MethodOneRelationAttrSetter( b1.getClassConcreteType().getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)), true,r.isPartOfPk()), 
 					Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Beans.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
@@ -87,7 +92,7 @@ public class MethodBeanQueryFetchOne extends Method{
 				Expression[] foreignPkArgs = new Expression[r.getDestTable().getPrimaryKey().getColumnCount()];
 				
 				for(int i=0; i < r.getDestTable().getPrimaryKey().getColumnCount(); i++) {
-					foreignPkArgs[i] = row.arrayIndex(new PhpStringLiteral( r.getAlias()+"__"+r.getDestTable().getPrimaryKey().getColumn(i).getName()));
+					foreignPkArgs[i] = row.arrayIndex(new PhpStringLiteral( BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+r.getDestTable().getPrimaryKey().getColumn(i).getName())));
 				}
 				Var foreignPk = ifRowNotNull.thenBlock()._declareNew(beanPk, "foreignPk"+StringUtil.ucfirst(r.getAlias()),foreignPkArgs);
 							
@@ -98,7 +103,7 @@ public class MethodBeanQueryFetchOne extends Method{
 				Column colPk = r.getDestTable().getPrimaryKey().getColumns().get(0);
 				
 				Var pkSet = ifRowNotNull.thenBlock()._declareNewArray(Types.array(Types.Mixed), "pkSet"+StringUtil.ucfirst(r.getAlias()));
-				pkArrayIndex = pkSet.arrayIndex(row.arrayIndex(new PhpStringLiteral( r.getAlias()+"__"+colPk.getName())));
+				pkArrayIndex = pkSet.arrayIndex(row.arrayIndex(new PhpStringLiteral( BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+colPk.getName()))));
 			}
 			IfBlock ifNotIssetPk = doWhileQSqlQueryNext._if(_not(PhpFunctions.isset.call(pkArrayIndex)));
 			Var foreignBean = ifNotIssetPk.thenBlock()._declare(foreignCls, "b" + r.getAlias(),  Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Beans.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
@@ -112,12 +117,12 @@ public class MethodBeanQueryFetchOne extends Method{
 		ArrayList<Expression> condExpressions = new ArrayList<>();
 		condExpressions.add(ifRowNotNull.getCondition());
 		for(Column colPk :  bean.getTbl().getPrimaryKey()) {
-			condExpressions.add(row.arrayIndex(new PhpStringLiteral("b1__" + colPk.getName())).cast(BeanCls.getTypeMapper().columnToType(colPk))._equals(b1.callAttrGetter(colPk.getCamelCaseName())));
+			condExpressions.add(row.arrayIndex(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey("b1__" + colPk.getName()))).cast(BeanCls.getTypeMapper().columnToType(colPk))._equals(b1.callAttrGetter(colPk.getCamelCaseName())));
 		}
 		
 		doWhileQSqlQueryNext.setCondition(Expressions.and( condExpressions ));
 		
-		doWhileQSqlQueryNext.addInstr(row.assign(res.callMethod(ClsMysqliResult.fetch_assoc)));
+		doWhileQSqlQueryNext.addInstr(row.assign(getFetchExpression(res)));
 		_return(b1);
 	}
 	@Override

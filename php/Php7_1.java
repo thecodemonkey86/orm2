@@ -8,7 +8,7 @@ public class Php7_1 extends Php {
 	}
 
 	@Override
-	public boolean supportsNullableReturnTypes() {
+	public boolean supportsNullableTypeHint() {
 		return true;
 	}
 

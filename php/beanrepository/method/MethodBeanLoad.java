@@ -54,6 +54,11 @@ public class MethodBeanLoad extends Method {
 	public boolean includeIfEmpty() {
 		return true;
 	}
+	
+	private Expression getFetchExpression(Var res) {
+		return BeanCls.getTypeMapper().getDefaultFetchExpression(res);
+		
+	}
 
 	@Override
 	public void addImplementation() {
@@ -122,8 +127,8 @@ public class MethodBeanLoad extends Method {
 					"res", exprSqlQuery
 					);
 			
-			Var row = _declare(Types.array(Types.Mixed), "row", res.callMethod(ClsMysqliResult.fetch_assoc) );
-			IfBlock ifRowNotNull =	_if(row.isNotNull());
+			Var row = _declare(Types.array(Types.Mixed), "row", getFetchExpression(res) );
+			IfBlock ifRowNotNull =	_if(row);
 								
 			
 			DoWhile doWhileQSqlQueryNext = DoWhile.create();
@@ -135,7 +140,7 @@ public class MethodBeanLoad extends Method {
 		
 			for(OneRelation r:oneRelations) {
 //				BeanCls foreignCls = Beans.get(r.getDestTable()); 
-				IfBlock ifBlock= doWhileQSqlQueryNext._if(Expressions.and( pBean.callMethod(new MethodOneRelationBeanIsNull(r)),row.arrayIndex(new PhpStringLiteral(r.getAlias() + "__" + r.getDestTable().getPrimaryKey().getFirstColumn().getName())).isNotNull()) );
+				IfBlock ifBlock= doWhileQSqlQueryNext._if(Expressions.and( pBean.callMethod(new MethodOneRelationBeanIsNull(r)),row.arrayIndex(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias() + "__" + r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull()) );
 				ifBlock.thenBlock().
 				_callMethodInstr(pBean, new MethodOneRelationAttrSetter( pBean.getClassConcreteType().getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)), true,r.isPartOfPk()), 
 						Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Beans.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
@@ -152,7 +157,7 @@ public class MethodBeanLoad extends Method {
 					
 					for(Column colPk : r.getDestTable().getPrimaryKey().getColumns()) {
 						pkSprintf.add(BeanCls.getTypeMapper().columnToType(colPk).getSprintfType());
-						arrayIndexExpressions[++i] = row.arrayIndex(new PhpStringLiteral( r.getAlias()+"__"+colPk.getName()));
+						arrayIndexExpressions[++i] = row.arrayIndex(new PhpStringLiteral( BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+colPk.getName())));
 					}
 					arrayIndexExpressions[0] = new PhpStringLiteral( CodeUtil.concat(pkSprintf, "_"));			
 					Var pkSet = ifRowNotNull.thenBlock()._declareNewArray(Types.array(Types.Mixed), "pkSet"+StringUtil.ucfirst(r.getAlias()));
@@ -170,7 +175,7 @@ public class MethodBeanLoad extends Method {
 					//IfBlock ifNotRecValueIsNull = doWhileQSqlQueryNext._if(Expressions.not(  Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Beans.get(r.getDestTable())),  resultSet, JavaString.fromStringConstant("pk"+r.getAlias()))));
 					
 					Var pkSet = ifRowNotNull.thenBlock()._declareNewArray(Types.array(Types.Mixed), "pkSet"+StringUtil.ucfirst(r.getAlias()));
-					Expression pkArrayIndex = pkSet.arrayIndex(row.arrayIndex(new PhpStringLiteral( r.getAlias()+"__"+colPk.getName())));
+					Expression pkArrayIndex = pkSet.arrayIndex(row.arrayIndex(new PhpStringLiteral( BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+colPk.getName()))));
 					IfBlock ifNotIssetPk = doWhileQSqlQueryNext._if(_not(PhpFunctions.isset.call(pkArrayIndex)));
 					Var foreignBean = ifNotIssetPk.thenBlock()._declare(foreignCls, "b" + r.getAlias(),  Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Beans.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
 					ifNotIssetPk.thenBlock()._assign(pkArrayIndex, foreignBean);
@@ -182,7 +187,7 @@ public class MethodBeanLoad extends Method {
 			
 			ifRowNotNull.addIfInstr(doWhileQSqlQueryNext);
 			doWhileQSqlQueryNext.setCondition(ifRowNotNull.getCondition());
-			doWhileQSqlQueryNext.addInstr(row.assign(res.callMethod(ClsMysqliResult.fetch_assoc)));
+			doWhileQSqlQueryNext.addInstr(row.assign(getFetchExpression(res)));
 			
 		}
 		_callMethodInstr(pBean, ClsBaseBean.setLoaded, BoolExpression.TRUE);

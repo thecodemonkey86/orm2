@@ -10,7 +10,7 @@ public class ConstructorBeanQuery extends Constructor {
 
 	public ConstructorBeanQuery() {
 		super();
-		Param sqlCon = new Param(Types.mysqli, "sqlCon");
+		Param sqlCon = new Param(BeanCls.getTypeMapper().getDatabaseLinkType(), "sqlCon");
 		addParam(sqlCon);
 		addPassToSuperConstructor(new NewOperator( BeanCls.getTypeMapper().getSqlQueryClass(), sqlCon));
 	}

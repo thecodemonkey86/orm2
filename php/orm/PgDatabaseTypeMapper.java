@@ -6,7 +6,7 @@ import php.core.Type;
 import php.core.Types;
 import php.core.expression.Expression;
 
-public class PgDatabaseMapper extends DatabaseTypeMapper{
+public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 
 	@Override
 	public Type getTypeFromDbDataType(String dbType) {
@@ -66,6 +66,25 @@ public class PgDatabaseMapper extends DatabaseTypeMapper{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public Type getDatabaseLinkType() {
+		// TODO Auto-generated method stub
+		throw new RuntimeException("not impl");
+	}
+
+	@Override
+	public Expression getDefaultFetchExpression(Expression res) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Expression getConvertTypeExpression(Expression e,String dbType, boolean nullable) {
+		// TODO Auto-generated method stub
+		return e;
+	}
+
 	
 	
 }

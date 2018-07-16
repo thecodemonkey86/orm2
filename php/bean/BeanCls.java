@@ -125,6 +125,11 @@ public class BeanCls extends PhpCls {
 			addMethod(new MethodManyAttrGetter(attr));
 			addMethod(new MethodAddRelatedBean(r, new Param(attr.getElementType(), "bean")));
 			addMethod(new MethodAddRelatedBeanInternal(r, new Param(attr.getElementType(), "bean")));
+			Attr manyRelAdded = new Attr(Types.array(Beans.get(r.getSourceTable())) ,attr.getName()+"Added");
+			addAttr(manyRelAdded);
+			
+			Attr manyRelRemoved = new Attr(Types.array(Beans.get(r.getSourceTable())) ,attr.getName()+"Removed");
+			addAttr(manyRelRemoved);
 		}
 
 		for(ManyRelation r:manyRelations) {
@@ -134,6 +139,7 @@ public class BeanCls extends PhpCls {
 			
 			Attr manyRelAdded = new Attr(Types.array(Beans.get(r.getSourceTable())) ,attr.getName()+"Added");
 			addAttr(manyRelAdded);
+			
 			addMethod(new MethodAttributeGetter(manyRelAdded));
 			Attr manyRelRemoved = new Attr(Types.array(Beans.get(r.getSourceTable())) ,attr.getName()+"Removed");
 			addAttr(manyRelRemoved);

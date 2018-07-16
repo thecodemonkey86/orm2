@@ -120,7 +120,7 @@ public class FirebirdDatabase extends Database {
 	
 	@Override
 	public String getEscapedTableName(AbstractTable tbl) {
-		return String.format("\"%s\"", tbl.getName().toUpperCase());
+		return tbl.getName().toUpperCase();
 	}
 
 
@@ -128,4 +128,6 @@ public class FirebirdDatabase extends Database {
 	public Column makeColumnInstance(AbstractTable table) {
 		return new FirebirdColumn(table);
 	}
+	
+	
 }

@@ -164,7 +164,11 @@ public class ConfigReader implements ContentHandler {
 				
 				break;
 			case "output":
-				cfg.setBasePath(atts.getValue("basePath"));
+				String basePath = atts.getValue("basePath");
+				if(basePath == null) {
+					basePath = xmlDirectory.toString();
+				}
+				cfg.setBasePath(basePath);
 				cfg.setModelPath(atts.getValue("modelPath"));
 				cfg.setRepositoryPath(atts.getValue("repositoryPath"));
 				break;
