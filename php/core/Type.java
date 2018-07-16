@@ -3,7 +3,7 @@ package php.core;
 import java.util.List;
 
 
-public class Type {
+public abstract class Type {
 	protected String type;
 	protected List<Operator> operators;
 	
@@ -90,8 +90,6 @@ public class Type {
 		return true;
 	}
 	
-	public Type toNullable() {
-		return new NullableType(this);
-	}
+	public abstract Type toNullable() ;
 	
 }

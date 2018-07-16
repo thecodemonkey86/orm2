@@ -30,11 +30,18 @@ public class Param extends Var{
 	
 	@Override
 	public String toDeclarationString() {
-		//return super.toDeclarationString();
-		if (name.equals("noLoading")) {
-			System.out.println();
+		String v = "$"+name;
+		if(type.typeHinting()) {
+			if(type instanceof INullable && !Php.phpVersion.supportsNullableTypeHint()) {
+				return v;
+			}
+			return CodeUtil.sp(type.toDeclarationString(),v);  
+		} else {
+			return v;
 		}
-		return defaultValue == null? CodeUtil.sp(type.typeHinting() && (!(type instanceof NullableType) || Php.phpVersion.supportsNullableTypeHint()) ? "?"+ type.toDeclarationString() : null,"$"+name):CodeUtil.sp(type.typeHinting() ? type.toDeclarationString() : null,"$"+name,'=',defaultValue);
+		
+	
+		
 	}
 	
 	

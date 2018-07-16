@@ -11,5 +11,11 @@ public class PrimitiveType extends Type{
 		return true;
 	}
 
+	@Override
+	public Type toNullable() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 }

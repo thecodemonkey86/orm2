@@ -39,7 +39,14 @@ public class Types {
 	};
 	public static final PrimitiveType Uint = new PrimitiveType("uint");
 	public static final PhpStringType String = new PhpStringType();
-	public static final Type Mixed = new Type("mixed");
+	public static final Type Mixed = new Type("mixed") {
+
+		@Override
+		public Type toNullable() {
+			return this;
+		}
+		
+	};
 	public static final ClsDateTime DateTime = new ClsDateTime();
 	public static final ClsMysqli mysqli = new ClsMysqli();
 	public static final ClsMysqliResult mysqli_result = new ClsMysqliResult();

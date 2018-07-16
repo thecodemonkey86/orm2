@@ -10,4 +10,9 @@ public class Resource extends Type{
 	public boolean typeHinting() {
 		return false;
 	}
+
+	@Override
+	public Type toNullable() {
+		return null;
+	}
 }

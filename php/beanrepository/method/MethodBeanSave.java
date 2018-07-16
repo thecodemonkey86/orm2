@@ -82,11 +82,11 @@ public class MethodBeanSave extends Method {
 				
 				ifColIsNull.thenBlock()._callMethodInstr(sqlQuery, 
 						ClsSqlQuery.setValue,new PhpStringLiteral(col.getEscapedName()), 
-						Types.SqlParam.callStaticMethod(ClsSqlParam.getNullMethodName(BeanCls.getTypeMapper().columnToType(col))));
+						BeanCls.getTypeMapper().getNullInsertUpdateValueExpression( col));
 				
 				ifColIsNull.elseBlock()._callMethodInstr(sqlQuery, 
 						ClsSqlQuery.setValue,new PhpStringLiteral(col.getEscapedName()), 
-						Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(col)), BeanCls.accessAttrGetterByColumn(pBean,col,false)));
+						BeanCls.getTypeMapper().getInsertUpdateValueExpression( BeanCls.accessAttrGetterByColumn(pBean,col,false),col));
 				// end insert
 				
 				// begin update		
@@ -101,7 +101,7 @@ public class MethodBeanSave extends Method {
 					
 					ifColIsNullElse.elseBlock()._callMethodInstr(sqlQuery, 
 							ClsSqlQuery.setValue,new PhpStringLiteral(col.getEscapedName()), 
-							Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(col)), BeanCls.accessAttrGetterByColumn(pBean,col,false)));
+							BeanCls.getTypeMapper().getInsertUpdateValueExpression(BeanCls.accessAttrGetterByColumn(pBean,col,false),col));
 				}
 				// end update
 			} else {
@@ -111,7 +111,7 @@ public class MethodBeanSave extends Method {
 					IfBlock ifModified = ifHasUpdate.thenBlock()._if(BeanCls.accessIsColumnAttrOrEntityModified(pBean, col));
 					ifModified.thenBlock()._callMethodInstr(sqlQuery, 
 							ClsSqlQuery.setValue,new PhpStringLiteral(col.getEscapedName()), 
-							Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(col)), BeanCls.accessAttrGetterByColumn(pBean,col,false)));
+							BeanCls.getTypeMapper().getInsertUpdateValueExpression( BeanCls.accessAttrGetterByColumn(pBean,col,false),col));
 				
 				}
 			}
@@ -122,13 +122,13 @@ public class MethodBeanSave extends Method {
 		
 		
 		for (Column colPk : tbl.getPrimaryKey().getColumns()) {
-			ifNotIsPkModified.thenBlock()._callMethodInstr(sqlQuery,  ClsSqlQuery.where,new PhpStringLiteral(colPk.getEscapedName()+"=?"), Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(colPk)), BeanCls.accessAttrGetterByColumn(pBean,colPk,true)));
+			ifNotIsPkModified.thenBlock()._callMethodInstr(sqlQuery,  ClsSqlQuery.where,new PhpStringLiteral(colPk.getEscapedName()+"=?"), BeanCls.getTypeMapper().getInsertUpdateValueExpression( BeanCls.accessAttrGetterByColumn(pBean,colPk,true),colPk));
 			
 			
 			ifNotIsPkModified.elseBlock()._callMethodInstr(sqlQuery, 
 					ClsSqlQuery.setValue,new PhpStringLiteral(colPk.getEscapedName()), 
-					Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(colPk)), BeanCls.accessAttrGetterByColumn(pBean,colPk,true)));
-			ifNotIsPkModified.elseBlock()._callMethodInstr(sqlQuery,  ClsSqlQuery.where,new PhpStringLiteral(colPk.getEscapedName()+"=?"), Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(colPk)), BeanCls.accessPrimaryKeyPreviousAttrGetterByColumn(pBean,colPk)));
+					BeanCls.getTypeMapper().getInsertUpdateValueExpression(BeanCls.accessAttrGetterByColumn(pBean,colPk,true),colPk));
+			ifNotIsPkModified.elseBlock()._callMethodInstr(sqlQuery,  ClsSqlQuery.where,new PhpStringLiteral(colPk.getEscapedName()+"=?"), BeanCls.getTypeMapper().getInsertUpdateValueExpression(BeanCls.accessPrimaryKeyPreviousAttrGetterByColumn(pBean,colPk),colPk));
 		}
 		
 		ifIsInsertNew.thenBlock()._callMethodInstr(sqlQuery, ClsSqlQuery.execute);
@@ -164,7 +164,7 @@ public class MethodBeanSave extends Method {
 			
 			for(int i=0;i<r.getSourceColumnCount();i++) {
 				whereSourceCols.add(r.getSourceMappingColumn(i).getEscapedName());
-				whereSourceColsParams[i+1] =Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(r.getSourceEntityColumn(i))),pBean.callAttrGetter(r.getSourceEntityColumn(i).getCamelCaseName())); 
+				whereSourceColsParams[i+1] = BeanCls.getTypeMapper().getInsertUpdateValueGetterExpression(pBean,r.getSourceEntityColumn(i)); 
 				//ifRemoveBeans.thenBlock()._callMethodInstr(varDeleteSql, ClsSqlQuery.where, PhpString.stringConstant(r.getSourceMappingColumn(i).getEscapedName()+" = ?"),Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(col)),pBean.callAttrGetter(r.getSourceEntityColumn(i).getCamelCaseName())));
 			
 			}
@@ -197,7 +197,7 @@ public class MethodBeanSave extends Method {
 				}
 				
 				Type foreachRemoveElementType = ((PhpArray) expressionManyToManyRemoved.getType()).getElementType();
-				Var varParamsForeachRemove = ifCountEq1.elseBlock()._declareNew( Types.array(Types.SqlParam), "params",expressionManyToManyRemoved.count().binOp("+", new IntExpression(1)));
+				Var varParamsForeachRemove = ifCountEq1.elseBlock()._declareNew( Types.array(Types.Mixed), "params",expressionManyToManyRemoved.count().binOp("+", new IntExpression(1)));
 				ForeachLoop foreachAttrRemove = ifCountEq1.elseBlock()._foreach(new Var(foreachRemoveElementType.isPrimitiveType()?foreachRemoveElementType: foreachRemoveElementType, "rem"), expressionManyToManyRemoved);
 				
 				for(int i= 0;i<r.getDestColumnCount(); i++) {
@@ -228,18 +228,18 @@ public class MethodBeanSave extends Method {
 			
 			for(int i = 0; i < r.getSourceTable().getPrimaryKey().getColumnCount(); i++) {
 				Column col = r.getSourceTable().getPrimaryKey().getColumn(i); 
-				addInsertRowArgs[i] = Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(col)), pBean.callAttrGetter(new Attr(BeanCls.getTypeMapper().columnToType(col), col.getCamelCaseName()))); 
+				addInsertRowArgs[i] = BeanCls.getTypeMapper().getInsertUpdateValueGetterExpression(pBean, col); 
 			}
 			
 			if (r.getDestTable().getPrimaryKey().isMultiColumn()) {
 				
 				for(int i = 0; i < r.getDestTable().getPrimaryKey().getColumnCount(); i++) {
 					Column colPk =  r.getDestTable().getPrimaryKey().getColumn(i);
-					addInsertRowArgs[i+r.getSourceTable().getPrimaryKey().getColumnCount()] = Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(colPk)), foreachAttrAdd.getVar().callAttrGetter(colPk.getCamelCaseName()));
+					addInsertRowArgs[i+r.getSourceTable().getPrimaryKey().getColumnCount()] = BeanCls.getTypeMapper().getInsertUpdateValueGetterExpression( foreachAttrAdd.getVar(),colPk);
 				}
 			} else {
 				Column colPk = r.getDestTable().getPrimaryKey().getFirstColumn();
-				addInsertRowArgs[r.getSourceTable().getPrimaryKey().getColumnCount()] = Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType( colPk)), foreachAttrAdd.getVar().callAttrGetter(colPk.getCamelCaseName()));
+				addInsertRowArgs[r.getSourceTable().getPrimaryKey().getColumnCount()] =  BeanCls.getTypeMapper().getInsertUpdateValueGetterExpression( foreachAttrAdd.getVar(),colPk);
 				
 			}
 			

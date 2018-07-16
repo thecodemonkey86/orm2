@@ -6,4 +6,9 @@ public class TplSymbol extends Type{
 		super(type);
 	}
 
+	@Override
+	public Type toNullable() {
+		return null;
+	}
+
 }

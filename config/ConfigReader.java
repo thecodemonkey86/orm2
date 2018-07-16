@@ -342,6 +342,8 @@ public class ConfigReader implements ContentHandler {
 					Column col = cfg.getDatabase().makeColumnInstance(currentEntityTable); 
 					col.setName(atts.getValue("name"));
 					col.setDbType(atts.getValue("type"));
+					String nullable = atts.getValue("nullable") ;
+					col.setNullable(nullable != null && (nullable.equals("true")||nullable.equals("1")) );
 					if(atts.getValue("primaryKey") != null && atts.getValue("primaryKey").equals("true") ) {
 						overrideColsPrimaryKey.add(col);
 					}

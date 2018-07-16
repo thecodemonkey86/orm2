@@ -52,5 +52,11 @@ public class MethodColumnAttrSetter extends Method {
 		_return(_this());
 
 	}
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return super.toString();
+	}
 
 }

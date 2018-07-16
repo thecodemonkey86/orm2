@@ -15,7 +15,7 @@ public class MethodManyDelegateGetter extends Method {
 	protected String foreignClsName;
 	
 	public MethodManyDelegateGetter(Attr attr,Column col,String foreignClsName) {
-		super(Method.Public, BeanCls.getTypeMapper().getTypeFromDbDataType( col.getDbType()), "get"+StringUtil.ucfirst(attr.getName())+col.getUc1stCamelCaseName());
+		super(Method.Public, BeanCls.getTypeMapper().getTypeFromDbDataType( col), "get"+StringUtil.ucfirst(attr.getName())+col.getUc1stCamelCaseName());
 		this.attr = attr;
 		this.col = col;
 		this.foreignClsName = foreignClsName;

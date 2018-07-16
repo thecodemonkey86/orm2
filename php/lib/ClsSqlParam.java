@@ -13,6 +13,7 @@ public class ClsSqlParam extends PhpCls{
 	public static final String METHOD_NAME_GET_NULL_INT = "getNullInt";
 	public static final String METHOD_NAME_GET_NULL_FLOAT= "getNullFloat";
 	public static final String METHOD_NAME_GET_DATE_TIME= "getDateTime";
+	public static final String METHOD_NAME_GET_NULL_DATE_TIME= "getNullDateTime";
 
 
 
@@ -27,6 +28,7 @@ public class ClsSqlParam extends PhpCls{
 		addMethod(new StaticLibMethod(this, METHOD_NAME_GET_NULL_INT)); 
 		addMethod(new StaticLibMethod(this, METHOD_NAME_GET_NULL_FLOAT));
 		addMethod(new StaticLibMethod(this, METHOD_NAME_GET_DATE_TIME));
+		addMethod(new StaticLibMethod(this, METHOD_NAME_GET_NULL_DATE_TIME));
 
 
 	}

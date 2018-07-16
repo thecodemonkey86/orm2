@@ -2,6 +2,7 @@ package php.orm;
 
 import database.column.Column;
 import php.bean.BeanCls;
+import php.core.Attr;
 import php.core.Type;
 import php.core.Types;
 import php.core.expression.BoolExpression;
@@ -11,12 +12,17 @@ import php.core.expression.Expressions;
 import php.core.expression.IntExpression;
 import php.core.expression.NewOperator;
 import php.core.expression.PhpStringLiteral;
+import php.lib.ClsDateTime;
 import php.lib.ClsMysqliResult;
+import php.lib.ClsSqlParam;
 
 public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 	
 	@Override
-	public Type getTypeFromDbDataType(String dbType) {
+	public Type getTypeFromDbDataType(String dbType,boolean nullable) {
+		if(nullable) {
+			return getTypeFromDbDataType(dbType, false).toNullable();
+		}
 		switch(dbType) {
 		case "int":
 		case "bigint":
@@ -36,7 +42,7 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 			return Types.String;	
 		case "boolean":
 			return Types.Bool;
-		case "timestamp with time zone":
+		case "datetime":
 			return Types.DateTime;
 		default:
 			return Types.String;
@@ -77,7 +83,7 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 
 	@Override
 	public Type columnToType(Column col) {
-		return getTypeFromDbDataType(col.getDbType());
+		return getTypeFromDbDataType(col.getDbType(),col.isNullable());
 	}
 
 
@@ -109,6 +115,33 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 	public Expression getConvertTypeExpression(Expression e,String dbType, boolean nullable) {
 		// TODO Auto-generated method stub
 		return e;
+	}
+
+	@Override
+	public Expression getInsertUpdateValueExpression(Expression obj, Column col) {
+		return Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(col)), getSaveConvertExpression(obj,col));
+			
+	}
+	
+	@Override
+	public Expression getInsertUpdateValueGetterExpression(Expression obj, Column col) {
+		return Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(col)), getSaveConvertExpression(obj.callAttrGetter(new Attr(BeanCls.getTypeMapper().columnToType(col), col.getCamelCaseName())),col));
+	}
+
+	@Override
+	public Expression getNullInsertUpdateValueExpression(Column col) {
+		return Types.SqlParam.callStaticMethod(ClsSqlParam.getNullMethodName(BeanCls.getTypeMapper().columnToType(col)));
+	}
+
+	@Override
+	public Type getDatabaseResultType() {
+		// TODO Auto-generated method stub
+		return Types.mysqli_result;
+	}
+
+	@Override
+	protected Expression getSaveConvertExpression(Expression obj, Column col) {
+		return obj;
 	}
 
 	

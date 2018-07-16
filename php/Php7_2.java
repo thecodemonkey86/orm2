@@ -1,6 +1,6 @@
 package php;
 
-public class Php7_1 extends Php {
+public class Php7_2 extends Php {
 
 	@Override
 	public boolean supportsTypeHints() {

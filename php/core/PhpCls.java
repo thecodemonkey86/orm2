@@ -275,6 +275,8 @@ public class PhpCls extends AbstractPhpCls implements IAttributeContainer{
 			fullyQualifiedName = fullyQualifiedName + type;
 			return fullyQualifiedName;
 		}
-		
+		 
 	}
+
+	
 }

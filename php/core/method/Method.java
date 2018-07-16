@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import codegen.CodeUtil;
 import php.Php;
 import php.core.AbstractPhpCls;
-import php.core.NullableType;
+import php.core.NullableCls;
 import php.core.Param;
 import php.core.Type;
 import php.core.Types;
@@ -62,6 +62,9 @@ public abstract class Method extends InstructionBlock{
 	
 	@Override
 	public String toString() {
+		if(name.equals("getLOrt")) {
+			System.out.println();
+		}
 		ArrayList<String> params=new ArrayList<>();
 		for(Param p:this.params) {
 			params.add(p.toDeclarationString());
@@ -70,7 +73,7 @@ public abstract class Method extends InstructionBlock{
 		StringBuilder sb=new StringBuilder();
 		
 		sb.append(CodeUtil.sp(visibility,(isStatic() ? "static" : null),"function" ,name,CodeUtil.parentheses(CodeUtil.commaSep(params))
-				, ( (!(getReturnType() instanceof NullableType) || Php.phpVersion.supportsNullableTypeHint()) && Php.phpVersion.supportsTypeHints() && getReturnType().typeHinting()? ": "+retType():null)
+				, ( (!(getReturnType() instanceof NullableCls) || Php.phpVersion.supportsNullableTypeHint()) && Php.phpVersion.supportsTypeHints() && getReturnType().typeHinting()? ": "+retType():null)
 				));
 		
 		sb.append(" {\n");

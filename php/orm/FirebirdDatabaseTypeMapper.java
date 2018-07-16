@@ -2,6 +2,7 @@ package php.orm;
 
 import database.column.Column;
 import php.bean.BeanCls;
+import php.core.Attr;
 import php.core.PhpFunctions;
 import php.core.Type;
 import php.core.Types;
@@ -12,13 +13,17 @@ import php.core.expression.InlineIfExpression;
 import php.core.expression.IntExpression;
 import php.core.expression.NewOperator;
 import php.core.expression.PhpStringLiteral;
+import php.lib.ClsDateTime;
 
 public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 	
 	
 	
 	@Override
-	public Type getTypeFromDbDataType(String dbType) {
+	public Type getTypeFromDbDataType(String dbType,boolean nullable) {
+		if(nullable) {
+			return getTypeFromDbDataType(dbType, false).toNullable();
+		}
 		/*
 		7 = SMALLINT
 		8 = INTEGER
@@ -95,7 +100,7 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 
 	@Override
 	public Type columnToType(Column col) {
-		return getTypeFromDbDataType(col.getDbType());
+		return getTypeFromDbDataType(col);
 	}
 
 
@@ -159,6 +164,40 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 			default:
 				return e;
 			}
+		}
+	}
+
+	@Override
+	public Expression getInsertUpdateValueExpression(Expression obj, Column col) {
+		return obj;
+	}
+
+	@Override
+	public Expression getNullInsertUpdateValueExpression(Column col) {
+		return Expressions.Null;
+	}
+
+	@Override
+	public Expression getInsertUpdateValueGetterExpression(Expression obj, Column col) {
+		return obj.callAttrGetter(new Attr(BeanCls.getTypeMapper().columnToType(col), col.getCamelCaseName()));
+	}
+
+	@Override
+	public Type getDatabaseResultType() {
+		// TODO Auto-generated method stub
+		return Types.Mixed;
+	}
+
+	@Override
+	public Expression getSaveConvertExpression(Expression obj, Column col) {
+		String dbType = col.getDbType();
+		switch(dbType) {
+		case "12":
+			return obj.callMethod(ClsDateTime.format, new PhpStringLiteral("Y-m-d"));
+		case "35":
+			return obj.callMethod(ClsDateTime.format, new PhpStringLiteral("Y-m-d H:i:s"));
+		default:
+			return obj;
 		}
 	}
 	

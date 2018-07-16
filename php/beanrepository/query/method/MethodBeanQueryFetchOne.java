@@ -50,7 +50,7 @@ public class MethodBeanQueryFetchOne extends Method{
 		List<ManyRelation> manyToManyRelations = bean.getManyToManyRelations();
 		
 		Var b1 = _declare(returnType, "b1", Expressions.Null);
-		Var res =_declare(Types.Mixed, "res",_this().callMethod(ClsBaseBeanQuery.query) );
+		Var res =_declare(BeanCls.getTypeMapper().getDatabaseResultType() , "res",_this().callMethod(ClsBaseBeanQuery.query) );
 		
 		Var row = _declare(Types.array(Types.Mixed), "row", getFetchExpression(res) );
 		IfBlock ifRowNotNull =

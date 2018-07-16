@@ -98,6 +98,10 @@ public class PhpOrm extends OrmCommon {
 		Path pathRepositoryQuery = pathRepository.resolve("Query");
 		Path pathBeanPk = pathBeans.resolve("Pk");
 		
+		Files.createDirectories(pathBeanPk);
+		Files.createDirectories(helperPath);
+		Files.createDirectories(pathRepositoryQuery);
+		
 		try(DirectoryStream<Path> dsPathBeans = Files.newDirectoryStream(pathBeans)) {
 			for(Path f : dsPathBeans) {
 				if(f.toString().endsWith(".php")) {
@@ -149,9 +153,7 @@ public class PhpOrm extends OrmCommon {
 		}
 		repo.addMethodImplementations();
 		
-		Files.createDirectories(pathBeanPk);
-		Files.createDirectories(helperPath);
-		Files.createDirectories(pathRepositoryQuery);
+		
 
 		for (BeanCls c : Beans.getAllBeans()) {
 			if(c.getTbl().getPrimaryKey().isMultiColumn()) {

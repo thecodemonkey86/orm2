@@ -161,7 +161,7 @@ public class BeanCls extends PhpCls {
 			if (!col.hasOneRelation()
 
 					) {
-				Attr attr = new Attr(BeanCls.getTypeMapper().getTypeFromDbDataType(col.getDbType()), col.getCamelCaseName());
+				Attr attr = new Attr(BeanCls.getTypeMapper().getTypeFromDbDataType(col), col.getCamelCaseName());
 				addAttr(attr);
 				addMethod(new MethodAttrGetter(attr,false));	
 				addMethod(new MethodColumnAttrSetter(this,col,attr));
@@ -180,7 +180,7 @@ public class BeanCls extends PhpCls {
 				}
 			}
 			else {
-				Attr attr = new Attr(BeanCls.getTypeMapper().getTypeFromDbDataType(col.getDbType()), col.getCamelCaseName());
+				Attr attr = new Attr(BeanCls.getTypeMapper().getTypeFromDbDataType(col), col.getCamelCaseName());
 				addAttr(attr);
 				addMethod(new MethodAttrGetter(attr,false));	
 			}
@@ -193,7 +193,7 @@ public class BeanCls extends PhpCls {
 		if (tbl.getPrimaryKey().isMultiColumn()) {
 			pkType = new PkMultiColumnType("Pk"+tbl.getUc1stCamelCaseName(),beanNamespace+"\\Pk", tbl); 
 			for(Column col: tbl.getPrimaryKey().getColumns()) {
-				Attr attrPrev = new Attr(BeanCls.getTypeMapper().getTypeFromDbDataType(col.getDbType()), col.getCamelCaseName()+"Previous");
+				Attr attrPrev = new Attr(BeanCls.getTypeMapper().getTypeFromDbDataType(col), col.getCamelCaseName()+"Previous");
 				addAttr(attrPrev);
 				addMethod(new MethodAttrGetter(attrPrev, false));
 			}
@@ -202,7 +202,7 @@ public class BeanCls extends PhpCls {
 				throw new RuntimeException("pk info missing for "+getName());
 			}
 			Column col= tbl.getPrimaryKey().getFirstColumn();
-			Attr attrPrev = new Attr(BeanCls.getTypeMapper().getTypeFromDbDataType(col.getDbType()), col.getCamelCaseName()+"Previous");
+			Attr attrPrev = new Attr(BeanCls.getTypeMapper().getTypeFromDbDataType(col), col.getCamelCaseName()+"Previous");
 			addAttr(attrPrev);
 			addMethod(new MethodAttrGetter(attrPrev, false));
 			pkType =typeMapper.columnToType(col);

@@ -2,14 +2,16 @@ package php.orm;
 
 import database.column.Column;
 import php.bean.BeanCls;
+import php.core.Attr;
 import php.core.Type;
 import php.core.Types;
 import php.core.expression.Expression;
+import php.lib.ClsSqlParam;
 
 public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 
 	@Override
-	public Type getTypeFromDbDataType(String dbType) {
+	public Type getTypeFromDbDataType(String dbType,boolean nullable) {
 		switch(dbType) {
 		case "integer":
 			return Types.Int;
@@ -46,7 +48,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 	@Override
 	public Type columnToType(Column col) {
 		// TODO Auto-generated method stub
-		return getTypeFromDbDataType(col.getDbType());
+		return getTypeFromDbDataType(col.getDbType(),col.isNullable());
 	}
 
 
@@ -85,6 +87,32 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 		return e;
 	}
 
-	
+	@Override
+	public Expression getInsertUpdateValueExpression(Expression obj, Column col) {
+		return Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(col)), obj);
+			
+	}
+
+	@Override
+	public Expression getNullInsertUpdateValueExpression(Column col) {
+		return Types.SqlParam.callStaticMethod(ClsSqlParam.getNullMethodName(BeanCls.getTypeMapper().columnToType(col)));
+	}
+
+	@Override
+	public Expression getInsertUpdateValueGetterExpression(Expression obj, Column col) {
+		return Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(col)), obj.callAttrGetter(new Attr(BeanCls.getTypeMapper().columnToType(col), col.getCamelCaseName())));
+	}
+
+	@Override
+	public Type getDatabaseResultType() {
+		// TODO Auto-generated method stub
+		return Types.Mixed;
+	}
+
+	@Override
+	protected Expression getSaveConvertExpression(Expression obj, Column col) {
+		// TODO Auto-generated method stub
+		return obj;
+	}
 	
 }

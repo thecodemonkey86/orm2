@@ -52,5 +52,8 @@ public abstract class AbstractPhpCls extends Type {
 		return namespace + "\\" +getName();
 	}
 
-
+	@Override
+	public NullableCls toNullable() {
+		return new NullableCls(this, namespace);
+	}
 }

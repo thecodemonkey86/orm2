@@ -49,5 +49,14 @@ public class Ref extends Type {
 	public Type getBase() {
 		return base;
 	}
+
+
+	@Override
+	public Type toNullable() {
+		if (base instanceof AbstractPhpCls) {
+			return new NullableCls((AbstractPhpCls) base, ((AbstractPhpCls) base).getNamespace());
+		}
+		return new NullableType(base);
+	}
 }
 
