@@ -13,10 +13,17 @@ public class QStringLiteral extends QString {
 	public String toString() {
 		String s = expression.toString();
 		if(s.equals("\"\"")) {
-			return "QLatin1Literal(\"\")"; 
+			return "QLatin1Literal(\"\")";
 		/*} else if(s.matches("\\A\\p{ASCII}*\\z")) {
+			// TODO causes ambiguous method calls: disabled temporarily
+			
+			//  because .arg(...) is missing in QLatin1String
+			
+			if(s.contains("%1")) {
+				return "QStringLiteral"+CodeUtil.parentheses(s);
+			}
+			
 			return "QLatin1Literal"+CodeUtil.parentheses(s);
-			-> .arg(...) is missing in QLatin1String
 			*/
 		} else {
 			return "QStringLiteral"+CodeUtil.parentheses(s);

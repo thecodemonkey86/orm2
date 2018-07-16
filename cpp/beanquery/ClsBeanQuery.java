@@ -111,6 +111,7 @@ public class ClsBeanQuery extends Cls {
 		addMethod(new MethodLeftJoin4(this));
 		addMethod(new MethodLeftJoin5(this));
 		addMethod(new MethodLeftJoin6(this));
+	//	addMethod(new MethodLeftJoin7(this)); // TODO
 		addMethod(new MethodWhere1(this));
 		addMethod(new MethodWhere2(this));
 		addMethod(new MethodWhere3(this));
