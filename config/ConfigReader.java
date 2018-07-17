@@ -223,16 +223,6 @@ public class ConfigReader implements ContentHandler {
 			case "mappingTables":
 				section = Section.MAPPING_TABLES;
 				break;
-			case "mapping":
-				if (section == Section.MAPPING_TABLES) {
-					MappingTable currentMappingTable = new MappingTable(cfg.getDatabase(), atts.getValue("table"), cfg.getDatabase().getDefaultSchema());
-					cfg.getDatabase().readColumns(currentMappingTable, conn);	
-					if(currentMappingTable.getColumnCount() == 0) {
-						throw new IOException("invalid table " + currentMappingTable.getName());
-					}
-					cfg.addMappingTable(currentMappingTable);
-				}
-				break;
 			case "relation":
 				currentSrcTable = cfg.getEntityTable(atts.getValue("src"));
 				currentDestTable = cfg.getEntityTable(atts.getValue("dest"));
@@ -253,8 +243,16 @@ public class ConfigReader implements ContentHandler {
 					currentManyToManyRelation.setDestMappings(currentDestEntityMapping);
 					currentManyToManyRelation.setSourceTable(currentSrcTable);
 					currentManyToManyRelation.setDestTable(currentDestTable);
-					currentMappingTable = cfg.getMappingTable(atts.getValue("mappingTable"));
-					currentManyToManyRelation.setMappingTable(currentMappingTable);
+					
+					String mappingTableName = atts.getValue("mappingTable");
+					MappingTable mappingTable = new MappingTable(cfg.getDatabase(), mappingTableName, cfg.getDatabase().getDefaultSchema());
+					cfg.getDatabase().readColumns(mappingTable, conn);	
+					if(mappingTable.getColumnCount() == 0) {
+						throw new IOException("invalid table " + mappingTable.getName());
+					}
+					cfg.addMappingTable(mappingTable);
+					currentMappingTable = mappingTable;
+					currentManyToManyRelation.setMappingTable(mappingTable);
 					currentManyToManyRelation.setSubstituteName(substituteName);
 					manyToManyAliasCounter++;
 					break;

@@ -31,13 +31,14 @@ public class Param extends Var{
 	@Override
 	public String toDeclarationString() {
 		String v = "$"+name;
+		String def = defaultValue != null ? CodeUtil.sp('=',defaultValue): null;
 		if(type.typeHinting()) {
 			if(type instanceof INullable && !Php.phpVersion.supportsNullableTypeHint()) {
-				return v;
+				return CodeUtil.sp(v,def);
 			}
-			return CodeUtil.sp(type.toDeclarationString(),v);  
+			return CodeUtil.sp(type.toDeclarationString(),v,def);  
 		} else {
-			return v;
+			return CodeUtil.sp(v,def);
 		}
 		
 	

@@ -70,15 +70,15 @@ public class MethodGetById extends Method {
 		Attr aSqlCon = parent.getAttrByName("sqlCon");
 		//Method mBuildQuery = aSqlCon.getClassType().getMethod("buildQuery");
 		Var sqlQuery = _declare(BeanCls.getSqlQueryCls(), "query",BeanCls.getSqlQueryCls().newInstance(aSqlCon));
-		
+		PhpStringLiteral b1Alias = new PhpStringLiteral("b1");
 		
 		List<AbstractRelation> allRelations = new ArrayList<>(oneRelations.size()+oneToManyRelations.size()+manyToManyRelations.size());
 		allRelations.addAll(oneRelations);
 		allRelations.addAll(oneToManyRelations);
 		allRelations.addAll(manyToManyRelations);
 		
-		Expression exprSqlQuery = sqlQuery.callMethod("select",  parent.callStaticMethod(ClsBeanRepository.getMethodNameGetAllSelectFields(bean)) )
-									.callMethod("from", Types.BeanRepository.callStaticMethod(ClsBeanRepository.getMethodNameGetTableName(bean),new PhpStringLiteral("b1")));
+		Expression exprSqlQuery = sqlQuery.callMethod("select",  parent.callStaticMethod(ClsBeanRepository.getMethodNameGetAllSelectFields(bean),b1Alias) )
+									.callMethod("from", Types.BeanRepository.callStaticMethod(ClsBeanRepository.getMethodNameGetTableName(bean),b1Alias));
 		
 		for(OneRelation r:oneRelations) {
 			ArrayList<String> joinConditions=new ArrayList<>();
