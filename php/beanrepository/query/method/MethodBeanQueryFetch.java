@@ -140,8 +140,7 @@ public class MethodBeanQueryFetch extends Method{
 				
 				foreignBean =ifNotContainsRelationPk.thenBlock()
 						
-					._if(row.arrayIndex(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull())
-					.thenBlock()	
+						
 						._declare(foreignBeanExpression.getType(), "foreignB"+r.getAlias(),foreignBeanExpression) ;
 				
 								

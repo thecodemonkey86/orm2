@@ -8,7 +8,6 @@ public class Ref extends Type {
 	
 	public Ref(Type type) {
 		super(null);
-		
 		this.base = type;
 	}
 		
@@ -49,7 +48,18 @@ public class Ref extends Type {
 	public Type getBase() {
 		return base;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Ref)
+			return base.equals(((Ref)obj).base);
+		return false;
+	}
 
+	@Override
+	public int hashCode() {
+		return base.hashCode();
+	}
 
 	@Override
 	public Type toNullable() {

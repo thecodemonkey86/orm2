@@ -1,10 +1,12 @@
 package php.beanrepository.query;
 
+import database.column.Column;
 import php.bean.BeanCls;
 import php.beanrepository.query.method.ConstructorBeanQuery;
 import php.beanrepository.query.method.MethodAddRelatedTableJoins;
 import php.beanrepository.query.method.MethodBeanQueryFetch;
 import php.beanrepository.query.method.MethodBeanQueryFetchOne;
+import php.beanrepository.query.method.MethodBeanQueryWhereEquals;
 import php.beanrepository.query.method.MethodGetAllSelectFields;
 import php.beanrepository.query.method.MethodGetTableName;
 import php.core.PhpCls;
@@ -27,6 +29,10 @@ public class ClsBeanQuery extends PhpCls {
 		addMethod(new MethodAddRelatedTableJoins(cls));
 		addMethod(new MethodGetAllSelectFields(cls));
 		addMethod(new MethodGetTableName(cls));
+		
+		for(Column c : cls.getTbl().getAllColumns()) {
+			addMethod(new MethodBeanQueryWhereEquals(this, cls, c));
+		}
 	}
 
 
