@@ -19,7 +19,7 @@ public abstract class Column {
 	protected OneToManyRelation oneToManyRelation;
 	protected ManyRelation manyToManyRelation;
 	protected String defaultValue;
-	
+	protected String overrideSelect;
 	
 	public int getPosition() {
 		return position;
@@ -182,6 +182,18 @@ public abstract class Column {
 	
 	public boolean isRawValueEnabled() {
 		return enableRawValue;
+	}
+	
+	public void setOverrideSelect(String overrideSelect) {
+		this.overrideSelect = overrideSelect;
+	}
+	
+	public String getOverrideSelect() {
+		return overrideSelect;
+	}
+
+	public boolean hasOverrideSelect() {
+		return overrideSelect!=null;
 	}
 	
 }

@@ -345,6 +345,10 @@ public class ConfigReader implements ContentHandler {
 					if(atts.getValue("primaryKey") != null && atts.getValue("primaryKey").equals("true") ) {
 						overrideColsPrimaryKey.add(col);
 					}
+					String overrideSelect=atts.getValue("overrideSelect");
+					if(overrideSelect != null) {
+						col.setOverrideSelect(overrideSelect);
+					}
 					currentEntityTable.addColumn(col);
 					break;
 				default:

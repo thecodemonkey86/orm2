@@ -30,9 +30,9 @@ public class MethodGetAllSelectFields extends Method  {
 		relations.addAll(bean.getManyToManyRelations());
 		
 		List<Column> cols = bean.getTbl().getAllColumns();
-		String sprintfTmpl = "%1$s." + cols.get(0).getEscapedName() + " as %1$s__" + cols.get(0).getName();
+		String sprintfTmpl = (cols.get(0).hasOverrideSelect()?cols.get(0).getOverrideSelect():  "%1$s." + cols.get(0).getEscapedName()) + " as %1$s__" + cols.get(0).getName();
 		for(int i=1;i<cols.size();i++) {
-			sprintfTmpl = sprintfTmpl + "," + "%1$s." + cols.get(i).getEscapedName() + " as %1$s__" + cols.get(i).getName();
+			sprintfTmpl = sprintfTmpl + "," + (cols.get(i).hasOverrideSelect()?cols.get(i).getOverrideSelect():  "%1$s." + cols.get(i).getEscapedName()) + " as %1$s__" + cols.get(i).getName();
 		}
 		
 		for(AbstractRelation r:relations) {

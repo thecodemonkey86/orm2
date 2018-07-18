@@ -2,7 +2,6 @@ package php.beanrepository.query.method;
 
 import php.core.Constructor;
 import php.core.Param;
-import php.core.Types;
 import php.core.expression.NewOperator;
 import php.bean.BeanCls;
 

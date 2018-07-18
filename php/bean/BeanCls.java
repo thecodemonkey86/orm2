@@ -22,6 +22,7 @@ import php.bean.method.MethodColumnAttrSetter;
 import php.bean.method.MethodColumnAttrSetterInternal;
 import php.bean.method.MethodCreateNew;
 import php.bean.method.MethodGetFieldName;
+import php.bean.method.MethodGetFieldsAsAssocStringArray;
 import php.bean.method.MethodHasAddedManyToMany;
 import php.bean.method.MethodHasRemovedManyToMany;
 import php.bean.method.MethodHasUpdate;
@@ -208,6 +209,7 @@ public class BeanCls extends PhpCls {
 			pkType =typeMapper.columnToType(col);
 		}
 		addMethod(new MethodClearModified());
+		addMethod(new MethodGetFieldsAsAssocStringArray());
 	}
 
 	public BeanCls(Table tbl,List<OneToManyRelation> manyRelations,List<OneRelation> oneRelations, List<ManyRelation> manyToManyRelations) {

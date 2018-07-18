@@ -114,5 +114,11 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 		// TODO Auto-generated method stub
 		return obj;
 	}
+
+	@Override
+	public Expression getConvertFieldToStringExpression(Expression obj, Column col) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

@@ -39,5 +39,6 @@ public abstract class DatabaseTypeMapper {
 	public abstract Expression getInsertUpdateValueGetterExpression(Expression obj,Column col);
 	public abstract Expression getNullInsertUpdateValueExpression(Column col);
 	protected abstract Expression getSaveConvertExpression(Expression obj,Column col);
+	public abstract Expression getConvertFieldToStringExpression(Expression obj, Column col) ;
 	
 }

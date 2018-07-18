@@ -16,6 +16,10 @@ public class ArrayInitExpression extends Expression{
 		this.elems = Arrays.asList(elems);
 	}
 	
+	public ArrayInitExpression(List<Expression>elems) {
+		this.elems = elems;
+	}
+	
 	public ArrayInitExpression() {
 		elems = new ArrayList<>();
 	}

@@ -3,6 +3,7 @@ package php.orm;
 import database.column.Column;
 import php.bean.BeanCls;
 import php.core.Attr;
+import php.core.PhpConstants;
 import php.core.PhpFunctions;
 import php.core.Type;
 import php.core.Types;
@@ -125,7 +126,7 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 
 	@Override
 	public Expression getDefaultFetchExpression(Expression res) {
-		return PhpFunctions.ibase_fetch_assoc.call(res);
+		return PhpFunctions.ibase_fetch_assoc.call(res,PhpConstants.IBASE_TEXT);
 	}
 
 	@Override
@@ -199,6 +200,30 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 		default:
 			return obj;
 		}
+	}
+
+	@Override
+	public Expression getConvertFieldToStringExpression(Expression obj, Column col) {
+		Expression e = null;
+		String dbType = col.getDbType();
+		switch(dbType) {
+		case "12":
+			e = obj.callMethod(ClsDateTime.format, new PhpStringLiteral("Y-m-d"));
+			break;
+		case "35":
+			e = obj.callMethod(ClsDateTime.format, new PhpStringLiteral("Y-m-d H:i:s"));
+			break;
+		case "37":
+			e = obj;
+			break;
+		default:
+			e = obj.cast(Types.String);
+			break;
+		}
+		if(col.isNullable()) {
+			return new InlineIfExpression(obj.isNull(), new PhpStringLiteral(""), e);
+		}
+		return e;
 	}
 	
 }

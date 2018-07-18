@@ -9,6 +9,7 @@ import php.core.expression.BoolExpression;
 import php.core.expression.DoubleExpression;
 import php.core.expression.Expression;
 import php.core.expression.Expressions;
+import php.core.expression.InlineIfExpression;
 import php.core.expression.IntExpression;
 import php.core.expression.NewOperator;
 import php.core.expression.PhpStringLiteral;
@@ -142,6 +143,33 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 	@Override
 	protected Expression getSaveConvertExpression(Expression obj, Column col) {
 		return obj;
+	}
+
+	@Override
+	public Expression getConvertFieldToStringExpression(Expression obj, Column col) {
+		Expression e = null;
+		
+		String dbType = col.getDbType();
+		switch(dbType) {
+		case "date":
+			e = obj.callMethod(ClsDateTime.format, new PhpStringLiteral("Y-m-d"));
+			break;
+		case "datetime":
+			e = obj.callMethod(ClsDateTime.format, new PhpStringLiteral("Y-m-d H:i:s"));
+			break;
+		case "varchar":
+		case "character":	
+		case "text":
+			e = obj;
+			break;
+		default:
+			e = obj.cast(Types.String);
+			break;
+		}
+		if(col.isNullable()) {
+			return new InlineIfExpression(obj.isNull(), new PhpStringLiteral(""), e);
+		}
+		return e;
 	}
 
 	
