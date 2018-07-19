@@ -113,9 +113,30 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 	}
 
 	@Override
-	public Expression getConvertTypeExpression(Expression e,String dbType, boolean nullable) {
-		// TODO Auto-generated method stub
-		return e;
+	public Expression getConvertTypeExpression(Expression arg,String dbType, boolean nullable) {
+		
+		switch(dbType) {
+		case "date":
+		case "datetime":
+			if(nullable) {
+				return new InlineIfExpression(arg.isNull(), Expressions.Null, new NewOperator(Types.DateTime, arg));
+			}
+			return new NewOperator(Types.DateTime, arg);
+		case "varchar":
+		case "character":	
+		case "text":
+			return arg;
+		case "int":
+		case "bigint":
+		case "smallint":
+			return arg.cast(Types.Int);
+		case "double precision":
+		case "numeric":
+			return arg.cast(Types.Float);
+		default:
+			return arg;
+		}
+		
 	}
 
 	@Override

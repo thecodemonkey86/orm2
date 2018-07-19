@@ -41,7 +41,7 @@ public class MethodGetFromQueryAssocArray extends Method{
 		Param array = getParam("array");
 		Param alias = getParam("alias");
 		for(Column col:columns) {
-			if (!col.hasRelation()) {
+			if (!col.isRelationSourceColumn() || col.hasOneRelation()) {
 				try{
 					/*Expression resultSetValueGetter = BeanCls.getTypeMapper().getResultSetValueGetter(resultSet, col, alias);
 					if (col.isNullable() && resultSetValueGetter.getType().isPrimitiveType()) {

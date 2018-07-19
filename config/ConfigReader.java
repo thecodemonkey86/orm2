@@ -292,7 +292,9 @@ public class ConfigReader implements ContentHandler {
 				switch (section) {
 				case MANY_TO_MANY_RELATIONS:
 					int i = currentSourceEntityMapping.getColumnCount();
-					currentSourceEntityMapping.addColumnMapping(currentSrcTable.getColumnByName(atts.getValue("entityCol")),
+					Column srcColumn = currentSrcTable.getColumnByName(atts.getValue("entityCol"));
+					srcColumn.setRelationSourceColumn(true);
+					currentSourceEntityMapping.addColumnMapping(srcColumn,
 					currentMappingTable.getColumnByName(atts.getValue("mappingCol")));
 					currentSourceEntityMapping.getEntityColumn(i).setManyToManyRelation(currentManyToManyRelation);
 					currentSourceEntityMapping.getMappingColumn(i).setManyToManyRelation(currentManyToManyRelation);
@@ -322,7 +324,9 @@ public class ConfigReader implements ContentHandler {
 				
 				case ONE_TO_MANY_RELATIONS:
 					Pair<Column, Column> columnMapping = new Pair<Column, Column>(null, null);
-					columnMapping.setValue1(currentSrcTable.getColumnByName(atts.getValue("src")));
+					Column oneToManySrcColumn = currentSrcTable.getColumnByName(atts.getValue("src"));
+					oneToManySrcColumn.setRelationSourceColumn(true);
+					columnMapping.setValue1(oneToManySrcColumn);
 					Column destTblCol = currentDestTable.getColumnByName(atts.getValue("dest"));
 					columnMapping.setValue2(destTblCol);
 					destTblCol.setOneToManyRelation(currentOneToManyRelation);
@@ -330,7 +334,9 @@ public class ConfigReader implements ContentHandler {
 					break;
 				case ONE_RELATIONS:
 					Pair<Column, Column> columnMappingOneRelation = new Pair<Column, Column>(null, null);
-					columnMappingOneRelation.setValue1(currentSrcTable.getColumnByName(atts.getValue("src")));
+					Column oneToOneSrcColumn = currentSrcTable.getColumnByName(atts.getValue("src"));
+					oneToOneSrcColumn.setRelationSourceColumn(true);
+					columnMappingOneRelation.setValue1(oneToOneSrcColumn);
 					Column destTblColOneRelation = currentDestTable.getColumnByName(atts.getValue("dest"));
 					columnMappingOneRelation.setValue2(destTblColOneRelation);
 					destTblColOneRelation.setOneToManyRelation(currentOneToManyRelation);

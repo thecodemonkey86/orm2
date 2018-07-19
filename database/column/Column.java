@@ -14,6 +14,7 @@ public abstract class Column {
 	protected boolean autoIncrement;
 	protected boolean nullable;
 	protected boolean enableRawValue;
+	protected boolean isRelationSourceColumn;
 	protected int position;
 	protected OneRelation oneRelation;
 	protected OneToManyRelation oneToManyRelation;
@@ -194,6 +195,14 @@ public abstract class Column {
 
 	public boolean hasOverrideSelect() {
 		return overrideSelect!=null;
+	}
+
+	public void setRelationSourceColumn(boolean isRelationSourceColumn) {
+		this.isRelationSourceColumn = isRelationSourceColumn;
+	}
+	
+	public boolean isRelationSourceColumn() {
+		return isRelationSourceColumn;
 	}
 	
 }
