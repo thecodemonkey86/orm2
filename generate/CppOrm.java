@@ -167,15 +167,7 @@ public class CppOrm extends OrmCommon {
 		} finally {
 			
 		}
-		try(DirectoryStream<Path> dsPathRepository = Files.newDirectoryStream(pathRepository)) {
-			for(Path f : dsPathRepository) {
-				if(f.toString().endsWith(".h") || f.toString().endsWith(".cpp")) {
-					Files.delete(f);
-				}
-			}
-		} finally {
-			
-		}
+		
 		try(DirectoryStream<Path> dsPathQuery = Files.newDirectoryStream(pathRepositoryQuery)) {
 			for(Path f : dsPathQuery) {
 				if(f.toString().endsWith(".h") || f.toString().endsWith(".cpp")) {

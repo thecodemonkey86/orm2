@@ -15,6 +15,7 @@ public abstract class Column {
 	protected boolean nullable;
 	protected boolean enableRawValue;
 	protected boolean isRelationSourceColumn;
+	protected boolean isRelationDestColumn;
 	protected int position;
 	protected OneRelation oneRelation;
 	protected OneToManyRelation oneToManyRelation;
@@ -203,6 +204,14 @@ public abstract class Column {
 	
 	public boolean isRelationSourceColumn() {
 		return isRelationSourceColumn;
+	}
+	
+	public void setRelationDestColumn(boolean isRelationDestColumn) {
+		this.isRelationDestColumn = isRelationDestColumn;
+	}
+	
+	public boolean isRelationDestColumn() {
+		return isRelationDestColumn;
 	}
 	
 }

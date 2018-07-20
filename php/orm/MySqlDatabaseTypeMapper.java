@@ -167,7 +167,7 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 	}
 
 	@Override
-	public Expression getConvertFieldToStringExpression(Expression obj, Column col) {
+	public Expression getConvertFieldToStringExpression(Expression obj, Column col,Expression dateTimeFormatExpr,Expression dateFormatExpr) {
 		Expression e = null;
 		
 		String dbType = col.getDbType();

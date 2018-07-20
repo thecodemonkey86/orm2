@@ -203,15 +203,15 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 	}
 
 	@Override
-	public Expression getConvertFieldToStringExpression(Expression obj, Column col) {
+	public Expression getConvertFieldToStringExpression(Expression obj, Column col,Expression dateTimeFormatExpr,Expression dateFormatExpr) {
 		Expression e = null;
 		String dbType = col.getDbType();
 		switch(dbType) {
 		case "12":
-			e = obj.callMethod(ClsDateTime.format, new PhpStringLiteral("Y-m-d"));
+			e = obj.callMethod(ClsDateTime.format, dateFormatExpr);
 			break;
 		case "35":
-			e = obj.callMethod(ClsDateTime.format, new PhpStringLiteral("Y-m-d H:i:s"));
+			e = obj.callMethod(ClsDateTime.format, dateTimeFormatExpr);
 			break;
 		case "37":
 			e = obj;

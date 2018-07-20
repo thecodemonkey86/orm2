@@ -4,6 +4,7 @@ import database.column.Column;
 import php.bean.BeanCls;
 import php.core.Type;
 import php.core.expression.Expression;
+import php.core.expression.PhpStringLiteral;
 
 public abstract class DatabaseTypeMapper {
 	public abstract Type getTypeFromDbDataType(String dbType,boolean nullable);
@@ -39,6 +40,9 @@ public abstract class DatabaseTypeMapper {
 	public abstract Expression getInsertUpdateValueGetterExpression(Expression obj,Column col);
 	public abstract Expression getNullInsertUpdateValueExpression(Column col);
 	protected abstract Expression getSaveConvertExpression(Expression obj,Column col);
-	public abstract Expression getConvertFieldToStringExpression(Expression obj, Column col) ;
+	public Expression getConvertFieldToStringExpression(Expression obj, Column col)  {
+		return getConvertFieldToStringExpression(obj, col, new PhpStringLiteral("Y-m-d H:i:s") ,new PhpStringLiteral("Y-m-d"));
+	}
+	public abstract Expression getConvertFieldToStringExpression(Expression obj, Column col,Expression dateTimeFormatExpr,Expression dateFormatExpr) ;
 	
 }

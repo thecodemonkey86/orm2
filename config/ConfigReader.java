@@ -309,7 +309,9 @@ public class ConfigReader implements ContentHandler {
 				case MANY_TO_MANY_RELATIONS:
 					int i = currentDestEntityMapping.getColumnCount();
 					
-					currentDestEntityMapping.addColumnMapping(currentDestTable.getColumnByName(atts.getValue("entityCol")),
+					Column destColumn = currentDestTable.getColumnByName(atts.getValue("entityCol"));
+					destColumn.setRelationDestColumn(true);
+					currentDestEntityMapping.addColumnMapping(destColumn,
 					currentMappingTable.getColumnByName(atts.getValue("mappingCol")));
 					currentDestEntityMapping.getEntityColumn(i).setManyToManyRelation(currentManyToManyRelation);
 					currentDestEntityMapping.getMappingColumn(i).setManyToManyRelation(currentManyToManyRelation);
@@ -338,6 +340,7 @@ public class ConfigReader implements ContentHandler {
 					oneToOneSrcColumn.setRelationSourceColumn(true);
 					columnMappingOneRelation.setValue1(oneToOneSrcColumn);
 					Column destTblColOneRelation = currentDestTable.getColumnByName(atts.getValue("dest"));
+					destTblColOneRelation.setRelationDestColumn(true);
 					columnMappingOneRelation.setValue2(destTblColOneRelation);
 					destTblColOneRelation.setOneToManyRelation(currentOneToManyRelation);
 					currentOneRelation.add(columnMappingOneRelation);

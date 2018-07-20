@@ -116,7 +116,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 	}
 
 	@Override
-	public Expression getConvertFieldToStringExpression(Expression obj, Column col) {
+	public Expression getConvertFieldToStringExpression(Expression obj, Column col,Expression dateTimeFormatExpr,Expression dateFormatExpr) {
 		// TODO Auto-generated method stub
 		return null;
 	}
