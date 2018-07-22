@@ -2,6 +2,9 @@ package php.orm;
 
 import database.column.Column;
 import php.bean.BeanCls;
+import php.beanrepository.method.FirebirdBeanRepositoryBeginTransactionMethod;
+import php.beanrepository.method.FirebirdBeanRepositoryCommitTransactionMethod;
+import php.beanrepository.method.FirebirdBeanRepositoryRollbackTransactionMethod;
 import php.core.Attr;
 import php.core.PhpConstants;
 import php.core.PhpFunctions;
@@ -14,6 +17,7 @@ import php.core.expression.InlineIfExpression;
 import php.core.expression.IntExpression;
 import php.core.expression.NewOperator;
 import php.core.expression.PhpStringLiteral;
+import php.core.method.Method;
 import php.lib.ClsDateTime;
 
 public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
@@ -141,7 +145,20 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 	@Override
 	public Expression getConvertTypeExpression(Expression e, String dbType, boolean nullable) {
 		if(nullable) {
-			return new InlineIfExpression(e.isNull(), Expressions.Null, getConvertTypeExpression(e, dbType, false));
+			switch(dbType) {
+			case "12":
+			case "35":
+			case "8":
+			case "16":
+			case "7":
+			case "10":
+			case "27":
+				return new InlineIfExpression(e.isNull(), Expressions.Null, getConvertTypeExpression(e, dbType, false));
+			default:
+				return e;
+			}
+			
+			
 		} else {
 			switch(dbType) {
 			case "8":
@@ -224,6 +241,20 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 			return new InlineIfExpression(obj.isNull(), new PhpStringLiteral(""), e);
 		}
 		return e;
+	}
+	
+	public Method getBeanRepositoryBeginTransactionMethod() {
+		return new FirebirdBeanRepositoryBeginTransactionMethod();
+	}
+
+	@Override
+	public Method getBeanRepositoryCommitTransactionMethod() {
+		return new FirebirdBeanRepositoryCommitTransactionMethod();
+	}
+
+	@Override
+	public Method getBeanRepositoryRollbackTransactionMethod() {
+		return new FirebirdBeanRepositoryRollbackTransactionMethod();
 	}
 	
 }

@@ -19,6 +19,7 @@ import php.core.Param;
 import php.core.PhpFunctions;
 import php.core.Type;
 import php.core.Types;
+import php.core.expression.ArrayAccessExpression;
 import php.core.expression.BoolExpression;
 import php.core.expression.Expression;
 import php.core.expression.Expressions;
@@ -38,7 +39,7 @@ public class MethodGetById extends Method {
 	protected BeanCls bean;
 	public MethodGetById(BeanCls cls) {
 //		super(Public, cls, "getById");
-		super(Public, cls, "get"+cls.getName()+"ById");
+		super(Public, cls.toNullable(), "get"+cls.getName()+"ById");
 		for(Column col:cls.getTbl().getPrimaryKey().getColumns()) {
 			Type colType = BeanCls.getTypeMapper().columnToType(  col);
 			addParam(new Param(colType.isPrimitiveType() ? colType : colType, col.getCamelCaseName()));
@@ -135,7 +136,7 @@ public class MethodGetById extends Method {
 							)
 							;
 		
-		
+		if(!oneRelations.isEmpty() || !manyToManyRelations.isEmpty() || !oneToManyRelations.isEmpty()) {
 		DoWhile doWhileRowIsNotNull = DoWhile.create();
 		
 		
@@ -156,33 +157,45 @@ public class MethodGetById extends Method {
 			Type beanPk=OrmUtil.getRelationForeignPrimaryKeyType(r);
 			
 			Expression pkArrayIndex = null;
+			IfBlock ifIsRowIndexNotNull = null;
+			
 			if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
 				Expression[] foreignPkArgs = new Expression[r.getDestTable().getPrimaryKey().getColumnCount()];
-				
+				Expression[] ifIsRowIndexNotNullCondition = new Expression[foreignPkArgs.length];
 				for(int i=0; i < r.getDestTable().getPrimaryKey().getColumnCount(); i++) {
 					foreignPkArgs[i] = row.arrayIndex(new PhpStringLiteral( BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+r.getDestTable().getPrimaryKey().getColumn(i).getName())));
+					ifIsRowIndexNotNullCondition[i] = foreignPkArgs[i].isNotNull();
 				}
-				Var foreignPk = ifRowNotNull.thenBlock()._declareNew(beanPk, "foreignPk"+StringUtil.ucfirst(r.getAlias()),foreignPkArgs);
+				 ifIsRowIndexNotNull = ifRowNotNull.thenBlock()._if(Expressions.and(ifIsRowIndexNotNullCondition));
+				
+				
+				Var foreignPk = ifIsRowIndexNotNull.thenBlock()._declareNew(beanPk, "foreignPk"+StringUtil.ucfirst(r.getAlias()),foreignPkArgs);
 							
 				Var pkSet = ifRowNotNull.thenBlock()._declareNewArray(Types.array(Types.Mixed), "pkSet"+StringUtil.ucfirst(r.getAlias()));
-				pkArrayIndex = pkSet.arrayIndex(PhpFunctions.spl_object_hash.call(foreignPk));
+				pkArrayIndex = pkSet.arrayIndex(PhpFunctions.md5.call(PhpFunctions.serialize.call(foreignPk)));
 				
 			} else {
 				Column colPk = r.getDestTable().getPrimaryKey().getFirstColumn();
 				
+				
+				ArrayAccessExpression arrayIndex = row.arrayIndex(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey( r.getAlias()+"__"+colPk.getName())));
+				ifIsRowIndexNotNull = ifRowNotNull.thenBlock()._if(arrayIndex.isNotNull());
+				
 				Var pkSet = ifRowNotNull.thenBlock()._declareNewArray(Types.array(Types.Mixed), "pkSet"+StringUtil.ucfirst(r.getAlias()));
-				pkArrayIndex = pkSet.arrayIndex(row.arrayIndex(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey( r.getAlias()+"__"+colPk.getName()))));
+				
+				pkArrayIndex = pkSet.arrayIndex(arrayIndex);
 			}
-			IfBlock ifNotIssetPk = doWhileRowIsNotNull._if(Expressions.and(_not(PhpFunctions.isset.call(pkArrayIndex)), row.arrayIndex( new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull()));
+			IfBlock ifNotIssetPk = ifIsRowIndexNotNull.thenBlock()._if(_not(PhpFunctions.isset.call(pkArrayIndex)));
 			Var foreignBean = ifNotIssetPk.thenBlock()._declare(foreignCls, "b" + r.getAlias(),  Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Beans.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
 			ifNotIssetPk.thenBlock()._assign(pkArrayIndex, foreignBean);
 			ifNotIssetPk.thenBlock()._callMethodInstr(b1, BeanCls.getAddRelatedBeanMethodName(r), foreignBean);
-			
+			doWhileRowIsNotNull.addInstr(ifIsRowIndexNotNull);
 		}
 		
 		ifRowNotNull.addIfInstr(doWhileRowIsNotNull);
 		doWhileRowIsNotNull.setCondition(ifRowNotNull.getCondition());
 		doWhileRowIsNotNull.addInstr(row.assign(getFetchExpression(res)));
+		}
 		_return(b1);
 	}
 

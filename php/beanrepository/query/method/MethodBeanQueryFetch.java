@@ -82,7 +82,7 @@ public class MethodBeanQueryFetch extends Method{
 			}
 			
 			Var b1Pk = doWhileQueryNext._declareNew(bean.getPkType(), "b1pk", b1PkArgs);
-			b1ArrayIndexExpression = PhpFunctions.spl_object_hash.call(b1Pk);
+			b1ArrayIndexExpression = PhpFunctions.md5.call(PhpFunctions.serialize.call(b1Pk));
 			//throw new RuntimeException("not implemented");
 		} else {
 			b1ArrayIndexExpression = row.arrayIndex( new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey("b1__"+ pk.getFirstColumn().getName())));

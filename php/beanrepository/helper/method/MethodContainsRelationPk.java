@@ -22,7 +22,7 @@ public class MethodContainsRelationPk extends Method {
 	public void addImplementation() {
 		FetchListHelperClass parent = (FetchListHelperClass) this.parent;
 		Param paramPk = getParam("pk");
-		_return(parent.getAttrByName(relation.getAlias()+"Set").arrayIndexIsset(relation.getDestTable().getPrimaryKey().getColumnCount() == 1 ? paramPk : PhpFunctions.spl_object_hash.call(paramPk)));
+		_return(parent.getAttrByName(relation.getAlias()+"Set").arrayIndexIsset(relation.getDestTable().getPrimaryKey().getColumnCount() == 1 ? paramPk : PhpFunctions.md5.call(PhpFunctions.serialize.call(paramPk))));
 		
 	}
 

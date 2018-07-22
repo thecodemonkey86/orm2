@@ -208,6 +208,17 @@ public class InstructionBlock extends Instruction implements Iterable<Instructio
 		return tryCatch;
 	}
 
+	public SwitchBlock _switch(Expression switchExpression) {
+		SwitchBlock switchBlock = new SwitchBlock(switchExpression);
+		switchBlock.setParent(parent);
+		this.addInstr(switchBlock);
+		return switchBlock;
+	}
+	
+	public void _break() {
+		addInstr(new BreakInstruction());
+	}
+	
 	public void setParent(AbstractPhpCls parent) {
 		this.parent = parent;
 	}

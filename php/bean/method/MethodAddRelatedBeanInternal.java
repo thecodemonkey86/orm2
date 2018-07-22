@@ -48,7 +48,7 @@ public class MethodAddRelatedBeanInternal extends Method {
 			}
 			
 			Var relPk = _declareNew(Beans.get( rel.getDestTable() ), "relPk", b1PkArgs);
-			addInstr(a.arrayIndexSet(PhpFunctions.spl_object_hash.call(relPk),pBean));
+			addInstr(a.arrayIndexSet(PhpFunctions.md5.call(PhpFunctions.serialize.call(relPk)),pBean));
 		} else {
 			addInstr(a.arrayIndexSet(pBean.callAttrGetter(rel.getDestTable().getPrimaryKey().getFirstColumn().getCamelCaseName()),pBean));
 		}

@@ -53,6 +53,9 @@ public class ClsBeanRepository extends PhpCls{
 	public void addDeclarations(Collection<BeanCls> beans) {
 		setConstructor(new ConstructorBeanRepository());
 		addMethod(new MethodSetSqlCon());
+		addMethod(BeanCls.getTypeMapper().getBeanRepositoryBeginTransactionMethod());
+		addMethod(BeanCls.getTypeMapper().getBeanRepositoryCommitTransactionMethod());
+		addMethod(BeanCls.getTypeMapper().getBeanRepositoryRollbackTransactionMethod());
 		for(BeanCls bean:beans) {
 //			addAttr(new Attr(new ClsQHash(bean.getPkType(), bean), "loadedBeans"+bean.getName()));
 			addMethod(new MethodGetById(bean));

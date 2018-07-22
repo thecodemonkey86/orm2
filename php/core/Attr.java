@@ -31,7 +31,7 @@ public class Attr extends Var {
 	
 	@Override
 	public String toDeclarationString() {
-		return CodeUtil.sp(visibility,isStatic?"static":"" ,"$"+getName())+";";
+		return CodeUtil.sp(visibility,isStatic?"static":"" ,"$"+getName(),(initValue!=null?" = "+initValue:null))+";";
 	}
 	
 	@Override

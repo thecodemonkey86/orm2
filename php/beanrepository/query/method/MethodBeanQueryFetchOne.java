@@ -100,7 +100,7 @@ public class MethodBeanQueryFetchOne extends Method{
 				Var foreignPk = ifNotPkForeignIsNull.thenBlock()._declareNew(beanPk, "foreignPk"+StringUtil.ucfirst(r.getAlias()),foreignPkArgs);
 							
 				Var pkSet = ifRowNotNull.thenBlock()._declareNewArray(Types.array(Types.Mixed), "pkSet"+StringUtil.ucfirst(r.getAlias()));
-				pkArrayIndex = pkSet.arrayIndex(PhpFunctions.spl_object_hash.call(foreignPk));
+				pkArrayIndex = pkSet.arrayIndex(PhpFunctions.md5.call(PhpFunctions.serialize.call(foreignPk)));
 				
 			} else {
 				Column colPk = r.getDestTable().getPrimaryKey().getColumns().get(0);

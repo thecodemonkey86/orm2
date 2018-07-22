@@ -14,7 +14,6 @@ import php.core.expression.Expression;
 import php.core.expression.Var;
 import php.core.method.Method;
 import php.orm.OrmUtil;
-import util.StringUtil;
 
 public class MethodAddRelatedBean extends Method {
 
@@ -42,7 +41,7 @@ public class MethodAddRelatedBean extends Method {
 			}
 			
 			Var relPk = _declareNew(Beans.get( rel.getDestTable() ), "relPk", b1PkArgs);
-			addInstr(a.arrayIndexSet(PhpFunctions.spl_object_hash.call(relPk),pBean));
+			addInstr(a.arrayIndexSet(PhpFunctions.md5.call(PhpFunctions.serialize.call(relPk)),pBean));
 		} else {
 			addInstr(a.arrayIndexSet(pBean.callAttrGetter(rel.getDestTable().getPrimaryKey().getFirstColumn().getCamelCaseName()),pBean));
 		}

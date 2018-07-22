@@ -41,6 +41,10 @@ public class Types {
 	public static final PhpStringType String = new PhpStringType();
 	public static final Type Mixed = new Type("mixed") {
 
+		public boolean typeHinting() {
+			return false;
+		}
+		
 		@Override
 		public Type toNullable() {
 			return this;

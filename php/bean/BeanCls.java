@@ -23,6 +23,7 @@ import php.bean.method.MethodColumnAttrSetterInternal;
 import php.bean.method.MethodCreateNew;
 import php.bean.method.MethodGetFieldName;
 import php.bean.method.MethodGetFieldsAsAssocStringArray;
+import php.bean.method.MethodGetPrimaryKeyFields;
 import php.bean.method.MethodHasAddedManyToMany;
 import php.bean.method.MethodHasRemovedManyToMany;
 import php.bean.method.MethodHasUpdate;
@@ -31,8 +32,11 @@ import php.bean.method.MethodManyAttrGetter;
 import php.bean.method.MethodOneRelationAttrGetter;
 import php.bean.method.MethodOneRelationAttrSetter;
 import php.bean.method.MethodOneRelationBeanIsNull;
+import php.bean.method.MethodRemoveAllManyToManyRelatedBeans;
+import php.bean.method.MethodRemoveAllOneToManyRelatedBeans;
 import php.bean.method.MethodRemoveManyToManyRelatedBean;
 import php.bean.method.MethodSetAutoIncrementId;
+import php.bean.method.MethodSetValue;
 import php.beanpk.PkMultiColumnType;
 import php.beanrepository.helper.FetchListHelperClass;
 import php.core.Attr;
@@ -131,6 +135,9 @@ public class BeanCls extends PhpCls {
 			
 			Attr manyRelRemoved = new Attr(Types.array(Beans.get(r.getSourceTable())) ,attr.getName()+"Removed");
 			addAttr(manyRelRemoved);
+			
+			addMethod(new MethodRemoveAllOneToManyRelatedBeans(r)
+					);
 		}
 
 		for(ManyRelation r:manyRelations) {
@@ -153,7 +160,7 @@ public class BeanCls extends PhpCls {
 			addMethod(new MethodHasRemovedManyToMany(r));
 			addMethod(new MethodHasAddedManyToMany(r));
 			
-			
+			addMethod(new MethodRemoveAllManyToManyRelatedBeans(r));
 		}
 
 
@@ -192,12 +199,14 @@ public class BeanCls extends PhpCls {
 
 		}
 		if (tbl.getPrimaryKey().isMultiColumn()) {
-			pkType = new PkMultiColumnType("Pk"+tbl.getUc1stCamelCaseName(),beanNamespace+"\\Pk", tbl); 
+			pkType = new PkMultiColumnType("Pk"+tbl.getUc1stCamelCaseName(),beanNamespace+"\\Pk", tbl);
+			
 			for(Column col: tbl.getPrimaryKey().getColumns()) {
 				Attr attrPrev = new Attr(BeanCls.getTypeMapper().getTypeFromDbDataType(col), col.getCamelCaseName()+"Previous");
 				addAttr(attrPrev);
 				addMethod(new MethodAttrGetter(attrPrev, false));
 			}
+			
 		} else {
 			if (tbl.getPrimaryKey().getColumns().size()==0) {
 				throw new RuntimeException("pk info missing for "+getName());
@@ -208,8 +217,8 @@ public class BeanCls extends PhpCls {
 			addMethod(new MethodAttrGetter(attrPrev, false));
 			pkType =typeMapper.columnToType(col);
 		}
-		addMethod(new MethodClearModified());
-		addMethod(new MethodGetFieldsAsAssocStringArray());
+		addMethod(new MethodGetPrimaryKeyFields(this));
+		
 	}
 
 	public BeanCls(Table tbl,List<OneToManyRelation> manyRelations,List<OneRelation> oneRelations, List<ManyRelation> manyToManyRelations) {
@@ -250,6 +259,10 @@ public class BeanCls extends PhpCls {
 		addMethod(new MethodCreateNew(this));
 		addMethod(new BeanEqualsMethod(this, tbl.getPrimaryKey()));
 		addMethod(new MethodHasUpdate());
+		addMethod(new MethodClearModified());
+		addMethod(new MethodGetFieldsAsAssocStringArray());
+		addMethod(new MethodSetValue());
+		
 		fetchListHelper = new FetchListHelperClass(this, beanRepoNamespace);
 	}
 

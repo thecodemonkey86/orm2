@@ -17,6 +17,7 @@ public class PhpCls extends AbstractPhpCls implements IAttributeContainer{
 	protected Constructor constructor;
 	
 	protected ArrayList<Attr> attrs;
+	protected ArrayList<ClassConstant> constants;
 	
 	
 	protected PhpCls superclass;
@@ -112,6 +113,11 @@ public class PhpCls extends AbstractPhpCls implements IAttributeContainer{
 		
 		for(Attr a:attrs) {
 			CodeUtil.writeLine(sb, a.toDeclarationString());
+		}
+		
+		if(constants!=null)
+		for(ClassConstant c:constants) {
+			CodeUtil.writeLine(sb, c.toDeclarationString());
 		}
 		
 		CodeUtil.writeLine(sb, constructor);
@@ -247,6 +253,13 @@ public class PhpCls extends AbstractPhpCls implements IAttributeContainer{
 		return new ThisExpression(this);
 	}
 
+	public void addConstant(ClassConstant c) {
+		if(constants == null) {
+			constants = new ArrayList<>();
+		}
+		constants.add(c);
+	}
+	
 	public StaticAccessExpression accessStaticAttribute(Attr prototype) {
 		for(Attr a:attrs ) {
 			if (a.getName().equals(prototype.getName())) {

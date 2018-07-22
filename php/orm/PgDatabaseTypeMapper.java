@@ -6,6 +6,7 @@ import php.core.Attr;
 import php.core.Type;
 import php.core.Types;
 import php.core.expression.Expression;
+import php.core.method.Method;
 import php.lib.ClsSqlParam;
 
 public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
@@ -117,6 +118,24 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 
 	@Override
 	public Expression getConvertFieldToStringExpression(Expression obj, Column col,Expression dateTimeFormatExpr,Expression dateFormatExpr) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Method getBeanRepositoryBeginTransactionMethod() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Method getBeanRepositoryCommitTransactionMethod() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Method getBeanRepositoryRollbackTransactionMethod() {
 		// TODO Auto-generated method stub
 		return null;
 	}

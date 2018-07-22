@@ -2,6 +2,9 @@ package php.orm;
 
 import database.column.Column;
 import php.bean.BeanCls;
+import php.beanrepository.method.MysqliBeanRepositoryBeginTransactionMethod;
+import php.beanrepository.method.MysqliBeanRepositoryCommitTransactionMethod;
+import php.beanrepository.method.MysqliBeanRepositoryRollbackTransactionMethod;
 import php.core.Attr;
 import php.core.Type;
 import php.core.Types;
@@ -13,6 +16,7 @@ import php.core.expression.InlineIfExpression;
 import php.core.expression.IntExpression;
 import php.core.expression.NewOperator;
 import php.core.expression.PhpStringLiteral;
+import php.core.method.Method;
 import php.lib.ClsDateTime;
 import php.lib.ClsMysqliResult;
 import php.lib.ClsSqlParam;
@@ -192,6 +196,22 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 		}
 		return e;
 	}
+
+	@Override
+	public Method getBeanRepositoryBeginTransactionMethod() {
+		return new MysqliBeanRepositoryBeginTransactionMethod();
+	}
+
+	@Override
+	public Method getBeanRepositoryCommitTransactionMethod() {
+		return new MysqliBeanRepositoryCommitTransactionMethod();
+	}
+
+	@Override
+	public Method getBeanRepositoryRollbackTransactionMethod() {
+		return new MysqliBeanRepositoryRollbackTransactionMethod();
+	}
+
 
 	
 }

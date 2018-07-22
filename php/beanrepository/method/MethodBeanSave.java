@@ -171,10 +171,7 @@ public class MethodBeanSave extends Method {
 			whereSourceColsParams[0] = whereSourceCols.size() > 1 ? new PhpStringLiteral("("+ CodeUtil2.commaSep(whereSourceCols)+") = (" + CodeUtil2.strMultiply("?", ",", whereSourceCols.size())+ ")") :  new PhpStringLiteral( whereSourceCols.get(0)+ " = ?");
 			ifRemoveBeans.thenBlock()._callMethodInstr(varDeleteSql, ClsSqlQuery.where, whereSourceColsParams);
 			
-			
-			//
-			//
-			
+						
 			IfBlock ifCountEq1 = ifRemoveBeans.thenBlock()
 					._if(expressionManyToManyRemoved.count().equalsOp(new IntExpression(1)));
 			

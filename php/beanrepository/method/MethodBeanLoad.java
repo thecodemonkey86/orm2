@@ -21,7 +21,6 @@ import php.core.instruction.DoWhile;
 import php.core.instruction.IfBlock;
 import php.core.method.Method;
 import php.lib.ClsBaseBean;
-import php.lib.ClsMysqliResult;
 import php.lib.ClsSqlQuery;
 import util.CodeUtil2;
 import util.StringUtil;
@@ -130,64 +129,69 @@ public class MethodBeanLoad extends Method {
 			Var row = _declare(Types.array(Types.Mixed), "row", getFetchExpression(res) );
 			IfBlock ifRowNotNull =	_if(row);
 								
-			
-			DoWhile doWhileQSqlQueryNext = DoWhile.create();
-			
-			
-			ArrayList<AbstractRelation> manyRelations = new ArrayList<>(oneToManyRelations.size()+manyToManyRelations.size());
-			manyRelations.addAll(oneToManyRelations);
-			manyRelations.addAll(manyToManyRelations);
-		
-			for(OneRelation r:oneRelations) {
-//				BeanCls foreignCls = Beans.get(r.getDestTable()); 
-				IfBlock ifBlock= doWhileQSqlQueryNext._if(Expressions.and( pBean.callMethod(new MethodOneRelationBeanIsNull(r)),row.arrayIndex(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias() + "__" + r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull()) );
-				ifBlock.thenBlock().
-				_callMethodInstr(pBean, new MethodOneRelationAttrSetter( pBean.getClassConcreteType().getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)), true,r.isPartOfPk()), 
-						Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Beans.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
-			}
-			
-			for(AbstractRelation r:manyRelations) {
-				BeanCls foreignCls = Beans.get(r.getDestTable()); 
+			if(!oneRelations.isEmpty() || !manyToManyRelations.isEmpty() || !oneToManyRelations.isEmpty()) {
+				DoWhile doWhileRowIsNotNull = DoWhile.create();
 				
-				if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
-					//Var pkSet = ifRowNotNull.thenBlock()._declareNewArray(Types.array(foreignCls.getPkType()), "pkSet"+StringUtil.ucfirst(r.getAlias()));
-					Expression[] arrayIndexExpressions = new Expression[1+r.getDestTable().getPrimaryKey().getColumnCount()];
-					ArrayList<String> pkSprintf = new ArrayList<String> ();
-					int i=0;
-					
-					for(Column colPk : r.getDestTable().getPrimaryKey().getColumns()) {
-						pkSprintf.add(BeanCls.getTypeMapper().columnToType(colPk).getSprintfType());
-						arrayIndexExpressions[++i] = row.arrayIndex(new PhpStringLiteral( BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+colPk.getName())));
-					}
-					arrayIndexExpressions[0] = new PhpStringLiteral( CodeUtil.concat(pkSprintf, "_"));			
-					Var pkSet = ifRowNotNull.thenBlock()._declareNewArray(Types.array(Types.Mixed), "pkSet"+StringUtil.ucfirst(r.getAlias()));
-					Expression pkArrayIndex = pkSet.arrayIndex(PhpFunctions.sprintf.call(arrayIndexExpressions));
-					IfBlock ifNotIssetPk = doWhileQSqlQueryNext._if(_not(PhpFunctions.isset.call(pkArrayIndex)));
-					Var foreignBean = ifNotIssetPk.thenBlock()._declare(foreignCls, "b" + r.getAlias(),  Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Beans.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
-					ifNotIssetPk.thenBlock()._assign(pkArrayIndex, foreignBean);
-					ifNotIssetPk.thenBlock()._callMethodInstr(pBean, BeanCls.getAddRelatedBeanMethodName(r), foreignBean);
-					
-					
-					//throw new RuntimeException("not implemented");
-				} else {
-					Column colPk = r.getDestTable().getPrimaryKey().getColumns().get(0);
-
-					//IfBlock ifNotRecValueIsNull = doWhileQSqlQueryNext._if(Expressions.not(  Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Beans.get(r.getDestTable())),  resultSet, JavaString.fromStringConstant("pk"+r.getAlias()))));
-					
-					Var pkSet = ifRowNotNull.thenBlock()._declareNewArray(Types.array(Types.Mixed), "pkSet"+StringUtil.ucfirst(r.getAlias()));
-					Expression pkArrayIndex = pkSet.arrayIndex(row.arrayIndex(new PhpStringLiteral( BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+colPk.getName()))));
-					IfBlock ifNotIssetPk = doWhileQSqlQueryNext._if(_not(PhpFunctions.isset.call(pkArrayIndex)));
-					Var foreignBean = ifNotIssetPk.thenBlock()._declare(foreignCls, "b" + r.getAlias(),  Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Beans.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
-					ifNotIssetPk.thenBlock()._assign(pkArrayIndex, foreignBean);
-					ifNotIssetPk.thenBlock()._callMethodInstr(pBean, BeanCls.getAddRelatedBeanMethodName(r), foreignBean);
-					
+				
+				ArrayList<AbstractRelation> manyRelations = new ArrayList<>(oneToManyRelations.size()+manyToManyRelations.size());
+				manyRelations.addAll(oneToManyRelations);
+				manyRelations.addAll(manyToManyRelations);
+			
+				for(OneRelation r:oneRelations) {
+	//				BeanCls foreignCls = Beans.get(r.getDestTable()); 
+					IfBlock ifBlock= doWhileRowIsNotNull._if(Expressions.and( pBean.callMethod(new MethodOneRelationBeanIsNull(r)),row.arrayIndex(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias() + "__" + r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull()) );
+					ifBlock.thenBlock().
+					_callMethodInstr(pBean, new MethodOneRelationAttrSetter( pBean.getClassConcreteType().getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)), true,r.isPartOfPk()), 
+							Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Beans.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
 				}
 				
+				for(AbstractRelation r:manyRelations) {
+					BeanCls foreignCls = Beans.get(r.getDestTable()); 
+					IfBlock ifIsRowIndexNotNull = null;
+					Expression pkArrayIndex = null;
+					if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
+						//Var pkSet = ifRowNotNull.thenBlock()._declareNewArray(Types.array(foreignCls.getPkType()), "pkSet"+StringUtil.ucfirst(r.getAlias()));
+						Expression[] arrayIndexExpressions = new Expression[1+r.getDestTable().getPrimaryKey().getColumnCount()];
+						ArrayList<String> pkSprintf = new ArrayList<String> ();
+						int i=0;
+						Expression[] ifIsRowIndexNotNullCondition = new Expression[r.getDestTable().getPrimaryKey().getColumnCount()];
+						for(Column colPk : r.getDestTable().getPrimaryKey().getColumns()) {
+							Expression foreignPkArg = new PhpStringLiteral( BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+colPk.getName()));
+							
+							pkSprintf.add(BeanCls.getTypeMapper().columnToType(colPk).getSprintfType());
+							ifIsRowIndexNotNullCondition[i] = foreignPkArg.isNotNull();
+							arrayIndexExpressions[++i] = row.arrayIndex(foreignPkArg);
+						}
+						ifIsRowIndexNotNull = ifRowNotNull.thenBlock()._if(Expressions.and(ifIsRowIndexNotNullCondition));
+						
+						arrayIndexExpressions[0] = new PhpStringLiteral( CodeUtil.concat(pkSprintf, "_"));			
+						Var pkSet = ifIsRowIndexNotNull.thenBlock()._declareNewArray(Types.array(Types.Mixed), "pkSet"+StringUtil.ucfirst(r.getAlias()));
+						pkArrayIndex = pkSet.arrayIndex(PhpFunctions.sprintf.call(arrayIndexExpressions));
+											
+						//throw new RuntimeException("not implemented");
+					} else {
+						Column colPk = r.getDestTable().getPrimaryKey().getColumns().get(0);
+						
+						
+						//IfBlock ifNotRecValueIsNull = doWhileQSqlQueryNext._if(Expressions.not(  Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Beans.get(r.getDestTable())),  resultSet, JavaString.fromStringConstant("pk"+r.getAlias()))));
+						
+						Var pkSet = ifRowNotNull.thenBlock()._declareNewArray(Types.array(Types.Mixed), "pkSet"+StringUtil.ucfirst(r.getAlias()));
+						pkArrayIndex = pkSet.arrayIndex(row.arrayIndex(new PhpStringLiteral( BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+colPk.getName()))));
+						ifIsRowIndexNotNull = ifRowNotNull.thenBlock()._if(pkArrayIndex.isNotNull());
+						
+						
+					}
+					IfBlock ifNotIssetPk = ifIsRowIndexNotNull.thenBlock()._if(_not(PhpFunctions.isset.call(pkArrayIndex)));
+					Var foreignBean = ifNotIssetPk.thenBlock()._declare(foreignCls, "b" + r.getAlias(),  Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Beans.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
+					ifNotIssetPk.thenBlock()._assign(pkArrayIndex, foreignBean);
+					ifNotIssetPk.thenBlock()._callMethodInstr(pBean, BeanCls.getAddRelatedBeanMethodName(r), foreignBean);
+					doWhileRowIsNotNull.addInstr(ifIsRowIndexNotNull);
+				}
+				
+				ifRowNotNull.addIfInstr(doWhileRowIsNotNull);
+				doWhileRowIsNotNull.setCondition(ifRowNotNull.getCondition());
+				doWhileRowIsNotNull.addInstr(row.assign(getFetchExpression(res)));
 			}
-			
-			ifRowNotNull.addIfInstr(doWhileQSqlQueryNext);
-			doWhileQSqlQueryNext.setCondition(ifRowNotNull.getCondition());
-			doWhileQSqlQueryNext.addInstr(row.assign(getFetchExpression(res)));
 			
 		}
 		_callMethodInstr(pBean, ClsBaseBean.setLoaded, BoolExpression.TRUE);
