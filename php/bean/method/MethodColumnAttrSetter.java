@@ -10,6 +10,7 @@ import php.core.expression.Expressions;
 import php.core.instruction.AssignInstruction;
 import php.core.instruction.IfBlock;
 import php.core.method.Method;
+import php.lib.ClsBaseBean;
 import util.StringUtil;
 
 public class MethodColumnAttrSetter extends Method {
@@ -30,23 +31,24 @@ public class MethodColumnAttrSetter extends Method {
 	public void addImplementation() {
 		//addThrowsException(Types.SqlException);
 		Param param = getParam(a.getName());
-
+		
 		if (!col.isPartOfPk()) {
 			addInstr(_this().assignAttr(a.getName() + "Modified",
 					BoolExpression.TRUE));
 			_assign(_accessThis(a), param);
 		} else {
+			IfBlock ifNotInsert = _if(_not(_this().accessAttr(ClsBaseBean.insert)));
 			for(Column colPk : bean.getTbl().getPrimaryKey().getColumns()) {
 				Expression prev = BeanCls.accessColumnAttrOrEntityPrevious(_this(), colPk);
 				if(colPk.hasOneRelation()) {
-					IfBlock ifNotNull = _if(_not(BeanCls.accessColumnAttrOrEntity(_this(), colPk).isNull()));
+					IfBlock ifNotNull = ifNotInsert.thenBlock()._if(_not(BeanCls.accessColumnAttrOrEntity(_this(), colPk).isNull()));
 					ifNotNull.thenBlock().addInstr(new AssignInstruction(prev, BeanCls.accessAttrGetterByColumn(_this(), colPk,false)));
 				} else {
-					addInstr(new AssignInstruction(prev, BeanCls.accessAttrGetterByColumn(_this(), colPk,false)));
+					ifNotInsert.thenBlock().addInstr(new AssignInstruction(prev, BeanCls.accessAttrGetterByColumn(_this(), colPk,false)));
 				}
 			}
 			_assign(_accessThis(a), param);
-			addInstr(_this().assignAttr("primaryKeyModified",
+			ifNotInsert.thenBlock().addInstr(_this().assignAttr("primaryKeyModified",
 					BoolExpression.TRUE));
 		}
 		_return(_this());

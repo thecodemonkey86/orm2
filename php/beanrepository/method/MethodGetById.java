@@ -28,6 +28,7 @@ import php.core.expression.Var;
 import php.core.instruction.DoWhile;
 import php.core.instruction.IfBlock;
 import php.core.method.Method;
+import php.lib.ClsFirebirdSqlQuery;
 import php.lib.ClsSqlQuery;
 import php.orm.OrmUtil;
 import util.CodeUtil2;
@@ -37,6 +38,8 @@ import util.pg.PgCppUtil;
 public class MethodGetById extends Method {
 
 	protected BeanCls bean;
+	Param pTransactionHandle ;
+	
 	public MethodGetById(BeanCls cls) {
 //		super(Public, cls, "getById");
 		super(Public, cls.toNullable(), "get"+cls.getName()+"ById");
@@ -44,6 +47,10 @@ public class MethodGetById extends Method {
 			Type colType = BeanCls.getTypeMapper().columnToType(  col);
 			addParam(new Param(colType.isPrimitiveType() ? colType : colType, col.getCamelCaseName()));
 			
+		}
+		if( BeanCls.getTypeMapper().hasTransactionHandle()) {
+			pTransactionHandle = addParam(new Param(Types.Resource, "transactionHandle",Expressions.Null));
+		
 		}
 		setStatic(true);
 		this.bean=cls;
@@ -119,6 +126,11 @@ public class MethodGetById extends Method {
 			exprSqlQuery = exprSqlQuery.callMethod("where", new PhpStringLiteral("b1."+ col.getEscapedName()+"=?"),getParam(col.getCamelCaseName()));
 					
 		}
+		
+		if(pTransactionHandle != null ) {
+			_callMethodInstr(sqlQuery, ClsFirebirdSqlQuery.setTransactionHandle, pTransactionHandle);
+		}
+		
 		exprSqlQuery = exprSqlQuery.callMethod(ClsSqlQuery.query);
 		Var res = _declare(exprSqlQuery.getType(),
 				"res", exprSqlQuery

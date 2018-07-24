@@ -257,4 +257,8 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 		return new FirebirdBeanRepositoryRollbackTransactionMethod();
 	}
 	
+	@Override
+	public boolean hasTransactionHandle() {
+		return true;
+	}
 }

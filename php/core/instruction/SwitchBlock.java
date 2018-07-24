@@ -43,7 +43,8 @@ public class SwitchBlock extends Instruction{
 		for (CaseBlock caseBlock : cases) {
 			CodeUtil.writeLine(sb, caseBlock);
 		}
-		CodeUtil.writeLine(sb, defaultCase);
+		if(defaultCase != null)
+			CodeUtil.writeLine(sb, defaultCase);
 		CodeUtil.writeLine(sb, "}");
 		return sb.toString();
 	}
@@ -72,6 +73,10 @@ public class SwitchBlock extends Instruction{
 	public void setParent(AbstractPhpCls parent) {
 		this.parent = parent;
 		
+	}
+	
+	public DefaultCaseBlock getDefaultCase() {
+		return defaultCase;
 	}
 	
 	

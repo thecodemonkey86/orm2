@@ -29,6 +29,7 @@ import php.core.instruction.IfBlock;
 import php.core.instruction.InstructionBlock;
 import php.core.method.Method;
 import php.lib.ClsBaseBean;
+import php.lib.ClsFirebirdSqlQuery;
 import php.lib.ClsMysqli;
 import php.lib.ClsSqlParam;
 import php.lib.ClsSqlQuery;
@@ -38,12 +39,16 @@ import util.CodeUtil2;
 
 public class MethodBeanSave extends Method {
 	protected BeanCls bean;
-
+	Param pTransactionHandle ;
 	public MethodBeanSave(BeanCls bean) {
 		super(Public, Types.Void, "save"+bean.getName());
 		setStatic(true);
 		this.bean = bean;
 		addParam(new Param(bean, "bean"));
+		if( BeanCls.getTypeMapper().hasTransactionHandle()) {
+			pTransactionHandle = addParam(new Param(Types.Resource, "transactionHandle",Expressions.Null));
+		
+		}
 	}
 
 	@Override
@@ -52,7 +57,9 @@ public class MethodBeanSave extends Method {
 		Attr aSqlCon = parent.getAttrByName("sqlCon");
 		Var sqlQuery = _declare(BeanCls.getSqlQueryCls(), "query",BeanCls.getSqlQueryCls().newInstance(aSqlCon));
 //		TryCatchBlock tryCatch = _tryCatch();
-		
+		if(pTransactionHandle != null ) {
+			_callMethodInstr(sqlQuery, ClsFirebirdSqlQuery.setTransactionHandle, pTransactionHandle);
+		}
 		InstructionBlock mainBlock = this; //tryCatch.getTryBlock()
 		
 		Param pBean = getParam("bean");
@@ -76,46 +83,50 @@ public class MethodBeanSave extends Method {
 		Table tbl = bean.getTbl();
 		List<Column> columns = tbl.getColumns(!tbl.getPrimaryKey().isAutoIncrement());
 		for(Column col : columns) {
-			if (col.isNullable()) {
-				// begin insert
-				IfBlock ifColIsNull = ifIsInsertNew.thenBlock()._if(BeanCls.accessColumnAttrOrEntity(pBean,col).isNull());
-				
-				ifColIsNull.thenBlock()._callMethodInstr(sqlQuery, 
-						ClsSqlQuery.setValue,new PhpStringLiteral(col.getEscapedName()), 
-						BeanCls.getTypeMapper().getNullInsertUpdateValueExpression( col));
-				
-				ifColIsNull.elseBlock()._callMethodInstr(sqlQuery, 
-						ClsSqlQuery.setValue,new PhpStringLiteral(col.getEscapedName()), 
-						BeanCls.getTypeMapper().getInsertUpdateValueExpression( BeanCls.accessAttrGetterByColumn(pBean,col,false),col));
-				// end insert
-				
-				// begin update		
-				if (!col.isPartOfPk()) {
-
-					IfBlock ifModified = ifHasUpdate.thenBlock()._if(BeanCls.accessIsColumnAttrOrEntityModified(pBean, col));
-					IfBlock ifColIsNullElse = ifModified.thenBlock()._if(BeanCls.accessColumnAttrOrEntity(pBean,col).isNull());
+			if(!col.isRawValueEnabled()) {
+			
+				if (col.isNullable()) {
+					// begin insert
+					IfBlock ifColIsNull = ifIsInsertNew.thenBlock()._if(BeanCls.accessColumnAttrOrEntity(pBean,col).isNull());
 					
-					ifColIsNullElse.thenBlock()._callMethodInstr(sqlQuery, 
+					ifColIsNull.thenBlock()._callMethodInstr(sqlQuery, 
 							ClsSqlQuery.setValue,new PhpStringLiteral(col.getEscapedName()), 
-							Expressions.Null);
+							BeanCls.getTypeMapper().getNullInsertUpdateValueExpression( col));
 					
-					ifColIsNullElse.elseBlock()._callMethodInstr(sqlQuery, 
-							ClsSqlQuery.setValue,new PhpStringLiteral(col.getEscapedName()), 
-							BeanCls.getTypeMapper().getInsertUpdateValueExpression(BeanCls.accessAttrGetterByColumn(pBean,col,false),col));
-				}
-				// end update
-			} else {
-				ifIsInsertNew.thenBlock()._callMethodInstr(sqlQuery,  ClsSqlQuery.setValue,new PhpStringLiteral(col.getEscapedName()), Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(col)), BeanCls.accessAttrGetterByColumn(pBean,col,true)));
-				
-				if (!col.isPartOfPk()) {
-					IfBlock ifModified = ifHasUpdate.thenBlock()._if(BeanCls.accessIsColumnAttrOrEntityModified(pBean, col));
-					ifModified.thenBlock()._callMethodInstr(sqlQuery, 
+					ifColIsNull.elseBlock()._callMethodInstr(sqlQuery, 
 							ClsSqlQuery.setValue,new PhpStringLiteral(col.getEscapedName()), 
 							BeanCls.getTypeMapper().getInsertUpdateValueExpression( BeanCls.accessAttrGetterByColumn(pBean,col,false),col));
-				
+					// end insert
+					
+					// begin update		
+					if (!col.isPartOfPk()) {
+	
+						IfBlock ifModified = ifHasUpdate.thenBlock()._if(BeanCls.accessIsColumnAttrOrEntityModified(pBean, col));
+						IfBlock ifColIsNullElse = ifModified.thenBlock()._if(BeanCls.accessColumnAttrOrEntity(pBean,col).isNull());
+						
+						ifColIsNullElse.thenBlock()._callMethodInstr(sqlQuery, 
+								ClsSqlQuery.setValue,new PhpStringLiteral(col.getEscapedName()), 
+								Expressions.Null);
+						
+						ifColIsNullElse.elseBlock()._callMethodInstr(sqlQuery, 
+								ClsSqlQuery.setValue,new PhpStringLiteral(col.getEscapedName()), 
+								BeanCls.getTypeMapper().getInsertUpdateValueExpression(BeanCls.accessAttrGetterByColumn(pBean,col,false),col));
+					}
+					// end update
+				} else {
+					ifIsInsertNew.thenBlock()._callMethodInstr(sqlQuery,  ClsSqlQuery.setValue,new PhpStringLiteral(col.getEscapedName()), Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(col)), BeanCls.accessAttrGetterByColumn(pBean,col,true)));
+					
+					if (!col.isPartOfPk()) {
+						IfBlock ifModified = ifHasUpdate.thenBlock()._if(BeanCls.accessIsColumnAttrOrEntityModified(pBean, col));
+						ifModified.thenBlock()._callMethodInstr(sqlQuery, 
+								ClsSqlQuery.setValue,new PhpStringLiteral(col.getEscapedName()), 
+								BeanCls.getTypeMapper().getInsertUpdateValueExpression( BeanCls.accessAttrGetterByColumn(pBean,col,false),col));
+					
+					}
 				}
+			} else {
+				ifIsInsertNew.thenBlock()._callMethodInstr(sqlQuery, ClsSqlQuery.addInsertRawExpression,new PhpStringLiteral(col.getEscapedName()), pBean.callAttrGetter("insertExpression"+col.getUc1stCamelCaseName()));
 			}
-			
 		}
 		
 		IfBlock ifNotIsPkModified = ifHasUpdate.thenBlock()._if(_not(pBean.callMethod(ClsBaseBean.METHOD_NAME_IS_PRIMARY_KEY_MODIFIED)));

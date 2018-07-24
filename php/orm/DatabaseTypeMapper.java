@@ -48,5 +48,8 @@ public abstract class DatabaseTypeMapper {
 	public abstract Method getBeanRepositoryBeginTransactionMethod() ;
 	public abstract Method getBeanRepositoryCommitTransactionMethod() ;
 	public abstract Method getBeanRepositoryRollbackTransactionMethod() ;
+	public boolean hasTransactionHandle() {
+		return false;
+	}
 	
 }

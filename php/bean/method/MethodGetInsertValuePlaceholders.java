@@ -1,5 +1,5 @@
 package php.bean.method;
-
+/*
 import php.core.Types;
 import php.core.expression.PhpStringLiteral;
 import php.core.method.Method;
@@ -22,3 +22,4 @@ public class MethodGetInsertValuePlaceholders extends Method {
 	}
 
 }
+*/

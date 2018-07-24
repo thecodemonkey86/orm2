@@ -5,6 +5,7 @@ import java.util.List;
 import database.column.Column;
 import database.relation.OneRelation;
 import php.bean.BeanCls;
+import php.core.Attr;
 import php.core.Constructor;
 import php.core.Param;
 import php.core.PhpCls;
@@ -39,7 +40,11 @@ public class BeanConstructor extends Constructor{
 				Expression defValExpr =  BeanCls.getTypeMapper().getColumnDefaultValueExpression(col);
 				_assign(parent.getAttrByName(col.getCamelCaseName()),  defValExpr);
 			}
-		    
+			if(col.isRawValueEnabled()) {
+				Attr a = parent.getAttrByName("insertExpression"+col.getUc1stCamelCaseName());
+				if(a.getInitValue() != null)
+					_assign(a, a.getInitValue());
+			}
 		}
 		BeanCls bean = (BeanCls) parent;
 		for(OneRelation r:bean.getOneRelations()) {

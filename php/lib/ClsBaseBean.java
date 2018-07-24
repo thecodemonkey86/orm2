@@ -12,6 +12,7 @@ public class ClsBaseBean extends PhpCls{
 	public static final String METHOD_NAME_SET_AUTO_INCREMENT_ID = "setAutoIncrementId";
 	public static final String METHOD_NAME_HAS_UPDATE = "hasUpdate";
 	public static final String METHOD_NAME_IS_PRIMARY_KEY_MODIFIED = "isPrimaryKeyModified";
+	public static final String insert = "insert";
 
 	public ClsBaseBean() {
 		super("BaseBean", "PhpLibs\\Orm\\Model");
@@ -20,7 +21,7 @@ public class ClsBaseBean extends PhpCls{
 		//addAttr(attrSqlCon);
 		Attr attrAutoIncrement = new Attr(Types.Bool, "autoIncrement");
 		addAttr(attrAutoIncrement);
-		Attr attrInsert = new Attr(Types.Bool, "insert");
+		Attr attrInsert = new Attr(Types.Bool, insert);
 		addAttr(attrInsert);
 		addAttr(new Attr(Types.Bool, "primaryKeyModified"));
 		addMethod(new LibMethod(Types.Void, "setInsertNew"));

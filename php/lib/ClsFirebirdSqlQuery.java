@@ -3,6 +3,7 @@ package php.lib;
 import php.core.Attr;
 import php.core.PhpCls;
 import php.core.Types;
+import php.core.method.Method;
 
 public class ClsFirebirdSqlQuery extends PhpCls{
 
@@ -12,6 +13,7 @@ public class ClsFirebirdSqlQuery extends PhpCls{
 	public static final String select = "select";
 	public static final String query = "query";
 	public static final String where = "where";
+	public static final String setTransactionHandle = "setTransactionHandle";
 	
 	public ClsFirebirdSqlQuery() {
 		super("FirebirdSqlQuery","PhpLibs\\Sql\\Query");
@@ -21,6 +23,7 @@ public class ClsFirebirdSqlQuery extends PhpCls{
 		addMethod(new LibMethod(this, from));
 		addMethod(new LibMethod(this, leftJoin));
 		addMethod(new LibMethod(this, join));
+		addMethod(new LibMethod(this, setTransactionHandle));
 		
 		addMethod(new LibMethod(this, where));
 		setSuperclass(Types.SqlQuery);

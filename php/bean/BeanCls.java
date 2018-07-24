@@ -47,6 +47,7 @@ import php.core.Types;
 import php.core.expression.Expression;
 import php.core.expression.StaticAccessExpression;
 import php.core.method.MethodAttributeGetter;
+import php.core.method.MethodAttributeSetter;
 import php.orm.DatabaseTypeMapper;
 import php.orm.OrmUtil;
 import util.CodeUtil2;
@@ -185,6 +186,15 @@ public class BeanCls extends PhpCls {
 					Attr attrModified = new Attr(Types.Bool, col.getCamelCaseName()+"Modified");
 					addAttr(attrModified);
 					addMethod(new MethodIsModified(attrModified));
+				}
+				if(col.isRawValueEnabled()) {
+					Attr attrInsertExpression = new Attr(Attr.Protected, Types.String,"insertExpression"+col.getUc1stCamelCaseName(), null,false);
+					addAttr(attrInsertExpression);
+					addMethod(new MethodAttributeSetter(attrInsertExpression));
+					addMethod(new MethodAttributeGetter(attrInsertExpression));
+					/*Attr attrInsertParams = new Attr(Attr.Protected, Types.array(Types.String),"insertParamsForRawExpression"+col.getUc1stCamelCaseName(),null,false);
+					addAttr(attrInsertParams);
+					addMethod(new MethodAddInsertParamForRawExpression(col));*/
 				}
 			}
 			else {

@@ -18,6 +18,7 @@ public class ClsSqlQuery extends PhpCls{
 	public static final String setAutoCommit = "setAutoCommit";
 	public static final String onConflictDoNothing = "onConflictDoNothing";
 	public static final String addInsertRow = "addInsertRow";
+	public static final String addInsertRawExpression = "addInsertRawExpression";
 
 	public ClsSqlQuery() {
 		super("SqlQuery","Sql\\Query");
@@ -36,6 +37,7 @@ public class ClsSqlQuery extends PhpCls{
 		addMethod(new LibMethod(this, insertMultiRow));
 		addMethod(new LibMethod(this, addInsertRow));
 		addMethod(new LibMethod(this, onConflictDoNothing));
+		addMethod(new LibMethod(this, addInsertRawExpression));
 		setAbstract(true);
 	}
 
