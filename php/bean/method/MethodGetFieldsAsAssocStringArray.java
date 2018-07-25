@@ -3,6 +3,7 @@ package php.bean.method;
 import database.column.Column;
 import php.bean.BeanCls;
 import php.core.Param;
+import php.core.PhpFunctions;
 import php.core.Types;
 import php.core.expression.ArrayInitExpression;
 import php.core.expression.AssocArrayInitExpression;
@@ -12,7 +13,6 @@ import php.core.expression.MethodCall;
 import php.core.expression.PhpStringLiteral;
 import php.core.expression.Var;
 import php.core.instruction.CaseBlock;
-import php.core.instruction.DefaultCaseBlock;
 import php.core.instruction.ForeachLoop;
 import php.core.instruction.IfBlock;
 import php.core.instruction.SwitchBlock;
@@ -43,7 +43,7 @@ public class MethodGetFieldsAsAssocStringArray extends Method {
 				expr.addElement(new Pair<String, Expression>(col.getName(), BeanCls.getTypeMapper().getConvertFieldToStringExpression(_this().callMethod("get"+col.getUc1stCamelCaseName()), col,pDateTimeFormat,pDateFormat)));
 		}
 		ifAllColumns.thenBlock()._return(expr);
-		Var result = ifAllColumns.elseBlock()._declare(Types.array(Types.String), "result", new ArrayInitExpression());
+		/*Var result = ifAllColumns.elseBlock()._declare(Types.array(Types.String), "result", new ArrayInitExpression());
 		ForeachLoop foreachCols = ifAllColumns.elseBlock()._foreach(new Var(Types.String, "column"), pSpecificColumns);
 		SwitchBlock switchBlock = foreachCols._switch(foreachCols.getVar());
 		for(Column col : bean.getTbl().getAllColumns()) {
@@ -56,8 +56,18 @@ public class MethodGetFieldsAsAssocStringArray extends Method {
 
 			}
 		}
-		switchBlock.setDefaultCase(new DefaultCaseBlock());
+		switchBlock.setStandardDefaultCase();
+		ifAllColumns.elseBlock()._return(result);*/
+		
+		Var result = ifAllColumns.elseBlock()._declare(Types.array(Types.String), "result", new ArrayInitExpression());
+		Var allcols = ifAllColumns.elseBlock()._declare(Types.array(Types.String), "allcols", expr);
+		ForeachLoop foreachCols = ifAllColumns.elseBlock()._foreach(new Var(Types.String, "column"), pSpecificColumns);
+		foreachCols.addInstr(result.arrayIndexSet(foreachCols.getVar(), allcols.arrayIndex(foreachCols.getVar())));
 		ifAllColumns.elseBlock()._return(result);
+		
+		/*Var result = ifAllColumns.elseBlock()._declare(Types.array(Types.String), "result", expr);
+		ForeachLoop foreachCols = ifAllColumns.elseBlock()._foreach(new Var(Types.String, "column"), pSpecificColumns);
+		foreachCols.addInstr(result.arrayUnset(arg))*/
 	}
 
 }

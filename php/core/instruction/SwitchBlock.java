@@ -64,6 +64,13 @@ public class SwitchBlock extends Instruction{
 		addCase(caseBlock);
 		return caseBlock;
 	}
+	
+	public DefaultCaseBlock _default() {
+		DefaultCaseBlock defaultCaseBlock = new DefaultCaseBlock();
+		setDefaultCase(defaultCaseBlock);
+		return defaultCaseBlock;
+	}
+	
 	public void setStandardDefaultCase() {
 		DefaultCaseBlock defaultCaseBlock = new DefaultCaseBlock();
 		defaultCaseBlock._break();
