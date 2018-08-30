@@ -3,6 +3,7 @@ package php.core;
 import php.beanrepository.ClsBeanRepository;
 import php.lib.ClsBaseBean;
 import php.lib.ClsDateTime;
+import php.lib.ClsDateTimeZone;
 import php.lib.ClsFirebirdSqlQuery;
 import php.lib.ClsMySqlQuery;
 import php.lib.ClsMysqli;
@@ -52,6 +53,7 @@ public class Types {
 		
 	};
 	public static final ClsDateTime DateTime = new ClsDateTime();
+	public static final ClsDateTimeZone DateTimeZone = new ClsDateTimeZone();
 	public static final ClsMysqli mysqli = new ClsMysqli();
 	public static final ClsMysqliResult mysqli_result = new ClsMysqliResult();
 	public static final ClsSql Sql = new ClsSql();

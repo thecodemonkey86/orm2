@@ -40,7 +40,7 @@ public class MethodAddRelatedBean extends Method {
 				b1PkArgs[i++] = pBean.callAttrGetter(colPk.getCamelCaseName());
 			}
 			
-			Var relPk = _declareNew(Beans.get( rel.getDestTable() ), "relPk", b1PkArgs);
+			Var relPk = _declareNew(Beans.get( rel.getDestTable() ).getPkType(), "relPk", b1PkArgs);
 			addInstr(a.arrayIndexSet(PhpFunctions.md5.call(PhpFunctions.serialize.call(relPk)),pBean));
 		} else {
 			addInstr(a.arrayIndexSet(pBean.callAttrGetter(rel.getDestTable().getPrimaryKey().getFirstColumn().getCamelCaseName()),pBean));

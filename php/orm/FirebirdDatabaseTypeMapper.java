@@ -84,14 +84,14 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 			case "37":
 				return new PhpStringLiteral("");
 			case "12":
-				return new NewOperator(Types.DateTime) ;
+				return new NewOperator(Types.DateTime, new PhpStringLiteral("now"),new NewOperator(Types.DateTimeZone,new PhpStringLiteral("Europe/Berlin"))) ;
 			case "10":
 			case "27":
 				return new DoubleExpression(0.0);
 			case "261":
 				return new PhpStringLiteral("");
 			case "35":
-				return new NewOperator(Types.DateTime) ;
+				return new NewOperator(Types.DateTime, new PhpStringLiteral("now"),new NewOperator(Types.DateTimeZone,new PhpStringLiteral("Europe/Berlin"))) ;
 			case "13":
 				return new PhpStringLiteral("");
 			default:
@@ -143,7 +143,8 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 	}
 
 	@Override
-	public Expression getConvertTypeExpression(Expression e, String dbType, boolean nullable) {
+	public Expression getConvertTypeExpression(Expression expr, String dbType, boolean nullable) {
+		
 		if(nullable) {
 			switch(dbType) {
 			case "12":
@@ -153,13 +154,14 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 			case "7":
 			case "10":
 			case "27":
-				return new InlineIfExpression(e.isNull(), Expressions.Null, getConvertTypeExpression(e, dbType, false));
+				return new InlineIfExpression(expr.isNull(), Expressions.Null, getConvertTypeExpression(expr, dbType, false));
 			default:
-				return e;
+				return new InlineIfExpression(expr.isNull(), Expressions.Null, PhpFunctions.trim.call(expr));
 			}
 			
 			
 		} else {
+			Expression e = PhpFunctions.trim.call(expr);
 			switch(dbType) {
 			case "8":
 			case "16":
@@ -169,14 +171,14 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 			case "37":
 				return e;
 			case "12":
-				return new NewOperator(Types.DateTime,e) ;
+				return new NewOperator(Types.DateTime,e, new NewOperator(Types.DateTimeZone,new PhpStringLiteral("UTC"))) ;
 			case "10":
 			case "27":
 				return e.cast(Types.Float);
 			case "261":
 				return e;
 			case "35":
-				return new NewOperator(Types.DateTime,e) ;
+				return new NewOperator(Types.DateTime,e, new NewOperator(Types.DateTimeZone,new PhpStringLiteral("UTC"))) ;
 			case "13":
 				return e;
 			default:
@@ -187,7 +189,7 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 
 	@Override
 	public Expression getInsertUpdateValueExpression(Expression obj, Column col) {
-		return obj;
+		return getSaveConvertExpression(obj, col);
 	}
 
 	@Override

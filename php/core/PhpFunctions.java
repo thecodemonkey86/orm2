@@ -14,6 +14,7 @@ public class PhpFunctions {
 	public static final PhpFunction ibase_rollback = new PhpFunction("ibase_rollback", Types.Bool);
 	public static final PhpFunction strtoupper = new PhpFunction("strtoupper", Types.String);
 	public static final PhpFunction substr = new PhpFunction("substr", Types.String);
+	public static final PhpFunction trim = new PhpFunction("trim", Types.String);
 	public static final PhpFunction md5 = new PhpFunction("md5", Types.String);
 	public static final PhpFunction serialize = new PhpFunction("serialize", Types.String);
 	
