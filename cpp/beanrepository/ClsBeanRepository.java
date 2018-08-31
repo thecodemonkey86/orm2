@@ -19,6 +19,7 @@ import cpp.core.Cls;
 import cpp.core.Param;
 import cpp.lib.ClsBaseRepository;
 import cpp.lib.EnableSharedFromThis;
+import database.column.Column;
 
 public class ClsBeanRepository extends Cls{
 //	protected ArrayList<ClsBeanQuery> beanQueryClasses;
@@ -61,14 +62,31 @@ public class ClsBeanRepository extends Cls{
 			addMethod(new MethodBeanLoad(bean));
 			addMethod(new MethodBeanSave(bean));
 			addMethod(new MethodGetFromRecord(bean,false));
-			addMethod(new MethodRepoCreateNew(bean,false));
+			addMethod(new MethodRepoCreateNew(bean));
+			int countNullable = 0;
+			
+			for(Column c : bean.getTbl().getFieldColumns()) {
+				if(c.isNullable()) {
+					countNullable++;
+				}
+			}
 			
 			int countInitializeFields = bean.getTbl().getFieldColumns().size();
 			if(!bean.getTbl().getPrimaryKey().isAutoIncrement()) {
 				countInitializeFields += bean.getTbl().getPrimaryKey().getColumnCount();
+				
+				for(Column c : bean.getTbl().getPrimaryKey()) {
+					if(c.isNullable()) {
+						countNullable++;
+					}
+				}
 			}
-			if(countInitializeFields > 0)
-				addMethod(new MethodRepoCreateNew(bean,true));
+			if(countInitializeFields > 0) {
+				addMethod(new MethodRepoCreateNew(bean,true,false));
+				
+				if(countNullable > 0)
+					addMethod(new MethodRepoCreateNew(bean,true,true));
+			}
 			addMethod(new MethodBeanRemove(bean,false));
 		}
 		
