@@ -79,6 +79,10 @@ public abstract class Method extends InstructionBlock{
 		return addParam(new Param(type, name));
 	}
 	
+	public Param addParam(Type type, String name, Expression defaultValue) {
+		return addParam(new Param(type, name, defaultValue));
+	}
+	
 	private String retType() {
 		return getReturnType() instanceof SharedPtr ? "shared_ptr"+CodeUtil.abr(((SharedPtr)getReturnType()).getElementType().toUsageString()) : getReturnType().toDeclarationString();
 	}

@@ -56,9 +56,6 @@ public class MethodToString extends Method{
 						"            } else {\r\n" + 
 						"                query += QStringLiteral(\" WHERE %1\").arg("+ MethodToString.this.bean.	getName() +"::getLimitQueryString(limitResults,resultOffset,limitOffsetCondition));\r\n" + 
 						"            }\r\n" + 
-						"            if (!limitOffsetOrderBy.isEmpty()) {\r\n" + 
-						"                query += QStringLiteral(\" ORDER BY %1\").arg(limitOffsetOrderBy);\r\n" + 
-						"            }\r\n" + 
 						"        }\r\n" + 
 						"        if (!selectFields.isEmpty()) {\r\n" + 
 						"            query += QStringLiteral(\" ORDER BY \");\r\n" + 

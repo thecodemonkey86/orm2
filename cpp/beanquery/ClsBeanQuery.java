@@ -55,6 +55,8 @@ import cpp.beanquery.method.MethodWhere9;
 import cpp.beanrepository.ClsBeanRepository;
 import cpp.core.Attr;
 import cpp.core.Cls;
+import cpp.core.Param;
+import cpp.lib.ClsQVariant;
 import cpp.lib.ClsQVector;
 import database.column.Column;
 
@@ -80,6 +82,7 @@ public class ClsBeanQuery extends Cls {
 		addIncludeHeader("../"+ ClsBeanRepository.CLSNAME.toLowerCase());
 		addIncludeLib("QSqlError",true);
 		addIncludeLib("QSqlDriver");
+		addIncludeLib(Types.QVariant.getName());
 		addAttr(new Attr(Types.BeanRepository.toSharedPtr(), "repository"));
 		addAttr(new Attr(Types.QString,"mainBeanAlias"));
 		addAttr(new Attr(Types.QString,"selectFields"));
@@ -131,7 +134,13 @@ public class ClsBeanQuery extends Cls {
 		addMethod(new MethodAndWhere8(this));
 		addMethod(new MethodAndWhere9(this));
 		addMethod(new MethodLimit(this));
-		addMethod(new MethodLimitAndOffset(this));
+		addMethod(new MethodLimitAndOffset(this,null,true));
+		addMethod(new MethodLimitAndOffset(this,new Param(Types.QString.toConstRef(), "param"),true));
+		addMethod(new MethodLimitAndOffset(this,new Param(Types.Int, "param"),true));
+		addMethod(new MethodLimitAndOffset(this,new Param(Types.Bool, "param"),true));
+		addMethod(new MethodLimitAndOffset(this,new Param(Types.Double, "param"),true));
+		addMethod(new MethodLimitAndOffset(this,new Param(Types.QVariant.toConstRef(), "param"),true));
+		addMethod(new MethodLimitAndOffset(this,null,false));
 		addMethod(new MethodOffset(this));
 		addMethod(new MethodOrderBy(this));
 		addMethod(new MethodPrintDebug());

@@ -19,6 +19,16 @@ public class ConstRef extends Cls {
 		return CodeUtil.sp(constness?"const":"",base.toUsageString(),"&" );
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof ConstRef) {
+			ConstRef cr = (ConstRef) obj;
+			return base.equals(cr.base);
+		} else {
+			return false;
+		}
+	} 
+	
 	
 	@Override
 	public String getName() {
