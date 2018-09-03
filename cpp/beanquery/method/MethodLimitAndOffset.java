@@ -1,6 +1,7 @@
 package cpp.beanquery.method;
 
 import cpp.Types;
+import cpp.bean.BeanCls;
 import cpp.beanquery.ClsBeanQuery;
 import cpp.core.Method;
 import cpp.core.Param;
@@ -37,7 +38,7 @@ public class MethodLimitAndOffset extends Method{
 				 if(MethodLimitAndOffset.this.withConditionParameter) {
 					 str+="	this->limitOffsetCondition = condition;\r\n";
 				 } else {
-					 str+="	this->limitOffsetCondition = QLatin1Literal(\"true\");\r\n";
+					 str+="	this->limitOffsetCondition = QLatin1Literal(\""+BeanCls.getDatabase().getBooleanExpressionTrue()+ "\");\r\n";
 				 }
 				 					
 				 str+="	return *this;";
