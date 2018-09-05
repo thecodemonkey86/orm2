@@ -15,6 +15,7 @@ import php.core.expression.PhpStringLiteral;
 import php.core.expression.Var;
 import php.core.instruction.IfBlock;
 import php.core.method.Method;
+import php.lib.ClsBaseBeanQuery;
 import php.lib.ClsSqlQuery;
 
 public class MethodLimitAndOffset extends Method {
@@ -39,20 +40,20 @@ public class MethodLimitAndOffset extends Method {
 		PrimaryKey pk = bean.getTbl().getPrimaryKey();
 		String mainBeanAlias = "b1.";
 		StringBuilder sql = new StringBuilder();
-		if (pk.isMultiColumn()) {
-			sql.append('(').append(mainBeanAlias).append(pk.getFirstColumn().getEscapedName());
-			for (int i = 1; i < pk.getColumnCount(); i++) {
-				sql.append(',').append(mainBeanAlias).append(pk.getColumn(i).getEscapedName());
-			}
-			sql.append(')');
-		} else {
-			sql.append(mainBeanAlias).append(pk.getFirstColumn().getEscapedName());
-		}
-		sql.append(" IN (SELECT ").append(pk.getFirstColumn().getEscapedName());
+//		if (pk.isMultiColumn()) {
+//			sql.append('(').append(mainBeanAlias).append(pk.getFirstColumn().getEscapedName());
+//			for (int i = 1; i < pk.getColumnCount(); i++) {
+//				sql.append(',').append(mainBeanAlias).append(pk.getColumn(i).getEscapedName());
+//			}
+//			sql.append(')');
+//		} else {
+//			sql.append(mainBeanAlias).append(pk.getFirstColumn().getEscapedName());
+//		}
+		sql.append(" (SELECT ").append(pk.getFirstColumn().getEscapedName());
 		for (int i = 1; i < pk.getColumnCount(); i++) {
 			sql.append(',').append(pk.getColumn(i).getEscapedName());
 		}
-		sql.append(" FROM ").append(bean.getTbl().getEscapedName()).append(" WHERE %1");
+		sql.append(" FROM ").append(bean.getTbl().getEscapedName()).append(" WHERE %s");
 
 		Var varSql = _declare(returnType, "sql", PhpFunctions.sprintf.call(new PhpStringLiteral(sql.toString()),
 				new InlineIfExpression(pCondition.isNull(),
@@ -66,11 +67,11 @@ public class MethodLimitAndOffset extends Method {
 		ifIsSetOffset.addIfInstr(
 				varSql.binOp(".=", PhpFunctions.sprintf.call(new PhpStringLiteral(" OFFSET %s"), pOffset))
 						.asInstruction());
-		addInstr(varSql.binOp(".=", new PhpStringLiteral(')')).asInstruction());
+		addInstr(varSql.binOp(".=", new PhpStringLiteral(") _limitjoin")).asInstruction());
 
 		addInstr(_this().assignAttr("beanQueryLimit", pLimit));
 		addInstr(_this().assignAttr("beanQueryOffset", pOffset));
-		addInstr(aSqlQuery.callMethodInstruction(ClsSqlQuery.where,varSql,pQueryParams));
+		_return(_this().callMethod(ClsBaseBeanQuery.join,varSql,new PhpStringLiteral("_limitjoin."+pk.getFirstColumn().getEscapedName()+" = b1."+pk.getFirstColumn().getEscapedName()),pQueryParams));
 
 	}
 

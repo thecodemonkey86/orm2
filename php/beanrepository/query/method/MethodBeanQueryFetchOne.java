@@ -25,6 +25,7 @@ import php.core.instruction.DoWhile;
 import php.core.instruction.IfBlock;
 import php.core.method.Method;
 import php.lib.ClsBaseBeanQuery;
+import php.lib.ClsSqlQuery;
 import php.orm.OrmUtil;
 import util.StringUtil;
 import util.pg.PgCppUtil;
@@ -50,7 +51,7 @@ public class MethodBeanQueryFetchOne extends Method{
 		List<ManyRelation> manyToManyRelations = bean.getManyToManyRelations();
 		
 		Var b1 = _declare(returnType, "b1", Expressions.Null);
-		Var res =_declare(BeanCls.getTypeMapper().getDatabaseResultType() , "res",_this().callMethod(ClsBaseBeanQuery.query) );
+		Var res =_declare(BeanCls.getTypeMapper().getDatabaseResultType() , "res",_this().accessAttr("sqlQuery").callMethod(ClsSqlQuery.query) );
 		
 		Var row = _declare(Types.array(Types.Mixed), "row", getFetchExpression(res) );
 		IfBlock ifRowNotNull =

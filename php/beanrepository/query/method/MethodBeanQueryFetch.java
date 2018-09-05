@@ -27,6 +27,7 @@ import php.core.instruction.InstructionBlock;
 import php.core.method.Method;
 import php.lib.ClsBaseBean;
 import php.lib.ClsBaseBeanQuery;
+import php.lib.ClsSqlQuery;
 import php.orm.OrmUtil;
 import util.StringUtil;
 
@@ -50,7 +51,7 @@ public class MethodBeanQueryFetch extends Method{
 		PrimaryKey pk=bean.getTbl().getPrimaryKey();
 		
 		Var result = _declareNewArray( "result");
-		Var res =_declare(Types.mysqli_result, "res",_this().callMethod(ClsBaseBeanQuery.query) );
+		Var res =_declare(Types.mysqli_result, "res",_this().accessAttr("sqlQuery").callMethod(ClsSqlQuery.query) );
 		
 		Type b1PkType = pk.isMultiColumn() ? bean.getPkType() : BeanCls.getTypeMapper().columnToType( pk.getFirstColumn());
 
