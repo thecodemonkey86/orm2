@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Properties;
@@ -49,7 +50,7 @@ public class ConfigReader implements ContentHandler {
 	private int oneToManyAliasCounter = 1;
 	private int manyToManyAliasCounter = 1;
 	private int oneAliasCounter = 1;
-	private HashSet<String> relationQueryNames;
+	private HashMap<String, HashSet<String>> relationQueryNames;
 	private OneToManyRelation currentOneToManyRelation;
 	private OneRelation currentOneRelation;
 	private ManyRelation currentManyToManyRelation;
@@ -69,7 +70,7 @@ public class ConfigReader implements ContentHandler {
 
 	public ConfigReader(Path xmlDirectory) {
 		createConfig();
-		relationQueryNames = new HashSet<>();
+		relationQueryNames = new HashMap<>();
 		this.xmlDirectory = xmlDirectory;
 		this.tags = new LinkedList<>();
 	}
@@ -78,7 +79,13 @@ public class ConfigReader implements ContentHandler {
 		cfg = new OrmConfig();
 	}
 
-	protected String checkRelationQueryNameUnique(String name) throws IOException {
+	protected String checkRelationQueryNameUnique(String tableName, String name) throws IOException {
+		if(!this.relationQueryNames.containsKey(tableName)) {
+			this.relationQueryNames.put(tableName, new HashSet<>());
+		}
+		
+		HashSet<String> relationQueryNames = this.relationQueryNames.get(tableName);
+		
 		if (!relationQueryNames.contains(name)) {
 			relationQueryNames.add(name);
 			return name;
@@ -234,7 +241,7 @@ public class ConfigReader implements ContentHandler {
 					currentManyToManyRelation = new ManyRelation(
 							relQueryNameManyToManyRelation == null || relQueryNameManyToManyRelation.isEmpty()
 									? ("nm" + manyToManyAliasCounter)
-									: checkRelationQueryNameUnique(relQueryNameManyToManyRelation));
+									: checkRelationQueryNameUnique(currentSrcTable.getName(), relQueryNameManyToManyRelation));
 
 					cfg.addManyToManyRelation(currentManyToManyRelation, currentSrcTable);
 					currentSourceEntityMapping = new M2MColumns();
@@ -261,7 +268,7 @@ public class ConfigReader implements ContentHandler {
 					currentOneToManyRelation = new OneToManyRelation(
 							relQueryNameOneToManyRelation == null || relQueryNameOneToManyRelation.isEmpty()
 									? ("om" + oneToManyAliasCounter)
-									: checkRelationQueryNameUnique(relQueryNameOneToManyRelation));
+									: checkRelationQueryNameUnique(currentSrcTable.getName(), relQueryNameOneToManyRelation));
 
 					cfg.addOneToManyRelation(currentOneToManyRelation, currentSrcTable);
 					currentOneToManyRelation.setSourceTable(currentSrcTable);
@@ -274,7 +281,7 @@ public class ConfigReader implements ContentHandler {
 					currentOneRelation = new OneRelation(
 							relQueryNameOneRelation == null || relQueryNameOneRelation.isEmpty()
 									? ("o" + oneAliasCounter)
-									: checkRelationQueryNameUnique(relQueryNameOneRelation));
+									: checkRelationQueryNameUnique(currentSrcTable.getName(),relQueryNameOneRelation));
 
 					cfg.addOneRelation(currentOneRelation, currentSrcTable);
 					currentOneRelation.setSourceTable(currentSrcTable);
