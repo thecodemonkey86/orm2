@@ -2,6 +2,9 @@ package php.orm;
 
 import database.column.Column;
 import php.bean.BeanCls;
+import php.beanrepository.method.PgBeanRepositoryBeginTransactionMethod;
+import php.beanrepository.method.PgBeanRepositoryCommitTransactionMethod;
+import php.beanrepository.method.PgBeanRepositoryRollbackTransactionMethod;
 import php.core.Attr;
 import php.core.Type;
 import php.core.Types;
@@ -72,8 +75,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 
 	@Override
 	public Type getDatabaseLinkType() {
-		// TODO Auto-generated method stub
-		throw new RuntimeException("not impl");
+		return Types.Resource;
 	}
 
 	@Override
@@ -124,20 +126,17 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 
 	@Override
 	public Method getBeanRepositoryBeginTransactionMethod() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PgBeanRepositoryBeginTransactionMethod();
 	}
 
 	@Override
 	public Method getBeanRepositoryCommitTransactionMethod() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PgBeanRepositoryCommitTransactionMethod();
 	}
 
 	@Override
 	public Method getBeanRepositoryRollbackTransactionMethod() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PgBeanRepositoryRollbackTransactionMethod();
 	}
 	
 }

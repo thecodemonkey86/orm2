@@ -12,6 +12,7 @@ public class ClsSqlQuery extends PhpCls{
 	public static final String setValue = "setValue";
 	public static final String execute = "execute";
 	public static final String where = "where";
+	public static final String join = "join";
 	public static final String beginTransaction = "beginTransaction";
 	public static final String commitTransaction = "commitTransaction";
 	public static final String rollbackTransaction = "rollbackTransaction";
@@ -43,6 +44,8 @@ public class ClsSqlQuery extends PhpCls{
 		addMethod(new LibMethod(this, limitAndOffset));
 		addMethod(new LibMethod(this, addParamsWhere));
 		addMethod(new LibMethod(this, where));
+		addMethod(new LibMethod(this, join));
+		addMethod(new LibMethod(this, query));
 		setAbstract(true);
 	}
 

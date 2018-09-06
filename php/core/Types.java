@@ -1,7 +1,9 @@
 package php.core;
 
+import php.bean.BeanCls;
 import php.beanrepository.ClsBeanRepository;
 import php.lib.ClsBaseBean;
+import php.lib.ClsBaseBeanQuery;
 import php.lib.ClsDateTime;
 import php.lib.ClsDateTimeZone;
 import php.lib.ClsFirebirdSqlQuery;
@@ -79,7 +81,9 @@ public class Types {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+	public static ClsBaseBeanQuery beanQuery(BeanCls bean) {
+		return new ClsBaseBeanQuery(bean);
+	}
 
 
 	

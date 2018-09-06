@@ -17,6 +17,7 @@ public class PhpFunctions {
 	public static final PhpFunction trim = new PhpFunction("trim", Types.String);
 	public static final PhpFunction md5 = new PhpFunction("md5", Types.String);
 	public static final PhpFunction serialize = new PhpFunction("serialize", Types.String);
+	public static final PhpFunction pg_query = new PhpFunction("pg_query", Types.Resource);
 	
 	
 	

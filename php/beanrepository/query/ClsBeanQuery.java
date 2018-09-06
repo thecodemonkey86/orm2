@@ -26,8 +26,6 @@ public class ClsBeanQuery extends PhpCls {
 	public ClsBeanQuery(BeanCls cls) {
 		super(cls.getName()+ "BeanQuery",beanQueryNamespace);
 		addAttr(new Attr(Types.SqlQuery, "sqlQuery"));
-		addAttr(new Attr(Types.SqlQuery, "beanQueryLimit"));
-		addAttr(new Attr(Types.SqlQuery, "beanQueryOffset"));
 		setSuperclass(new ClsBaseBeanQuery(cls));
 		setConstructor(new ConstructorBeanQuery());
 		addMethod(new MethodBeanQueryFetch(cls));
