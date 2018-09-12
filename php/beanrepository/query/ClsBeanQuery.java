@@ -10,9 +10,7 @@ import php.beanrepository.query.method.MethodBeanQueryWhereEquals;
 import php.beanrepository.query.method.MethodGetAllSelectFields;
 import php.beanrepository.query.method.MethodGetTableName;
 import php.beanrepository.query.method.MethodLimitAndOffset;
-import php.core.Attr;
 import php.core.PhpCls;
-import php.core.Types;
 import php.lib.ClsBaseBeanQuery;
 
 public class ClsBeanQuery extends PhpCls {
@@ -25,7 +23,7 @@ public class ClsBeanQuery extends PhpCls {
 	
 	public ClsBeanQuery(BeanCls cls) {
 		super(cls.getName()+ "BeanQuery",beanQueryNamespace);
-		addAttr(new Attr(Types.SqlQuery, "sqlQuery"));
+		
 		setSuperclass(new ClsBaseBeanQuery(cls));
 		setConstructor(new ConstructorBeanQuery());
 		addMethod(new MethodBeanQueryFetch(cls));

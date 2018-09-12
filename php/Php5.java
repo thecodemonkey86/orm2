@@ -4,7 +4,7 @@ public class Php5 extends Php {
 
 	@Override
 	public boolean supportsTypeHints() {
-		return true;
+		return false;
 	}
 
 	@Override

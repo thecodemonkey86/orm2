@@ -18,6 +18,11 @@ public class MethodBeanQueryWhereEquals extends Method {
 		super(Public, query, "where"+c.getUc1stCamelCaseName()+"Equals");
 		this.bean=bean;
 		Type t = BeanCls.getTypeMapper().columnToType(c);
+		
+		if(t == null) {
+			System.out.println(BeanCls.getTypeMapper().columnToType(c));
+		}
+		
 		pValue = addParam(new Param(t, "value"));
 		this.c = c;
 	}

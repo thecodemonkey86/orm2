@@ -43,11 +43,9 @@ public class MethodGetFromQueryAssocArray extends Method{
 		Param array = getParam("array");
 		Param alias = getParam("alias");
 		
-		if(	this.beanCls.getName().equals("Beleg")) {
-			System.out.println(parent.getName());
-		}
+		
 		for(Column col:columns) {
-			if (!col.isRelationDestColumn() || col.hasOneRelation()) {
+			if (!col.isRelationDestColumn() || col.hasOneRelation() || col.isPartOfPk()) {
 				try{
 					/*Expression resultSetValueGetter = BeanCls.getTypeMapper().getResultSetValueGetter(resultSet, col, alias);
 					if (col.isNullable() && resultSetValueGetter.getType().isPrimitiveType()) {

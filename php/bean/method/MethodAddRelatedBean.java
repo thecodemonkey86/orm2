@@ -50,6 +50,10 @@ public class MethodAddRelatedBean extends Method {
 		addInstr(
 				parent.getAttrByName(a.getName()+"Added"
 				).arrayPush(pBean));
+		
+		for(int i=0;i < rel.getColumnCount(); i++) {
+			addInstr(pBean.callAttrSetterMethodInstr(rel.getDestMappingColumn(i).getCamelCaseName(), _this().callAttrGetter(rel.getColumns(i).getValue1().getCamelCaseName())));
+		}
 	}
 
 }

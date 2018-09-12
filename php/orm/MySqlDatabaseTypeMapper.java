@@ -37,6 +37,7 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 		case "varchar":
 		case "character":	
 		case "text":
+		case "mediumtext":
 			return Types.String;
 		case "date":
 			return Types.DateTime;
