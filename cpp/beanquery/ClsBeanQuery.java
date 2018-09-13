@@ -56,7 +56,6 @@ import cpp.beanrepository.ClsBeanRepository;
 import cpp.core.Attr;
 import cpp.core.Cls;
 import cpp.core.Param;
-import cpp.lib.ClsQVariant;
 import cpp.lib.ClsQVector;
 import database.column.Column;
 

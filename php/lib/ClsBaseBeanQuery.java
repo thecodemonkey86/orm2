@@ -7,16 +7,18 @@ import php.core.Types;
 
 public class ClsBaseBeanQuery extends PhpPseudoGenericClass{
 
+	public static final String sqlQuery = "sqlQuery";
 	public static final String mainBeanAlias = "mainBeanAlias";
 	public static final String where = "where";
 	public static final String join = "join";
 	public static final String addInsertRawExpression = "addInsertRawExpression";
 
+
 	public ClsBaseBeanQuery( BeanCls cls) {
 		super("BeanQuery",cls,"PhpLibs\\Orm\\Query");
 		addAttr(new Attr(Types.Int, "beanQueryLimit"));
 		addAttr(new Attr(Types.Int, "beanQueryOffset"));
-		addAttr(new Attr(Types.SqlQuery, "sqlQuery"));
+		addAttr(new Attr(Types.SqlQuery, sqlQuery));
 		addMethod(new LibMethod(this, "select"));
 		addMethod(new LibMethod(this, "leftJoin"));
 		addMethod(new LibMethod(this, join));

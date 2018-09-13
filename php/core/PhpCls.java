@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import codegen.CodeUtil;
+import php.core.expression.ConstantAccessExpression;
 import php.core.expression.Expression;
 import php.core.expression.NewOperator;
 import php.core.expression.StaticAccessExpression;
@@ -258,6 +259,22 @@ public class PhpCls extends AbstractPhpCls implements IAttributeContainer{
 			constants = new ArrayList<>();
 		}
 		constants.add(c);
+	}
+	
+	public Expression accessConstant(String constant) {
+		if(constants!=null) {
+			for(ClassConstant c:constants) {
+				if (c.getName().equals(constant)) {
+					return new ConstantAccessExpression(this, c);
+				}
+			}
+		}
+		if(superclass != null) {
+			return superclass.accessConstant(constant);
+		} else {
+			throw new RuntimeException("no such constant " + constant);
+		}
+		
 	}
 	
 	public StaticAccessExpression accessStaticAttribute(Attr prototype) {

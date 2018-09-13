@@ -24,7 +24,6 @@ import php.core.expression.Var;
 import php.core.instruction.DoWhile;
 import php.core.instruction.IfBlock;
 import php.core.method.Method;
-import php.lib.ClsBaseBeanQuery;
 import php.lib.ClsSqlQuery;
 import php.orm.OrmUtil;
 import util.StringUtil;

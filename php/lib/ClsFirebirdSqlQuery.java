@@ -3,7 +3,6 @@ package php.lib;
 import php.core.Attr;
 import php.core.PhpCls;
 import php.core.Types;
-import php.core.method.Method;
 
 public class ClsFirebirdSqlQuery extends PhpCls{
 

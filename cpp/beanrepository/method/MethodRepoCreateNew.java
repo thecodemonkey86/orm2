@@ -2,7 +2,6 @@ package cpp.beanrepository.method;
 
 import java.util.ArrayList;
 
-import cpp.Types;
 import cpp.bean.BeanCls;
 import cpp.bean.Nullable;
 import cpp.bean.method.MethodColumnAttrSetNull;

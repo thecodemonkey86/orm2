@@ -10,8 +10,6 @@ import cpp.core.expression.IntExpression;
 import cpp.core.expression.QChar;
 import cpp.core.expression.Var;
 import cpp.core.instruction.IfBlock;
-import cpp.core.instruction.Instruction;
-import cpp.lib.ClsQString;
 import database.relation.PrimaryKey;
 
 public class MethodGetLimitQueryString extends Method {

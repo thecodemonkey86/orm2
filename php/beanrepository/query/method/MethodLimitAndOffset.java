@@ -3,11 +3,9 @@ package php.beanrepository.query.method;
 import database.relation.PrimaryKey;
 import php.bean.BeanCls;
 import php.beanrepository.query.ClsBeanQuery;
-import php.core.Attr;
 import php.core.Param;
 import php.core.PhpFunctions;
 import php.core.Types;
-import php.core.expression.Expression;
 import php.core.expression.Expressions;
 import php.core.expression.InlineIfExpression;
 import php.core.expression.IntExpression;
@@ -16,7 +14,6 @@ import php.core.expression.Var;
 import php.core.instruction.IfBlock;
 import php.core.method.Method;
 import php.lib.ClsBaseBeanQuery;
-import php.lib.ClsSqlQuery;
 
 public class MethodLimitAndOffset extends Method {
 
@@ -35,10 +32,10 @@ public class MethodLimitAndOffset extends Method {
 
 	@Override
 	public void addImplementation() {
-		Expression aSqlQuery = _this().accessAttr("sqlQuery");
+		//Expression aSqlQuery = _this().accessAttr("sqlQuery");
 		
 		PrimaryKey pk = bean.getTbl().getPrimaryKey();
-		String mainBeanAlias = "b1.";
+		//String mainBeanAlias = "b1.";
 		StringBuilder sql = new StringBuilder();
 //		if (pk.isMultiColumn()) {
 //			sql.append('(').append(mainBeanAlias).append(pk.getFirstColumn().getEscapedName());

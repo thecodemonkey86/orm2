@@ -1,6 +1,9 @@
 package php.lib;
 
+import php.core.ClassConstant;
 import php.core.PhpCls;
+import php.core.Types;
+import php.core.expression.IntExpression;
 
 public class ClsSqlQuery extends PhpCls{
 
@@ -22,7 +25,9 @@ public class ClsSqlQuery extends PhpCls{
 	public static final String addInsertRawExpression = "addInsertRawExpression";
 	public static final String limitAndOffset = "limitAndOffset";
 	public static final String addParamsWhere = "addParamsWhere";
-
+	public static final String MODE_SELECT = "MODE_SELECT";
+	public static final String getMode = "getMode";
+	
 	public ClsSqlQuery() {
 		super("SqlQuery","Sql\\Query");
 		
@@ -31,7 +36,7 @@ public class ClsSqlQuery extends PhpCls{
 		addMethod(new LibMethod(this, insertInto));
 		addMethod(new LibMethod(this, deleteFrom));
 		addMethod(new LibMethod(this, setValue));
-		addMethod(new LibMethod(this, execute));
+		addMethod(new LibMethod(Types.Bool, execute));
 		addMethod(new LibMethod(this, update));
 		addMethod(new LibMethod(this, beginTransaction));
 		addMethod(new LibMethod(this, commitTransaction));
@@ -45,8 +50,12 @@ public class ClsSqlQuery extends PhpCls{
 		addMethod(new LibMethod(this, addParamsWhere));
 		addMethod(new LibMethod(this, where));
 		addMethod(new LibMethod(this, join));
-		addMethod(new LibMethod(this, query));
+		addMethod(new LibMethod(Types.Mixed, query));
+		addMethod(new LibMethod(Types.Int, getMode));
+		addConstant(new ClassConstant(Types.Int, MODE_SELECT,new IntExpression(1)));
 		setAbstract(true);
 	}
+
+	
 
 }

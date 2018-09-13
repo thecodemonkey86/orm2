@@ -7,9 +7,13 @@ import php.core.Param;
 import php.core.PhpFunctions;
 import php.core.Type;
 import php.core.Types;
+import php.core.expression.Expression;
+import php.core.expression.InlineIfExpression;
+import php.core.expression.ParenthesesExpression;
 import php.core.expression.PhpStringLiteral;
 import php.core.method.Method;
 import php.lib.ClsBaseBeanQuery;
+import php.lib.ClsSqlQuery;
 import php.lib.ClsSqlUtil;
 
 public class MethodBeanQueryWhereIn extends Method {
@@ -31,7 +35,9 @@ public class MethodBeanQueryWhereIn extends Method {
 
 	@Override
 	public void addImplementation() {
-		_return( _this().callMethod(ClsBaseBeanQuery.where, new PhpStringLiteral( "b1." + c.getEscapedName()+" in ").concat(Types.SqlUtil.callStaticMethod(ClsSqlUtil.getPlaceholders, PhpFunctions.count.call(pValue))), BeanCls.getTypeMapper().getConvertTypeExpression(pValue, c)  ));
+		Expression aSqlQuery = _this().accessAttr(ClsBaseBeanQuery.sqlQuery);
+		
+		_return( _this().callMethod(ClsBaseBeanQuery.where, new ParenthesesExpression( new InlineIfExpression(aSqlQuery.callMethod(ClsSqlQuery.getMode)._equals(Types.SqlQuery.accessConstant(ClsSqlQuery.MODE_SELECT)),new PhpStringLiteral( "b1." + c.getEscapedName()+" in "),new PhpStringLiteral(c.getEscapedName()+" in "))).concat(Types.SqlUtil.callStaticMethod(ClsSqlUtil.getPlaceholders, PhpFunctions.count.call(pValue))), BeanCls.getTypeMapper().getConvertTypeExpression(pValue, c)  ));
 		
 	}
 	@Override
