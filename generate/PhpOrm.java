@@ -9,10 +9,13 @@ import java.nio.file.StandardOpenOption;
 import java.util.List;
 import config.ConfigReader;
 import config.OrmConfig;
+import config.php.PhpConfigReader;
+import config.php.PhpOrmConfig;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
 import database.table.Table;
+import php.Php;
 import php.bean.BeanCls;
 import php.bean.Beans;
 import php.bean.CustomClassMemberCode;
@@ -178,9 +181,10 @@ public class PhpOrm extends OrmCommon {
 			throw new Exception("Please provide xml config file");
 		}
 		Path xmlFile = Paths.get(args[0]);
-		ConfigReader cfgReader = new ConfigReader(xmlFile.getParent());
+		PhpConfigReader cfgReader = new PhpConfigReader(xmlFile.getParent());
 		DefaultXMLReader.read(xmlFile, cfgReader);
-		OrmConfig cfg = cfgReader.getCfg();
+		PhpOrmConfig cfg = cfgReader.getCfg();
+		Php.phpVersion = cfg.getPhpversion();
 		new PhpOrm(cfg);
 		
 	}

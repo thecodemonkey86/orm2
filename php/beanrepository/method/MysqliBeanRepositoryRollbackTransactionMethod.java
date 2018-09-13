@@ -15,7 +15,7 @@ public class MysqliBeanRepositoryRollbackTransactionMethod extends AbstractBeanR
 	public void addImplementation() {
 		PhpCls repo = (PhpCls) parent;
 		_return(
-		repo.accessStaticAttribute(new Attr(Types.Resource, "sqlCon")).callMethod(ClsMysqli.rollback_transaction)
+		repo.accessStaticAttribute(new Attr(Types.Resource, "sqlCon")).callMethod(ClsMysqli.rollback)
 		);
 		
 	}

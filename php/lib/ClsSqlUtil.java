@@ -10,7 +10,7 @@ public class ClsSqlUtil extends PhpCls{
 //	public static final String getPlaceholdersMultipleColumns = "getPlaceholdersMultipleColumns";
 
 	public ClsSqlUtil() {
-		super("SqlUtil", "Sql\\Util");
+		super("SqlUtil", "PhpLibs\\Sql\\Util");
 		addMethod(new StaticLibMethod(Types.String, getPlaceholders));
 		addMethod(new StaticLibMethod(Types.String, getPlaceholdersMultipleRows));
 //		addMethod(new StaticLibMethod(Types.String, getPlaceholdersMultipleColumns));

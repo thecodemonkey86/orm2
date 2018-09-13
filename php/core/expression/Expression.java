@@ -11,7 +11,7 @@ import php.core.Types;
 import php.core.instruction.AssignInstruction;
 import php.core.instruction.Instruction;
 import php.core.instruction.MethodCallInstruction;
-import php.core.instruction.ScClosedInstruction;
+import php.core.instruction.SemicolonTerminatedInstruction;
 import php.core.method.Method;
 import php.lib.LibEqualsOperator;
 import php.lib.LibOperator;
@@ -113,8 +113,8 @@ public abstract class Expression {
 	public abstract String toString() ;
 	
 	
-	public ScClosedInstruction asInstruction() {
-		return new ScClosedInstruction(toString());
+	public SemicolonTerminatedInstruction asInstruction() {
+		return new SemicolonTerminatedInstruction(toString());
 	}
 	
 	public MethodCall callAttrGetter(String attrName, Expression...args) {

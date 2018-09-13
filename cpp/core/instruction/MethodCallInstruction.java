@@ -2,7 +2,7 @@ package cpp.core.instruction;
 
 import cpp.core.MethodCall;
 
-public class MethodCallInstruction extends ScClosedInstruction {
+public class MethodCallInstruction extends SemicolonTerminatedInstruction {
 
 	protected MethodCall call;
 	

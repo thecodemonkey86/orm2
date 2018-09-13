@@ -2,7 +2,7 @@ package php.core.instruction;
 
 import php.core.expression.MethodCall;
 
-public class MethodCallInstruction extends ScClosedInstruction {
+public class MethodCallInstruction extends SemicolonTerminatedInstruction {
 
 	protected MethodCall call;
 	

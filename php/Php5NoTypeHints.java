@@ -1,10 +1,10 @@
 package php;
 
-public class Php5 extends Php {
+public class Php5NoTypeHints extends Php{
 
 	@Override
 	public boolean supportsTypeHints() {
-		return true;
+		return false;
 	}
 
 	@Override

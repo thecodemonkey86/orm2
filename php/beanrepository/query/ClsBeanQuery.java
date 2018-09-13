@@ -7,6 +7,9 @@ import php.beanrepository.query.method.MethodAddRelatedTableJoins;
 import php.beanrepository.query.method.MethodBeanQueryFetch;
 import php.beanrepository.query.method.MethodBeanQueryFetchOne;
 import php.beanrepository.query.method.MethodBeanQueryWhereEquals;
+import php.beanrepository.query.method.MethodBeanQueryWhereIn;
+import php.beanrepository.query.method.MethodBeanQueryWhereNotEquals;
+import php.beanrepository.query.method.MethodBeanQueryWhereNotIn;
 import php.beanrepository.query.method.MethodGetAllSelectFields;
 import php.beanrepository.query.method.MethodGetTableName;
 import php.beanrepository.query.method.MethodLimitAndOffset;
@@ -35,6 +38,9 @@ public class ClsBeanQuery extends PhpCls {
 		
 		for(Column c : cls.getTbl().getAllColumns()) {
 			addMethod(new MethodBeanQueryWhereEquals(this, cls, c));
+			addMethod(new MethodBeanQueryWhereIn(this, cls, c));
+			addMethod(new MethodBeanQueryWhereNotEquals(this, cls, c));
+			addMethod(new MethodBeanQueryWhereNotIn(this, cls, c));
 		}
 	}
 

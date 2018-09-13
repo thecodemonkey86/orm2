@@ -16,7 +16,7 @@ import cpp.core.Type;
 import cpp.core.instruction.AssignInstruction;
 import cpp.core.instruction.Instruction;
 import cpp.core.instruction.MethodCallInstruction;
-import cpp.core.instruction.ScClosedInstruction;
+import cpp.core.instruction.SemicolonTerminatedInstruction;
 import cpp.lib.LibEqualsOperator;
 import cpp.lib.LibOperator;
 
@@ -121,8 +121,8 @@ public abstract class Expression {
 		return new ConstCastExpression(this);
 	}
 	
-	public ScClosedInstruction asInstruction() {
-		return new ScClosedInstruction(toString());
+	public SemicolonTerminatedInstruction asInstruction() {
+		return new SemicolonTerminatedInstruction(toString());
 	}
 	
 	public MethodCall callAttrGetter(String attrName, Expression...args) {

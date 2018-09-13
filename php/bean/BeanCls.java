@@ -117,8 +117,8 @@ public class BeanCls extends PhpCls {
 			addAttr(attr);
 			addMethod(new MethodOneRelationAttrGetter(attr,true));	
 			addMethod(new MethodOneRelationBeanIsNull(r));
-			addMethod(new MethodOneRelationAttrSetter( attr, true,r.isPartOfPk())); // internal setter
-			addMethod(new MethodOneRelationAttrSetter( attr, false,r.isPartOfPk())); // public setter
+			addMethod(new MethodOneRelationAttrSetter( attr, true)); // internal setter
+			addMethod(new MethodOneRelationAttrSetter( attr, false)); // public setter
 			if (!r.isPartOfPk()) {
 				Attr attrModified = new Attr(Types.Bool, attr.getName()+"Modified");
 				addAttr(attrModified);

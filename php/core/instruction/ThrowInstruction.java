@@ -5,7 +5,7 @@ import php.core.expression.Expression;
 import php.core.expression.NewOperator;
 import php.lib.ClsException;
 
-public class ThrowInstruction extends ScClosedInstruction{
+public class ThrowInstruction extends SemicolonTerminatedInstruction{
 
 	public ThrowInstruction(Expression expression) {
 		super(CodeUtil.sp("throw",expression));

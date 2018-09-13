@@ -8,8 +8,8 @@ public abstract class Instruction {
 		stackTrace = Thread.currentThread().getStackTrace();
 	}
 	
-	public static ScClosedInstruction sc(String instr) {
-		return new ScClosedInstruction(instr);
+	public static SemicolonTerminatedInstruction sc(String instr) {
+		return new SemicolonTerminatedInstruction(instr);
 	}
 	
 	public void setStackTrace(StackTraceElement[] stackTrace) {

@@ -18,8 +18,8 @@ public class Instructions {
 		return new ReturnInstruction(new BoolExpression(b));
 	}
 	
-	public static ScClosedInstruction sc(Expression ex) {
-		return new ScClosedInstruction(ex.toString());
+	public static SemicolonTerminatedInstruction sc(Expression ex) {
+		return new SemicolonTerminatedInstruction(ex.toString());
 	}
 
 	public static Instruction _continue() {

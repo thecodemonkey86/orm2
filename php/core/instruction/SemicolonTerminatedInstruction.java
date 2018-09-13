@@ -1,9 +1,9 @@
 package php.core.instruction;
 
-public class ScClosedInstruction extends Instruction{
+public class SemicolonTerminatedInstruction extends Instruction{
 	String instr;
 	
-	public ScClosedInstruction(String instr) {
+	public SemicolonTerminatedInstruction(String instr) {
 		this.instr = instr;
 	}
 
