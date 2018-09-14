@@ -36,7 +36,7 @@ public class MethodBeanQueryWhereNotIn extends Method {
 	@Override
 	public void addImplementation() {
 		Expression aSqlQuery = _this().accessAttr(ClsBaseBeanQuery.sqlQuery);
-		_return( _this().callMethod(ClsBaseBeanQuery.where, new ParenthesesExpression( new InlineIfExpression(aSqlQuery.callMethod(ClsSqlQuery.getMode)._equals(Types.SqlQuery.accessConstant(ClsSqlQuery.MODE_SELECT)),new PhpStringLiteral( "b1." + c.getEscapedName()+" not in "),new PhpStringLiteral(c.getEscapedName()+" not in "))).concat(Types.SqlUtil.callStaticMethod(ClsSqlUtil.getPlaceholders, PhpFunctions.count.call(pValue))), BeanCls.getTypeMapper().getConvertTypeExpression(pValue, c)  ));
+		_return( _this().callMethod(ClsBaseBeanQuery.where, new ParenthesesExpression( new InlineIfExpression(aSqlQuery.callMethod(ClsSqlQuery.getMode)._equals(Types.SqlQuery.accessConstant(ClsSqlQuery.MODE_SELECT)),new PhpStringLiteral( "b1." + c.getEscapedName()+" not in "),new PhpStringLiteral(c.getEscapedName()+" not in "))).concat(Types.SqlUtil.callStaticMethod(ClsSqlUtil.getPlaceholders, PhpFunctions.count.call(pValue))),  pValue ));
 		
 	}
 	@Override

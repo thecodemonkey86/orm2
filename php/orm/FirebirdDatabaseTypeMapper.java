@@ -263,4 +263,5 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 	public boolean hasTransactionHandle() {
 		return true;
 	}
+
 }

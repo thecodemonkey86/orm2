@@ -6,7 +6,7 @@ import util.CodeUtil2;
 public class InlineIfExpression extends Expression {
 
 	protected Expression condition, ifExpression, elseExpression;
-	
+	protected Type type;
 	
 	
 	public InlineIfExpression(Expression condition, Expression ifExpression,
@@ -15,6 +15,16 @@ public class InlineIfExpression extends Expression {
 		this.condition = condition;
 		this.ifExpression = ifExpression;
 		this.elseExpression = elseExpression;
+		this.type = ifExpression.getType();
+	}
+	
+	public InlineIfExpression(Expression condition, Expression ifExpression,
+			Expression elseExpression,Type type) {
+		super();
+		this.condition = condition;
+		this.ifExpression = ifExpression;
+		this.elseExpression = elseExpression;
+		this.type = type;
 	}
 
 	@Override
@@ -24,7 +34,7 @@ public class InlineIfExpression extends Expression {
 
 	@Override
 	public Type getType() {
-		return ifExpression.getType();
+		return type;
 	}
 
 

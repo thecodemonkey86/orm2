@@ -40,6 +40,8 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 		case "mediumtext":
 			return Types.String;
 		case "date":
+		case "datetime":
+		case "timestamp":
 			return Types.DateTime;
 		case "double precision":
 		case "numeric":
@@ -47,10 +49,9 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 		case "bytea":
 			return Types.String;	
 		case "boolean":
-			return Types.Bool;
-		case "datetime":
-			return Types.DateTime;
+			return Types.Bool;		
 		default:
+			System.out.println(dbType);
 			return Types.String;
 		}
 	}
@@ -70,7 +71,7 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 			case "text":
 				return new PhpStringLiteral("");
 			case "date":
-			case "timestamp with time zone":
+			case "timestamp":
 				return new NewOperator(Types.DateTime) ;
 			case "double precision":
 			case "numeric":
@@ -122,11 +123,12 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 		
 		switch(dbType) {
 		case "date":
-		case "datetime":
+		case "datetime":			
+		case "timestamp":
 			if(nullable) {
-				return new InlineIfExpression(arg.isNull(), Expressions.Null, new NewOperator(Types.DateTime, arg));
+				return new InlineIfExpression(arg.isNull(), Expressions.Null, new NewOperator(Types.DateTime, arg),Types.DateTime);
 			}
-			return new NewOperator(Types.DateTime, arg);
+			return arg.getType().equals(Types.DateTime) ? arg : new NewOperator(Types.DateTime, arg);
 		case "varchar":
 		case "character":	
 		case "text":
@@ -178,10 +180,11 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 		String dbType = col.getDbType();
 		switch(dbType) {
 		case "date":
-			e = obj.callMethod(ClsDateTime.format, new PhpStringLiteral("Y-m-d"));
+			e = obj.callMethod(ClsDateTime.format, dateFormatExpr);
 			break;
 		case "datetime":
-			e = obj.callMethod(ClsDateTime.format, new PhpStringLiteral("Y-m-d H:i:s"));
+		case "timestamp":
+			e = obj.callMethod(ClsDateTime.format, dateTimeFormatExpr);
 			break;
 		case "varchar":
 		case "character":	
@@ -212,6 +215,8 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 	public Method getBeanRepositoryRollbackTransactionMethod() {
 		return new MysqliBeanRepositoryRollbackTransactionMethod();
 	}
+
+	
 
 
 	

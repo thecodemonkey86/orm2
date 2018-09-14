@@ -1,6 +1,8 @@
 package php.core;
 
-public class PhpArray extends PhpPseudoGenericClass {
+import php.core.expression.IArrayAccessible;
+
+public class PhpArray extends PhpPseudoGenericClass implements IArrayAccessible{
 
 	private Type keyType;
 	
@@ -20,6 +22,11 @@ public class PhpArray extends PhpPseudoGenericClass {
 	@Override
 	public String toDeclarationString() {
 		return "array";
+	}
+
+	@Override
+	public Type getAccessType() {
+		return element;
 	}
 
 }

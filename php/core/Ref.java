@@ -1,8 +1,9 @@
 package php.core;
 
+import php.core.expression.IArrayAccessible;
 import php.core.method.Method;
 
-public class Ref extends Type {
+public class Ref extends Type implements IArrayAccessible{
 
 	Type base;
 	
@@ -67,6 +68,15 @@ public class Ref extends Type {
 			return new NullableCls((AbstractPhpCls) base, ((AbstractPhpCls) base).getNamespace());
 		}
 		return new NullableType(base);
+	}
+
+
+	@Override
+	public Type getAccessType() {
+		if(base instanceof IArrayAccessible) {
+			return ((IArrayAccessible)base).getAccessType();
+		}
+		throw new RuntimeException("type is not ArrayAccessible: "+base);
 	}
 }
 

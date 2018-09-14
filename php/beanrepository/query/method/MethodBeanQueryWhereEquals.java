@@ -37,9 +37,9 @@ public class MethodBeanQueryWhereEquals extends Method {
 		if(c.isNullable()) {
 			IfBlock ifNull = _if(pValue.isNull());
 			ifNull.thenBlock()._return( _this().callMethod(ClsBaseBeanQuery.where, new InlineIfExpression(aSqlQuery.callMethod(ClsSqlQuery.getMode)._equals(Types.SqlQuery.accessConstant(ClsSqlQuery.MODE_SELECT)), new PhpStringLiteral("b1." + c.getEscapedName()+" is null"), new PhpStringLiteral(c.getEscapedName()+" is null")) ) );
-			ifNull.elseBlock()._return( _this().callMethod(ClsBaseBeanQuery.where, new InlineIfExpression(aSqlQuery.callMethod(ClsSqlQuery.getMode)._equals(Types.SqlQuery.accessConstant(ClsSqlQuery.MODE_SELECT)), new PhpStringLiteral("b1." + c.getEscapedName()+"=?"),new PhpStringLiteral(c.getEscapedName()+"=?")), BeanCls.getTypeMapper().getConvertTypeExpression(pValue, c) ) );
+			ifNull.elseBlock()._return( _this().callMethod(ClsBaseBeanQuery.where, new InlineIfExpression(aSqlQuery.callMethod(ClsSqlQuery.getMode)._equals(Types.SqlQuery.accessConstant(ClsSqlQuery.MODE_SELECT)), new PhpStringLiteral("b1." + c.getEscapedName()+"=?"),new PhpStringLiteral(c.getEscapedName()+"=?")), BeanCls.getTypeMapper().getConvertSqlParamExpression(pValue, c) ) );
 		} else {
-			_return( _this().callMethod(ClsBaseBeanQuery.where, new PhpStringLiteral( "b1." + c.getEscapedName()+"=?"), BeanCls.getTypeMapper().getConvertTypeExpression(pValue, c)  ));
+			_return( _this().callMethod(ClsBaseBeanQuery.where, new InlineIfExpression(aSqlQuery.callMethod(ClsSqlQuery.getMode)._equals(Types.SqlQuery.accessConstant(ClsSqlQuery.MODE_SELECT)),new PhpStringLiteral( "b1." + c.getEscapedName()+"=?"),new PhpStringLiteral(c.getEscapedName()+"=?")), BeanCls.getTypeMapper().getConvertSqlParamExpression(pValue, c)  ));
 		}
 		
 	}

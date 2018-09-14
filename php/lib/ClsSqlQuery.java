@@ -29,7 +29,7 @@ public class ClsSqlQuery extends PhpCls{
 	public static final String getMode = "getMode";
 	
 	public ClsSqlQuery() {
-		super("SqlQuery","Sql\\Query");
+		super("SqlQuery","PhpLibs\\Sql\\Query");
 		
 		addMethod(new LibMethod(this, "andWhereIn"));
 		addMethod(new LibMethod(this, "whereIn"));

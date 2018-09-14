@@ -138,5 +138,5 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 	public Method getBeanRepositoryRollbackTransactionMethod() {
 		return new PgBeanRepositoryRollbackTransactionMethod();
 	}
-	
+
 }
