@@ -9,9 +9,12 @@ import cpp.core.Param;
 import cpp.core.QString;
 import cpp.core.instruction.IfBlock;
 import cpp.lib.ClsAbstractBeanQuery;
+import cpp.lib.ClsQString;
 import cpp.lib.ClsQVariant;
 import database.column.Column;
+import cpp.core.expression.Expressions;
 import cpp.core.Type;
+import cpp.core.expression.InlineIfExpression;
 
 public class MethodBeanQueryWhereEquals extends Method{
 	BeanCls bean;
@@ -27,12 +30,13 @@ public class MethodBeanQueryWhereEquals extends Method{
 
 	@Override
 	public void addImplementation() {
+		//new InlineIfExpression(Expressions.not(_this().accessAttr(ClsBeanQuery.selectFields).callMethod(ClsQString.isEmpty)), 
 		if(c.isNullable()) {
 			IfBlock ifNull = _if(pValue.callMethod(Nullable.isNull));
-			ifNull.thenBlock()._return( _this().callMethod(ClsAbstractBeanQuery.where, QString.fromStringConstant("b1." + c.getEscapedName()+" is null")) );
-			ifNull.elseBlock()._return( _this().callMethod(ClsAbstractBeanQuery.where, QString.fromStringConstant("b1." + c.getEscapedName()+"=?"), Types.QVariant.callStaticMethod(ClsQVariant.fromValue,  pValue.callMethod(Nullable.val) )) );
+			ifNull.thenBlock()._return( _this().callMethod(ClsAbstractBeanQuery.where, new InlineIfExpression(Expressions.not(_this().accessAttr(ClsBeanQuery.selectFields).callMethod(ClsQString.isEmpty)),QString.fromStringConstant("b1." + c.getEscapedName()+" is null"),QString.fromStringConstant(c.getEscapedName()+" is null"))) );
+			ifNull.elseBlock()._return( _this().callMethod(ClsAbstractBeanQuery.where, new InlineIfExpression(Expressions.not(_this().accessAttr(ClsBeanQuery.selectFields).callMethod(ClsQString.isEmpty)), QString.fromStringConstant("b1." + c.getEscapedName()+"=?"),QString.fromStringConstant(c.getEscapedName()+"=?")), Types.QVariant.callStaticMethod(ClsQVariant.fromValue,  pValue.callMethod(Nullable.val) )) );
 		} else {
-			_return( _this().callMethod(ClsAbstractBeanQuery.where, QString.fromStringConstant( "b1." + c.getEscapedName()+"=?"), Types.QVariant.callStaticMethod(ClsQVariant.fromValue, pValue) ));
+			_return( _this().callMethod(ClsAbstractBeanQuery.where, new InlineIfExpression(Expressions.not(_this().accessAttr(ClsBeanQuery.selectFields).callMethod(ClsQString.isEmpty)),QString.fromStringConstant( "b1." + c.getEscapedName()+"=?"),QString.fromStringConstant( c.getEscapedName()+"=?")), Types.QVariant.callStaticMethod(ClsQVariant.fromValue, pValue) ));
 		}
 		
 	}

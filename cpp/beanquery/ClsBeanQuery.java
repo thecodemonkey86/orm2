@@ -61,6 +61,7 @@ import database.column.Column;
 
 public class ClsBeanQuery extends Cls {
 
+	public static final String selectFields = "selectFields";
 	
 	public ClsBeanQuery(BeanCls cls) {
 		super(cls.getName()+ "BeanQuery");
@@ -84,7 +85,7 @@ public class ClsBeanQuery extends Cls {
 		addIncludeLib(Types.QVariant.getName());
 		addAttr(new Attr(Types.BeanRepository.toSharedPtr(), "repository"));
 		addAttr(new Attr(Types.QString,"mainBeanAlias"));
-		addAttr(new Attr(Types.QString,"selectFields"));
+		addAttr(new Attr(Types.QString,selectFields));
 		addAttr(new Attr(Types.QString,"fromTable"));
 		addAttr(new Attr(Types.QStringList,"orderByExpressions"));
 		addAttr(new Attr(Types.QStringList,"joinTables"));
