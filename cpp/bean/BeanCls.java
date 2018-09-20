@@ -195,7 +195,7 @@ public class BeanCls extends Cls {
 			addForwardDeclaredClass((Cls) attr.getElementType());
 			addMethod(new MethodManyAttrGetter(attr));
 			addMethod(new MethodAddRelatedBean(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
-			addMethod(new MethodAddRelatedBean(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
+			//addMethod(new MethodAddRelatedBean(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
 			addMethod(new MethodAddRelatedBeanInternal(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
 			addMethod(new MethodAddRelatedBeanInternal(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
 			addMethod(new MethodGetManyRelatedAtIndex(attr, r));

@@ -126,7 +126,7 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 		case "datetime":			
 		case "timestamp":
 			if(nullable) {
-				return new InlineIfExpression(arg.isNull(), Expressions.Null, new NewOperator(Types.DateTime, arg),Types.DateTime);
+				return new InlineIfExpression(arg.isNull(), Expressions.Null, new NewOperator(Types.DateTime, arg));
 			}
 			return arg.getType().equals(Types.DateTime) ? arg : new NewOperator(Types.DateTime, arg);
 		case "varchar":

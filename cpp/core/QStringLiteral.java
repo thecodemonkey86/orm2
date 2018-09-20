@@ -4,7 +4,8 @@ import codegen.CodeUtil;
 import cpp.core.expression.StringConstant;
 
 public class QStringLiteral extends QString {
-
+	//private boolean argCalled;
+	
 	public QStringLiteral(String strConstant) {
 		super(new StringConstant(strConstant));
 	}
@@ -32,4 +33,10 @@ public class QStringLiteral extends QString {
 		
 	
 	}
+	
+//	@Override
+//	public MethodCall arg(Expression...args ) {
+//		argCalled = true;
+//		return super.arg(args);
+//	}
 }

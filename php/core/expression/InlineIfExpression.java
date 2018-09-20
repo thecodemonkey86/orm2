@@ -15,17 +15,17 @@ public class InlineIfExpression extends Expression {
 		this.condition = condition;
 		this.ifExpression = ifExpression;
 		this.elseExpression = elseExpression;
-		this.type = ifExpression.getType();
+		this.type = ifExpression.getType() != null ? ifExpression.getType() : elseExpression.getType() ;		
 	}
 	
-	public InlineIfExpression(Expression condition, Expression ifExpression,
+	/*public InlineIfExpression(Expression condition, Expression ifExpression,
 			Expression elseExpression,Type type) {
 		super();
 		this.condition = condition;
 		this.ifExpression = ifExpression;
 		this.elseExpression = elseExpression;
 		this.type = type;
-	}
+	}*/
 
 	@Override
 	public String toString() {

@@ -22,6 +22,7 @@ import cpp.core.expression.Expressions;
 import cpp.core.expression.Var;
 import cpp.core.instruction.DoWhile;
 import cpp.core.instruction.IfBlock;
+import cpp.lib.ClsQVariant;
 import cpp.lib.ClsSqlQuery;
 import database.column.Column;
 import database.relation.AbstractRelation;
@@ -172,10 +173,10 @@ public class MethodGetById extends Method {
 			BeanCls foreignCls = Beans.get(r.getDestTable()); 
 			if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
 				Var pkSet = ifQSqlQueryNext.thenBlock()._declare(Types.qset(foreignCls.getStructPk()), "pkSet"+r.getAlias());
-				
-				Var pk = doWhileQSqlQueryNext._declare(foreignCls.getStructPk(), "pk"+r.getAlias());
+				IfBlock ifNotPkForeignIsNull= doWhileQSqlQueryNext._if(Expressions.not( rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getFirstColumn().getName())).callMethod(ClsQVariant.isNull)));
+				Var pk = ifNotPkForeignIsNull.thenBlock()._declare(foreignCls.getStructPk(), "pk"+r.getAlias());
 				for(Column colPk : r.getDestTable().getPrimaryKey().getColumns()) {
-					doWhileQSqlQueryNext._assign(
+					ifNotPkForeignIsNull.thenBlock()._assign(
 							pk.accessAttr(colPk.getCamelCaseName()), 
 							
 							rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType())));
@@ -183,7 +184,7 @@ public class MethodGetById extends Method {
 				
 				
 //				IfBlock ifNotContains = 
-						doWhileQSqlQueryNext._if(Expressions.not(pkSet.callMethod("contains", pk)))
+				ifNotPkForeignIsNull.thenBlock()._if(Expressions.not(pkSet.callMethod("contains", pk)))
 						.addIfInstr(pkSet.callMethodInstruction("insert", pk))
 						.addIfInstr(b1.callMethodInstruction(BeanCls.getRelatedBeanMethodName(r),_this().callGetByRecordMethod(foreignCls, rec, QString.fromStringConstant(r.getAlias()))));
 //						.addIfInstr(b1.accessAttr(CodeUtil2.plural(r.getDestTable().getCamelCaseName())).callMethodInstruction("append",  _this().callGetByRecordMethod(foreignCls, rec, QString.fromStringConstant(r.getAlias()))));
@@ -192,16 +193,16 @@ public class MethodGetById extends Method {
 				Column colPk = r.getDestTable().getPrimaryKey().getColumns().get(0);
 				Type type = BeanCls.getDatabaseMapper().columnToType(colPk);
 
-				IfBlock ifNotRecValueIsNull = doWhileQSqlQueryNext._if(Expressions.not( rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+colPk.getName())).callMethod("isNull")));
+				IfBlock ifNotPkForeignIsNull = doWhileQSqlQueryNext._if(Expressions.not( rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+colPk.getName())).callMethod(ClsQVariant.isNull)));
 				
 				Var pkSet = ifQSqlQueryNext.thenBlock()._declare(Types.qset(type), "pkSet"+r.getAlias());
-				Var pk = ifNotRecValueIsNull.thenBlock()._declare(
+				Var pk = ifNotPkForeignIsNull.thenBlock()._declare(
 						type, 
 						"pk"+r.getAlias(), 
 						rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType()))
 						
 						);
-				ifNotRecValueIsNull.thenBlock()._if(Expressions.not(pkSet.callMethod("contains", pk)))
+				ifNotPkForeignIsNull.thenBlock()._if(Expressions.not(pkSet.callMethod("contains", pk)))
 					.addIfInstr(pkSet.callMethodInstruction("insert", pk))
 					.addIfInstr(b1.callMethodInstruction(BeanCls.getRelatedBeanMethodName(r),_this().callGetByRecordMethod(foreignCls, rec, QString.fromStringConstant(r.getAlias()))));
 //						.addIfInstr(b1.accessAttr(PgCppUtil.getManyRelationDestAttrName(r))

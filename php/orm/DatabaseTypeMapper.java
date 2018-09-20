@@ -33,6 +33,9 @@ public abstract class DatabaseTypeMapper {
 	
 	public Expression getConvertSqlParamExpression(Expression e,String dbType,boolean nullable) {
 		Expression expr = getConvertTypeExpression(e, dbType, nullable);
+		if(expr.getType() == null) {
+			throw new NullPointerException();
+		}
 		if(expr.getType().equals(Types.DateTime))  {
 			return Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(Types.DateTime), expr);
 		}

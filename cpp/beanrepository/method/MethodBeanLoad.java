@@ -24,6 +24,7 @@ import cpp.core.expression.Var;
 import cpp.core.instruction.IfBlock;
 import cpp.core.instruction.While;
 import cpp.lib.ClsQSqlQuery;
+import cpp.lib.ClsQVariant;
 import cpp.lib.ClsSql;
 import database.column.Column;
 import database.relation.AbstractRelation;
@@ -175,18 +176,20 @@ public class MethodBeanLoad extends Method {
 		for(OneToManyRelation r:oneToManyRelations) {
 			Var pkSet=pkSets.get(r.getAlias());
 			BeanCls foreignCls = Beans.get(r.getDestTable()); 
+			
+			
 			if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
-				
-				Var pk = doWhileQSqlQueryNext._declare(foreignCls.getStructPk(), "pk"+r.getAlias());
+				IfBlock ifNotPkForeignIsNull= doWhileQSqlQueryNext._if(Expressions.not( rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getFirstColumn().getName())).callMethod(ClsQVariant.isNull)));
+				Var pk = ifNotPkForeignIsNull.thenBlock()._declare(foreignCls.getStructPk(), "pk"+r.getAlias());
 				for(Column colPk : r.getDestTable().getPrimaryKey().getColumns()) {
-					doWhileQSqlQueryNext._assign(
+					ifNotPkForeignIsNull.thenBlock()._assign(
 							pk.accessAttr(colPk.getCamelCaseName()), 
 							
 							rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType())));
 				}
 				
 //				IfBlock ifNotContains = 
-						doWhileQSqlQueryNext._if(Expressions.not(pkSet.callMethod("contains", pk)))
+				ifNotPkForeignIsNull.thenBlock()._if(Expressions.not(pkSet.callMethod("contains", pk)))
 						.addIfInstr(pkSet.callMethodInstruction("insert", pk))
 						.addIfInstr(pBean.callMethodInstruction(MethodAddRelatedBeanInternal.getMethodName(r) , _this().callMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias()))));
 				
@@ -195,6 +198,8 @@ public class MethodBeanLoad extends Method {
 				Column colPk = r.getDestTable().getPrimaryKey().getColumns().get(0);
 				Expression recValueColPk = rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+colPk.getName()));
 				Var pk = doWhileQSqlQueryNext._declare(recValueColPk.getType(), "pk"+r.getAlias(),recValueColPk);
+				
+				IfBlock ifNotPkForeignIsNull= doWhileQSqlQueryNext._if(Expressions.not(recValueColPk.callMethod(ClsQVariant.isNull)));
 //				Type type = BeanCls.getDatabaseMapper().columnToType(colPk);
 				
 //				Var pk = doWhileQSqlQueryNext._declare(
@@ -205,7 +210,7 @@ public class MethodBeanLoad extends Method {
 //						);
 				
 				
-				doWhileQSqlQueryNext._if(
+				ifNotPkForeignIsNull.thenBlock()._if(
 						Expressions.and(
 							Expressions.not(pk.callMethod("isNull")),
 							Expressions.not(pkSet.callMethod("contains", pk.callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType()))))
