@@ -208,6 +208,18 @@ public class BeanCls extends PhpCls {
 			}
 
 		}
+		
+		addMethod(new MethodGetPrimaryKeyFields(this));
+		
+	}
+
+	public BeanCls(Table tbl,List<OneToManyRelation> manyRelations,List<OneRelation> oneRelations, List<ManyRelation> manyToManyRelations) {
+		super(CodeUtil2.uc1stCamelCase(tbl.getName()), beanNamespace);
+		this.tbl = tbl;
+		this.oneToManyRelations= manyRelations;
+		this.oneRelations = oneRelations;
+		this.manyRelations = manyToManyRelations;
+		
 		if (tbl.getPrimaryKey().isMultiColumn()) {
 			pkType = new PkMultiColumnType("Pk"+tbl.getUc1stCamelCaseName(),beanNamespace+"\\Pk", tbl);
 			
@@ -226,17 +238,8 @@ public class BeanCls extends PhpCls {
 			addAttr(attrPrev);
 			addMethod(new MethodAttrGetter(attrPrev, false));
 			pkType =typeMapper.columnToType(col);
+			
 		}
-		addMethod(new MethodGetPrimaryKeyFields(this));
-		
-	}
-
-	public BeanCls(Table tbl,List<OneToManyRelation> manyRelations,List<OneRelation> oneRelations, List<ManyRelation> manyToManyRelations) {
-		super(CodeUtil2.uc1stCamelCase(tbl.getName()), beanNamespace);
-		this.tbl = tbl;
-		this.oneToManyRelations= manyRelations;
-		this.oneRelations = oneRelations;
-		this.manyRelations = manyToManyRelations;
 	}
 
 
@@ -512,6 +515,10 @@ public class BeanCls extends PhpCls {
 	}
 	
 	public Type getPkType() {
+		if(pkType == null) {
+			System.out.println(getName());
+			throw new NullPointerException();
+		}
 		return pkType;
 	}
 }
