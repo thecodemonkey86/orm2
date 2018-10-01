@@ -9,6 +9,9 @@ import cpp.core.expression.BoolExpression;
 import cpp.core.expression.CreateObjectExpression;
 import cpp.core.expression.DoubleExpression;
 import cpp.core.expression.Expression;
+import cpp.core.expression.Int16Expression;
+import cpp.core.expression.Int64Expression;
+import cpp.core.expression.Int8Expression;
 import cpp.core.expression.IntExpression;
 import cpp.lib.ClsQVariant;
 import database.column.Column;
@@ -32,7 +35,8 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 			return CoreTypes.QVariant.getMethod("toString");
 		case "date":
 			return CoreTypes.QVariant.getMethod("toDate");
-		case "timestamp with time zone":
+		case "timestamp":
+		case "datetime":
 			return CoreTypes.QVariant.getMethod("toDateTime");
 		case "double precision":
 		case "decimal":
@@ -110,10 +114,13 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 		if (!nullable){
 			switch(dbType) {
 			case "int":
-			case "bigint":
-			case "smallint":
-			case "tinyint":
 				return new IntExpression(0);
+			case "bigint":
+				return new Int64Expression(0L);
+			case "smallint":
+				return new Int16Expression((short) 0);
+			case "tinyint":
+				return new Int8Expression((byte) 0);
 			case "varchar":
 			case "character":	
 			case "char":	
@@ -133,7 +140,7 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 				return new CreateObjectExpression(Types.QByteArray);	
 			case "boolean":
 				return BoolExpression.FALSE;
-			case "timestamp with time zone":
+			case "datetime":
 				return new CreateObjectExpression(Types.QDateTime);
 			default:
 				return new CreateObjectExpression(CoreTypes.QVariant);

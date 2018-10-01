@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import database.Database;
+import database.DbCredentials;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
@@ -25,6 +26,8 @@ public class OrmConfig {
 	protected Map<Table,List<ManyRelation>> manyToManyRelations;
 	
 	protected Database database;
+	private DbCredentials credentials;
+	
 	private boolean enableStacktrace = true;
 	
 	public boolean isEnableStacktrace() {
@@ -180,4 +183,11 @@ public class OrmConfig {
 		return basePath != null;
 	}
 	
+	public DbCredentials getCredentials() {
+		return credentials;
+	}
+	
+	public void setCredentials(DbCredentials credentials) {
+		this.credentials = credentials;
+	}
 }

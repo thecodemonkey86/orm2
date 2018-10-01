@@ -3,23 +3,19 @@ package database;
 import java.util.Properties;
 
 public class FirebirdCredentials extends DbCredentials{
-	protected String user, password, host, file, charSet;
+	protected String user, host, file, charSet;
 	
 	protected int port;
 	
-	public FirebirdCredentials(String user, String password, String host, String file, int port, String charSet, Database db) {
+	public FirebirdCredentials(String user, String host, String file, int port, String charSet, Database db) {
 		super(db);
-		this.user = user;
-		this.password = password;
+		this.user = user;		
 		this.host = host;
 		this.port = port;
 		this.file = file;
 		this.charSet = charSet;
 	}
 
-	public String getPassword() {
-		return password;
-	}
 	
 	public String getUser() {
 		return user;
@@ -31,7 +27,7 @@ public class FirebirdCredentials extends DbCredentials{
 		// props.setProperty("password", "postgres");
 		props.setProperty("charSet", charSet);
 		props.setProperty("user", user);
-		props.setProperty("password", password);
+		props.setProperty("password", getPassword());
 		return props;
 	}
 

@@ -8,12 +8,14 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 import config.OrmConfig;
+import config.SetPassConfigReader;
 import config.php.PhpConfigReader;
 import config.php.PhpOrmConfig;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
 import database.table.Table;
+import io.PasswordManager;
 import php.Php;
 import php.bean.BeanCls;
 import php.bean.Beans;
@@ -179,7 +181,27 @@ public class PhpOrm extends OrmCommon {
 		if (args.length == 0) {
 			throw new Exception("Please provide xml config file");
 		}
-		Path xmlFile = Paths.get(args[0]);
+		
+		PasswordManager.setSuperPassword(new byte[] {
+				0x7,
+				58,
+				1,
+				0xf,
+				0x7f,
+				0x8,
+				65,
+				0x58
+		});
+		
+		Path xmlFile = Paths.get(args[args.length-1]);
+		
+		boolean setPass= args[0].equals("--setpass");
+		if(setPass) {
+			SetPassConfigReader cfgReader = new SetPassConfigReader();
+			DefaultXMLReader.read(xmlFile, cfgReader);
+			PasswordManager.saveToFile(cfgReader.getCredentials(), args[1] );
+			return;
+		}
 		PhpConfigReader cfgReader = new PhpConfigReader(xmlFile.getParent());
 		DefaultXMLReader.read(xmlFile, cfgReader);
 		PhpOrmConfig cfg = cfgReader.getCfg();

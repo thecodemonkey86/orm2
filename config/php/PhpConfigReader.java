@@ -74,4 +74,5 @@ public class PhpConfigReader extends ConfigReader{
 	public PhpOrmConfig getCfg() {
 		return (PhpOrmConfig) cfg;
 	}
+
 }

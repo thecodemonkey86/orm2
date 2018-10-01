@@ -33,6 +33,7 @@ import database.relation.OneToManyRelation;
 import database.relation.PrimaryKey;
 import database.table.MappingTable;
 import database.table.Table;
+import io.PasswordManager;
 import util.Pair;
 
 public class ConfigReader implements ContentHandler {
@@ -41,7 +42,6 @@ public class ConfigReader implements ContentHandler {
 	protected OrmConfig cfg;
 	
 	protected LinkedList<String> tags;
-
 	private enum Section {
 		ENTITIES, MAPPING_TABLES, ONE_TO_MANY_RELATIONS, MANY_TO_MANY_RELATIONS, ONE_RELATIONS
 	}
@@ -138,29 +138,39 @@ public class ConfigReader implements ContentHandler {
 				Database database=null; 
 				DbCredentials credentials;
 				
+				if(atts.getValue("password") != null) {
+					throw new IOException("Remove password from XML");
+				}
+				
 				if (cfg.isEnginePostgres()) {
 					Class.forName("org.postgresql.Driver");
 					database = new PgDatabase(atts.getValue("name"), atts.getValue("schema"));
-					credentials = new PgCredentials(atts.getValue("user"), atts.getValue("password"), atts.getValue("host"),atts.getValue("port") != null ? Integer.parseInt(atts.getValue("port")) : 5432, database);
+					credentials = new PgCredentials(atts.getValue("user"), atts.getValue("host"),atts.getValue("port") != null ? Integer.parseInt(atts.getValue("port")) : 5432, database);
 					
 				} else if (cfg.isEngineMysql()) {
 					database = new MySqlDatabase(atts.getValue("name"));
-					credentials = new MySqlCredentials(atts.getValue("user"), atts.getValue("password"), atts.getValue("host"), atts.getValue("port") != null ? Integer.parseInt(atts.getValue("port")) : 3306, database);
+					credentials = new MySqlCredentials(atts.getValue("user"), atts.getValue("host"), atts.getValue("port") != null ? Integer.parseInt(atts.getValue("port")) : 3306, database);
 					
 				} else if (cfg.isEngineFirebird()) {
 					Class.forName("org.firebirdsql.jdbc.FBDriver");
 					database = new FirebirdDatabase(atts.getValue("name"));
-					credentials = new FirebirdCredentials(atts.getValue("user"), atts.getValue("password"), atts.getValue("host"), atts.getValue("file"),atts.getValue("port") != null ? Integer.parseInt(atts.getValue("port")) : 23053, atts.getValue("charSet")  != null ?  atts.getValue("charSet")  : "UTF-8", database);
+					credentials = new FirebirdCredentials(atts.getValue("user"), atts.getValue("host"), atts.getValue("file"),atts.getValue("port") != null ? Integer.parseInt(atts.getValue("port")) : 23053, atts.getValue("charSet")  != null ?  atts.getValue("charSet")  : "UTF-8", database);
 				} else if (cfg.isEngineSqlite()) {
 					Class.forName("org.sqlite.JDBC");
 					database = new SqliteDatabase();
-					credentials = new SqliteCredentials(Paths.get(atts.getValue("file")) ,atts.getValue("password") , database);
+					credentials = new SqliteCredentials(Paths.get(atts.getValue("file")) , database);
 						
 				} else {
 					throw new IOException(
 							"Database engine \"" + atts.getValue("engine") + "\" is currently not supported");
 				}
-				cfg.setDatabase(database);
+				
+			
+				String password = PasswordManager.loadFromFile(credentials);
+				if(password == null) {
+					throw new IOException("Password not set");
+				}
+				credentials.setPassword(password);
 				
 				Properties props = credentials.getProperties();
 				props.setProperty("charSet",atts.getValue("charset") == null ? "utf8" :atts.getValue("charset"));
@@ -168,6 +178,10 @@ public class ConfigReader implements ContentHandler {
 				// props.setProperty("user", "postgres");
 				
 				conn = DriverManager.getConnection(credentials.getConnectionUrl(), credentials.getProperties());
+			
+				cfg.setDatabase(database);
+				cfg.setCredentials(credentials);
+			
 				
 				break;
 			case "output":
