@@ -2,7 +2,6 @@ package cpp.bean.method;
 
 import util.StringUtil;
 import cpp.Types;
-import cpp.bean.BeanCls;
 import cpp.bean.Nullable;
 import cpp.core.Attr;
 import cpp.core.ConstRef;
@@ -21,7 +20,7 @@ public class MethodColumnAttrSetter extends Method{
 	Attr a;
 	Column col;
 	
-	public MethodColumnAttrSetter(BeanCls cls, Column col, Attr a) {
+	public MethodColumnAttrSetter( Column col, Attr a) {
 		super(Public, Types.Void, getMethodName(col));
 		this.a=a;
 		if (col.isNullable()) {

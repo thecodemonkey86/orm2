@@ -29,6 +29,15 @@ public class OrmConfig {
 	private DbCredentials credentials;
 	
 	private boolean enableStacktrace = true;
+	private boolean jsonMode;
+	
+	public boolean isJsonMode() {
+		return jsonMode;
+	}
+	
+	public void setJsonMode(boolean jsonMode) {
+		this.jsonMode = jsonMode;
+	}
 	
 	public boolean isEnableStacktrace() {
 		return enableStacktrace;

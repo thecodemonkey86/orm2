@@ -64,6 +64,7 @@ public class ConfigReader implements ContentHandler {
 	private PrimaryKey overrideColsPrimaryKey;
 	private String[] enableRawValueColumns;
 	
+	
 	public OrmConfig getCfg() {
 		return cfg;
 	}
@@ -192,6 +193,7 @@ public class ConfigReader implements ContentHandler {
 				cfg.setBasePath(basePath);
 				cfg.setModelPath(atts.getValue("modelPath"));
 				cfg.setRepositoryPath(atts.getValue("repositoryPath"));
+				cfg.setJsonMode(atts.getValue("mode") != null && atts.getValue("mode").equals("json") );
 				break;
 			case "entities":
 				section = Section.ENTITIES;

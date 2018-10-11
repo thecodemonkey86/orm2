@@ -1,61 +1,36 @@
-package cpp.bean;
+package cpp.jsonentity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import codegen.CodeUtil;
-import util.CodeUtil2;
-import util.StringUtil;
-import cpp.Types;
 import cpp.CoreTypes;
-import cpp.bean.method.BeanConstructor;
-import cpp.bean.method.BeanDestructor;
+import cpp.Types;
+import cpp.bean.ManyAttr;
+import cpp.bean.OneAttr;
+import cpp.bean.StructPkEqOperator;
 import cpp.bean.method.MethodAddInsertParamForRawExpression;
-import cpp.bean.method.MethodAddManyToManyRelatedBean;
-import cpp.bean.method.MethodAddManyToManyRelatedBeanInternal;
 import cpp.bean.method.MethodAddRelatedBean;
 import cpp.bean.method.MethodAddRelatedBeanInternal;
-import cpp.bean.method.MethodAddRelatedTableJoins;
 import cpp.bean.method.MethodAttrGetter;
 import cpp.bean.method.MethodColumnAttrSetNull;
 import cpp.bean.method.MethodColumnAttrSetter;
 import cpp.bean.method.MethodColumnAttrSetterInternal;
-import cpp.bean.method.MethodCopyFields;
-import cpp.bean.method.MethodGetAllSelectFields;
 import cpp.bean.method.MethodGetFieldName;
 import cpp.bean.method.MethodGetFieldNameAlias;
-import cpp.bean.method.MethodGetInsertFields;
-import cpp.bean.method.MethodGetInsertParams;
-import cpp.bean.method.MethodGetInsertValuePlaceholders;
 import cpp.bean.method.MethodGetLastItem;
-import cpp.bean.method.MethodGetLimitQueryString;
 import cpp.bean.method.MethodGetManyRelatedAtIndex;
 import cpp.bean.method.MethodGetManyRelatedCount;
-import cpp.bean.method.MethodGetPrimaryKeyColumns;
-import cpp.bean.method.MethodGetSelectFields;
-import cpp.bean.method.MethodGetTableName;
-import cpp.bean.method.MethodGetTableNameAlias;
-import cpp.bean.method.MethodGetTableNameInternal;
-import cpp.bean.method.MethodGetUpdateCondition;
-import cpp.bean.method.MethodGetUpdateConditionParams;
-import cpp.bean.method.MethodGetUpdateFields;
 import cpp.bean.method.MethodIsNullOrEmpty;
 import cpp.bean.method.MethodManyAttrGetter;
-import cpp.bean.method.MethodOneRelationAttrSetter;
-import cpp.bean.method.MethodOneRelationBeanIsNull;
-import cpp.bean.method.MethodQHashBean;
-import cpp.bean.method.MethodQHashBeanSharedPtr;
 import cpp.bean.method.MethodQHashPkStruct;
 import cpp.bean.method.MethodRemoveAllManyRelatedBeans;
-import cpp.bean.method.MethodRemoveManyToManyRelatedBean;
 import cpp.bean.method.MethodReplaceAllManyRelatedBeans;
 import cpp.bean.method.MethodSetAutoIncrementId;
 import cpp.bean.method.MethodToggleAddRemoveRelatedBean;
-import cpp.bean.method.MethodUnload;
 import cpp.core.Attr;
 import cpp.core.Cls;
 import cpp.core.Constructor;
-import cpp.core.Destructor;
 import cpp.core.Method;
 import cpp.core.Operator;
 import cpp.core.Param;
@@ -75,9 +50,27 @@ import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
 import database.table.Table;
+import util.CodeUtil2;
+import util.StringUtil;
 
-public class BeanCls extends Cls {
-
+/**
+ * 
+ * Remote entities with JSON representation
+ *
+ */
+public class JsonEntity extends Cls {
+	protected Table tbl;
+	protected List<OneToManyRelation> oneToManyRelations;
+	protected List<OneRelation> oneRelations;
+	protected List<ManyRelation> manyRelations;
+	public JsonEntity(Table tbl,List<OneToManyRelation> manyRelations,List<OneRelation> oneRelations, List<ManyRelation> manyToManyRelations) {
+		super(CodeUtil2.uc1stCamelCase(tbl.getName()));
+		this.tbl = tbl;		
+		this.oneToManyRelations= manyRelations;
+		this.oneRelations = oneRelations;
+		this.manyRelations = manyToManyRelations;
+	}
+	
 	private static final String BEAN_PARAM_NAME = "bean";
 	public static final String BEGIN_CUSTOM_CLASS_MEMBERS = "/*BEGIN_CUSTOM_CLASS_MEMBERS*/";
 	public static final String END_CUSTOM_CLASS_MEMBERS = "/*END_CUSTOM_CLASS_MEMBERS*/";
@@ -94,9 +87,9 @@ public class BeanCls extends Cls {
 	
 	
 	public static void setModelPath(String modelPath) {
-		BeanCls.modelPath = modelPath;
-		if(!BeanCls.modelPath.endsWith("/")) {
-			BeanCls.modelPath+="/";
+		JsonEntity.modelPath = modelPath;
+		if(!JsonEntity.modelPath.endsWith("/")) {
+			JsonEntity.modelPath+="/";
 		}
 	}
 	
@@ -105,18 +98,18 @@ public class BeanCls extends Cls {
 	}
 	
 	public static void setRepositoryPath(String repositoryPath) {
-		BeanCls.repositoryPath = repositoryPath;
-		if(!BeanCls.repositoryPath.endsWith("/")) {
-			BeanCls.repositoryPath+="/";
+		JsonEntity.repositoryPath = repositoryPath;
+		if(!JsonEntity.repositoryPath.endsWith("/")) {
+			JsonEntity.repositoryPath+="/";
 		}
 	}
 	
 	public static void setTypeMapper(DatabaseTypeMapper mapper) {
-		BeanCls.mapper = mapper;
+		JsonEntity.mapper = mapper;
 	}
 	
 	public static void setDatabase(Database database) {
-		BeanCls.database = database;
+		JsonEntity.database = database;
 	}
 	
 	public static Database getDatabase() {
@@ -127,18 +120,11 @@ public class BeanCls extends Cls {
 		return modelPath;
 	}
 	
-	protected Table tbl;
-	protected List<OneToManyRelation> oneToManyRelations;
-	protected List<OneRelation> oneRelations;
-	protected List<ManyRelation> manyRelations;
+	
 	
 	//protected Struct structPk;
 	protected Type pkType;
-	protected Struct fetchListHelper;
 	
-	public Struct getFetchListHelperCls() {
-		return fetchListHelper;
-	}
 	
 	public void addCustomHeaderCode(String code) {
 		if(this.customHeaderCode == null) {
@@ -161,18 +147,13 @@ public class BeanCls extends Cls {
 		this.customPreprocessorCode.add(code);
 	}
 	private void addAttributes(List<Column> allColumns) {
-		addAttr(new RepositoryAttr());
 		for(OneRelation r:oneRelations) {
 			OneAttr attr = new OneAttr(r);
 				addAttr(attr);
 				addIncludeHeader(attr.getElementType().getName().toLowerCase());
 				addForwardDeclaredClass(attr.getClassType());
 				addMethod(new MethodAttrGetter(attr,true));	
-				addMethod(new MethodOneRelationBeanIsNull(r,true));
-				addMethod(new MethodOneRelationBeanIsNull(r,false));
-//				addMethod(new MethodAttrSetterInternal(this, attr)); 
-				addMethod(new MethodOneRelationAttrSetter( this,r, true)); // internal setter
-				addMethod(new MethodOneRelationAttrSetter( this,r, false)); // public setter
+				
 				if (!r.isPartOfPk()) {
 					Attr attrModified = new Attr(Types.Bool, attr.getName()+"Modified");
 					addAttr(attrModified);
@@ -211,20 +192,7 @@ public class BeanCls extends Cls {
 			addIncludeHeader(attr.getClassType().getIncludeHeader());
 			addForwardDeclaredClass((Cls) attr.getElementType());
 			addMethod(new MethodManyAttrGetter(attr));
-			Attr attrManyToManyAdded = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Added");
-			addAttr(attrManyToManyAdded);
-			addMethod(new MethodAttributeGetter(attrManyToManyAdded));
 			
-			Attr attrManyToManyRemoved = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Removed");
-			addAttr(attrManyToManyRemoved);
-			addMethod(new MethodAttributeGetter(attrManyToManyRemoved));
-			addMethod(new MethodAddManyToManyRelatedBean(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
-			addMethod(new MethodAddManyToManyRelatedBean(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
-			addMethod(new MethodAddManyToManyRelatedBeanInternal(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
-			addMethod(new MethodAddManyToManyRelatedBeanInternal(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
-			
-			addMethod(new MethodRemoveManyToManyRelatedBean(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
-			addMethod(new MethodRemoveAllManyRelatedBeans(r));
 		}
 		
 		Type nullstring = Types.nullable(Types.QString);
@@ -234,7 +202,7 @@ public class BeanCls extends Cls {
 			if (!col.hasOneRelation()
 					
 					) {
-				Attr attr = new Attr(BeanCls.getDatabaseMapper().getTypeFromDbDataType(col.getDbType(), col.isNullable()), col.getCamelCaseName());
+				Attr attr = new Attr(JsonEntity.getDatabaseMapper().getTypeFromDbDataType(col.getDbType(), col.isNullable()), col.getCamelCaseName());
 				addAttr(attr);
 				
 				addMethod(new MethodAttrGetter(attr,false));	
@@ -265,7 +233,7 @@ public class BeanCls extends Cls {
 					addMethod(new MethodAddInsertParamForRawExpression(col));
 				}
 			} else {
-				Attr attr = new Attr(BeanCls.getDatabaseMapper().getTypeFromDbDataType(col.getDbType(), col.isNullable()), col.getCamelCaseName());
+				Attr attr = new Attr(JsonEntity.getDatabaseMapper().getTypeFromDbDataType(col.getDbType(), col.isNullable()), col.getCamelCaseName());
 				addAttr(attr);
 				addMethod(new MethodAttrGetter(attr,false));	
 			}
@@ -288,13 +256,7 @@ public class BeanCls extends Cls {
 //		addAttr(new RepositoryAttr());
 	}
 	
-	public BeanCls(Table tbl,List<OneToManyRelation> manyRelations,List<OneRelation> oneRelations, List<ManyRelation> manyToManyRelations) {
-		super(CodeUtil2.uc1stCamelCase(tbl.getName()));
-		this.tbl = tbl;
-		this.oneToManyRelations= manyRelations;
-		this.oneRelations = oneRelations;
-		this.manyRelations = manyToManyRelations;
-	}
+	
 	
 	/*public void breakPointerCircles() {
 		if (getName().equals("Track")) {
@@ -324,11 +286,7 @@ public class BeanCls extends Cls {
 	}
 	
 	public void addDeclarations() {
-		Constructor c=new BeanConstructor(tbl.getPrimaryKey().isAutoIncrement(),tbl.getColumnsWithoutPrimaryKey());
 		addSuperclass(Types.BaseBean);
-		addConstructor(c); 
-		Destructor d = new BeanDestructor(this);
-		setDestructor(d);
 		
 	//	addPreprocessorInstruction("#define " + getName()+ " "+CodeUtil2.uc1stCamelCase(tbl.getName()));
 		addIncludeHeader("basebean");
@@ -338,79 +296,27 @@ public class BeanCls extends Cls {
 		addIncludeLib("memory");
 		addIncludeHeader("nullable");
 		
-//		Attr aTableName = new Attr(Attr.Public, Types.ConstCharPtr, "TABLENAME",constCharPtr(tbl.getName()),true);
-//		addAttr(aTableName);
-		
-		addMethod(new MethodGetTableName());
-		addMethod(new MethodGetTableNameAlias());
-		addMethod(new MethodGetTableNameInternal());
-		//addIncludeHeader("beanquery");
+
 		addIncludeHeader(repositoryPath + "beanrepository");
-		addForwardDeclaredClass(Types.BeanRepository);
 		addIncludeHeader(Types.orderedSet(null).getHeaderInclude());
 		addAttributes(tbl.getAllColumns());
 		addForwardDeclaredClass(this);
-		List<Column> cols = tbl.getColumns(!tbl.getPrimaryKey().isAutoIncrement());
-		List<Column> allCols = tbl.getColumns(true);
-		addMethod(new MethodGetInsertFields(cols));
-		addMethod(new MethodGetInsertValuePlaceholders(tbl));
-		addMethod(new MethodGetInsertParams(cols));
-		addMethod(new MethodGetUpdateFields(tbl.getColumnsWithoutPrimaryKey(),tbl.getPrimaryKey()));
-		addMethod(new MethodGetUpdateConditionParams(tbl.getPrimaryKey()));
-		addMethod(new MethodGetUpdateCondition(tbl.getPrimaryKey()));
-//		addMethod(new MethodGetById(oneRelations,manyRelations, tbl, this));
-		addMethod(new MethodGetSelectFields(allCols));
-		addMethod(new MethodGetAllSelectFields(allCols));
-//		addMethod(new MethodGetFromRecordStatic(allCols,this));
-//		addMethod(new MethodFetchList(oneRelations, manyRelations, this, tbl.getPrimaryKey()));
-//		addMethod(new MethodCreateQuery(this));
-		addMethod(new MethodAddRelatedTableJoins(this));
-		//addMethod(new MethodBeanLoad(oneRelations, oneToManyRelations,manyRelations, tbl));
-		addMethod(new MethodGetPrimaryKeyColumns(tbl.getPrimaryKey()));
-		addMethod(new MethodGetLimitQueryString(tbl.getPrimaryKey()));
-		addMethod(new MethodUnload(oneRelations, oneToManyRelations, manyRelations));
-		addMethod(new MethodCopyFields(this));
-		//addMethod(new MethodLoad2Levels(oneRelations, oneToManyRelations,manyRelations, tbl));
 		
-//		if (manyRelations.size()>0) {
-//			addMethod(new MethodBeanSave(true));
-//			addMethod(new MethodBeanSave(false));
-//		}
-//		addMethod(new LibMethod(new ClsSql(), "sqlCon"));
-//		addMethod(new MethodCreateNew(this));
-//		addMethod(new MethodLoadCollection(oneRelations, manyRelations, this, tbl.getPrimaryKey()));
 		if (tbl.getPrimaryKey().isMultiColumn()) {
 			addNonMemberMethod(new MethodQHashPkStruct(getStructPk(), tbl.getPrimaryKey()));
 			
 			addNonMemberOperator(new StructPkEqOperator(getStructPk()));
-//			BeanHashFunctions.instance.addMethod(new MethodQHashPkStruct(structPk, tbl.getPrimaryKey()));
-//			BeanHashFunctions.instance.addMethod(new MethodQHashBean(this, tbl.getPrimaryKey()));
-//			BeanHashFunctions.instance.addIncludeHeader(getName().toLowerCase());
-//			BeanHashFunctions.instance.addOperator(new StructPkEqOperator(structPk));
-//			addIncludeHeader("beanhash");
+
 		} else {
 			System.out.println();
 		}
-		addOperator(new BeanEqualsOperator(this, tbl.getPrimaryKey()));
-		addOperator(new BeanSharedPtrEqualsOperator(this, tbl.getPrimaryKey()));
-		addNonMemberMethod(new MethodQHashBean(this, tbl.getPrimaryKey()));
-		addNonMemberMethod(new MethodQHashBeanSharedPtr(this, tbl.getPrimaryKey()));
-		addNonMemberOperator(new NonMemberOperatorBeanEquals(this, tbl.getPrimaryKey()));
-//		addForwardDeclaredClass(Types.BeanRepository.getName());
+	
 	}
 	
-	@Override
-	public void addOperator(Operator op) {
-		super.addOperator(op);
-		op.setParent(this);
-	}
 	
 	@Override
 	public void addMethodImplementations() {
 		
-//		if (!manyRelations.isEmpty()) {
-			fetchListHelper = new FetchListHelperClass(this);
-//		}
 		
 		super.addMethodImplementations();
 		if (nonMemberMethods !=null) {
@@ -430,7 +336,7 @@ public class BeanCls extends Cls {
 	
 	@Override
 	public boolean equals(Object obj) {
-		return obj instanceof BeanCls && name.equals(((BeanCls)obj).name);
+		return obj instanceof JsonEntity && name.equals(((JsonEntity)obj).name);
 	}
 
 	@Override
@@ -456,9 +362,6 @@ public class BeanCls extends Cls {
 //		if (fetchListHelper!=null) {
 //			sb.append(fetchListHelper.toHeaderString()).append('\n').append('\n');
 //		}
-		if (fetchListHelper!=null) {
-			sb.append(fetchListHelper.toSourceString()).append('\n').append('\n');
-		}
 		
 		
 	}
@@ -585,10 +488,6 @@ public class BeanCls extends Cls {
 		return tbl;
 	}
 	
-	public RepositoryAttr getRepositoryAttr() {
-		return (RepositoryAttr) getAttrByName(repository);
-	}
-	
 	public List<ManyRelation> getManyToManyRelations() {
 		return manyRelations;
 	}
@@ -629,18 +528,18 @@ public class BeanCls extends Cls {
 		if (tbl.getPrimaryKey().isMultiColumn()) {
 			pkType = new Struct("Pk"+tbl.getUc1stCamelCaseName()); 
 			for(Column col: tbl.getPrimaryKey().getColumns()) {
-				Attr attrPrev = new Attr(BeanCls.getDatabaseMapper().getTypeFromDbDataType(col.getDbType(), col.isNullable()), col.getCamelCaseName()+"Previous");
+				Attr attrPrev = new Attr(JsonEntity.getDatabaseMapper().getTypeFromDbDataType(col.getDbType(), col.isNullable()), col.getCamelCaseName()+"Previous");
 				addAttr(attrPrev);
-				getStructPk().addAttr(  new Attr(BeanCls.getDatabaseMapper().columnToType(col), col.getCamelCaseName()));
+				getStructPk().addAttr(  new Attr(JsonEntity.getDatabaseMapper().columnToType(col), col.getCamelCaseName()));
 			}
 		} else {
 			if (tbl.getPrimaryKey().getColumns().size()==0) {
 				throw new RuntimeException("pk info missing for "+name);
 			}
 			Column col= tbl.getPrimaryKey().getFirstColumn();
-			Attr attrPrev = new Attr(BeanCls.getDatabaseMapper().getTypeFromDbDataType(col.getDbType(), col.isNullable()), col.getCamelCaseName()+"Previous");
+			Attr attrPrev = new Attr(JsonEntity.getDatabaseMapper().getTypeFromDbDataType(col.getDbType(), col.isNullable()), col.getCamelCaseName()+"Previous");
 			addAttr(attrPrev);
-			pkType =BeanCls.getDatabaseMapper().columnToType(col);
+			pkType =JsonEntity.getDatabaseMapper().columnToType(col);
 		}
 		
 	}
@@ -653,4 +552,5 @@ public class BeanCls extends Cls {
 		CodeUtil.writeLine(sb, "/*API Level " + APILEVEL + "*/\n");
 		
 	}
+
 }

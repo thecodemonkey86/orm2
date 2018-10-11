@@ -1,8 +1,8 @@
 package cpp.bean.method;
 
 import util.StringUtil;
-import cpp.bean.BeanCls;
 import cpp.core.Attr;
+import cpp.core.Cls;
 import cpp.core.Method;
 import cpp.core.expression.BoolExpression;
 import database.column.Column;
@@ -13,7 +13,7 @@ public class MethodColumnAttrSetNull extends Method{
 	Column col;
 	boolean internal;
 	
-	public MethodColumnAttrSetNull(BeanCls cls, Column col, Attr a, boolean internal) {
+	public MethodColumnAttrSetNull(Cls cls, Column col, Attr a, boolean internal) {
 		super(Public, cls.toRawPointer(), getMethodName(a)+(internal?"Internal":""));
 		this.a=a;
 		this.col=col;

@@ -2,7 +2,6 @@ package cpp.bean.method;
 
 import util.StringUtil;
 import cpp.Types;
-import cpp.bean.BeanCls;
 import cpp.core.Attr;
 import cpp.core.ConstRef;
 import cpp.core.Method;
@@ -16,7 +15,7 @@ public class MethodColumnAttrSetterInternal extends Method{
 	Attr a;
 	Column col;
 	
-	public MethodColumnAttrSetterInternal(BeanCls cls, Column col, Attr a) {
+	public MethodColumnAttrSetterInternal(Column col, Attr a) {
 		super(Public, Types.Void, "set"+StringUtil.ucfirst(a.getName())+"Internal");
 		this.a=a;
 		if (col.isNullable()) {
