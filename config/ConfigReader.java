@@ -43,7 +43,7 @@ public class ConfigReader implements ContentHandler {
 	
 	protected LinkedList<String> tags;
 	private enum Section {
-		ENTITIES, MAPPING_TABLES, ONE_TO_MANY_RELATIONS, MANY_TO_MANY_RELATIONS, ONE_RELATIONS
+		ENTITIES, MAPPING_TABLES, ONE_TO_MANY_RELATIONS, MANY_TO_MANY_RELATIONS, ONE_RELATIONS, OPTIONS
 	}
 
 	private Table currentEntityTable;
@@ -386,6 +386,14 @@ public class ConfigReader implements ContentHandler {
 				default:
 					throw new SAXException("Illegal state");
 				}
+			case "options":
+				section = Section.OPTIONS;
+				break;
+			case "renameMethodOnConflict":
+				if(section == Section.OPTIONS) {
+					cfg.addRenameMethod(atts.getValue("class"),atts.getValue("method"), atts.getValue("newName"));
+				}
+				break;
 			default:
 				break;
 			}

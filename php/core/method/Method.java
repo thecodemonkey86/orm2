@@ -194,5 +194,9 @@ public abstract class Method extends InstructionBlock{
 		super._return(ret);
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	
 }

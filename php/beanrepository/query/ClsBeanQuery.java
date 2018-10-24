@@ -8,6 +8,7 @@ import php.beanrepository.query.method.MethodBeanQueryFetch;
 import php.beanrepository.query.method.MethodBeanQueryFetchOne;
 import php.beanrepository.query.method.MethodBeanQueryWhereEquals;
 import php.beanrepository.query.method.MethodBeanQueryWhereIn;
+import php.beanrepository.query.method.MethodBeanQueryWhereIsNull;
 import php.beanrepository.query.method.MethodBeanQueryWhereNotEquals;
 import php.beanrepository.query.method.MethodBeanQueryWhereNotIn;
 import php.beanrepository.query.method.MethodGetAllSelectFields;
@@ -41,6 +42,10 @@ public class ClsBeanQuery extends PhpCls {
 			addMethod(new MethodBeanQueryWhereIn(this, cls, c));
 			addMethod(new MethodBeanQueryWhereNotEquals(this, cls, c));
 			addMethod(new MethodBeanQueryWhereNotIn(this, cls, c));
+			
+			if(c.isNullable()) {
+				addMethod(new MethodBeanQueryWhereIsNull(this, cls, c));
+			}
 		}
 	}
 

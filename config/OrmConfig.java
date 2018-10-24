@@ -14,6 +14,7 @@ import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
 import database.table.MappingTable;
 import database.table.Table;
+import util.Pair;
 
 public class OrmConfig {
 	protected String basePath,pathModel, pathRepository;
@@ -24,7 +25,7 @@ public class OrmConfig {
 	protected Map<Table,List<OneToManyRelation>> oneToManyRelations;
 	protected Map<Table,List<OneRelation>> oneRelations;
 	protected Map<Table,List<ManyRelation>> manyToManyRelations;
-	
+	protected Map<String,List<Pair<String, String>>> renameMethods;
 	protected Database database;
 	private DbCredentials credentials;
 	
@@ -198,5 +199,23 @@ public class OrmConfig {
 	
 	public void setCredentials(DbCredentials credentials) {
 		this.credentials = credentials;
+	}
+	
+	public void addRenameMethod(String cls, String oldname,String newname) {
+		if(renameMethods == null) {
+			renameMethods = new HashMap<>();
+		}
+		if(!renameMethods.containsKey(cls)) {
+			renameMethods.put(cls, new ArrayList<>());
+		}
+		renameMethods.get(cls).add(new Pair<String,String>(oldname, newname));
+	}
+	
+	public List<Pair<String, String>> getRenameMethods(String cls) {
+		return renameMethods.get(cls);
+	}
+
+	public boolean hasRenameMethodNames(String cls) {
+		return renameMethods.containsKey(cls);
 	}
 }

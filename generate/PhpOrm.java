@@ -86,6 +86,9 @@ public class PhpOrm extends OrmCommon {
 			List<OneRelation> oneRelations = cfg.getOneRelations(tbl);
 			List<ManyRelation> manyToManyRelations = cfg.getManyRelations(tbl);
 			BeanCls cls = new BeanCls(tbl, manyRelations, oneRelations, manyToManyRelations);
+			if(cfg.hasRenameMethodNames("BeanCls")) {
+				cls.setRenameMethods(cfg.getRenameMethods("BeanCls"));
+			}
 			Beans.add(cls);
 		}
 

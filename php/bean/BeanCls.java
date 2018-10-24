@@ -59,7 +59,6 @@ public class BeanCls extends PhpCls {
 	static Database database;
 	static DatabaseTypeMapper typeMapper;
 	static PhpCls sqlQueryCls;
-
 	protected static String beanNamespace;
 	protected static String beanRepoNamespace;
 
