@@ -1,5 +1,9 @@
 package php.beanrepository.query.method;
 
+import java.util.ArrayList;
+
+import codegen.CodeUtil;
+import database.column.Column;
 import database.relation.PrimaryKey;
 import php.bean.BeanCls;
 import php.beanrepository.query.ClsBeanQuery;
@@ -68,7 +72,13 @@ public class MethodLimitAndOffset extends Method {
 
 		addInstr(_this().assignAttr("beanQueryLimit", pLimit));
 		addInstr(_this().assignAttr("beanQueryOffset", pOffset));
-		_return(_this().callMethod(ClsBaseBeanQuery.join,varSql,new PhpStringLiteral("_limitjoin."+pk.getFirstColumn().getEscapedName()+" = b1."+pk.getFirstColumn().getEscapedName()),pQueryParams));
+		ArrayList<String> listJoinCondition = new ArrayList<>();
+		
+		for(Column pkCol : pk) {
+			listJoinCondition.add("_limitjoin."+pkCol.getEscapedName()+" = b1."+pkCol.getEscapedName());
+		}
+		
+		_return(_this().callMethod(ClsBaseBeanQuery.join,varSql,new PhpStringLiteral(CodeUtil.concat(listJoinCondition, " AND ")),pQueryParams));
 
 	}
 

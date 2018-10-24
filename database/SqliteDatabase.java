@@ -163,16 +163,16 @@ public class SqliteDatabase extends Database {
 				if(isTokenAt(l, index, "FOREIGN")) {
 					index++;
 					expectToken(l, index++, "KEY");
-					expectToken(l, index++, "(");
+					expectToken(l, index, "(");
 					do {
-						index++;
+						index+=2;
 					} while(l.get(index).equals(","));
 					expectToken(l, index++, ")");
 					expectToken(l, index++, "REFERENCES");
 					index++;
-					expectToken(l, index++, "(");
+					expectToken(l, index, "(");
 					do {
-						index++;
+						index+=2;
 					} while(l.get(index).equals(","));
 					expectToken(l, index++, ")");
 					

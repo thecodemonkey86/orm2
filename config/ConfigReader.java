@@ -168,7 +168,7 @@ public class ConfigReader implements ContentHandler {
 				
 			
 				String password = PasswordManager.loadFromFile(credentials);
-				if(password == null) {
+				if(password == null && !cfg.isEngineSqlite()) {
 					throw new IOException("Password not set");
 				}
 				credentials.setPassword(password);
