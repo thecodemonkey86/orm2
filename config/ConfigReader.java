@@ -386,6 +386,7 @@ public class ConfigReader implements ContentHandler {
 				default:
 					throw new SAXException("Illegal state");
 				}
+				break;
 			case "options":
 				section = Section.OPTIONS;
 				break;

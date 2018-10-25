@@ -68,9 +68,7 @@ public class SqliteDatabase extends Database {
 		stColumndata.setString(1, tbl.getName());
 		ResultSet rsColumndata = stColumndata.executeQuery();
 		PrimaryKey pk = new PrimaryKey();
-		if(tbl.getName().equals("archiv_z_sa_status_historie")) {
-			System.out.println();
-		}
+		
 		if(rsColumndata.next()) {
 			String sql = rsColumndata.getString("sql");
 			List<String> l = getTokenList(sql);
