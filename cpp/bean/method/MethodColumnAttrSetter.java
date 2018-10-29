@@ -50,6 +50,7 @@ public class MethodColumnAttrSetter extends Method{
 			ifNotEquals.thenBlock(). addInstr(_this().assignAttr(a.getName()+"Modified",BoolExpression.TRUE));
 		else {
 			IfBlock ifNotInsert=ifNotEquals.thenBlock()._ifNot(_this().accessAttr("insert"));
+			ifNotInsert.thenBlock().addInstr( _this().assignAttr(col.getCamelCaseName()+"Previous",  _this().accessAttr(a)));
 			ifNotInsert.thenBlock().
 				addInstr(_this().assignAttr("primaryKeyModified",BoolExpression.TRUE));
 		}
