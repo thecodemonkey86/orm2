@@ -219,7 +219,7 @@ public class BeanCls extends Cls {
 			addAttr(attrManyToManyRemoved);
 			addMethod(new MethodAttributeGetter(attrManyToManyRemoved));
 			addMethod(new MethodAddManyToManyRelatedBean(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
-			addMethod(new MethodAddManyToManyRelatedBean(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
+			//addMethod(new MethodAddManyToManyRelatedBean(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
 			addMethod(new MethodAddManyToManyRelatedBeanInternal(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
 			addMethod(new MethodAddManyToManyRelatedBeanInternal(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
 			

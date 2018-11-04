@@ -23,6 +23,7 @@ import cpp.core.instruction.IfBlock;
 import cpp.core.instruction.InstructionBlock;
 import cpp.lib.ClsQSqlQuery;
 import cpp.lib.ClsQSqlRecord;
+import cpp.lib.ClsQVariant;
 import cpp.orm.OrmUtil;
 import database.column.Column;
 import database.relation.AbstractRelation;
@@ -164,7 +165,10 @@ protected Expression getExpressionQuery() {
 			Expression foreignBeanExpression = getByRecordExpression(foreignCls, recDoWhile, QString.fromStringConstant(r.getAlias()));
 			
 			IfBlock ifRelatedBeanIsNull= doWhileQueryNext.
-					_if(b1.callMethod(new MethodOneRelationBeanIsNull(r)));
+					_if(Expressions.and( b1.callMethod(new MethodOneRelationBeanIsNull(r))
+							,
+							Expressions.not( recDoWhile.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getFirstColumn().getName())).callMethod(ClsQVariant.isNull))
+							));
 			
 			Var foreignBean =ifRelatedBeanIsNull.thenBlock()._declare(foreignBeanExpression.getType(), "foreignB"+r.getAlias(),foreignBeanExpression) ;
 			ifRelatedBeanIsNull.thenBlock()

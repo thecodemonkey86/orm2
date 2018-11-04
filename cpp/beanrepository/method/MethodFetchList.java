@@ -24,6 +24,7 @@ import cpp.core.instruction.InstructionBlock;
 import cpp.lib.ClsQHash;
 import cpp.lib.ClsQSet;
 import cpp.lib.ClsQSqlQuery;
+import cpp.lib.ClsQVariant;
 import cpp.orm.OrmUtil;
 import database.column.Column;
 import database.relation.AbstractRelation;
@@ -197,7 +198,10 @@ public class MethodFetchList extends Method {
 			Expression foreignBeanExpression = getByRecordExpression(foreignCls, recDoWhile, QString.fromStringConstant(r.getAlias()));
 			
 			IfBlock ifRelatedBeanIsNull= ifNotB1SetContains.thenBlock().
-					_if(b1DoWhile.callMethod(new MethodOneRelationBeanIsNull(r)));
+					_if(Expressions.and( b1DoWhile.callMethod(new MethodOneRelationBeanIsNull(r))
+							,
+							Expressions.not( recDoWhile.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getFirstColumn().getName())).callMethod(ClsQVariant.isNull))
+							));
 			
 			Var foreignBean =ifRelatedBeanIsNull.thenBlock()._declare(foreignBeanExpression.getType(), "foreignB"+r.getAlias(),foreignBeanExpression) ;
 			ifRelatedBeanIsNull.thenBlock()

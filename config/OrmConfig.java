@@ -216,6 +216,6 @@ public class OrmConfig {
 	}
 
 	public boolean hasRenameMethodNames(String cls) {
-		return renameMethods.containsKey(cls);
+		return renameMethods != null && renameMethods.containsKey(cls);
 	}
 }

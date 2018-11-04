@@ -163,7 +163,10 @@ public class MethodGetById extends Method {
 			BeanCls foreignCls = Beans.get(r.getDestTable()); 
 			//AccessExpression acc = b1.accessAttr(PgCppUtil.getOneRelationDestAttrName(r));
 			//IfBlock ifBlock= doWhileQSqlQueryNext._if(acc.isNull());
-			IfBlock ifBlock= doWhileQSqlQueryNext._if(b1.callMethod(new MethodOneRelationBeanIsNull(r)));
+			IfBlock ifBlock= doWhileQSqlQueryNext._if(Expressions.and( b1.callMethod(new MethodOneRelationBeanIsNull(r))
+					,
+					Expressions.not( rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getFirstColumn().getName())).callMethod(ClsQVariant.isNull))
+					));
 			ifBlock.thenBlock().
 			_callMethodInstr(b1, new MethodOneRelationAttrSetter( bean,r, true),  _this().callGetByRecordMethod(foreignCls, rec, QString.fromStringConstant(r.getAlias())));
 			//ifBlock.getIfInstr()._assign(acc, _this().callGetByRecordMethod(foreignCls, rec, QString.fromStringConstant(r.getAlias())));

@@ -222,9 +222,21 @@ public class MethodBeanSave extends Method {
 			Expression[] argsInsertMultiRow = new Expression[r.getMappingTable().getPrimaryKey().getColumnCount()];
 			Expression[] argsOnConflictDoNothing = new Expression[r.getMappingTable().getPrimaryKey().getColumnCount()];
 			
-			for(int i = 0; i < r.getMappingTable().getPrimaryKey().getColumnCount(); i++ ) {
+			/*for(int i = 0; i < r.getMappingTable().getPrimaryKey().getColumnCount(); i++ ) {
 				argsInsertMultiRow[i] = new PhpStringLiteral(r.getMappingTable().getPrimaryKey().getColumn(i).getEscapedName());
 				argsOnConflictDoNothing[i] = new PhpStringLiteral(r.getMappingTable().getPrimaryKey().getColumn(i).getEscapedName());
+			}*/
+			
+			for(int i = 0; i < r.getSourceTable().getPrimaryKey().getColumnCount(); i++) {
+				PhpStringLiteral colName = new PhpStringLiteral(r.getSourceMappingColumn(i).getEscapedName());
+				argsInsertMultiRow[i] = colName;
+				argsOnConflictDoNothing[i] = colName;
+			}
+
+			for(int i = 0; i < r.getDestTable().getPrimaryKey().getColumnCount(); i++) {
+				PhpStringLiteral colName = new PhpStringLiteral(r.getDestMappingColumn(i).getEscapedName());
+				argsInsertMultiRow[i+r.getSourceTable().getPrimaryKey().getColumnCount()] = colName;
+				argsOnConflictDoNothing[i+r.getSourceTable().getPrimaryKey().getColumnCount()] = colName;
 			}
 			
 			Var varAddSql = ifAddedBeans.thenBlock()._declare(BeanCls.getSqlQueryCls(), "addSqlQuery",BeanCls.getSqlQueryCls().newInstance(aSqlCon));
@@ -239,16 +251,9 @@ public class MethodBeanSave extends Method {
 				addInsertRowArgs[i] = BeanCls.getTypeMapper().getInsertUpdateValueGetterExpression(pBean, col); 
 			}
 			
-			if (r.getDestTable().getPrimaryKey().isMultiColumn()) {
-				
-				for(int i = 0; i < r.getDestTable().getPrimaryKey().getColumnCount(); i++) {
-					Column colPk =  r.getDestTable().getPrimaryKey().getColumn(i);
-					addInsertRowArgs[i+r.getSourceTable().getPrimaryKey().getColumnCount()] = BeanCls.getTypeMapper().getInsertUpdateValueGetterExpression( foreachAttrAdd.getVar(),colPk);
-				}
-			} else {
-				Column colPk = r.getDestTable().getPrimaryKey().getFirstColumn();
-				addInsertRowArgs[r.getSourceTable().getPrimaryKey().getColumnCount()] =  BeanCls.getTypeMapper().getInsertUpdateValueGetterExpression( foreachAttrAdd.getVar(),colPk);
-				
+			for(int i = 0; i < r.getDestTable().getPrimaryKey().getColumnCount(); i++) {
+				Column colPk =  r.getDestTable().getPrimaryKey().getColumn(i);
+				addInsertRowArgs[i+r.getSourceTable().getPrimaryKey().getColumnCount()] = BeanCls.getTypeMapper().getInsertUpdateValueGetterExpression( foreachAttrAdd.getVar(),colPk);
 			}
 			
 			foreachAttrAdd._callMethodInstr(varAddSql, ClsSqlQuery.addInsertRow, new ArrayInitExpression( addInsertRowArgs));

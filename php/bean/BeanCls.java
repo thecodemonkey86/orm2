@@ -130,10 +130,10 @@ public class BeanCls extends PhpCls {
 			addMethod(new MethodManyAttrGetter(attr));
 			addMethod(new MethodAddRelatedBean(r, new Param(attr.getElementType(), "bean")));
 			addMethod(new MethodAddRelatedBeanInternal(r, new Param(attr.getElementType(), "bean")));
-			Attr manyRelAdded = new Attr(Types.array(Beans.get(r.getSourceTable())) ,attr.getName()+"Added");
+			Attr manyRelAdded = new Attr(Types.array(Beans.get(r.getDestTable())) ,attr.getName()+"Added");
 			addAttr(manyRelAdded);
 			
-			Attr manyRelRemoved = new Attr(Types.array(Beans.get(r.getSourceTable())) ,attr.getName()+"Removed");
+			Attr manyRelRemoved = new Attr(Types.array(Beans.get(r.getDestTable())) ,attr.getName()+"Removed");
 			addAttr(manyRelRemoved);
 			
 			addMethod(new MethodRemoveAllOneToManyRelatedBeans(r)
@@ -145,11 +145,11 @@ public class BeanCls extends PhpCls {
 			addAttr(attr);
 			addMethod(new MethodManyAttrGetter(attr));
 			
-			Attr manyRelAdded = new Attr(Types.array(Beans.get(r.getSourceTable())) ,attr.getName()+"Added");
+			Attr manyRelAdded = new Attr(Types.array(Beans.get(r.getDestTable())) ,attr.getName()+"Added");
 			addAttr(manyRelAdded);
 			
 			addMethod(new MethodAttributeGetter(manyRelAdded));
-			Attr manyRelRemoved = new Attr(Types.array(Beans.get(r.getSourceTable())) ,attr.getName()+"Removed");
+			Attr manyRelRemoved = new Attr(Types.array(Beans.get(r.getDestTable())) ,attr.getName()+"Removed");
 			addAttr(manyRelRemoved);
 			addMethod(new MethodAttributeGetter(manyRelRemoved));
 			
