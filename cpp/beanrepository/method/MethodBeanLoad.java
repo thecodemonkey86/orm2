@@ -261,7 +261,13 @@ public class MethodBeanLoad extends Method {
 		for(OneRelation r:oneRelations) {
 			BeanCls foreignCls = Beans.get(r.getDestTable()); 
 			try {
-				IfBlock ifBlock= doWhileQSqlQueryNext._if(pBean.callMethod(MethodOneRelationBeanIsNull.getMethodName(r, true)));
+				IfBlock ifBlock= doWhileQSqlQueryNext._if(
+						Expressions.and(
+								pBean.callMethod(MethodOneRelationBeanIsNull.getMethodName(r, true))
+								,
+								Expressions.not( rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getFirstColumn().getName())).callMethod(ClsQVariant.isNull))
+						
+						));
 				ifBlock.thenBlock()._callMethodInstr(pBean, MethodOneRelationAttrSetter.getMethodName(r, true),  _this().callMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias())));
 			} catch (Exception e) {
 				e.printStackTrace();
