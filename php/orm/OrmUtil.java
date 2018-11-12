@@ -13,19 +13,20 @@ import util.StringUtil;
 
 public class OrmUtil {
 	public static String getOneRelationDestAttrName(OneRelation relation) {
-		return (relation.getColumnCount() == 1 && relation.getColumns(0).getValue1().getName().endsWith("_id")
+		return relation.hasSubstituteName() 
+				?relation.getSubstituteName() 
+				:( (relation.getColumnCount() == 1 && relation.getColumns(0).getValue1().getName().endsWith("_id")
 				? CodeUtil2.camelCase(relation.getColumns(0).getValue1().getName().substring(0, relation.getColumns(0).getValue1().getName().length() - 3))
-				: relation.getDestTable().getCamelCaseName());
+				: relation.getDestTable().getCamelCaseName()));
 	}
 
 	public static String getOneToManyRelationDestAttrName(OneToManyRelation relation) {
-		if (CodeUtil2.plural(relation.getDestTable().getCamelCaseName()).equals("trLists")) {
-			System.out.println();
-		}
+		if(relation.hasSubstituteName() 
+				)
+			return relation.getSubstituteName();
 		if (relation.getColumnCount() == 1 && relation.getColumns(0).getValue2().getName().endsWith(relation.getSourceTable() + "_id")) {
 			String name = CodeUtil2.plural(CodeUtil2.camelCase(relation.getColumns(0).getValue2().getName().substring(0,
 					relation.getColumns(0).getValue2().getName().length() - (relation.getSourceTable().getName() + "_id").length()) + relation.getDestTable()));
-			System.out.println(name);
 			return name;
 		}
 
@@ -33,6 +34,9 @@ public class OrmUtil {
 	}
 
 	public static String getManyRelationDestAttrNameSingular(OneRelation relation) {
+		if(relation.hasSubstituteName() 
+				)
+			return relation.getSubstituteName();
 		if (relation.getColumnCount() == 1 && relation.getColumns(0).getValue2().getName().endsWith(relation.getSourceTable() + "_id")) {
 			String name = CodeUtil2.camelCase(relation.getColumns(0).getValue2().getName().substring(0,
 					relation.getColumns(0).getValue2().getName().length() - (relation.getSourceTable().getName() + "_id").length()) + relation.getDestTable());

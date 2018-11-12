@@ -6,6 +6,7 @@ import php.lib.ClsBaseBean;
 import php.lib.ClsBaseBeanQuery;
 import php.lib.ClsDateTime;
 import php.lib.ClsDateTimeZone;
+import php.lib.ClsException;
 import php.lib.ClsFirebirdSqlQuery;
 import php.lib.ClsMySqlQuery;
 import php.lib.ClsMysqli;
@@ -69,6 +70,7 @@ public class Types {
 	
 	public static final ClsSqlParam SqlParam = new ClsSqlParam();
 	public static final ClsSqlUtil SqlUtil = new ClsSqlUtil();
+	public static final ClsException Exception = new ClsException();
 	
 	
 	public static PhpArray array(Type valueType) {

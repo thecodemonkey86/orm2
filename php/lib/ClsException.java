@@ -1,11 +1,9 @@
 package php.lib;
 
-import php.core.PhpCls;
-
-public class ClsException extends PhpCls {
+public class ClsException extends PhpLibCls {
 
 	public ClsException() {
-		super("Exception", "java.lang");
+		super("Exception");
 	}
 	
 	
