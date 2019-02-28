@@ -9,6 +9,7 @@ import cpp.core.method.MethodAttributeGetter;
 public class ClsBaseRepository extends Cls{
 
 	public static final String saveBean = "saveBean"; 
+	public static final String bulkSave = "bulkSave"; 
 	
 	public ClsBaseRepository() {
 		super("BaseRepository");
