@@ -45,6 +45,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 			case "boolean":
 				return Types.Bool;
 			case "timestamp with time zone":
+			case "timestamp without time zone":
 				return Types.QDateTime;
 			case "time with time zone":
 				return Types.QTime;
@@ -66,6 +67,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 			case "date":
 				return Types.nullable(Types.QDate);
 			case "timestamp with time zone":
+			case "timestamp without time zone":
 				return Types.nullable(Types.QDateTime);
 			case "time with time zone":
 				return Types.nullable(Types.QTime);
@@ -106,6 +108,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 				case "boolean":
 					return BoolExpression.FALSE;
 				case "timestamp with time zone":
+				case "timestamp without time zone":
 					return new CreateObjectExpression(Types.QDateTime) ;
 				case "time with time zone":
 					return new CreateObjectExpression(Types.QTime) ;
@@ -127,6 +130,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 				case "date":
 					return new CreateObjectExpression(Types.nullable(Types.QDate)) ;
 				case "timestamp with time zone":
+				case "timestamp without time zone":
 					return new CreateObjectExpression(Types.nullable(Types.QDateTime)) ;
 				case "time with time zone":
 					return new CreateObjectExpression(Types.nullable(Types.QTime) );

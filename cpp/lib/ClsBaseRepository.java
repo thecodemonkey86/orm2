@@ -10,6 +10,7 @@ public class ClsBaseRepository extends Cls{
 
 	public static final String saveBean = "saveBean"; 
 	public static final String bulkSave = "bulkSave"; 
+	public static final String bulkInsert = "bulkInsert"; 
 	
 	public ClsBaseRepository() {
 		super("BaseRepository");
@@ -17,6 +18,8 @@ public class ClsBaseRepository extends Cls{
 		addAttr(sqlCon);
 		addMethod(new MethodAttributeGetter(sqlCon));
 		addMethod( new LibMethod(Types.Void, saveBean));
+		addMethod( new LibMethod(Types.Void, bulkSave));
+		addMethod( new LibMethod(Types.Void, bulkInsert));
 		headerInclude = name.toLowerCase();
 	}
 

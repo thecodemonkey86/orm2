@@ -17,12 +17,13 @@ import util.Pair;
 
 public class MethodGetFieldsAsAssocStringArray extends Method {
 
+	public static final String METHOD_NAME = "getFieldsAsAssocStringArray";
 	Param pDateFormat;
 	Param pDateTimeFormat;
 	Param pSpecificColumns;
 	
 	public MethodGetFieldsAsAssocStringArray() {
-		super(Public, Types.array(Types.String), "getFieldsAsAssocStringArray");
+		super(Public, Types.array(Types.String), METHOD_NAME);
 		pDateTimeFormat = addParam(new Param(Types.String, "dateTimeFormat",new PhpStringLiteral("Y-m-d H:i:s")));
 		pDateFormat = addParam(new Param(Types.String, "dateFormat",new PhpStringLiteral("Y-m-d")));
 		pSpecificColumns = addParam(new Param(Types.array(Types.String), "columns",Expressions.Null));

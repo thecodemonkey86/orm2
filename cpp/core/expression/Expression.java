@@ -88,13 +88,13 @@ public abstract class Expression {
 	}
 	
 	public MethodCall callMethod(String m, Expression...args) {
-		if (!(getType() instanceof Cls)) {
-			System.out.println(getType());
-		}
+//		if (!(getType() instanceof Cls)) {
+//			System.out.println(getType());
+//		}
 		try{
 			return new MethodCall(this, ((Cls)getType()).getMethod(m),args);
 		} catch (Exception e) {
-			System.out.println(e);
+			e.printStackTrace();
 			throw e;
 		}
 	}

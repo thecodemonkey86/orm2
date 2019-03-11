@@ -57,7 +57,7 @@ public class MethodGetUpdateFields extends Method{
 				if(colAttr.getType().equals(Types.QString))
 					colAttr = new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), QString.fromStringConstant(""), colAttr);
 				
-				if (!col.hasOneRelation()) {
+				if (!col.isRelationSourceColumn()) {
 				_if(parent.getAttrByName(col.getCamelCaseName()+"Modified"))
 					.setIfInstr(
 							fields.callMethodInstruction("append", QString.fromStringConstant(col.getEscapedName()+"=?"))

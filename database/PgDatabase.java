@@ -20,7 +20,7 @@ public class PgDatabase extends Database {
 	
 	public PgDatabase(String name, String defaultSchema) throws IOException {
 		super(name);
-		this.defaultSchema = defaultSchema;
+		this.defaultSchema = defaultSchema != null ? defaultSchema : "public";
 	}
 	
 
@@ -62,6 +62,7 @@ public class PgDatabase extends Database {
 		
 		String sql=String.format("SELECT a.attname as colname , exists(select s.relname as seq, n.nspname as sch, t.relname as tab, a.attname as col from pg_class s  join pg_depend d on d.objid=s.oid and d.classid='pg_class'::regclass and d.refclassid='pg_class'::regclass  join pg_class t on t.oid=d.refobjid  join pg_namespace n on n.oid=t.relnamespace  join pg_attribute a0 on a0.attrelid=t.oid and a0.attnum=d.refobjsubid where s.relkind='S' and d.deptype='a'and n.nspname = '%s' and a.attname = a0.attname )  as autoincrement FROM   pg_index i JOIN   pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey) WHERE  i.indrelid = '%s.%s'::regclass AND    i.indisprimary;", tbl.getSchema(), tbl.getSchema(), tbl.getName());
 		Statement stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_READ_ONLY  );
+		System.out.println(sql);
 		ResultSet rs = stmt.executeQuery(sql);
 		while(rs.next()) {
 			Column c = tbl.getColumnByName(rs.getString("colname"));
@@ -111,11 +112,6 @@ public class PgDatabase extends Database {
 	}
 
 	@Override
-	public String getDefaultSchema() {
-		return "public";
-	}
-
-	@Override
 	protected void finalize() throws Throwable {
 		super.finalize();
 		if (stColumndata!=null)
@@ -145,6 +141,10 @@ public class PgDatabase extends Database {
 		return null;
 	}
 
+	@Override
+	public String getDefaultSchema() {
+		return defaultSchema;
+	}
 
 
 	@Override

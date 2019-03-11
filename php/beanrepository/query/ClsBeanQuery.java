@@ -36,7 +36,8 @@ public class ClsBeanQuery extends PhpCls {
 		addMethod(new MethodGetAllSelectFields(cls));
 		addMethod(new MethodGetTableName(cls));
 		addMethod(new MethodLimitAndOffset(cls,this));
-		
+		getMethod(ClsBaseBeanQuery.select).setReturnType(this);
+		getMethod(ClsBaseBeanQuery.where).setReturnType(this);
 		for(Column c : cls.getTbl().getAllColumns()) {
 			addMethod(new MethodBeanQueryWhereEquals(this, cls, c));
 			addMethod(new MethodBeanQueryWhereIn(this, cls, c));

@@ -1,6 +1,7 @@
 package cpp.bean.method;
 
 import util.StringUtil;
+import cpp.CoreTypes;
 import cpp.core.Attr;
 import cpp.core.Cls;
 import cpp.core.Method;
@@ -14,7 +15,7 @@ public class MethodColumnAttrSetNull extends Method{
 	boolean internal;
 	
 	public MethodColumnAttrSetNull(Cls cls, Column col, Attr a, boolean internal) {
-		super(Public, cls.toRawPointer(), getMethodName(a)+(internal?"Internal":""));
+		super(Public, CoreTypes.Void, getMethodName(a)+(internal?"Internal":""));
 		this.a=a;
 		this.col=col;
 		this.internal = internal;
@@ -27,7 +28,7 @@ public class MethodColumnAttrSetNull extends Method{
 		if (!col.isPartOfPk())
 			addInstr(_this().assignAttr(a.getName()+"Modified",BoolExpression.TRUE));
 		}
-		_return(_this());
+		//_return(_this());
 		
 	}
 
@@ -36,7 +37,7 @@ public class MethodColumnAttrSetNull extends Method{
 	}
 	
 	public static String getMethodName(Attr a) {
-		return "set"+StringUtil.ucfirst(a.getName()+"Null");
+		return "set"+StringUtil.ucfirst( (!Column.isReserved(a.getName()) ? a.getName(): a.getName()+"_")+"Null");
 	}
 
 }

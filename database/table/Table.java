@@ -26,7 +26,7 @@ public class Table extends AbstractTable{
 	public List<Column> getFieldColumns() {
 		ArrayList<Column> res=new ArrayList<>();
 		for(Column col:allColumns) {
-			if(!col.isPartOfPk() && !col.isRelationDestColumn()) {
+			if(!col.isPartOfPk() && !col.isRelationSourceColumn()) {
 				res.add(col);
 			}
 		}

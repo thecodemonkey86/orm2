@@ -1,5 +1,9 @@
 package php.core;
 
+import php.core.expression.Expression;
+import php.core.instruction.SemicolonTerminatedInstruction;
+import php.core.instruction.Instruction;
+
 public class PhpFunctions {
 	
 	public static final PhpFunction sprintf = new PhpFunction("sprintf", Types.String);
@@ -18,6 +22,11 @@ public class PhpFunctions {
 	public static final PhpFunction md5 = new PhpFunction("md5", Types.String);
 	public static final PhpFunction serialize = new PhpFunction("serialize", Types.String);
 	public static final PhpFunction pg_query = new PhpFunction("pg_query", Types.Resource);
+	public static final PhpFunction json_encode = new PhpFunction("json_encode", Types.String);
+	
+	public static Instruction echo(Expression e) {
+		return new SemicolonTerminatedInstruction("echo " +e);
+	}
 	
 	
 	

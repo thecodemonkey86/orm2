@@ -84,7 +84,7 @@ public abstract class Method extends InstructionBlock{
 	}
 	
 	private String retType() {
-		return getReturnType() instanceof SharedPtr ? "shared_ptr"+CodeUtil.abr(((SharedPtr)getReturnType()).getElementType().toUsageString()) : getReturnType().toDeclarationString();
+		return getReturnType() instanceof SharedPtr ? "std::shared_ptr"+CodeUtil.abr(((SharedPtr)getReturnType()).getElementType().toUsageString()) : getReturnType().toDeclarationString();
 	}
 	
 	

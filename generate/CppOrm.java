@@ -1,15 +1,18 @@
 package generate;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.HashSet;
 import java.util.List;
 import config.ConfigReader;
 import config.OrmConfig;
 import config.SetPassConfigReader;
+import cpp.JsonTypes;
 import cpp.Types;
 import cpp.bean.BeanCls;
 import cpp.bean.Beans;
@@ -17,11 +20,13 @@ import cpp.beanquery.ClsBeanQuery;
 import cpp.beanrepository.ClsBeanRepository;
 import cpp.jsonentity.JsonEntities;
 import cpp.jsonentity.JsonEntity;
+import cpp.jsonentityrepository.JsonEntityRepository;
 import cpp.orm.DatabaseTypeMapper;
 import cpp.orm.FirebirdDatabaseTypeMapper;
 import cpp.orm.MySqlDatabaseMapper;
 import cpp.orm.PgDatabaseTypeMapper;
 import cpp.orm.SqliteDatabaseMapper;
+import database.column.Column;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
@@ -29,7 +34,7 @@ import database.table.Table;
 import io.PasswordManager;
 import xml.reader.DefaultXMLReader;
 
-public class CppOrm extends OrmCommon {
+public class CppOrm extends OrmGenerator {
 	
 	private static final StandardOpenOption[] writeOptions={
 			StandardOpenOption.WRITE,StandardOpenOption.CREATE,StandardOpenOption.TRUNCATE_EXISTING
@@ -50,14 +55,52 @@ public class CppOrm extends OrmCommon {
 		}
 	}
 	
-	public CppOrm(OrmConfig cfg) throws Exception {
+	public CppOrm(OrmConfig cfg) {
 		super(cfg);
-		Charset utf8 = Charset.forName("UTF-8");
+		HashSet<String> reservedNames = new HashSet<String>();
+		reservedNames.add("private");
+		Column.setReservedNames(reservedNames);
+	}
+
+	public static void main(String[] args) throws Exception {
+		if(args.length == 0) {
+			throw new Exception("Please provide xml config file");
+		}
+		PasswordManager.setSuperPassword(new byte[] {
+				0x7,
+				58,
+				1,
+				0xf,
+				0x7f,
+				0x8,
+				65,
+				0x58
+		});
+		
+		
+		Path xmlFile = Paths.get(args[args.length-1]);
+		
+		boolean setPass= args[0].equals("--setpass");
+		if(setPass) {
+			SetPassConfigReader cfgReader = new SetPassConfigReader();
+			DefaultXMLReader.read(xmlFile, cfgReader);
+			PasswordManager.saveToFile(cfgReader.getCredentials(), args[1] );
+			return;
+		}
+		ConfigReader cfgReader = new ConfigReader(xmlFile.getParent());
+		DefaultXMLReader.read(xmlFile, cfgReader);
+		OrmConfig cfg=cfgReader.getCfg();
+		new CppOrm(cfg).generate();
+	}
+
+	@Override
+	public void generate() throws IOException 	{
+Charset utf8 = Charset.forName("UTF-8");
 		
 		
 		
 		Path pathModel = cfg.getModelPath();
-		if(!cfg.isJsonMode()) {
+		if(cfg.getJsonMode() == null) {
 			//default SQL mode
 			BeanCls.setModelPath(cfg.getBasePath().relativize(cfg.getModelPath()).toString().replace('\\', '/'));
 			BeanCls.setRepositoryPath(cfg.getBasePath().relativize(cfg.getRepositoryPath()).toString().replace('\\', '/'));
@@ -224,43 +267,49 @@ public class CppOrm extends OrmCommon {
 			for (JsonEntity c : JsonEntities.getAllBeans()) {
 				c.addDeclarations();
 			}
+			for (JsonEntity c : JsonEntities.getAllBeans()) {
+				c.addMethodImplementations();
+			}
+			JsonEntityRepository repo = JsonTypes.JsonEntityRepository;
+			repo.addDeclarations(JsonEntities.getAllBeans());
+
+			repo.addMethodImplementations();
+			
 			Path pathBeans = pathModel.resolve("beans");
+			Path pathRepository = cfg.getRepositoryPath();
+			Path pathRepositoryQuery = pathRepository.resolve("query");
+			Files.createDirectories(pathBeans);
+			Files.createDirectories(pathRepositoryQuery);
+	
+			try(DirectoryStream<Path> dsPathBeans = Files.newDirectoryStream(pathBeans)) {
+				for(Path f : dsPathBeans) {
+					if(f.toString().endsWith(".h") || f.toString().endsWith(".cpp")) {
+						Files.delete(f);
+					}
+				}
+			} finally {
+				
+			}
+			
+			try(DirectoryStream<Path> dsPathQuery = Files.newDirectoryStream(pathRepositoryQuery)) {
+				for(Path f : dsPathQuery) {
+					if(f.toString().endsWith(".h") || f.toString().endsWith(".cpp")) {
+						Files.delete(f);
+					}
+				}
+			} finally {
+				
+			}
+			
 			for (JsonEntity c : JsonEntities.getAllBeans()) {
 				Files.write(pathBeans.resolve(c.getName().toLowerCase()+".h"), c.toHeaderString().getBytes(utf8), writeOptions);
 				Files.write(pathBeans.resolve(c.getName().toLowerCase()+".cpp"), c.toSourceString().getBytes(utf8), writeOptions);
 			}
+			Files.write(pathRepository.resolve(repo.getName().toLowerCase()+".h"), repo.toHeaderString().getBytes(utf8), writeOptions);
+			Files.write(pathRepository.resolve(repo.getName().toLowerCase()+".cpp"), repo.toSourceString().getBytes(utf8), writeOptions);
+			
 		}
-	}
-
-	public static void main(String[] args) throws Exception {
-		if(args.length == 0) {
-			throw new Exception("Please provide xml config file");
-		}
-		PasswordManager.setSuperPassword(new byte[] {
-				0x7,
-				58,
-				1,
-				0xf,
-				0x7f,
-				0x8,
-				65,
-				0x58
-		});
 		
-		
-		Path xmlFile = Paths.get(args[args.length-1]);
-		
-		boolean setPass= args[0].equals("--setpass");
-		if(setPass) {
-			SetPassConfigReader cfgReader = new SetPassConfigReader();
-			DefaultXMLReader.read(xmlFile, cfgReader);
-			PasswordManager.saveToFile(cfgReader.getCredentials(), args[1] );
-			return;
-		}
-		ConfigReader cfgReader = new ConfigReader(xmlFile.getParent());
-		DefaultXMLReader.read(xmlFile, cfgReader);
-		OrmConfig cfg=cfgReader.getCfg();
-		new CppOrm(cfg);
 	}
 
 }

@@ -12,14 +12,14 @@ public class ClsBaseBeanQuery extends PhpPseudoGenericClass{
 	public static final String where = "where";
 	public static final String join = "join";
 	public static final String addInsertRawExpression = "addInsertRawExpression";
-
+	public static final String select = "select";
 
 	public ClsBaseBeanQuery( BeanCls cls) {
 		super("BeanQuery",cls,"PhpLibs\\Orm\\Query");
 		addAttr(new Attr(Types.Int, "beanQueryLimit"));
 		addAttr(new Attr(Types.Int, "beanQueryOffset"));
 		addAttr(new Attr(Types.SqlQuery, sqlQuery));
-		addMethod(new LibMethod(this, "select"));
+		addMethod(new LibMethod(this, select));
 		addMethod(new LibMethod(this, "leftJoin"));
 		addMethod(new LibMethod(this, join));
 		addMethod(new LibMethod(this, where));

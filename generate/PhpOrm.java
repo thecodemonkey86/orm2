@@ -1,5 +1,6 @@
 package generate;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -7,7 +8,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+
 import config.OrmConfig;
+import config.OrmConfig.JsonMode;
 import config.SetPassConfigReader;
 import config.php.PhpConfigReader;
 import config.php.PhpOrmConfig;
@@ -29,9 +32,10 @@ import php.orm.DatabaseTypeMapper;
 import php.orm.FirebirdDatabaseTypeMapper;
 import php.orm.MySqlDatabaseTypeMapper;
 import php.orm.PgDatabaseTypeMapper;
+import php.rest.PhpJsonRestServer;
 import xml.reader.DefaultXMLReader;
 
-public class PhpOrm extends OrmCommon {
+public class PhpOrm extends OrmGenerator {
 	private static final String BEGIN_CUSTOM_CLASS_MEMBERS = "/*BEGIN_CUSTOM_CLASS_MEMBERS*/";
 	private static final String END_CUSTOM_CLASS_MEMBERS = "/*END_CUSTOM_CLASS_MEMBERS*/";
 
@@ -64,8 +68,45 @@ public class PhpOrm extends OrmCommon {
 		}
 	}
 
-	public PhpOrm(OrmConfig cfg) throws Exception {
+	public PhpOrm(OrmConfig cfg) {
 		super(cfg);
+	}
+
+	public static void main(String[] args) throws Exception {
+		if (args.length == 0) {
+			throw new Exception("Please provide xml config file");
+		}
+		
+		PasswordManager.setSuperPassword(new byte[] {
+				0x7,
+				58,
+				1,
+				0xf,
+				0x7f,
+				0x8,
+				65,
+				0x58
+		});
+		
+		Path xmlFile = Paths.get(args[args.length-1]);
+		
+		boolean setPass= args[0].equals("--setpass");
+		if(setPass) {
+			SetPassConfigReader cfgReader = new SetPassConfigReader();
+			DefaultXMLReader.read(xmlFile, cfgReader);
+			PasswordManager.saveToFile(cfgReader.getCredentials(), args[1] );
+			return;
+		}
+		PhpConfigReader cfgReader = new PhpConfigReader(xmlFile.getParent());
+		DefaultXMLReader.read(xmlFile, cfgReader);
+		PhpOrmConfig cfg = cfgReader.getCfg();
+		new PhpOrm(cfg).generate();
+		
+	}
+
+	@Override
+	public void generate() throws IOException  {
+		Php.phpVersion = ((PhpOrmConfig) cfg).getPhpversion();
 		BeanCls.setTypeMapper(getTypeMapper(cfg));
 		Charset utf8 = Charset.forName("UTF-8");
 		ClsBeanRepository.setBeanRepositoryNamespace(cfg.getBasePath().relativize(cfg.getRepositoryPath()).toString().replace("/", "\\"));
@@ -178,39 +219,12 @@ public class PhpOrm extends OrmCommon {
 
 		Files.write(pathRepository.resolve("BeanRepository.php"), repo.toSourceString().getBytes(utf8), writeOptions);
 
-	}
-
-	public static void main(String[] args) throws Exception {
-		if (args.length == 0) {
-			throw new Exception("Please provide xml config file");
+		if(cfg.getJsonMode() == OrmConfig.JsonMode.Server) {
+			PhpJsonRestServer server = new PhpJsonRestServer( Beans.getAllBeans());
+			server.addMethodImplementations();
+			Files.write ( Paths.get("D:\\Programme\\xampp\\htdocs\\lizenzserver2\\"+server.getName()+ ".php"),
+					server.toSourceString().getBytes(utf8), writeOptions);
 		}
-		
-		PasswordManager.setSuperPassword(new byte[] {
-				0x7,
-				58,
-				1,
-				0xf,
-				0x7f,
-				0x8,
-				65,
-				0x58
-		});
-		
-		Path xmlFile = Paths.get(args[args.length-1]);
-		
-		boolean setPass= args[0].equals("--setpass");
-		if(setPass) {
-			SetPassConfigReader cfgReader = new SetPassConfigReader();
-			DefaultXMLReader.read(xmlFile, cfgReader);
-			PasswordManager.saveToFile(cfgReader.getCredentials(), args[1] );
-			return;
-		}
-		PhpConfigReader cfgReader = new PhpConfigReader(xmlFile.getParent());
-		DefaultXMLReader.read(xmlFile, cfgReader);
-		PhpOrmConfig cfg = cfgReader.getCfg();
-		Php.phpVersion = cfg.getPhpversion();
-		new PhpOrm(cfg);
-		
 	}
 
 }

@@ -389,7 +389,7 @@ public class Cls extends Type implements IAttributeContainer{
 		return useNamespace !=null ? useNamespace+"::"+  super.toUsageString() :  super.toUsageString();
 	}
 
-	@Deprecated
+	//@Deprecated
 	public String getIncludeHeader() {
 		return name.toLowerCase();
 	}

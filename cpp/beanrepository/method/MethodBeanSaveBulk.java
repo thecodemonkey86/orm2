@@ -33,18 +33,23 @@ public class MethodBeanSaveBulk extends Method {
 //	protected boolean overloadCascadeSaveRelations;
 	protected BeanCls bean;
 	protected Param pBeans;
-	
+	protected boolean forceInsert;
 	
 	public MethodBeanSaveBulk(BeanCls bean
-//			, boolean overloadCascadeSaveRelations
+//			, boolean overloadCascadeSaveRelations,
+			,boolean forceInsert
 			) {
 		super(Public, Types.Void, "save");
+		if(forceInsert) {
+			name = "insert";
+		}
 //		if (!overloadCascadeSaveRelations)
 //			this.addParam(new Param(Types.Bool, "cascadeSaveRelations"));
 //		this.setVirtualQualifier(true);
 //		this.overloadCascadeSaveRelations = overloadCascadeSaveRelations;
 		pBeans = addParam(Types.qvector(bean.toSharedPtr()).toConstRef(), "beans");
 		this.bean = bean;
+		this.forceInsert = forceInsert;
 	}
 
 	
@@ -58,8 +63,12 @@ public class MethodBeanSaveBulk extends Method {
 //			addInstr(new StaticMethodCall(parent.getSuperclass(), parent.getMethod("save" ), getParam("cascadeSaveRelations")).asInstruction()) ;
 			
 		 	
-		
-			addInstr(_this().callMethodInstruction(ClsBaseRepository.bulkSave,pBeans));
+			if(this.forceInsert) {
+				addInstr(_this().callMethodInstruction(ClsBaseRepository.bulkInsert,pBeans));
+			} else {
+				addInstr(_this().callMethodInstruction(ClsBaseRepository.bulkSave,pBeans));
+			}
+			
 		
 			// TODO FIXME one to many relations @see BeanCls.getAllManyRelations
 			List<ManyRelation> manyRelations = bean.getManyToManyRelations();

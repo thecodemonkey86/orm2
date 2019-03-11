@@ -8,6 +8,7 @@ import cpp.beanrepository.method.ConstructorBeanRepository;
 import cpp.beanrepository.method.MethodBeanRemove;
 import cpp.beanrepository.method.MethodBeanLoad;
 import cpp.beanrepository.method.MethodBeanSave;
+import cpp.beanrepository.method.MethodBeanSaveBulk;
 import cpp.beanrepository.method.MethodCreateQuery;
 import cpp.beanrepository.method.MethodFetchList;
 import cpp.beanrepository.method.MethodFetchOne;
@@ -15,6 +16,7 @@ import cpp.beanrepository.method.MethodGetById;
 import cpp.beanrepository.method.MethodGetFromRecord;
 import cpp.beanrepository.method.MethodLoadCollection;
 import cpp.beanrepository.method.MethodRepoCreateNew;
+import cpp.beanrepository.method.MethodRepoCreateNewNonNullableOnly;
 import cpp.core.Cls;
 import cpp.core.Param;
 import cpp.lib.ClsBaseRepository;
@@ -61,6 +63,8 @@ public class ClsBeanRepository extends Cls{
 			addMethod(new MethodCreateQuery(bean));
 			addMethod(new MethodBeanLoad(bean));
 			addMethod(new MethodBeanSave(bean));
+			addMethod(new MethodBeanSaveBulk(bean,false));
+			addMethod(new MethodBeanSaveBulk(bean,true));
 			addMethod(new MethodGetFromRecord(bean,false));
 			addMethod(new MethodRepoCreateNew(bean));
 			int countNullable = 0;
@@ -84,8 +88,12 @@ public class ClsBeanRepository extends Cls{
 			if(countInitializeFields > 0) {
 				addMethod(new MethodRepoCreateNew(bean,true,false));
 				
-				if(countNullable > 0)
+				if(countNullable > 0) {
 					addMethod(new MethodRepoCreateNew(bean,true,true));
+					MethodRepoCreateNewNonNullableOnly methodRepoCreateNewNonNullableOnly = new MethodRepoCreateNewNonNullableOnly(bean);
+					if(!methodRepoCreateNewNonNullableOnly.getParams().isEmpty())
+						addMethod(methodRepoCreateNewNonNullableOnly);
+				}
 			}
 			addMethod(new MethodBeanRemove(bean,false));
 		}

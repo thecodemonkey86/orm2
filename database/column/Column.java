@@ -1,5 +1,7 @@
 package database.column;
 
+import java.util.HashSet;
+
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
@@ -22,6 +24,12 @@ public abstract class Column {
 	protected ManyRelation manyToManyRelation;
 	protected String defaultValue;
 	protected String overrideSelect;
+	
+	private static HashSet<String> reservedNames = new HashSet<String>();
+	
+	public static void setReservedNames(HashSet<String> reservedNames) {
+		Column.reservedNames = reservedNames;
+	}
 	
 	public int getPosition() {
 		return position;
@@ -98,11 +106,17 @@ public abstract class Column {
 //	}
 	
 	public String getCamelCaseName() {
-		return CodeUtil2.camelCase(name);
+		String cc = CodeUtil2.camelCase(name);
+		return (!reservedNames.contains(cc) ? cc : cc+"_");
+	}
+	
+	public static boolean isReserved(String name) {
+		return reservedNames.contains(name);
 	}
 	
 	public String getUc1stCamelCaseName() {
-		return CodeUtil2.uc1stCamelCase(name);
+		String cc = CodeUtil2.camelCase(name);
+		return !reservedNames.contains(cc) ? CodeUtil2.uc1stCamelCase(name) : CodeUtil2.uc1stCamelCase(name)+"_";
 	}
 	
 	public String getPluralCamelCaseName() {

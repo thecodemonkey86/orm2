@@ -64,13 +64,11 @@ public class ConfigReader implements ContentHandler {
 	private PrimaryKey overrideColsPrimaryKey;
 	private String[] enableRawValueColumns;
 	
-	
 	public OrmConfig getCfg() {
 		return cfg;
 	}
 
 	public ConfigReader(Path xmlDirectory) {
-		createConfig();
 		relationQueryNames = new HashMap<>();
 		this.xmlDirectory = xmlDirectory;
 		this.tags = new LinkedList<>();
@@ -134,6 +132,9 @@ public class ConfigReader implements ContentHandler {
 		try {
 			this.tags.push(localName);
 			switch (this.tags.peek()) {
+			case "orm":
+				createConfig();
+				break;
 			case "database":
 				this.cfg.setDbEngine(atts.getValue("engine"));
 				Database database=null; 
@@ -193,7 +194,7 @@ public class ConfigReader implements ContentHandler {
 				cfg.setBasePath(basePath);
 				cfg.setModelPath(atts.getValue("modelPath"));
 				cfg.setRepositoryPath(atts.getValue("repositoryPath"));
-				cfg.setJsonMode(atts.getValue("mode") != null && atts.getValue("mode").equals("json") );
+				
 				break;
 			case "entities":
 				section = Section.ENTITIES;
@@ -223,9 +224,10 @@ public class ConfigReader implements ContentHandler {
 					} else {
 						overrideColsPrimaryKey = new PrimaryKey();
 					}
-					
+					if(atts.getValue("overrideNoAutoIncrement")!=null) {
+						currentEntityTable.getPrimaryKey().getFirstColumn().setAutoIncrement(false);
+					}
 				
-					cfg.initRelations(currentEntityTable);
 					
 					if(atts.getValue("enableRawValue") !=null) {
 						enableRawValueColumns = atts.getValue("enableRawValue").split(",");

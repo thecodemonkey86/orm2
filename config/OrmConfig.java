@@ -4,9 +4,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import database.Database;
 import database.DbCredentials;
 import database.relation.ManyRelation;
@@ -17,6 +17,7 @@ import database.table.Table;
 import util.Pair;
 
 public class OrmConfig {
+	public enum JsonMode {Server,Client}
 	protected String basePath,pathModel, pathRepository;
 	
 	protected String dbEngine;
@@ -30,14 +31,14 @@ public class OrmConfig {
 	private DbCredentials credentials;
 	
 	private boolean enableStacktrace = true;
-	private boolean jsonMode;
+	private JsonMode jsonMode;
 	
-	public boolean isJsonMode() {
-		return jsonMode;
+	public void setJsonMode(JsonMode jsonMode) {
+		this.jsonMode = jsonMode;
 	}
 	
-	public void setJsonMode(boolean jsonMode) {
-		this.jsonMode = jsonMode;
+	public JsonMode getJsonMode() {
+		return jsonMode;
 	}
 	
 	public boolean isEnableStacktrace() {
@@ -50,6 +51,7 @@ public class OrmConfig {
 		this.oneToManyRelations = new HashMap<>();
 		this.oneRelations = new HashMap<>();
 		this.manyToManyRelations = new HashMap<>();
+		jsonMode = null;
 	}
 	
 	
@@ -99,6 +101,7 @@ public class OrmConfig {
 	
 	public void addEntityTable(Table t) {
 		this.entityTables.add(t);
+		initRelations(t);
 	}
 	public void addOneToManyRelation(OneToManyRelation r,Table tbl) {
 		List<OneToManyRelation> relations = this.oneToManyRelations.get(tbl);
@@ -157,7 +160,7 @@ public class OrmConfig {
 		}
 		throw new RuntimeException("no such table: " + name);
 	}
-	public void initRelations(Table tbl) {
+	private void initRelations(Table tbl) {
 		oneRelations.put(tbl, new ArrayList<>());
 		oneToManyRelations.put(tbl, new ArrayList<>());
 		manyToManyRelations.put(tbl, new ArrayList<>());
@@ -217,5 +220,68 @@ public class OrmConfig {
 
 	public boolean hasRenameMethodNames(String cls) {
 		return renameMethods != null && renameMethods.containsKey(cls);
+	}
+
+	public void removeTable(String tbl) {
+		Iterator<Table> iterator = entityTables.iterator();
+		while(iterator.hasNext()) {
+			if(iterator.next().getName().equals(tbl)) {
+				iterator.remove();
+				break;
+			}
+		}
+		
+		Iterator<Table> iterator2 = oneRelations.keySet().iterator();
+		while(iterator2.hasNext()) {
+			Table t = iterator2.next();
+			if(t.getName().equals(tbl)) {
+				iterator2.remove();
+			} else {
+			
+				Iterator<OneRelation> iterator3 = oneRelations.get(t).iterator();
+				
+				while(iterator3.hasNext()) {
+					if(iterator3.next().getDestTable().getName().equals(tbl)) {
+						iterator3.remove();
+					}
+				}
+			}
+		}
+		
+		iterator2 = oneToManyRelations.keySet().iterator();
+		while(iterator2.hasNext()) {
+			Table t = iterator2.next();
+			if(t.getName().equals(tbl)) {
+				iterator2.remove();
+			} else {
+			
+				Iterator<OneToManyRelation> iterator3 = oneToManyRelations.get(t).iterator();
+				
+				while(iterator3.hasNext()) {
+					if(iterator3.next().getDestTable().getName().equals(tbl)) {
+						iterator3.remove();
+					}
+				}
+			}
+		}
+		
+		iterator2 = manyToManyRelations.keySet().iterator();
+		while(iterator2.hasNext()) {
+			Table t = iterator2.next();
+			if(t.getName().equals(tbl)) {
+				iterator2.remove();
+			} else {
+				
+				Iterator<ManyRelation> iterator3 = manyToManyRelations.get(t).iterator();
+				
+				while(iterator3.hasNext()) {
+					if(iterator3.next().getDestTable().getName().equals(tbl)) {
+						iterator3.remove();
+					}
+				}
+			}
+		}
+		
+		
 	}
 }

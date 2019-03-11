@@ -5,6 +5,7 @@ import java.util.List;
 
 import codegen.CodeUtil;
 import cpp.CoreTypes;
+import cpp.JsonTypes;
 import cpp.Types;
 import cpp.bean.ManyAttr;
 import cpp.bean.OneAttr;
@@ -26,7 +27,6 @@ import cpp.bean.method.MethodManyAttrGetter;
 import cpp.bean.method.MethodQHashPkStruct;
 import cpp.bean.method.MethodRemoveAllManyRelatedBeans;
 import cpp.bean.method.MethodReplaceAllManyRelatedBeans;
-import cpp.bean.method.MethodSetAutoIncrementId;
 import cpp.bean.method.MethodToggleAddRemoveRelatedBean;
 import cpp.core.Attr;
 import cpp.core.Cls;
@@ -239,7 +239,7 @@ public class JsonEntity extends Cls {
 			}
 			
 			if (col.isAutoIncrement()) {
-				addMethod(new MethodSetAutoIncrementId());
+				//addMethod(new MethodSetAutoIncrementId());
 			}
 //			if (col.isPartOfPk()) {
 //				
@@ -286,18 +286,15 @@ public class JsonEntity extends Cls {
 	}
 	
 	public void addDeclarations() {
-		addSuperclass(Types.BaseBean);
-		
+		addSuperclass(JsonTypes.BaseJsonEntity);
 	//	addPreprocessorInstruction("#define " + getName()+ " "+CodeUtil2.uc1stCamelCase(tbl.getName()));
-		addIncludeHeader("basebean");
 		addIncludeLib(Types.QString);
 		addIncludeLib(CoreTypes.QVariant);
 		addIncludeLib(Types.QDate);
 		addIncludeLib("memory");
 		addIncludeHeader("nullable");
-		
+		addIncludeHeader(JsonTypes.BaseJsonEntity.getIncludeHeader());
 
-		addIncludeHeader(repositoryPath + "beanrepository");
 		addIncludeHeader(Types.orderedSet(null).getHeaderInclude());
 		addAttributes(tbl.getAllColumns());
 		addForwardDeclaredClass(this);

@@ -1,26 +1,31 @@
 package cpp.jsonentityrepository.method;
 
+import cpp.CoreTypes;
+import cpp.JsonTypes;
 import cpp.NetworkTypes;
-import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.LambdaExpression;
 import cpp.core.Method;
 import cpp.core.Param;
+import cpp.core.QtSignal;
+import cpp.core.expression.Expressions;
 import cpp.core.expression.Var;
+import cpp.core.instruction.QtEmit;
 import cpp.jsonentity.JsonEntity;
 import cpp.jsonentityrepository.JsonEntityRepository;
 import cpp.lib.ClsQNetworkAccessManager;
 import cpp.lib.ClsQNetworkReply;
 import cpp.lib.QObjectConnect;
 
-public class MethodGetFromUrl extends Method {
+public class MethodLoadFromUrl extends Method {
 
 	Param pUrl; 
+	JsonEntity entity;
 	
-	public MethodGetFromUrl(JsonEntity entity) {
-		super(Public, entity.toSharedPtr(), "get"+entity.getName()+"FromUrl");
-		setStatic(true);
-		pUrl = addParam(new Param(Types.QString.toConstRef(), "url"));
+	public MethodLoadFromUrl(JsonEntity entity) {
+		super(Public, CoreTypes.Void, "load"+entity.getName()+"FromUrl");
+		pUrl = addParam(new Param(NetworkTypes.QUrl.toConstRef(), "url"));
+		this.entity = entity;
 	}
 
 	@Override
@@ -30,13 +35,11 @@ public class MethodGetFromUrl extends Method {
 		Var reply = _declare(NetworkTypes.QNetworkReply.toRawPointer(), "reply", aNetwork.callMethod(ClsQNetworkAccessManager.get, req));
 		
 		LambdaExpression lambdaExpression = new LambdaExpression();
-		lambdaExpression.addInstr(reply.callMethodInstruction(ClsQNetworkReply.deleteLater));
 		addInstr(new QObjectConnect(reply,"&QNetworkReply::finished",aNetwork,
-				lambdaExpression.setCapture(reply)));
+				lambdaExpression.setCapture(reply, _this())));
 	    		
-	    		
-	    		
-	    
+		lambdaExpression.addInstr(new QtEmit( (QtSignal)JsonTypes.JsonEntityRepository.getMethod("onLoaded"+entity.getName()), JsonTypes.JsonEntityRepository.callStaticMethod(MethodGetFromJson.getMethodName(entity),reply.callMethod(ClsQNetworkReply.readAll))));
+		lambdaExpression.addInstr(reply.callMethodInstruction(ClsQNetworkReply.deleteLater));
 	}
 
 }
