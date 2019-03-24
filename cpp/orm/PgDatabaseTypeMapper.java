@@ -10,6 +10,7 @@ import cpp.core.expression.BoolExpression;
 import cpp.core.expression.CreateObjectExpression;
 import cpp.core.expression.DoubleExpression;
 import cpp.core.expression.Expression;
+import cpp.core.expression.Int64Expression;
 import cpp.core.expression.IntExpression;
 import cpp.core.expression.LongLongExpression;
 import cpp.core.expression.ShortExpression;
@@ -156,6 +157,8 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 					return new IntExpression(0);
 				} else if (type.equals(Types.Double)) {
 					return new DoubleExpression(0.0);
+				} else if (type.equals(Types.Int64)) {
+					return new Int64Expression(0L);
 				}
 			}
 		} else if (string.startsWith("nextval(")) {

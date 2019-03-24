@@ -12,6 +12,11 @@ public class MethodCall extends Expression {
 	public MethodCall(Expression expression, Method method, Expression ...args) {
 		this.expression = expression;
 		this.args = args;
+		for(int i=0;i<args.length;i++) {
+			if(args[i] == null) {
+				throw new NullPointerException();
+			}
+		}
 		this.method = method;
 		if (method==null) {
 			throw new NullPointerException();

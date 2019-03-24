@@ -13,8 +13,12 @@ public class MethodGetSelectFields extends Method  {
 
 	protected List<Column> cols;
 	
+	public static String getMethodName() {
+		return "getSelectFields";
+	}
+	
 	public MethodGetSelectFields(List<Column> cols) {
-		super(Public, Types.QString, "getSelectFields");
+		super(Public, Types.QString, getMethodName());
 		setStatic(true);
 		addParam(new Param(Types.QString.toConstRef(), "alias"));
 		this.cols = cols;

@@ -179,13 +179,16 @@ public class MethodBeanSave extends Method {
 						foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction(ClsQVariantList.append, foreachAttrAdd.getVar().getType().equals(Types.QVariant) ? foreachAttrAdd.getVar() :  Types.QVariant.callStaticMethod(ClsQVariant.fromValue,foreachAttrAdd.getVar())));
 					}
 					int propertyColumnCount=0;
-					for(Column col:r.getMappingTable().getAllColumns()) {
+					// FIXME support for additional mapping table columns
+					/*for(Column col:r.getMappingTable().getAllColumns()) {
 												
 						if(!col.isPartOfPk()) {
 							propertyColumnCount++;
-							foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction(ClsQVariantList.append, BeanCls.getDatabaseMapper().getColumnDefaultValueExpression(col)));
+							Expression expr = BeanCls.getDatabaseMapper().getColumnDefaultValueExpression(col);
+							if(expr!=null)
+								foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction(ClsQVariantList.append, expr));
 						}
-					}
+					}*/
 					
 				//	foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction(ClsQVariantList.append, _this().accessAttr(new Attr( bean.getPkType(),  bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName()))));
 	//				foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction(ClsQVariantList.append, foreachAttrAdd.getVar()));

@@ -2,9 +2,11 @@ package cpp.beanquery.method;
 
 import cpp.Types;
 import cpp.bean.BeanCls;
+import cpp.beanquery.ClsBeanQuery;
 import cpp.beanrepository.method.MethodFetchList;
 import cpp.core.Method;
 import cpp.core.expression.Expression;
+import cpp.core.expression.InlineIfExpression;
 
 public class MethodBeanQueryFetch extends Method{
 	BeanCls bean;
@@ -23,7 +25,7 @@ public class MethodBeanQueryFetch extends Method{
 //			}
 //		});
 		Expression aRepository = _this().accessAttr("repository");
-		_return(aRepository.callMethod(MethodFetchList.getMethodName(bean),  _this().callMethod("execQuery")));
+		_return(new InlineIfExpression(_this().accessAttr(ClsBeanQuery.lazyLoading), aRepository.callMethod(MethodFetchList.getMethodName(bean,true),  _this().callMethod("execQuery")),aRepository.callMethod(MethodFetchList.getMethodName(bean,false),  _this().callMethod("execQuery"))));
 	}
 	@Override
 	public boolean includeIfEmpty() {

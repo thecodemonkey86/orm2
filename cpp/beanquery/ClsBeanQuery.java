@@ -3,6 +3,7 @@ package cpp.beanquery;
 import cpp.Types;
 import cpp.bean.BeanCls;
 import cpp.beanquery.method.ConstructorBeanQuery;
+import cpp.beanquery.method.MethodAddQueryParameter;
 import cpp.beanquery.method.MethodAndWhere1;
 import cpp.beanquery.method.MethodAndWhere2;
 import cpp.beanquery.method.MethodAndWhere3;
@@ -43,6 +44,7 @@ import cpp.beanquery.method.MethodPrintQDebug;
 import cpp.beanquery.method.MethodSelect1;
 import cpp.beanquery.method.MethodSelect2;
 import cpp.beanquery.method.MethodSelect3;
+import cpp.beanquery.method.MethodSelectLazy;
 import cpp.beanquery.method.MethodSqlFieldEquals;
 import cpp.beanquery.method.MethodToString;
 import cpp.beanquery.method.MethodWhere1;
@@ -64,6 +66,8 @@ import database.column.Column;
 public class ClsBeanQuery extends Cls {
 
 	public static final String selectFields = "selectFields";
+	public static final String params = "params";
+	public static final String lazyLoading = "lazyLoading";
 	
 	public ClsBeanQuery(BeanCls cls) {
 		super(cls.getName()+ "BeanQuery");
@@ -103,7 +107,8 @@ public class ClsBeanQuery extends Cls {
 		addAttr(new Attr(Types.QString,"limitOffsetCondition"));
 		addAttr(new Attr(Types.QString,"limitOffsetOrderBy"));
 		addAttr(new Attr(Types.QString,"deleteFromTable"));
-		addAttr(new Attr(Types.QVariantList,"params"));
+		addAttr(new Attr(Types.Bool,lazyLoading));
+		addAttr(new Attr(Types.QVariantList,params));
 		addAttr(new Attr(Types.Sql.toRawPointer(),"sqlCon"));
 		
 		addForwardDeclaredClass(Types.BeanRepository);
@@ -156,9 +161,13 @@ public class ClsBeanQuery extends Cls {
 		addMethod(new MethodSelect1(cls,this));
 		addMethod(new MethodSelect2(cls,this));
 		addMethod(new MethodSelect3(cls,this));
+		addMethod(new MethodSelectLazy(cls,this));
 		addMethod(new MethodDeleteFrom(cls, this));
 		addMethod(new MethodExecute());
 		addMethod(new MethodGetDebugString());
+		addMethod(new MethodAddQueryParameter(Types.Int));
+		addMethod(new MethodAddQueryParameter(Types.QString));
+		addMethod(new MethodAddQueryParameter(Types.QVariant));
 	}
 	
 	@Override
