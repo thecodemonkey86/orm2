@@ -90,6 +90,6 @@ public abstract class Type {
 		return true;
 	}
 	
-	public abstract Type toNullable() ;
+	public abstract NullableType toNullable() ;
 	
 }

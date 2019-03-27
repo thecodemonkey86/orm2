@@ -54,6 +54,10 @@ public class MySqlDatabase extends Database {
 			Column col = tbl.getColumnByName(rsColumndata.getString("column_name"));
 			col.setNullable(false);
 			col.setAutoIncrement(rsColumndata.getString("extra").equals("auto_increment"));
+			
+			if(rsColumndata.getString("column_type").endsWith("unsigned")) {
+				col.setDbType(col.getDbType()+"_unsigned");
+			}
 			pk.add(col);
 		}
 		tbl.setPrimaryKey(pk);

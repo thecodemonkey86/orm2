@@ -5,7 +5,7 @@ import java.util.Collection;
 import database.column.Column;
 import database.relation.PrimaryKey;
 import php.bean.BeanCls;
-import php.bean.method.MethodGetFieldsAsAssocStringArray;
+import php.bean.method.MethodGetFieldsAsAssocArray;
 import php.core.PhpConstants;
 import php.core.PhpFunctions;
 import php.core.PhpGlobals;
@@ -45,7 +45,7 @@ public class RestMethodGetById extends Method {
 			
 			e = e.callMethod("fetchOne");
 			Var vBean = caseBeanType._declare(e.getType(),"bean",e );
-			caseBeanType.addInstr(PhpFunctions.echo(PhpFunctions.json_encode.call(vBean.callMethod(MethodGetFieldsAsAssocStringArray.METHOD_NAME), PhpConstants.JSON_UNESCAPED_UNICODE)));
+			caseBeanType.addInstr(PhpFunctions.echo(PhpFunctions.json_encode.call(vBean.callMethod(MethodGetFieldsAsAssocArray.METHOD_NAME), PhpConstants.JSON_UNESCAPED_UNICODE)));
 			caseBeanType._break();
 		}
 

@@ -33,7 +33,7 @@ public class Param extends Var{
 		String v = "$"+name;
 		String def = defaultValue != null ? CodeUtil.sp('=',defaultValue): null;
 		if(type.typeHinting()) {
-			if(type instanceof INullable && !Php.phpVersion.supportsNullableTypeHint()) {
+			if(type instanceof NullableType && !Php.phpVersion.supportsNullableTypeHint()) {
 				return CodeUtil.sp(v,def);
 			}
 			return CodeUtil.sp(type.toDeclarationString(),v,def);  

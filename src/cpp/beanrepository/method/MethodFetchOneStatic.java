@@ -57,7 +57,7 @@ package cpp.beanrepository.method;
 //		if (pk.isMultiColumn()) {
 //			b1pk =ifInstr._declare( bean.getStructPk(), "b1pk" );
 //			for(Column colPk:pk.getColumns()) {
-//				ifInstr._assign(b1pk.accessAttr(colPk.getCamelCaseName()), recDoWhile.callMethod("value", QString.fromStringConstant("b1__"+ colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType())));
+//				ifInstr._assign(b1pk.accessAttr(colPk.getCamelCaseName()), recDoWhile.callMethod("value", QString.fromStringConstant("b1__"+ colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk)));
 //			}
 //			
 //		} else {
@@ -113,12 +113,12 @@ package cpp.beanrepository.method;
 //						ifNotPkForeignIsNull.getIfInstr()._assign(
 //								pkForeign.accessAttr(colPk.getCamelCaseName()), 
 //								recDoWhile.callMethod("value",
-//										QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType()))
+//										QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk))
 //								);
 //					}
 //				} else {
 //					Column colPk=r.getDestTable().getPrimaryKey().getFirstColumn();
-//					pkForeign = ifNotPkForeignIsNull.getIfInstr()._declare(beanPk, "pkForeignB"+r.getAlias(),QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName()).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType())));
+//					pkForeign = ifNotPkForeignIsNull.getIfInstr()._declare(beanPk, "pkForeignB"+r.getAlias(),QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName()).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk)));
 //				}
 //				IfBlock ifRecValueIsNotNull = ifNotPkForeignIsNull.getIfInstr()._if(
 //						Expressions.not(fkHelper

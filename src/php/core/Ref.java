@@ -63,9 +63,10 @@ public class Ref extends Type implements IArrayAccessible{
 	}
 
 	@Override
-	public Type toNullable() {
+	public NullableType toNullable() {
 		if (base instanceof AbstractPhpCls) {
-			return new NullableCls((AbstractPhpCls) base, ((AbstractPhpCls) base).getNamespace());
+			AbstractPhpCls phpCls = (AbstractPhpCls) base;
+			return new NullableType(phpCls, phpCls.getNamespace());
 		}
 		return new NullableType(base);
 	}

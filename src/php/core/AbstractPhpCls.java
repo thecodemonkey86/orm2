@@ -68,10 +68,6 @@ public abstract class AbstractPhpCls extends Type {
 		return namespace + "\\" +getName();
 	}
 
-	@Override
-	public NullableCls toNullable() {
-		return new NullableCls(this, namespace);
-	}
 	
 	public void setRenameMethods(List<Pair<String, String>> renameMethods) {
 		this.renameMethods = renameMethods;

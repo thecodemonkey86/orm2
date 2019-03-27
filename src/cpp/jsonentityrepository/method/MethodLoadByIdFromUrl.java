@@ -65,7 +65,7 @@ url.setQuery(query.query());*/
 		addInstr(new QObjectConnect(reply,"&QNetworkReply::finished",aNetwork,
 				lambdaExpression.setCapture(reply, _this())));
 	    		
-		lambdaExpression.addInstr(new QtEmit( (QtSignal)JsonTypes.JsonEntityRepository.getMethod("onLoaded"+entity.getName()), JsonTypes.JsonEntityRepository.callStaticMethod(MethodGetFromJson.getMethodName(entity),reply.callMethod(ClsQNetworkReply.readAll))));
+		lambdaExpression.addInstr(new QtEmit( (QtSignal)JsonTypes.JsonEntityRepository.getMethod(JsonEntityRepository.getSignalNameOnLoadedOne(entity)), JsonTypes.JsonEntityRepository.callStaticMethod(MethodGetOneFromJson.getMethodName(entity),reply.callMethod(ClsQNetworkReply.readAll))));
 		lambdaExpression.addInstr(reply.callMethodInstruction(ClsQNetworkReply.deleteLater));
 	}
 

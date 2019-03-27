@@ -33,6 +33,7 @@ import cpp.jsonentity.method.MethodGetManyRelatedAtIndex;
 import cpp.jsonentity.method.MethodGetManyRelatedCount;
 import cpp.jsonentity.method.MethodIsNullOrEmpty;
 import cpp.jsonentity.method.MethodManyAttrGetter;
+import cpp.jsonentity.method.MethodOneRelationAttrSetter;
 import cpp.jsonentity.method.MethodQHashPkStruct;
 import cpp.jsonentity.method.MethodRemoveAllManyRelatedBeans;
 import cpp.jsonentity.method.MethodReplaceAllManyRelatedBeans;
@@ -154,6 +155,8 @@ public class JsonEntity extends Cls {
 				addIncludeHeader(attr.getElementType().getName().toLowerCase());
 				addForwardDeclaredClass(attr.getClassType());
 				addMethod(new MethodAttrGetter(attr,true));	
+				addMethod(new MethodOneRelationAttrSetter( this,r, true)); // internal setter
+				addMethod(new MethodOneRelationAttrSetter( this,r, false)); // public setter
 				
 				if (!r.isPartOfPk()) {
 					Attr attrModified = new Attr(Types.Bool, attr.getName()+"Modified");

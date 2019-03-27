@@ -158,7 +158,7 @@ public class MethodLoadCollection extends Method{
 		if (pk.isMultiColumn()) {
 			b1pk =doWhileQueryNext._declare( bean.getStructPk(), "b1pk" );
 			for(Column colPk:pk.getColumns()) {
-				doWhileQueryNext._assign(b1pk.accessAttr(colPk.getCamelCaseName()), recDoWhile.callMethod("value", QString.fromStringConstant("b1__"+ colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType())));
+				doWhileQueryNext._assign(b1pk.accessAttr(colPk.getCamelCaseName()), recDoWhile.callMethod("value", QString.fromStringConstant("b1__"+ colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk)));
 				
 				listForeachPkCompare.add(
 						new BinaryOperatorExpression(
@@ -180,7 +180,7 @@ public class MethodLoadCollection extends Method{
 			
 		} else {
 			Column colPk=pk.getFirstColumn();
-			b1pk =doWhileQueryNext._declare( BeanCls.getDatabaseMapper().columnToType(pk.getFirstColumn()), "b1pk", recDoWhile.callMethod("value", QString.fromStringConstant("b1__"+ pk.getFirstColumn().getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(pk.getFirstColumn().getDbType())));
+			b1pk =doWhileQueryNext._declare( BeanCls.getDatabaseMapper().columnToType(pk.getFirstColumn()), "b1pk", recDoWhile.callMethod("value", QString.fromStringConstant("b1__"+ pk.getFirstColumn().getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(pk.getFirstColumn())));
 			listForeachPkCompare.add(
 					new BinaryOperatorExpression(
 							varIfNotB1SetContainsForeachBean.callMethod("get"+colPk.getUc1stCamelCaseName()),
@@ -234,11 +234,11 @@ public class MethodLoadCollection extends Method{
 					for(Column colPk:r.getDestTable().getPrimaryKey().getColumns()) {
 						ifNotPkForeignIsNull.thenBlock()._assign(
 								pkForeign.accessAttr(colPk.getCamelCaseName()), 
-								recDoWhile.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType())));
+								recDoWhile.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk)));
 					}
 				} else {
 					Column colPk=r.getDestTable().getPrimaryKey().getFirstColumn();
-					pkForeign = ifNotPkForeignIsNull.thenBlock()._declare(beanPk, "pkForeignB"+r.getAlias(),recDoWhile.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getFirstColumn().getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType())));
+					pkForeign = ifNotPkForeignIsNull.thenBlock()._declare(beanPk, "pkForeignB"+r.getAlias(),recDoWhile.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getFirstColumn().getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk)));
 				}
 				IfBlock ifRecValueIsNotNull = ifNotPkForeignIsNull.thenBlock()._if(
 						Expressions.not(fkHelper
@@ -303,9 +303,9 @@ public class MethodLoadCollection extends Method{
 		for(Column col:bean.getTbl().getAllColumns()) {
 			try{
 				if (!col.hasOneRelation() && !col.isPartOfPk()) {
-					ifForeachPkCompare.thenBlock().addInstr(varIfNotB1SetContainsForeachBean.callMethodInstruction("set"+ col.getUc1stCamelCaseName()+"Internal",recDoWhile.callMethod("value", QString.fromStringConstant("b1__"+ col.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(col.getDbType()))));
+					ifForeachPkCompare.thenBlock().addInstr(varIfNotB1SetContainsForeachBean.callMethodInstruction("set"+ col.getUc1stCamelCaseName()+"Internal",recDoWhile.callMethod("value", QString.fromStringConstant("b1__"+ col.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(col))));
 				}
-//					_callMethodInstr(bean, "set"+col.getUc1stCamelCaseName(), getParam("record").callMethod("value", new QStringPlusOperatorExpression(getParam("alias"), QString.fromStringConstant("__"+ col.getName()))).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(col.getDbType())));
+//					_callMethodInstr(bean, "set"+col.getUc1stCamelCaseName(), getParam("record").callMethod("value", new QStringPlusOperatorExpression(getParam("alias"), QString.fromStringConstant("__"+ col.getName()))).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(col)));
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println(parent);

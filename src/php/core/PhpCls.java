@@ -308,5 +308,10 @@ public class PhpCls extends AbstractPhpCls implements IAttributeContainer{
 		 
 	}
 
+	@Override
+	public NullableType toNullable() {
+		return new NullableType(this, namespace);
+	}
+
 	
 }

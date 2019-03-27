@@ -12,8 +12,8 @@ public class PrimitiveType extends Type{
 	}
 
 	@Override
-	public Type toNullable() {
-		return this;
+	public NullableType toNullable() {
+		return new NullableType(this);
 	}
 
 	

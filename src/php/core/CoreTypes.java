@@ -32,10 +32,10 @@ public class CoreTypes {
 		public boolean typeHinting() {
 			return false;
 		}
-		
+
 		@Override
-		public Type toNullable() {
-			return this;
+		public NullableType toNullable() {
+			return null;
 		}
 		
 	};

@@ -418,7 +418,7 @@ public class MethodLoad2Levels extends Method {
 											.callMethod(
 													BeanCls.getDatabaseMapper()
 															.getQVariantConvertMethod(
-																	colPk.getDbType())));
+																	colPk)));
 				}
 
 				doWhileQSqlQueryNext
@@ -453,12 +453,12 @@ public class MethodLoad2Levels extends Method {
 								.callMethod("contains", pk.callMethod(BeanCls
 										.getDatabaseMapper()
 										.getQVariantConvertMethod(
-												colPk.getDbType()))))))
+												colPk))))))
 						.addIfInstr(
 								pkSet.callMethodInstruction("insert", pk
 										.callMethod(BeanCls.getDatabaseMapper()
 												.getQVariantConvertMethod(
-														colPk.getDbType()))))
+														colPk))))
 						.addIfInstr(
 								_this.accessAttr(
 										CodeUtil2.plural(r.getDestTable()
@@ -496,7 +496,7 @@ public class MethodLoad2Levels extends Method {
 											.callMethod(
 													BeanCls.getDatabaseMapper()
 															.getQVariantConvertMethod(
-																	colPk.getDbType())));
+																	colPk)));
 				}
 
 				doWhileQSqlQueryNext
@@ -531,12 +531,12 @@ public class MethodLoad2Levels extends Method {
 								.callMethod("contains", pk.callMethod(BeanCls
 										.getDatabaseMapper()
 										.getQVariantConvertMethod(
-												colPk.getDbType()))))))
+												colPk))))))
 						.addIfInstr(
 								pkSet.callMethodInstruction("insert", pk
 										.callMethod(BeanCls.getDatabaseMapper()
 												.getQVariantConvertMethod(
-														colPk.getDbType()))))
+														colPk))))
 						.addIfInstr(
 								_this.accessAttr(
 										CodeUtil2.plural(r.getDestTable()
@@ -618,7 +618,7 @@ public class MethodLoad2Levels extends Method {
 										+ colPk.getName())).callMethod(
 												BeanCls.getDatabaseMapper()
 												.getQVariantConvertMethod(
-														colPk.getDbType()));
+														colPk));
 						checkLevel1PkExpressions.add(foreachLevel1Relation.getVar().callMethod(BeanCls.getAccessMethodNameByColumn(colPk))._equals(recValueColPkLevel1));
 					}
 					IfBlock ifBlockForeachLevel1Relation = foreachLevel1Relation.
@@ -648,7 +648,7 @@ public class MethodLoad2Levels extends Method {
 										+ colPk.getName())).callMethod(
 												BeanCls.getDatabaseMapper()
 												.getQVariantConvertMethod(
-														colPk.getDbType()));
+														colPk));
 						checkLevel1PkExpressions.add(foreachLevel1Relation.getVar().callMethod(BeanCls.getAccessMethodNameByColumn(colPk))._equals(recValueColPkLevel1));
 					}
 					IfBlock ifBlockForeachLevel1Relation = foreachLevel1Relation.
@@ -690,7 +690,7 @@ public class MethodLoad2Levels extends Method {
 										+ colPk.getName())).callMethod(
 												BeanCls.getDatabaseMapper()
 												.getQVariantConvertMethod(
-														colPk.getDbType()));
+														colPk));
 						checkLevel2PkExpressions.add(foreachLevel2Relation.getVar().callMethod(BeanCls.getAccessMethodNameByColumn(colPk))._equals(recValueColPkLevel2));
 					}
 					
@@ -726,7 +726,7 @@ public class MethodLoad2Levels extends Method {
 										+ colPk.getName())).callMethod(
 												BeanCls.getDatabaseMapper()
 												.getQVariantConvertMethod(
-														colPk.getDbType()));
+														colPk));
 						checkLevel1PkExpressions.add(foreachLevel1Relation.getVar().callMethod(BeanCls.getAccessMethodNameByColumn(colPk))._equals(recValueColPkLevel1));
 					}
 					
@@ -744,7 +744,7 @@ public class MethodLoad2Levels extends Method {
 										+ colPk.getName())).callMethod(
 												BeanCls.getDatabaseMapper()
 												.getQVariantConvertMethod(
-														colPk.getDbType()));
+														colPk));
 						checkLevel2PkExpressions.add(foreachLevel2Relation.getVar().callMethod(BeanCls.getAccessMethodNameByColumn(colPk))._equals(recValueColPkLevel2));
 					}
 					IfBlock ifBlockLevel2 = foreachLevel2Relation._if(Expressions.and(checkLevel2PkExpressions));
@@ -789,7 +789,7 @@ public class MethodLoad2Levels extends Method {
 										+ colPk.getName())).callMethod(
 												BeanCls.getDatabaseMapper()
 												.getQVariantConvertMethod(
-														colPk.getDbType()));
+														colPk));
 						checkLevel2PkExpressions.add(foreachLevel2Relation.getVar().callMethod(BeanCls.getAccessMethodNameByColumn(colPk))._equals(recValueColPkLevel2));
 					}
 					
@@ -828,7 +828,7 @@ public class MethodLoad2Levels extends Method {
 										+ colPk.getName())).callMethod(
 												BeanCls.getDatabaseMapper()
 												.getQVariantConvertMethod(
-														colPk.getDbType()));
+														colPk));
 						checkLevel1PkExpressions.add(foreachLevel1Relation.getVar().callMethod(BeanCls.getAccessMethodNameByColumn(colPk))._equals(recValueColPkLevel1));
 					}
 					
@@ -846,7 +846,7 @@ public class MethodLoad2Levels extends Method {
 										+ colPk.getName())).callMethod(
 												BeanCls.getDatabaseMapper()
 												.getQVariantConvertMethod(
-														colPk.getDbType()));
+														colPk));
 						checkLevel2PkExpressions.add(foreachLevel2Relation.getVar().callMethod(BeanCls.getAccessMethodNameByColumn(colPk))._equals(recValueColPkLevel2));
 					}
 					IfBlock ifBlockLevel2 = foreachLevel2Relation._if(Expressions.and(checkLevel2PkExpressions));
@@ -884,7 +884,7 @@ public class MethodLoad2Levels extends Method {
 										+ colPk.getName())).callMethod(
 												BeanCls.getDatabaseMapper()
 												.getQVariantConvertMethod(
-														colPk.getDbType()));
+														colPk ));
 						checkLevel1PkExpressions.add(foreachLevel1Relation.getVar().callMethod(BeanCls.getAccessMethodNameByColumn(colPk))._equals(recValueColPkLevel1));
 					}
 					
@@ -902,7 +902,7 @@ public class MethodLoad2Levels extends Method {
 										+ colPk.getName())).callMethod(
 												BeanCls.getDatabaseMapper()
 												.getQVariantConvertMethod(
-														colPk.getDbType()));
+														colPk));
 						checkLevel2PkExpressions.add(foreachLevel2Relation.getVar().callMethod(BeanCls.getAccessMethodNameByColumn(colPk))._equals(recValueColPkLevel2));
 					}
 					IfBlock ifBlockLevel2 = foreachLevel2Relation._if(Expressions.and(checkLevel2PkExpressions));

@@ -56,4 +56,9 @@ public class PhpInterface extends AbstractPhpCls {
 		}
 		this.superInterfaces.add(i);
 	}
+
+	@Override
+	public NullableType toNullable() {
+		return new NullableType(this,namespace);
+	}
 }

@@ -13,6 +13,7 @@ import cpp.core.expression.LongLongExpression;
 import cpp.core.expression.ShortExpression;
 import cpp.lib.ClsQVariant;
 import database.column.Column;
+import database.column.Column.TypeAttribute;
 
 public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 
