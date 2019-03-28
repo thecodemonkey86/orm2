@@ -3,6 +3,7 @@ package cpp.beanquery.method;
 import cpp.Types;
 import cpp.core.Constructor;
 import cpp.core.Param;
+import cpp.core.expression.BoolExpression;
 import cpp.core.expression.IntExpression;
 
 public class ConstructorBeanQuery extends Constructor {
@@ -21,6 +22,7 @@ public class ConstructorBeanQuery extends Constructor {
 		addInstr( _this().assignAttr(pSqlCon.getName(), pSqlCon));
 		addInstr( _this().assignAttr("limitResults", new IntExpression(0)));
 		addInstr( _this().assignAttr("resultOffset", new IntExpression(-1)));
+		_assign(_this().accessAttr("lazyLoading"), BoolExpression.FALSE);
 	}
 
 	

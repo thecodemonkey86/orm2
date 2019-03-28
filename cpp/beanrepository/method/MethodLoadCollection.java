@@ -288,11 +288,11 @@ public class MethodLoadCollection extends Method{
 						,  foreignBean);
 			
 		
-			for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
-				if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
-					ifRelatedBeanIsNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", recDoWhile));
-				}
-			}
+//			for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
+//				if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
+//					ifRelatedBeanIsNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", recDoWhile));
+//				}
+//			}
 //			ifRelatedBeanIsNull.getIfInstr()._callMethodInstr(foreignBean, "setLoaded", BoolExpression.TRUE);
 			
 			//bCount++;

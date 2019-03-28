@@ -179,11 +179,11 @@ protected Expression getExpressionQuery() {
 						,  foreignBean);
 			
 		
-			for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
-				if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
-					ifRelatedBeanIsNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", b1));
-				}
-			}
+//			for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
+//				if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
+//					ifRelatedBeanIsNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", b1));
+//				}
+//			}
 		}
 		
 		doWhileQueryNext.addInstr(recDoWhile.assign(query.callMethod("record")));

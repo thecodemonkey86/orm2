@@ -51,7 +51,8 @@ public class ClsBeanRepository extends Cls{
 			addMethod(new MethodGetById(bean));
 			addMethod(new MethodGetById(bean,true));
 //			addMethod(new MethodGetByRecord(bean.getTbl().getColumns(true), bean));
-			addMethod(new MethodFetchList(bean.getOneRelations(), bean.getOneToManyRelations(), bean, bean.getTbl().getPrimaryKey()));
+			addMethod(new MethodFetchList(bean, bean.getTbl().getPrimaryKey(),false));
+			addMethod(new MethodFetchList(bean, bean.getTbl().getPrimaryKey(),true));
 //			addMethod(new MethodFetchListStatic(bean));
 			addMethod(new MethodFetchOne(bean.getOneRelations(),bean.getOneToManyRelations(), bean, null));
 //			addMethod(new MethodFetchOneStatic(bean));
