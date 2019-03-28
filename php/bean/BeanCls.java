@@ -23,7 +23,6 @@ import php.bean.method.MethodColumnAttrSetterInternal;
 import php.bean.method.MethodCreateNew;
 import php.bean.method.MethodGetFieldName;
 import php.bean.method.MethodGetFieldsAsAssocArray;
-import php.bean.method.MethodGetFieldsAsAssocStringArray;
 import php.bean.method.MethodGetPrimaryKeyFields;
 import php.bean.method.MethodHasAddedManyToMany;
 import php.bean.method.MethodHasRemovedManyToMany;

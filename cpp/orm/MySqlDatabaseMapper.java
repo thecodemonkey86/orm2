@@ -15,7 +15,6 @@ import cpp.core.expression.Int8Expression;
 import cpp.core.expression.IntExpression;
 import cpp.lib.ClsQVariant;
 import database.column.Column;
-import database.column.Column.TypeAttribute;
 
 public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 	@Override

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import codegen.CodeUtil;
 import cpp.core.QtSignal;
 import cpp.core.expression.Expression;
-import util.CodeUtil2;
 
 public class QtEmit extends Instruction{
 	QtSignal signal;

@@ -8,7 +8,6 @@ import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.QString;
 import cpp.core.SharedPtr;
-import cpp.core.expression.Expression;
 import cpp.core.expression.Var;
 import cpp.core.instruction.IfBlock;
 import cpp.jsonentity.JsonEntity;

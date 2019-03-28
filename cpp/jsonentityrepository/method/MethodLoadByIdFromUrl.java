@@ -16,7 +16,6 @@ import cpp.jsonentity.JsonEntity;
 import cpp.jsonentityrepository.JsonEntityRepository;
 import cpp.lib.ClsQNetworkAccessManager;
 import cpp.lib.ClsQNetworkReply;
-import cpp.lib.ClsQString;
 import cpp.lib.ClsQUrl;
 import cpp.lib.ClsQUrlQuery;
 import cpp.lib.QObjectConnect;
