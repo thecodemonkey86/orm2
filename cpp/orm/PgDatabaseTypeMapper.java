@@ -119,11 +119,9 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 			} else {
 				switch(dbType) {
 				case "integer":
-					IntExpression intExpression = new IntExpression(0);
-					return new CreateObjectExpression( Types.nullable(intExpression.getType()),intExpression);
+					return new CreateObjectExpression( Types.nullable(Types.Int));
 				case "bigint":
-					LongLongExpression longLongExpression = new LongLongExpression(0L);
-					return new CreateObjectExpression(Types.nullable(Types.LongLong), longLongExpression);
+					return new CreateObjectExpression(Types.nullable(Types.LongLong));
 				case "character varying":
 				case "character":	
 				case "text":
@@ -137,8 +135,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 					return new CreateObjectExpression(Types.nullable(Types.QTime) );
 				case "double precision":
 				case "numeric":
-					 DoubleExpression doubleExpression = new DoubleExpression(0.0);
-					 return new CreateObjectExpression(Types.nullable(doubleExpression.getType()), doubleExpression);
+					 return new CreateObjectExpression(Types.nullable(Types.Double));
 				case "bytea":
 					return new CreateObjectExpression(Types.nullable(Types.QByteArray)) ;		
 				default:
