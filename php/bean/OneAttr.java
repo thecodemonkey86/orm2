@@ -10,7 +10,7 @@ public class OneAttr extends Attr {
 	protected OneRelation relation;
 	
 	public OneAttr(OneRelation relation) {
-		super(Attr.Protected, Beans.get(relation.getDestTable().getUc1stCamelCaseName()),
+		super(Attr.Protected, Beans.get(relation.getDestTable().getUc1stCamelCaseName()).toNullable(),
 				PgCppUtil.getOneRelationDestAttrName(relation)
 				, Expressions.Null, false);
 		

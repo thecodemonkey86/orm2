@@ -10,6 +10,7 @@ import php.core.PhpFunctions;
 import php.core.Types;
 import php.core.expression.BoolExpression;
 import php.core.expression.Expression;
+import php.core.expression.Expressions;
 import php.core.expression.InlineIfExpression;
 import php.core.expression.PhpStringLiteral;
 import php.core.expression.Var;
@@ -25,7 +26,7 @@ public class MethodGetFromQueryAssocArray extends Method{
 	}
 	
 	public MethodGetFromQueryAssocArray(BeanCls bean) {
-		super(Public, bean, getMethodName(bean));
+		super(Public, bean.toNullable(), getMethodName(bean));
 		setStatic(true);
 		addParam(new Param(Types.array(Types.String).toRef(), "array"));
 		addParam(new Param(Types.String, "alias"));
@@ -40,10 +41,16 @@ public class MethodGetFromQueryAssocArray extends Method{
 	
 	@Override
 	public void addImplementation() {
-		Var bean = _declareNew(returnType, "bean", BoolExpression.FALSE);
+
 		Param array = getParam("array");
 		Param alias = getParam("alias");
+		Expression pkExprArrayIndex = BeanCls.getTypeMapper().filterFetchAssocArrayKeyExpression(alias).concat(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey("__"+beanCls.getTbl().getPrimaryKey().getFirstColumn().getName())));
 		
+		if(BeanCls.getDatabase() instanceof FirebirdDatabase) {
+			pkExprArrayIndex = PhpFunctions.substr.call(pkExprArrayIndex,new IntExpression(0),new IntExpression(31));
+		}
+		_if(array.arrayIndex(pkExprArrayIndex).isNull()).thenBlock()._return(Expressions.Null); 
+		Var bean = _declareNew(returnType, "bean", BoolExpression.FALSE);
 		
 		for(Column col:columns) {
 			if (!col.isRelationDestColumn() || col.hasOneRelation() || col.isPartOfPk()) {

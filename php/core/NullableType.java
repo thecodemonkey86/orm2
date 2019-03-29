@@ -38,7 +38,13 @@ public class NullableType extends PhpPseudoGenericClass {
 	
 	@Override
 	public String toDeclarationString() {
+		return element.toDeclarationString();
+	}
+	@Override
+	public String toNullableDeclarationString() {
 		return "?"+ element.toDeclarationString();
 	}
+	
+	
 
 }

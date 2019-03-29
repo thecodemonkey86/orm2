@@ -78,6 +78,10 @@ public class Var extends Expression{
 		return new DereferenceExpression(this);
 	}
 
+	public Expression pointer() {
+		return new PointerExpression(this);
+	}
+
 	
 	
 }

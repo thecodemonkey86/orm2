@@ -15,7 +15,8 @@ import cpp.core.method.MethodStaticAttributeSetter;
 import cpp.jsonentity.JsonEntity;
 import cpp.jsonentityrepository.method.ConstructorJsonEntityRepository;
 import cpp.jsonentityrepository.method.MethodEntityLoad;
-import cpp.jsonentityrepository.method.MethodLoadByIdFromUrl;
+import cpp.jsonentityrepository.method.MethodLoadByIdFromUrlAsynchronous;
+import cpp.jsonentityrepository.method.MethodLoadByIdFromUrlSynchronous;
 import cpp.jsonentityrepository.method.MethodGetOneFromJson;
 import cpp.jsonentityrepository.method.MethodGetVectorFromJson;
 import cpp.jsonentityrepository.method.MethodLoadFromUrl;
@@ -53,6 +54,7 @@ public class JsonEntityRepository extends Cls {
 		addIncludeLib(JsonTypes.QJsonDocument);
 		addIncludeLib(JsonTypes.QJsonObject);
 		addIncludeLib(JsonTypes.QJsonArray);
+		addIncludeLib(QtCoreTypes.QEventLoop);
 		addIncludeLib("memory");
 		
 		for(JsonEntity e : entityClasses) {
@@ -62,7 +64,8 @@ public class JsonEntityRepository extends Cls {
 			addMethod(new MethodGetOneFromJson(e,false));
 			addMethod(new MethodGetVectorFromJson(e));
 			addMethod(new MethodLoadFromUrl(e));
-			addMethod(new MethodLoadByIdFromUrl(e));
+			addMethod(new MethodLoadByIdFromUrlAsynchronous(e));
+			addMethod(new MethodLoadByIdFromUrlSynchronous(e));
 			addMethod(new MethodEntityLoad(e));
 			addMethod(new QtSignal(getSignalNameOnLoadedOne(e),new Param( e.toSharedPtr().toConstRef(),"bean")));
 			addMethod(new QtSignal(getSignalNameOnLoaded(e),new Param(Types.qvector(e.toSharedPtr()).toConstRef(),"beans")));

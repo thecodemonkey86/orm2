@@ -36,7 +36,7 @@ public class Param extends Var{
 			if(type instanceof NullableType && !Php.phpVersion.supportsNullableTypeHint()) {
 				return CodeUtil.sp(v,def);
 			}
-			return CodeUtil.sp(type.toDeclarationString(),v,def);  
+			return CodeUtil.sp(type.toNullableDeclarationString(),v,def);  
 		} else {
 			return CodeUtil.sp(v,def);
 		}

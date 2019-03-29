@@ -45,21 +45,23 @@ public class MethodGetVectorFromJson extends Method{
 		Var jsonobject = foreachJsonValue._declare(JsonTypes.QJsonObject, "jsonobject", foreachJsonValue.getVar().callMethod(ClsQJsonValue.toObject));
 		Var b1 = foreachJsonValue._declareMakeShared(entity, "b1");
 		for(Column col : entity.getTbl().getAllColumns()) {
-			
-			if(col.isNullable()) {
-				IfBlock ifValueIsNull = foreachJsonValue._ifNot(jsonobject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(col.getName())).callMethod(ClsQJsonValue.isNull));
-				//ifValueIsNull.thenBlock().addInstr( b1.callMethodInstruction(MethodColumnAttrSetNull.getMethodName(col)));
-				ifValueIsNull.thenBlock().addInstr( b1.callSetterMethodInstruction(col.getCamelCaseName(), JsonOrmUtil.jsonConvertMethod(jsonobject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(col.getName())), ((Nullable)( ((Cls)b1.getType()).getAttrByName(col.getCamelCaseName())).getType()).getElementType())));
-			} else {
-			
-				foreachJsonValue.addInstr( b1.callSetterMethodInstruction(col.getCamelCaseName(), JsonOrmUtil.jsonConvertMethod(jsonobject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(col.getName())), ((Cls)b1.getType()).getAttrByName(col.getCamelCaseName()).getType())));
+			if(!col.isRelationDestColumn() || col.isPartOfPk()) {
+				if( col.isNullable()) {
+					IfBlock ifValueIsNull = foreachJsonValue._ifNot(jsonobject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(col.getName())).callMethod(ClsQJsonValue.isNull));
+					//ifValueIsNull.thenBlock().addInstr( b1.callMethodInstruction(MethodColumnAttrSetNull.getMethodName(col)));
+					ifValueIsNull.thenBlock().addInstr( b1.callSetterMethodInstruction(col.getCamelCaseName(), JsonOrmUtil.jsonConvertMethod(jsonobject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(col.getName())), ((Nullable)( ((Cls)b1.getType()).getAttrByName(col.getCamelCaseName())).getType()).getElementType())));
+				} else {
+				
+					foreachJsonValue.addInstr( b1.callSetterMethodInstruction(col.getCamelCaseName(), JsonOrmUtil.jsonConvertMethod(jsonobject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(col.getName())), ((Cls)b1.getType()).getAttrByName(col.getCamelCaseName()).getType())));
+				}
 			}
 			
 		}
 		for(OneRelation r : entity.getOneRelations() ) {
+			IfBlock ifValueIsNull = foreachJsonValue._ifNot(jsonobject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(r.getColumns(0).getValue1().getName())).callMethod(ClsQJsonValue.isNull));
 			JsonEntity e = JsonEntities.get(r.getDestTable());
-			Var relationBeanData =foreachJsonValue._declare(e.toSharedPtr(),r.getAlias(),parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e), jsonobject.callMethod(ClsQJsonObject.value,QString.fromStringConstant(OrmUtil.getOneRelationDestAttrName(r))).callMethod(ClsQJsonValue.toObject)));
-			foreachJsonValue.addInstr(b1.callSetterMethodInstruction(OrmUtil.getOneRelationDestAttrName(r), relationBeanData));
+			Var relationBeanData =ifValueIsNull.thenBlock()._declare(e.toSharedPtr(),r.getAlias(),parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e), jsonobject.callMethod(ClsQJsonObject.value,QString.fromStringConstant(OrmUtil.getOneRelationDestAttrName(r))).callMethod(ClsQJsonValue.toObject)));
+			ifValueIsNull.thenBlock().addInstr(b1.callSetterMethodInstruction(OrmUtil.getOneRelationDestAttrName(r), relationBeanData));
 		}
 		/*for(OneToManyRelation r : entity.getOneToManyRelations() ) {
 			Var arrRelationBeans =foreachBean._declare(Types.array(Types.Mixed),"relationBeans", foreachBean.getVar().callMethod( OrmUtil.getOneToManyRelationDestAttrNameSingular(r)));

@@ -8,10 +8,10 @@ import cpp.core.instruction.Instruction;
 public class QObjectConnect extends Instruction {
 
 	Expression sender, receiver;
-	String signal;
+	Object signal;
 	Object slot;
 	
-	public QObjectConnect(Expression sender,String signal,  Expression receiver, String slot) {
+	public QObjectConnect(Expression sender,Object signal,  Expression receiver, Object slot) {
 		super();
 		this.sender = sender;
 		this.receiver = receiver;
@@ -27,6 +27,7 @@ public class QObjectConnect extends Instruction {
 		this.slot = slot;
 	}
 	
+
 	@Override
 	public String toString() {
 

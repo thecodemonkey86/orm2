@@ -166,7 +166,7 @@ public class MethodBeanQueryFetch extends Method{
 			Expression foreignBeanExpression = Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(foreignCls), row, new PhpStringLiteral(r.getAlias()));
 			
 			IfBlock ifRelatedBeanIsNull= ifNotB1SetContains.thenBlock().
-					_if(b1DoWhile.callMethod(new MethodOneRelationBeanIsNull(r)));
+					_if(Expressions.and( b1DoWhile.callMethod(new MethodOneRelationBeanIsNull(r)) ,row.arrayIndex(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias() + "__" + r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull()));
 			
 			Var foreignBean =ifRelatedBeanIsNull.thenBlock()._declare(foreignBeanExpression.getType(), "foreignB"+r.getAlias(),foreignBeanExpression) ;
 			ifRelatedBeanIsNull.thenBlock()
@@ -176,12 +176,12 @@ public class MethodBeanQueryFetch extends Method{
 								bean.getAttrByName(OrmUtil.getOneRelationDestAttrName(r)))
 						,  foreignBean);
 			
-		
-			for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
-				if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
-					ifRelatedBeanIsNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", b1DoWhile));
-				}
-			}
+		// FIXME bidirectional relations
+//			for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
+//				if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
+//					ifRelatedBeanIsNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", b1DoWhile));
+//				}
+//			}
 			
 		}
 		doWhileQueryNext._assign(row, getFetchExpression(res));

@@ -52,8 +52,10 @@ public class RestMethodGet extends Method {
 			Var beanData =  foreachBean._declare(Types.array(Types.String), "beanData",foreachBean.getVar().callMethod(MethodGetFieldsAsAssocArray.METHOD_NAME));
 			
 			for(OneRelation r : bean.getOneRelations() ) {
-				Var relationBeanData =foreachBean._declare(Types.array(Types.String), "relationBeanData_"+r.getAlias(), foreachBean.getVar().callMethod( OrmUtil.getOneRelationDestAttrGetter(r)).callMethod(MethodGetFieldsAsAssocArray.METHOD_NAME));
-				foreachBean.addInstr( beanData.arrayIndexSet(new PhpStringLiteral(OrmUtil.getOneRelationDestAttrName(r)), relationBeanData));
+				IfBlock ifRelatedBeanIsNotNull = foreachBean._if(foreachBean.getVar().callMethod( OrmUtil.getOneRelationDestAttrGetter(r)).isNotNull());
+				
+				Var relationBeanData =ifRelatedBeanIsNotNull.thenBlock()._declare(Types.array(Types.String), "relationBeanData_"+r.getAlias(),foreachBean.getVar().callMethod( OrmUtil.getOneRelationDestAttrGetter(r)).callMethod(MethodGetFieldsAsAssocArray.METHOD_NAME));
+				ifRelatedBeanIsNotNull.thenBlock().addInstr( beanData.arrayIndexSet(new PhpStringLiteral(OrmUtil.getOneRelationDestAttrName(r)), relationBeanData));
 			}
 			for(OneToManyRelation r : bean.getOneToManyRelations() ) {
 				Var arrRelationBeans =foreachBean._declare(Types.array(Types.Mixed),"relationBeans", foreachBean.getVar().callMethod( OrmUtil.getOneToManyRelationDestAttrNameSingular(r)));

@@ -36,7 +36,7 @@ public class MethodGetFieldsAsAssocArray extends Method {
 		IfBlock ifAllColumns = _if(pSpecificColumns.isNull());
 		AssocArrayInitExpression expr = new AssocArrayInitExpression();
 		for(Column col : bean.getTbl().getAllColumns()) {
-			if(!col.isRelationDestColumn()) {
+			if(!col.isRelationDestColumn() || col.isPartOfPk()) {
 				Expression e = _this().callMethod("get"+col.getUc1stCamelCaseName());
 				expr.addElement(new Pair<String, Expression>(col.getName(),e.getType().equals(Types.DateTime) ? BeanCls.getTypeMapper().getConvertFieldToStringExpression(e, col,pDateTimeFormat,pDateFormat):e) );
 				

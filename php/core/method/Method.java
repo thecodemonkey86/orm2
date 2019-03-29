@@ -57,7 +57,7 @@ public abstract class Method extends InstructionBlock{
 	}
 	
 	private String retType() {
-		return getReturnType().toDeclarationString()  ;
+		return getReturnType().toNullableDeclarationString()  ;
 	}
 	
 	@Override

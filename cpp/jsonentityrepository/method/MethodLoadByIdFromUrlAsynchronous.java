@@ -22,12 +22,12 @@ import cpp.lib.QObjectConnect;
 import cpp.orm.JsonOrmUtil;
 import database.column.Column;
 
-public class MethodLoadByIdFromUrl extends Method {
+public class MethodLoadByIdFromUrlAsynchronous extends Method {
 
 	JsonEntity entity;
 	
-	public MethodLoadByIdFromUrl(JsonEntity entity) {
-		super(Public, CoreTypes.Void, "load"+entity.getName()+"ById");
+	public MethodLoadByIdFromUrlAsynchronous(JsonEntity entity) {
+		super(Public, CoreTypes.Void, "load"+entity.getName()+"ByIdAsync");
 		this.entity = entity;
 		for(Column pkCol : entity.getTbl().getPrimaryKey()) {
 			addParam(entity.getAttrByName(pkCol.getCamelCaseName()).getType(), pkCol.getCamelCaseName());
