@@ -76,12 +76,12 @@ public class MethodGetFromRecord extends Method {
 						Var val = _declare(CoreTypes.QVariant, "_val"+col.getUc1stCamelCaseName(),getParam("record").callMethod("value", exprArrayIndex));
 						IfBlock ifIsNull = _if(val.callMethod(ClsQVariant.isNull));
 						ifIsNull.thenBlock().addInstr(vBean.callMethodInstruction("set"+col.getUc1stCamelCaseName()+"NullInternal"));
-						ifIsNull.elseBlock().addInstr(vBean.callMethodInstruction("set"+col.getUc1stCamelCaseName()+"Internal",getParam("record").callMethod("value", new QStringPlusOperatorExpression(getParam("alias"), QString.fromStringConstant("__"+ col.getName()))).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(col.getDbType()))));
+						ifIsNull.elseBlock().addInstr(vBean.callMethodInstruction("set"+col.getUc1stCamelCaseName()+"Internal",getParam("record").callMethod("value", new QStringPlusOperatorExpression(getParam("alias"), QString.fromStringConstant("__"+ col.getName()))).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(col))));
 					} else {
-						addInstr(vBean.callMethodInstruction("set"+col.getUc1stCamelCaseName()+"Internal",getParam("record").callMethod("value", exprArrayIndex).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(col.getDbType()))));
+						addInstr(vBean.callMethodInstruction("set"+col.getUc1stCamelCaseName()+"Internal",getParam("record").callMethod("value", exprArrayIndex).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(col))));
 					}
 				}
-//					_callMethodInstr(bean, "set"+col.getUc1stCamelCaseName(), getParam("record").callMethod("value", new QStringPlusOperatorExpression(getParam("alias"), QString.fromStringConstant("__"+ col.getName()))).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(col.getDbType())));
+//					_callMethodInstr(bean, "set"+col.getUc1stCamelCaseName(), getParam("record").callMethod("value", new QStringPlusOperatorExpression(getParam("alias"), QString.fromStringConstant("__"+ col.getName()))).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(col)));
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println(parent);

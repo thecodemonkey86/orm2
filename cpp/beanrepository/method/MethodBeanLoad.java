@@ -185,7 +185,7 @@ public class MethodBeanLoad extends Method {
 					ifNotPkForeignIsNull.thenBlock()._assign(
 							pk.accessAttr(colPk.getCamelCaseName()), 
 							
-							rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType())));
+							rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk)));
 				}
 				
 //				IfBlock ifNotContains = 
@@ -205,7 +205,7 @@ public class MethodBeanLoad extends Method {
 //				Var pk = doWhileQSqlQueryNext._declare(
 //						type, 
 //						"pk"+r.getAlias() 
-//						.callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType()))
+//						.callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk))
 //						
 //						);
 				
@@ -213,9 +213,9 @@ public class MethodBeanLoad extends Method {
 				ifNotPkForeignIsNull.thenBlock()._if(
 						Expressions.and(
 							Expressions.not(pk.callMethod("isNull")),
-							Expressions.not(pkSet.callMethod("contains", pk.callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType()))))
+							Expressions.not(pkSet.callMethod("contains", pk.callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk))))
 						))
-							.addIfInstr(pkSet.callMethodInstruction("insert", pk.callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType()))))
+							.addIfInstr(pkSet.callMethodInstruction("insert", pk.callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk))))
 							.addIfInstr(pBean.callMethodInstruction(MethodAddRelatedBeanInternal.getMethodName(r) , _this().callMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias()))))
 					;
 			}
@@ -234,7 +234,7 @@ public class MethodBeanLoad extends Method {
 					doWhileQSqlQueryNext._assign(
 							pk.accessAttr(colPk.getCamelCaseName()), 
 							
-							rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType())));
+							rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk)));
 				}
 				
 //				IfBlock ifNotContains = 
@@ -251,9 +251,9 @@ public class MethodBeanLoad extends Method {
 				doWhileQSqlQueryNext._if(
 						Expressions.and(
 							Expressions.not(pk.callMethod("isNull")),
-							Expressions.not(pkSet.callMethod("contains", pk.callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType()))))
+							Expressions.not(pkSet.callMethod("contains", pk.callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk))))
 						))
-							.addIfInstr(pkSet.callMethodInstruction("insert", pk.callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType()))))
+							.addIfInstr(pkSet.callMethodInstruction("insert", pk.callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk))))
 							.addIfInstr(pBean.callMethodInstruction(MethodAddRelatedBeanInternal.getMethodName(r) , _this().callMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias()))))
 					;
 			}

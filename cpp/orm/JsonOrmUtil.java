@@ -23,16 +23,21 @@ public class JsonOrmUtil {
 		} else if(target.equals(CoreTypes.QString)) {
 			return e.callMethod(ClsQJsonValue.toString);
 		} else if(target.equals(CoreTypes.QDate)) {
-			return Types.QDate.callStaticMethod(ClsQDate.fromString,  e.callMethod(ClsQJsonValue.toString, QString.fromStringConstant("yyyy-MM-dd")));
+			return Types.QDate.callStaticMethod(ClsQDate.fromString,  e.callMethod(ClsQJsonValue.toString), QString.fromStringConstant("yyyy-MM-dd"));
 		} else if(target.equals(CoreTypes.QDateTime)) {
-			return Types.QDateTime.callStaticMethod(ClsQDateTime.fromString,  e.callMethod(ClsQJsonValue.toString, QString.fromStringConstant("yyyy-MM-dd HH:ii:ss")));
+			return Types.QDateTime.callStaticMethod(ClsQDateTime.fromString,  e.callMethod(ClsQJsonValue.toString), QString.fromStringConstant("yyyy-MM-dd HH:ii:ss"));
+		} else if(target.equals(CoreTypes.UInt16)  || target.equals(CoreTypes.UInt8)  ) {
+			return new StaticCast(target, e.callMethod(ClsQJsonValue.toInt)) ;
+		} else if(target.equals(CoreTypes.UInt) || target.equals(CoreTypes.UInt32)  || target.equals(CoreTypes.UInt64)) {
+			return new StaticCast(target, e.callMethod(ClsQJsonValue.toDouble)) ;
 		}
 		
 		return e;
 	}
 
 	public static Expression convertToString(Param param) {
-		if(param.getType().equals(CoreTypes.Int32) ||param.getType().equals(CoreTypes.Int16) ||param.getType().equals(CoreTypes.Int8)||param.getType().equals(CoreTypes.Int64)) {
+		if(param.getType().equals(CoreTypes.Int32) ||param.getType().equals(CoreTypes.Int16) ||param.getType().equals(CoreTypes.Int8)||param.getType().equals(CoreTypes.Int64) ||
+				param.getType().equals(CoreTypes.UInt32) ||param.getType().equals(CoreTypes.UInt16) ||param.getType().equals(CoreTypes.UInt8)||param.getType().equals(CoreTypes.UInt64)) {
 			return CoreTypes.QString.callStaticMethod(ClsQString.number,param);
 		} else if(param.getType().equals(Types.QDate)) {
 			return param.callMethod(ClsQDate.toString, QString.fromStringConstant("yyyy-MM-dd"));

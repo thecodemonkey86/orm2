@@ -16,19 +16,18 @@ import cpp.jsonentity.JsonEntity;
 import cpp.jsonentityrepository.JsonEntityRepository;
 import cpp.lib.ClsQNetworkAccessManager;
 import cpp.lib.ClsQNetworkReply;
-import cpp.lib.ClsQString;
 import cpp.lib.ClsQUrl;
 import cpp.lib.ClsQUrlQuery;
 import cpp.lib.QObjectConnect;
 import cpp.orm.JsonOrmUtil;
 import database.column.Column;
 
-public class MethodLoadByIdFromUrl extends Method {
+public class MethodLoadByIdFromUrlAsynchronous extends Method {
 
 	JsonEntity entity;
 	
-	public MethodLoadByIdFromUrl(JsonEntity entity) {
-		super(Public, CoreTypes.Void, "load"+entity.getName()+"ById");
+	public MethodLoadByIdFromUrlAsynchronous(JsonEntity entity) {
+		super(Public, CoreTypes.Void, "load"+entity.getName()+"ByIdAsync");
 		this.entity = entity;
 		for(Column pkCol : entity.getTbl().getPrimaryKey()) {
 			addParam(entity.getAttrByName(pkCol.getCamelCaseName()).getType(), pkCol.getCamelCaseName());
@@ -65,7 +64,7 @@ url.setQuery(query.query());*/
 		addInstr(new QObjectConnect(reply,"&QNetworkReply::finished",aNetwork,
 				lambdaExpression.setCapture(reply, _this())));
 	    		
-		lambdaExpression.addInstr(new QtEmit( (QtSignal)JsonTypes.JsonEntityRepository.getMethod("onLoaded"+entity.getName()), JsonTypes.JsonEntityRepository.callStaticMethod(MethodGetFromJson.getMethodName(entity),reply.callMethod(ClsQNetworkReply.readAll))));
+		lambdaExpression.addInstr(new QtEmit( (QtSignal)JsonTypes.JsonEntityRepository.getMethod(JsonEntityRepository.getSignalNameOnLoadedOne(entity)), JsonTypes.JsonEntityRepository.callStaticMethod(MethodGetOneFromJson.getMethodName(entity),reply.callMethod(ClsQNetworkReply.readAll))));
 		lambdaExpression.addInstr(reply.callMethodInstruction(ClsQNetworkReply.deleteLater));
 	}
 

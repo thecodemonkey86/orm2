@@ -28,6 +28,14 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 			return CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.Int16);
 		case "tinyint":
 			return CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.Int8);
+		case "int_unsigned":
+			return CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.UInt32);
+		case "bigint_unsigned":
+			return CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.UInt64);
+		case "smallint_unsigned":
+			return CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.UInt16);
+		case "tinyint_unsigned":
+			return CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.UInt8);
 		case "varchar":
 		case "character":	
 		case "char":	
@@ -68,6 +76,14 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 					return Types.Int16;
 				case "tinyint":
 					return Types.Int8;
+				case "int_unsigned":
+					return Types.UInt32;
+				case "bigint_unsigned":
+					return Types.UInt64;
+				case "smallint_unsigned":
+					return Types.UInt16;
+				case "tinyint_unsigned":
+					return Types.UInt8;
 				case "varchar":
 				case "character":	
 				case "char":	
@@ -120,6 +136,14 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 			case "smallint":
 				return new Int16Expression((short) 0);
 			case "tinyint":
+				return new Int8Expression((byte) 0);
+			case "int_unsigned":
+				return new IntExpression(0);
+			case "bigint_unsigned":
+				return new Int64Expression(0L);
+			case "smallint_unsigned":
+				return new Int16Expression((short) 0);
+			case "tinyint_unsigned":
 				return new Int8Expression((byte) 0);
 			case "varchar":
 			case "character":	

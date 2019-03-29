@@ -13,7 +13,7 @@ public class MethodOneRelationAttrSetter extends MethodAttributeSetter {
 	protected boolean internal; 
 	
 	public MethodOneRelationAttrSetter(Attr attr, boolean internal) {
-		super(attr);
+		super(attr,true);
 		this.internal = internal;
 		if (internal ) {
 			this.name = this.name + "Internal";
@@ -45,9 +45,9 @@ public class MethodOneRelationAttrSetter extends MethodAttributeSetter {
 			
 		}
 		
-		if (this.internal) {
-			this.returnType = getParent();
-			_return(_this());
-		}
+//		if (this.internal) {
+//			this.returnType = getParent();
+//			_return(_this());
+//		}
 	}
 }

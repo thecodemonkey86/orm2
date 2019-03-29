@@ -90,6 +90,10 @@ public abstract class Type {
 		return true;
 	}
 	
-	public abstract Type toNullable() ;
+	public String toNullableDeclarationString() {
+		return toDeclarationString();
+	}
+	
+	public abstract NullableType toNullable() ;
 	
 }

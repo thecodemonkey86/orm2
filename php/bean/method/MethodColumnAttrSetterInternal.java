@@ -4,6 +4,7 @@ import database.column.Column;
 import php.bean.BeanCls;
 import php.core.Attr;
 import php.core.Param;
+import php.core.Types;
 import php.core.expression.Expressions;
 import php.core.method.Method;
 import util.StringUtil;
@@ -14,7 +15,7 @@ public class MethodColumnAttrSetterInternal extends Method{
 	Column col;
 	
 	public MethodColumnAttrSetterInternal(BeanCls cls, Column col, Attr a) {
-		super(Public, cls, "set"+StringUtil.ucfirst(a.getName())+"Internal");
+		super(Public, Types.Void, "set"+StringUtil.ucfirst(a.getName())+"Internal");
 		this.a=a;
 		addParam(new Param( a.getType() , a.getName(), col.isNullable() ? Expressions.Null : null));
 		this.col=col;
@@ -29,7 +30,7 @@ public class MethodColumnAttrSetterInternal extends Method{
 //			_assign(_accessThis(a), param);
 //		}
 		_assign(_accessThis(a), param);
-		_return(_this());
+		//_return(_this());
 		
 	}
 

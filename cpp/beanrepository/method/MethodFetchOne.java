@@ -88,7 +88,7 @@ protected Expression getExpressionQuery() {
 		
 		DoWhile doWhileQueryNext = ifInstr._doWhile();
 		
-		doWhileQueryNext.setCondition(Expressions.and(ifQueryNext.getCondition(),recDoWhile.callMethod(ClsQSqlRecord.value, QString.fromStringConstant("b1__" + bean.getTbl().getPrimaryKey().getFirstColumn().getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(bean.getTbl().getPrimaryKey().getFirstColumn().getDbType()))._equals(b1.callAttrGetter(bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())) ));
+		doWhileQueryNext.setCondition(Expressions.and(ifQueryNext.getCondition(),recDoWhile.callMethod(ClsQSqlRecord.value, QString.fromStringConstant("b1__" + bean.getTbl().getPrimaryKey().getFirstColumn().getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(bean.getTbl().getPrimaryKey().getFirstColumn()))._equals(b1.callAttrGetter(bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())) ));
 		
 		
 		
@@ -118,12 +118,12 @@ protected Expression getExpressionQuery() {
 						ifNotPkForeignIsNull.thenBlock()._assign(
 								pkForeign.accessAttr(colPk.getCamelCaseName()), 
 								recDoWhile.callMethod("value",
-										QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType()))
+										QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk))
 								);
 					}
 				} else {
 					Column colPk=r.getDestTable().getPrimaryKey().getFirstColumn();
-					pkForeign = ifNotPkForeignIsNull.thenBlock()._declare(beanPk, "pkForeignB"+r.getAlias(),recDoWhile.callMethod("value",QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType())));
+					pkForeign = ifNotPkForeignIsNull.thenBlock()._declare(beanPk, "pkForeignB"+r.getAlias(),recDoWhile.callMethod("value",QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk)));
 				}
 				IfBlock ifRecValueIsNotNull = ifNotPkForeignIsNull.thenBlock()._if(
 						Expressions.not(fkHelper

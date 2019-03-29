@@ -12,7 +12,7 @@ public class Resource extends Type{
 	}
 
 	@Override
-	public Type toNullable() {
+	public NullableType toNullable() {
 		return null;
 	}
 }

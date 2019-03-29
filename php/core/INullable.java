@@ -1,5 +1,5 @@
 package php.core;
 
-public interface INullable {
-
-}
+//public interface INullable {
+//
+//}

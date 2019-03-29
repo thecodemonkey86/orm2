@@ -3,7 +3,7 @@ package php.rest.method;
 import java.util.Collection;
 
 import php.bean.BeanCls;
-import php.bean.method.MethodGetFieldsAsAssocStringArray;
+import php.bean.method.MethodGetFieldsAsAssocArray;
 import php.core.PhpConstants;
 import php.core.PhpFunctions;
 import php.core.PhpGlobals;
@@ -36,7 +36,7 @@ public class RestMethodGetOne extends Method {
 					.callMethod(ClsBaseBeanQuery.select)
 					.callMethod("fetchOne");
 			Var vBean = caseBeanType._declare(e.getType(),"beans",e );
-			caseBeanType.addInstr(PhpFunctions.echo(PhpFunctions.json_encode.call(vBean.callMethod(MethodGetFieldsAsAssocStringArray.METHOD_NAME), PhpConstants.JSON_UNESCAPED_UNICODE)));
+			caseBeanType.addInstr(PhpFunctions.echo(PhpFunctions.json_encode.call(vBean.callMethod(MethodGetFieldsAsAssocArray.METHOD_NAME), PhpConstants.JSON_UNESCAPED_UNICODE)));
 			caseBeanType._break();
 		}
 

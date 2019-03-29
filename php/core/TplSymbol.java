@@ -7,7 +7,7 @@ public class TplSymbol extends Type{
 	}
 
 	@Override
-	public Type toNullable() {
+	public NullableType toNullable() {
 		return null;
 	}
 

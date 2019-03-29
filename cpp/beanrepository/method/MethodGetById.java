@@ -182,7 +182,7 @@ public class MethodGetById extends Method {
 					ifNotPkForeignIsNull.thenBlock()._assign(
 							pk.accessAttr(colPk.getCamelCaseName()), 
 							
-							rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType())));
+							rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk)));
 				}
 				
 				
@@ -202,7 +202,7 @@ public class MethodGetById extends Method {
 				Var pk = ifNotPkForeignIsNull.thenBlock()._declare(
 						type, 
 						"pk"+r.getAlias(), 
-						rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType()))
+						rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk))
 						
 						);
 				ifNotPkForeignIsNull.thenBlock()._if(Expressions.not(pkSet.callMethod("contains", pk)))

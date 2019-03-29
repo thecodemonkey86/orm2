@@ -6,7 +6,10 @@ import cpp.core.expression.Expression;
 import database.column.Column;
 
 public abstract class DatabaseTypeMapper {
-	public abstract Method getQVariantConvertMethod(String dbType);
+	public Method getQVariantConvertMethod(Column col) {
+		return getQVariantConvertMethod(col.getDbType());
+	}
+	public abstract Method getQVariantConvertMethod(String pgType);
 	public abstract Type getTypeFromDbDataType(String dbType, boolean nullable);
 	
 	public abstract Expression getColumnDefaultValueExpression(Column col);

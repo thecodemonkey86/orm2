@@ -4,6 +4,7 @@ import database.column.Column;
 import php.bean.BeanCls;
 import php.core.Attr;
 import php.core.Param;
+import php.core.Types;
 import php.core.expression.BoolExpression;
 import php.core.expression.Expression;
 import php.core.expression.Expressions;
@@ -20,7 +21,7 @@ public class MethodColumnAttrSetter extends Method {
 	BeanCls bean;
 	
 	public MethodColumnAttrSetter(BeanCls cls, Column col, Attr a) {
-		super(Public, cls, "set" + StringUtil.ucfirst(a.getName()));
+		super(Public, Types.Void, "set" + StringUtil.ucfirst(a.getName()));
 		this.a = a;
 		addParam(new Param(a.getType(), a.getName(), col.isNullable() ? Expressions.Null : null));
 		this.col = col;
@@ -51,7 +52,7 @@ public class MethodColumnAttrSetter extends Method {
 			ifNotInsert.thenBlock().addInstr(_this().assignAttr("primaryKeyModified",
 					BoolExpression.TRUE));
 		}
-		_return(_this());
+		//_return(_this());
 
 	}
 	

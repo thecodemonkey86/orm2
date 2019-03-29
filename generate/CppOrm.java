@@ -246,6 +246,9 @@ Charset utf8 = Charset.forName("UTF-8");
 //		Files.write(path.resolve("beanhelper").resolve("beanhelper.h"), helper.toHeaderString().getBytes(utf8), writeOptions);
 //		Files.write(path.resolve("beanhelper").resolve("beanhelper.cpp"), helper.toSourceString().getBytes(utf8), writeOptions);
 		} else {
+			Path pathBeans = pathModel.resolve("beans");
+			Path pathRepository = cfg.getRepositoryPath();
+			Path pathRepositoryQuery = pathRepository.resolve("query");
 			// json mode
 			JsonEntity.setModelPath(cfg.getBasePath().relativize(cfg.getModelPath()).toString().replace('\\', '/'));
 			JsonEntity.setRepositoryPath(cfg.getBasePath().relativize(cfg.getRepositoryPath()).toString().replace('\\', '/'));
@@ -272,13 +275,63 @@ Charset utf8 = Charset.forName("UTF-8");
 
 			repo.addMethodImplementations();
 			for (JsonEntity c : JsonEntities.getAllBeans()) {
+				Path pathHeader = pathBeans.resolve(c.getName().toLowerCase()+".h");
+				Path pathSrc = pathBeans.resolve(c.getName().toLowerCase()+".cpp");
+				
+				
+				if (Files.exists(pathHeader) && Files.exists(pathSrc)) {
+					String existingHeaderFile = new String(Files.readAllBytes(pathHeader),utf8);
+					String existingSourceFile = new String(Files.readAllBytes(pathSrc),utf8);
+					
+					Path pBackup  =Paths.get("bak_custom_class_members");
+					int startHdr = -1;
+					
+					while((startHdr = existingHeaderFile.indexOf(BeanCls.BEGIN_CUSTOM_CLASS_MEMBERS,startHdr+1))>-1) {
+						int endHdr = existingHeaderFile.indexOf(BeanCls.END_CUSTOM_CLASS_MEMBERS,startHdr);
+						if(endHdr == -1) {
+							throw new RuntimeException("Missing custom class members end marker: " + pathHeader);
+						}
+						String customClassMember = existingHeaderFile.substring(startHdr+BeanCls.BEGIN_CUSTOM_CLASS_MEMBERS.length(), endHdr);
+						//c.addMethod(new CustomClassMemberCode(customClassMember, implCode) );
+						
+						if(!Files.exists(pBackup)) {
+							Files.createDirectory(pBackup);
+						}
+						
+						Files.write(pBackup.resolve(pathHeader.getFileName().toString()),customClassMember.getBytes(utf8), writeOptions);
+						c.addCustomHeaderCode(customClassMember);
+					}
+					int startSrc = -1;
+					
+					while((startSrc = existingSourceFile.indexOf(BeanCls.BEGIN_CUSTOM_CLASS_MEMBERS,startSrc+1))>-1) {
+						int endSrc = existingSourceFile.indexOf(BeanCls.END_CUSTOM_CLASS_MEMBERS,startSrc);
+						if(endSrc == -1) {
+							throw new RuntimeException("Missing custom class members end marker: " + pathSrc);
+						}
+						String implCode = existingSourceFile.substring(startSrc+BeanCls.BEGIN_CUSTOM_CLASS_MEMBERS.length(), endSrc);
+						if(!Files.exists(pBackup)) {
+							Files.createDirectory(pBackup);
+						}
+						Files.write(pBackup.resolve(pathSrc.getFileName().toString()),implCode.getBytes(utf8), writeOptions);
+						
+						//c.addMethod(new CustomClassMemberCode(customClassMember, implCode) );
+						c.addCustomSourceCode(implCode);
+					}
+					startHdr = -1;
+					while((startHdr = existingHeaderFile.indexOf(BeanCls.BEGIN_CUSTOM_PREPROCESSOR,startHdr+1))>-1) {
+						int endHdr = existingHeaderFile.indexOf(BeanCls.END_CUSTOM_PREPROCESSOR,startHdr);
+						if(endHdr == -1) {
+							throw new RuntimeException("Missing custom preprocessor instructions end marker: " + pathHeader);
+						}
+						String customPp = existingHeaderFile.substring(startHdr+BeanCls.BEGIN_CUSTOM_PREPROCESSOR.length(), endHdr);
+						c.addCustomPreprocessorCode(customPp );
+					}
+				}
 				c.addMethodImplementations();
 			}
 			
 			
-			Path pathBeans = pathModel.resolve("beans");
-			Path pathRepository = cfg.getRepositoryPath();
-			Path pathRepositoryQuery = pathRepository.resolve("query");
+			
 			Files.createDirectories(pathBeans);
 			Files.createDirectories(pathRepositoryQuery);
 	

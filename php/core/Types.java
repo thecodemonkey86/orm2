@@ -41,10 +41,6 @@ public class Types extends CoreTypes{
 	public static PhpArray array(Type keyType, Type valueType) {
 		return new PhpArray(keyType, valueType) ;
 	}
-	public static Type nullable(Type i) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	public static ClsBaseBeanQuery beanQuery(BeanCls bean) {
 		return new ClsBaseBeanQuery(bean);
 	}

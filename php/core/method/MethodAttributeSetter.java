@@ -1,6 +1,7 @@
 package php.core.method;
 
 import php.core.Attr;
+import php.core.NullableType;
 import php.core.Param;
 import php.core.Types;
 import util.StringUtil;
@@ -8,9 +9,12 @@ import util.StringUtil;
 public class MethodAttributeSetter extends Method{
 	protected Attr attr;
 	public MethodAttributeSetter(Attr attr) {
+		this(attr,false);
+	}
+	public MethodAttributeSetter(Attr attr, boolean removeNullable) {
 		super(Public, Types.Void, "set"+StringUtil.ucfirst(attr.getName()));
 		this.attr=attr;
-		addParam(new Param(attr.getType(), attr.getName()));
+		addParam(new Param(removeNullable && attr.getType() instanceof NullableType ? ((NullableType)attr.getType()).getElementType() : attr.getType(), attr.getName()));
 	}
 
 	

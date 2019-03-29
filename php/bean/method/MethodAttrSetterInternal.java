@@ -5,6 +5,7 @@ import php.bean.BeanCls;
 import php.core.Attr;
 import php.core.Param;
 import php.core.method.Method;
+import php.core.Types;
 import util.StringUtil;
 import util.pg.PgCppUtil;
 
@@ -13,7 +14,7 @@ public class MethodAttrSetterInternal extends Method{
 	Attr a;
 	
 	public MethodAttrSetterInternal(BeanCls cls,  Attr a) {
-		super(Public, cls, "set"+StringUtil.ucfirst(a.getName())+"Internal");
+		super(Public, Types.Void, "set"+StringUtil.ucfirst(a.getName())+"Internal");
 		this.a=a;
 		addParam(new Param(a.getType() , a.getName()));
 	}
@@ -21,7 +22,7 @@ public class MethodAttrSetterInternal extends Method{
 	@Override
 	public void addImplementation() {
 		_assign(_accessThis(a), getParam(a.getName()));
-		_return(_this());
+		//_return(_this());
 		
 	}
 

@@ -13,6 +13,7 @@ public abstract class Column {
 	protected AbstractTable parentTable;
 	protected String name;
 	protected String dbType;
+	TypeAttribute dbTypeAttribute;
 	protected boolean autoIncrement;
 	protected boolean nullable;
 	protected boolean enableRawValue;
@@ -24,7 +25,9 @@ public abstract class Column {
 	protected ManyRelation manyToManyRelation;
 	protected String defaultValue;
 	protected String overrideSelect;
-	
+	public enum TypeAttribute {
+		NONE , UNSIGNED
+	}
 	private static HashSet<String> reservedNames = new HashSet<String>();
 	
 	public static void setReservedNames(HashSet<String> reservedNames) {
@@ -228,4 +231,10 @@ public abstract class Column {
 		return isRelationDestColumn;
 	}
 	
+	public TypeAttribute getDbTypeAttribute() {
+		return dbTypeAttribute;
+	}
+	public void setDbTypeAttribute(TypeAttribute dbTypeAttribute) {
+		this.dbTypeAttribute = dbTypeAttribute;
+	}
 }
