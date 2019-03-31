@@ -154,6 +154,10 @@ public class JsonEntity extends Cls {
 				addAttr(attr);
 				addIncludeHeader(attr.getElementType().getName().toLowerCase());
 				addForwardDeclaredClass(attr.getClassType());
+				if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
+					addForwardDeclaredClass( ((Struct) Types.getRelationForeignPrimaryKeyTypeJsonEntities(r)));
+				}
+				
 				addMethod(new MethodAttrGetter(attr,true));	
 				addMethod(new MethodOneRelationAttrSetter( this,r, true)); // internal setter
 				addMethod(new MethodOneRelationAttrSetter( this,r, false)); // public setter
@@ -170,14 +174,18 @@ public class JsonEntity extends Cls {
 		for(OneToManyRelation r:oneToManyRelations) {
 			ManyAttr attr = new ManyAttr(r);
 			addAttr(attr);
-			Attr attrManyToManyAdded = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Added");
+			Attr attrManyToManyAdded = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyTypeJsonEntities(r)) ,attr.getName()+"Added");
 			addAttr(attrManyToManyAdded);
 			addMethod(new MethodAttributeGetter(attrManyToManyAdded));
 			
-			Attr attrManyToManyRemoved = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Removed");
+			Attr attrManyToManyRemoved = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyTypeJsonEntities(r)) ,attr.getName()+"Removed");
 			addAttr(attrManyToManyRemoved);
 			addIncludeHeader(attr.getClassType().getIncludeHeader());
 			addForwardDeclaredClass((Cls) attr.getElementType());
+			if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
+				addForwardDeclaredClass( ((Struct) Types.getRelationForeignPrimaryKeyTypeJsonEntities(r)));
+			}
+			
 			addMethod(new MethodManyAttrGetter(attr));
 			addMethod(new MethodAddRelatedBean(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
 			//addMethod(new MethodAddRelatedBean(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
@@ -195,6 +203,9 @@ public class JsonEntity extends Cls {
 			addAttr(attr);
 			addIncludeHeader(attr.getClassType().getIncludeHeader());
 			addForwardDeclaredClass((Cls) attr.getElementType());
+			if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
+				addForwardDeclaredClass( ((JsonEntity) Types.getRelationForeignPrimaryKeyTypeJsonEntities(r)).getStructPk());
+			}
 			addMethod(new MethodManyAttrGetter(attr));
 			
 		}

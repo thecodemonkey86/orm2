@@ -7,6 +7,8 @@ import cpp.beanquery.ClsBeanQuery;
 import cpp.beanrepository.ClsBeanRepository;
 import cpp.core.Cls;
 import cpp.core.Type;
+import cpp.jsonentity.JsonEntities;
+import cpp.jsonentity.JsonEntity;
 import cpp.lib.ClsBaseBean;
 import cpp.lib.ClsOrderedSet;
 import cpp.lib.ClsSql;
@@ -45,6 +47,17 @@ public class Types extends CoreTypes{
 		
 	}
 	
+	public static Type getRelationForeignPrimaryKeyTypeJsonEntities(AbstractRelation r) {
+		Type beanPk = null;
+		if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
+			beanPk = JsonEntities.get(r.getDestTable().getUc1stCamelCaseName()).getStructPk();
+			
+		} else {
+			beanPk =JsonEntity.getDatabaseMapper().columnToType(r.getDestTable().getPrimaryKey().getColumns().get(0));
+		}
+		return beanPk;
+		
+	}
 	
 	public static ClsOrderedSet orderedSet(Type elementType) {
 		return new ClsOrderedSet(elementType);

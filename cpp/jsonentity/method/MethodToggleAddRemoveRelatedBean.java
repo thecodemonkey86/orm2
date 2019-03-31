@@ -1,13 +1,13 @@
 package cpp.jsonentity.method;
 
 import cpp.Types;
-import cpp.bean.ManyAttr;
 import cpp.core.Attr;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.Type;
 import cpp.core.expression.Expressions;
 import cpp.core.instruction.IfBlock;
+import cpp.jsonentity.ManyAttr;
 import cpp.lib.ClsQVector;
 import database.relation.AbstractRelation;
 import database.relation.ManyRelation;
@@ -35,7 +35,7 @@ public class MethodToggleAddRemoveRelatedBean extends Method {
 	@Override
 	public void addImplementation() {
 		// may not work if in contructor
-		Type tElement =Types.getRelationForeignPrimaryKeyType(r);
+		Type tElement =Types.getRelationForeignPrimaryKeyTypeJsonEntities(r);
 		Param pElement = addParam(new Param(tElement.isPrimitiveType() ? tElement : tElement.toConstRef(), "elem"));
 		Param pAdd = addParam(new Param( Types.Bool, "add"));
 		Attr aRemoved = parent.getAttrByName(manyAttr.getName()+"Removed");

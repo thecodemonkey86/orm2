@@ -47,7 +47,7 @@ public class RestMethodGetById extends Method {
 					.callMethod(ClsBaseBeanQuery.select);
 				
 			for(Column pkCol : pk) {
-				e = e.callMethod(ClsBaseBeanQuery.where, new PhpStringLiteral(pkCol.getEscapedName()+ "=?"), PhpGlobals.$_GET.arrayIndex(new PhpStringLiteral(pkCol.getName() )));
+				e = e.callMethod(ClsBaseBeanQuery.where, new PhpStringLiteral("b1."+pkCol.getEscapedName()+ "=?"), PhpGlobals.$_GET.arrayIndex(new PhpStringLiteral(pkCol.getName() )));
 			}
 			
 			e = e.callMethod("fetchOne");
@@ -62,14 +62,14 @@ public class RestMethodGetById extends Method {
 				ifRelatedBeanIsNotNull.thenBlock().addInstr( beanData.arrayIndexSet(new PhpStringLiteral(OrmUtil.getOneRelationDestAttrName(r)), relationBeanData));
 			}
 			for(OneToManyRelation r : bean.getOneToManyRelations() ) {
-				Var arrRelationBeans =caseBeanType._declare(Types.array(Types.Mixed),"relationBeans", vBean.callMethod( OrmUtil.getOneToManyRelationDestAttrNameSingular(r)));
+				Var arrRelationBeans =caseBeanType._declare(Types.array(Types.Mixed),"relationBeans", vBean.callAttrGetter( OrmUtil.getOneToManyRelationDestAttrName(r)));
 				ForeachLoop foreachRelationBean = caseBeanType._foreach(new Var(Beans.get(r.getDestTable()), "relationBean"+r.getAlias() ), arrRelationBeans);
 				
 				Var relationBeanData= foreachRelationBean._declare(Types.array(Types.String), "relationBeanData_"+r.getAlias(), foreachRelationBean.getVar().callMethod(MethodGetFieldsAsAssocArray.METHOD_NAME));
 				beanData.arrayIndexSet(new PhpStringLiteral(OrmUtil.getOneToManyRelationDestAttrNameSingular(r)), relationBeanData);
 			}
 			for(ManyRelation r : bean.getManyRelations() ) {
-				Var arrRelationBeans =caseBeanType._declare(Types.array(Types.Mixed),"relationBeans", vBean.callMethod( OrmUtil.getManyRelationDestAttrNameSingular(r)));
+				Var arrRelationBeans =caseBeanType._declare(Types.array(Types.Mixed),"relationBeans", vBean.callAttrGetter( OrmUtil.getManyRelationDestAttrName(r)));
 				ForeachLoop foreachRelationBean = caseBeanType._foreach(new Var(Beans.get(r.getDestTable()), "relationBean"+r.getAlias() ), arrRelationBeans);
 				
 				Var relationBeanData= foreachRelationBean._declare(Types.array(Types.String), "relationBeanData_"+r.getAlias(), foreachRelationBean.getVar().callMethod(MethodGetFieldsAsAssocArray.METHOD_NAME));

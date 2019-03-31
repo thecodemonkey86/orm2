@@ -2,14 +2,14 @@ package cpp.jsonentity.method;
 
 import util.StringUtil;
 import cpp.Types;
-import cpp.bean.BeanCls;
-import cpp.bean.Beans;
-import cpp.bean.ManyAttr;
 import cpp.core.Attr;
 import cpp.core.Method;
 import cpp.core.Struct;
 import cpp.core.expression.Var;
 import cpp.core.instruction.ForeachLoop;
+import cpp.jsonentity.JsonEntities;
+import cpp.jsonentity.JsonEntity;
+import cpp.jsonentity.ManyAttr;
 import cpp.lib.ClsQVector;
 import cpp.orm.OrmUtil;
 import database.column.Column;
@@ -31,7 +31,7 @@ public class MethodRemoveAllManyRelatedBeans extends Method {
 	@Override
 	public void addImplementation() {
 		Attr a=parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
-		BeanCls relationBean = Beans.get( rel.getDestTable());
+		JsonEntity relationBean = JsonEntities.get( rel.getDestTable());
 		Var varForeach = new Var(((ManyAttr)a).getElementType().toConstRef(), "_relationBean");
 		if (relationBean.getTbl().getPrimaryKey().isMultiColumn()) {
 			ForeachLoop foreachRelationBeans = _foreach(varForeach, a);	

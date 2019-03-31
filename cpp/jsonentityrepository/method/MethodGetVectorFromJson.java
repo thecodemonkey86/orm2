@@ -20,6 +20,8 @@ import cpp.orm.JsonOrmUtil;
 import cpp.orm.OrmUtil;
 import database.column.Column;
 import database.relation.OneRelation;
+import database.relation.OneToManyRelation;
+import sunjava.bean.method.MethodAddRelatedBeanInternal;
 import util.CodeUtil2;
 
 public class MethodGetVectorFromJson extends Method{
@@ -62,6 +64,13 @@ public class MethodGetVectorFromJson extends Method{
 			JsonEntity e = JsonEntities.get(r.getDestTable());
 			Var relationBeanData =ifValueIsNull.thenBlock()._declare(e.toSharedPtr(),r.getAlias(),parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e), jsonobject.callMethod(ClsQJsonObject.value,QString.fromStringConstant(OrmUtil.getOneRelationDestAttrName(r))).callMethod(ClsQJsonValue.toObject)));
 			ifValueIsNull.thenBlock().addInstr(b1.callSetterMethodInstruction(OrmUtil.getOneRelationDestAttrName(r), relationBeanData));
+		}
+		for(OneToManyRelation r : entity.getOneToManyRelations() ) {
+			IfBlock ifValueIsNull = foreachJsonValue._ifNot(jsonobject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(r.getColumns(0).getValue1().getName())).callMethod(ClsQJsonValue.isNull));
+			JsonEntity e = JsonEntities.get(r.getDestTable());
+			Var relationBeanDataArray  =ifValueIsNull.thenBlock()._declare(JsonTypes.QJsonArray,"_jsonDataArray" +r.getAlias(), jsonobject.callMethod(ClsQJsonObject.value,QString.fromStringConstant(OrmUtil.getOneToManyRelationDestAttrName(r))).callMethod(ClsQJsonValue.toArray));
+			ForeachLoop foreachRelationBean = ifValueIsNull.thenBlock()._foreach(new Var(JsonTypes.QJsonValue.toConstRef(),"_jsonData" + r.getAlias()), relationBeanDataArray);
+			foreachRelationBean.addInstr(b1.callMethodInstruction(MethodAddRelatedBeanInternal.getMethodName(r), parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e),foreachRelationBean.getVar().callMethod(ClsQJsonValue.toObject))));
 		}
 		/*for(OneToManyRelation r : entity.getOneToManyRelations() ) {
 			Var arrRelationBeans =foreachBean._declare(Types.array(Types.Mixed),"relationBeans", foreachBean.getVar().callMethod( OrmUtil.getOneToManyRelationDestAttrNameSingular(r)));

@@ -58,14 +58,14 @@ public class RestMethodGet extends Method {
 				ifRelatedBeanIsNotNull.thenBlock().addInstr( beanData.arrayIndexSet(new PhpStringLiteral(OrmUtil.getOneRelationDestAttrName(r)), relationBeanData));
 			}
 			for(OneToManyRelation r : bean.getOneToManyRelations() ) {
-				Var arrRelationBeans =foreachBean._declare(Types.array(Types.Mixed),"relationBeans", foreachBean.getVar().callMethod( OrmUtil.getOneToManyRelationDestAttrNameSingular(r)));
+				Var arrRelationBeans =foreachBean._declare(Types.array(Types.Mixed),"relationBeans", foreachBean.getVar().callAttrGetter( OrmUtil.getOneToManyRelationDestAttrName(r)));
 				ForeachLoop foreachRelationBean = foreachBean._foreach(new Var(Beans.get(r.getDestTable()), "relationBean"+r.getAlias() ), arrRelationBeans);
 				
 				Var relationBeanData= foreachRelationBean._declare(Types.array(Types.String), "relationBeanData_"+r.getAlias(), foreachRelationBean.getVar().callMethod(MethodGetFieldsAsAssocArray.METHOD_NAME));
 				beanData.arrayIndexSet(new PhpStringLiteral(OrmUtil.getOneToManyRelationDestAttrNameSingular(r)), relationBeanData);
 			}
 			for(ManyRelation r : bean.getManyRelations() ) {
-				Var arrRelationBeans =foreachBean._declare(Types.array(Types.Mixed),"relationBeans", foreachBean.getVar().callMethod( OrmUtil.getManyRelationDestAttrNameSingular(r)));
+				Var arrRelationBeans =foreachBean._declare(Types.array(Types.Mixed),"relationBeans", foreachBean.getVar().callAttrGetter( OrmUtil.getManyRelationDestAttrName(r)));
 				ForeachLoop foreachRelationBean = foreachBean._foreach(new Var(Beans.get(r.getDestTable()), "relationBean"+r.getAlias() ), arrRelationBeans);
 				
 				Var relationBeanData= foreachRelationBean._declare(Types.array(Types.String), "relationBeanData_"+r.getAlias(), foreachRelationBean.getVar().callMethod(MethodGetFieldsAsAssocArray.METHOD_NAME));

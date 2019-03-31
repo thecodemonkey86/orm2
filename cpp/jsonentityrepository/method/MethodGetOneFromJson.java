@@ -10,12 +10,15 @@ import cpp.core.QString;
 import cpp.core.SharedPtr;
 import cpp.core.expression.Var;
 import cpp.core.instruction.IfBlock;
+import cpp.jsonentity.JsonEntities;
 import cpp.jsonentity.JsonEntity;
 import cpp.lib.ClsQJsonDocument;
 import cpp.lib.ClsQJsonObject;
 import cpp.lib.ClsQJsonValue;
 import cpp.orm.JsonOrmUtil;
+import cpp.orm.OrmUtil;
 import database.column.Column;
+import database.relation.OneRelation;
 
 public class MethodGetOneFromJson extends Method {
 
@@ -67,7 +70,12 @@ public class MethodGetOneFromJson extends Method {
 									((Cls) b1.getType()).getAttrByName(col.getCamelCaseName()).getType())));
 				}
 			}
-
+			for(OneRelation r : entity.getOneRelations() ) {
+				IfBlock ifValueIsNull = _ifNot(pJsonObject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(r.getColumns(0).getValue1().getName())).callMethod(ClsQJsonValue.isNull));
+				JsonEntity e = JsonEntities.get(r.getDestTable());
+				Var relationBeanData =ifValueIsNull.thenBlock()._declare(e.toSharedPtr(),r.getAlias(),parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e), pJsonObject.callMethod(ClsQJsonObject.value,QString.fromStringConstant(OrmUtil.getOneRelationDestAttrName(r))).callMethod(ClsQJsonValue.toObject)));
+				ifValueIsNull.thenBlock().addInstr(b1.callSetterMethodInstruction(OrmUtil.getOneRelationDestAttrName(r), relationBeanData));
+			}
 			_return(b1);
 		}
 
