@@ -49,7 +49,8 @@ public class LambdaExpression extends InstructionBlock{
 		StringBuilder sb = new StringBuilder( CodeUtil.sp(CodeUtil.brackets(CodeUtil.commaSep(capture)) ,CodeUtil.parentheses(CodeUtil.commaSep(arguments)),"{\n"));
 		
 		for(Instruction i : instructions) {
-			CodeUtil.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
+			if(Instruction.isStackTraceEnabled())
+				CodeUtil.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
 			CodeUtil.writeLine(sb,i);
 		}
 		sb.append("}");

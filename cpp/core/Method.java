@@ -98,7 +98,8 @@ public abstract class Method extends InstructionBlock{
 		
 		StringBuilder sb=new StringBuilder(CodeUtil.sp(retType(),getParent().getName()+"::"+name,CodeUtil.parentheses(CodeUtil.commaSep(params)),(constQualifier?"const":null),"{\n"));
 		for(Instruction i:instructions) {
-			CodeUtil.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
+			if(Instruction.isStackTraceEnabled())
+				CodeUtil.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
 			CodeUtil.writeLine(sb,i);
 		}
 		sb.append("}");

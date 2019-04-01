@@ -18,6 +18,7 @@ import cpp.bean.BeanCls;
 import cpp.bean.Beans;
 import cpp.beanquery.ClsBeanQuery;
 import cpp.beanrepository.ClsBeanRepository;
+import cpp.core.instruction.Instruction;
 import cpp.jsonentity.JsonEntities;
 import cpp.jsonentity.JsonEntity;
 import cpp.jsonentityrepository.JsonEntityRepository;
@@ -96,7 +97,7 @@ public class CppOrm extends OrmGenerator {
 	@Override
 	public void generate() throws IOException 	{
 Charset utf8 = Charset.forName("UTF-8");
-		
+		Instruction.setStackTraceEnabled(cfg.isEnableStacktrace());
 		
 		
 		Path pathModel = cfg.getModelPath();

@@ -35,7 +35,7 @@ public class MethodCall extends Expression {
 			strArgs[i] = args[i].getReadAccessString();
 		}
 		
-		return expression + (expression.getType().isPtr() ? "\n->" : ".") +method.getName()+CodeUtil.parentheses(CodeUtil.commaSep(strArgs));
+		return expression + (expression.getType().isPtr() ? "->" : ".") +method.getName()+CodeUtil.parentheses(CodeUtil.commaSep(strArgs));
 	}
 
 	

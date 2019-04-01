@@ -19,6 +19,7 @@ import cpp.lib.ClsQVector;
 import cpp.orm.JsonOrmUtil;
 import cpp.orm.OrmUtil;
 import database.column.Column;
+import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
 import sunjava.bean.method.MethodAddRelatedBeanInternal;
@@ -66,9 +67,16 @@ public class MethodGetVectorFromJson extends Method{
 			ifValueIsNull.thenBlock().addInstr(b1.callSetterMethodInstruction(OrmUtil.getOneRelationDestAttrName(r), relationBeanData));
 		}
 		for(OneToManyRelation r : entity.getOneToManyRelations() ) {
-			IfBlock ifValueIsNull = foreachJsonValue._ifNot(jsonobject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(r.getColumns(0).getValue1().getName())).callMethod(ClsQJsonValue.isNull));
+			IfBlock ifValueIsNull = foreachJsonValue._ifNot(jsonobject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(OrmUtil.getOneToManyRelationDestAttrNameSingular(r))).callMethod(ClsQJsonValue.isNull));
 			JsonEntity e = JsonEntities.get(r.getDestTable());
-			Var relationBeanDataArray  =ifValueIsNull.thenBlock()._declare(JsonTypes.QJsonArray,"_jsonDataArray" +r.getAlias(), jsonobject.callMethod(ClsQJsonObject.value,QString.fromStringConstant(OrmUtil.getOneToManyRelationDestAttrName(r))).callMethod(ClsQJsonValue.toArray));
+			Var relationBeanDataArray  =ifValueIsNull.thenBlock()._declare(JsonTypes.QJsonArray,"_jsonDataArray" +r.getAlias(), jsonobject.callMethod(ClsQJsonObject.value,QString.fromStringConstant(OrmUtil.getOneToManyRelationDestAttrNameSingular(r))).callMethod(ClsQJsonValue.toArray));
+			ForeachLoop foreachRelationBean = ifValueIsNull.thenBlock()._foreach(new Var(JsonTypes.QJsonValue.toConstRef(),"_jsonData" + r.getAlias()), relationBeanDataArray);
+			foreachRelationBean.addInstr(b1.callMethodInstruction(MethodAddRelatedBeanInternal.getMethodName(r), parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e),foreachRelationBean.getVar().callMethod(ClsQJsonValue.toObject))));
+		}
+		for(ManyRelation r : entity.getManyRelations() ) {
+			IfBlock ifValueIsNull = foreachJsonValue._ifNot(jsonobject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(OrmUtil.getManyRelationDestAttrName(r))).callMethod(ClsQJsonValue.isNull));
+			JsonEntity e = JsonEntities.get(r.getDestTable());
+			Var relationBeanDataArray  =ifValueIsNull.thenBlock()._declare(JsonTypes.QJsonArray,"_jsonDataArray" +r.getAlias(), jsonobject.callMethod(ClsQJsonObject.value,QString.fromStringConstant(OrmUtil.getManyRelationDestAttrName(r))).callMethod(ClsQJsonValue.toArray));
 			ForeachLoop foreachRelationBean = ifValueIsNull.thenBlock()._foreach(new Var(JsonTypes.QJsonValue.toConstRef(),"_jsonData" + r.getAlias()), relationBeanDataArray);
 			foreachRelationBean.addInstr(b1.callMethodInstruction(MethodAddRelatedBeanInternal.getMethodName(r), parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e),foreachRelationBean.getVar().callMethod(ClsQJsonValue.toObject))));
 		}

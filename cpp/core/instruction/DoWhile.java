@@ -33,7 +33,8 @@ public class DoWhile extends InstructionBlock {
 		StringBuilder sb=new StringBuilder("do {\n");
 		
 		for(Instruction i:instructions) {
-			CodeUtil.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
+			if(Instruction.isStackTraceEnabled())
+				CodeUtil.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
 			sb.append(i.toString())
 				.append('\n');
 		}
