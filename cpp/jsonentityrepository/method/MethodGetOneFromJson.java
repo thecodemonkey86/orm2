@@ -8,6 +8,7 @@ import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.QString;
 import cpp.core.SharedPtr;
+import cpp.core.expression.Expressions;
 import cpp.core.expression.Var;
 import cpp.core.instruction.ForeachLoop;
 import cpp.core.instruction.IfBlock;
@@ -75,20 +76,29 @@ public class MethodGetOneFromJson extends Method {
 				}
 			}
 			for(OneRelation r : entity.getOneRelations() ) {
-				IfBlock ifValueIsNull = _ifNot(pJsonObject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(r.getColumns(0).getValue1().getName())).callMethod(ClsQJsonValue.isNull));
+				IfBlock ifValueIsNull = _if(Expressions.and(
+						
+						pJsonObject.callMethod(ClsQJsonObject.contains, QString.fromStringConstant(OrmUtil.getOneRelationDestAttrName(r))),
+						Expressions.not(pJsonObject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(OrmUtil.getOneRelationDestAttrName(r))).callMethod(ClsQJsonValue.isNull))));
 				JsonEntity e = JsonEntities.get(r.getDestTable());
 				Var relationBeanData =ifValueIsNull.thenBlock()._declare(e.toSharedPtr(),r.getAlias(),parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e), pJsonObject.callMethod(ClsQJsonObject.value,QString.fromStringConstant(OrmUtil.getOneRelationDestAttrName(r))).callMethod(ClsQJsonValue.toObject)));
 				ifValueIsNull.thenBlock().addInstr(b1.callSetterMethodInstruction(OrmUtil.getOneRelationDestAttrName(r), relationBeanData));
 			}
 			for(OneToManyRelation r : entity.getOneToManyRelations() ) {
-				IfBlock ifValueIsNull = _ifNot(pJsonObject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(OrmUtil.getOneToManyRelationDestAttrNameSingular(r))).callMethod(ClsQJsonValue.isNull));
+				IfBlock ifValueIsNull = _if(Expressions.and(
+						
+						pJsonObject.callMethod(ClsQJsonObject.contains, QString.fromStringConstant(OrmUtil.getOneToManyRelationDestAttrNameSingular(r))),
+						Expressions.not(pJsonObject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(OrmUtil.getOneToManyRelationDestAttrNameSingular(r))).callMethod(ClsQJsonValue.isNull))));
 				JsonEntity e = JsonEntities.get(r.getDestTable());
 				Var relationBeanDataArray  =ifValueIsNull.thenBlock()._declare(JsonTypes.QJsonArray,"_jsonDataArray" +r.getAlias(), pJsonObject.callMethod(ClsQJsonObject.value,QString.fromStringConstant(OrmUtil.getOneToManyRelationDestAttrNameSingular(r))).callMethod(ClsQJsonValue.toArray));
 				ForeachLoop foreachRelationBean = ifValueIsNull.thenBlock()._foreach(new Var(JsonTypes.QJsonValue.toConstRef(),"_jsonData" + r.getAlias()), relationBeanDataArray);
 				foreachRelationBean.addInstr(b1.callMethodInstruction(MethodAddRelatedBeanInternal.getMethodName(r), parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e),foreachRelationBean.getVar().callMethod(ClsQJsonValue.toObject))));
 			}
 			for(ManyRelation r : entity.getManyRelations() ) {
-				IfBlock ifValueIsNull = _ifNot(pJsonObject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(OrmUtil.getManyRelationDestAttrNameSingular(r))).callMethod(ClsQJsonValue.isNull));
+				IfBlock ifValueIsNull = _if(Expressions.and(
+						
+						pJsonObject.callMethod(ClsQJsonObject.contains, QString.fromStringConstant(OrmUtil.getManyRelationDestAttrNameSingular(r))),
+						Expressions.not(pJsonObject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(OrmUtil.getManyRelationDestAttrNameSingular(r))).callMethod(ClsQJsonValue.isNull))));
 				JsonEntity e = JsonEntities.get(r.getDestTable());
 				Var relationBeanDataArray  =ifValueIsNull.thenBlock()._declare(JsonTypes.QJsonArray,"_jsonDataArray" +r.getAlias(), pJsonObject.callMethod(ClsQJsonObject.value,QString.fromStringConstant(OrmUtil.getManyRelationDestAttrNameSingular(r))).callMethod(ClsQJsonValue.toArray));
 				ForeachLoop foreachRelationBean = ifValueIsNull.thenBlock()._foreach(new Var(JsonTypes.QJsonValue.toConstRef(),"_jsonData" + r.getAlias()), relationBeanDataArray);
