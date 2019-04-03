@@ -14,6 +14,7 @@ import cpp.core.instruction.ForeachLoop;
 import cpp.core.instruction.IfBlock;
 import cpp.jsonentity.JsonEntities;
 import cpp.jsonentity.JsonEntity;
+import cpp.jsonentity.method.MethodColumnAttrSetterInternal;
 import cpp.lib.ClsQJsonDocument;
 import cpp.lib.ClsQJsonObject;
 import cpp.lib.ClsQJsonValue;
@@ -46,13 +47,12 @@ public class MethodGetOneFromJson extends Method {
 
 	@Override
 	public void addImplementation() {
-		Var b1 = _declareMakeShared((Cls) ((SharedPtr) returnType).getElementType(), "b1");
+		
 		if (overloadedQByteArray) {
-			Var jsondoc = _declare(JsonTypes.QJsonDocument, "jsondoc",
-					JsonTypes.QJsonDocument.callStaticMethod(ClsQJsonDocument.fromJson, pJson));
 			_return(parent.callStaticMethod(getMethodName(entity),
-					_declare(JsonTypes.QJsonObject, "jsonobject", jsondoc.callMethod(ClsQJsonDocument.object))));
+					_declare(JsonTypes.QJsonObject, "jsonobject", JsonTypes.QJsonDocument.callStaticMethod(ClsQJsonDocument.fromJson, pJson).callMethod(ClsQJsonDocument.object))));
 		} else {
+			Var b1 = _declareMakeShared((Cls) ((SharedPtr) returnType).getElementType(), "b1");
 			for (Column col : entity.getTbl().getAllColumns()) {
 				if (col.isNullable()) {
 					IfBlock ifValueIsNull = _ifNot(
@@ -60,7 +60,7 @@ public class MethodGetOneFromJson extends Method {
 									.callMethod(ClsQJsonValue.isNull));
 					// ifValueIsNull.thenBlock().addInstr(
 					// b1.callMethodInstruction(MethodColumnAttrSetNull.getMethodName(col)));
-					ifValueIsNull.thenBlock().addInstr(b1.callSetterMethodInstruction(col.getCamelCaseName(),
+					ifValueIsNull.thenBlock().addInstr(b1.callMethodInstruction(MethodColumnAttrSetterInternal.getMethodName(col),
 							JsonOrmUtil.jsonConvertMethod(
 									pJsonObject.callMethod(ClsQJsonObject.value,
 											QString.fromStringConstant(col.getName())),

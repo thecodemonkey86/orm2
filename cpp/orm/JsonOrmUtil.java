@@ -2,7 +2,6 @@ package cpp.orm;
 
 import cpp.CoreTypes;
 import cpp.Types;
-import cpp.core.Param;
 import cpp.core.QString;
 import cpp.core.Type;
 import cpp.core.expression.Expression;
@@ -35,15 +34,15 @@ public class JsonOrmUtil {
 		return e;
 	}
 
-	public static Expression convertToString(Param param) {
-		if(param.getType().equals(CoreTypes.Int32) ||param.getType().equals(CoreTypes.Int16) ||param.getType().equals(CoreTypes.Int8)||param.getType().equals(CoreTypes.Int64) ||
-				param.getType().equals(CoreTypes.UInt32) ||param.getType().equals(CoreTypes.UInt16) ||param.getType().equals(CoreTypes.UInt8)||param.getType().equals(CoreTypes.UInt64)) {
-			return CoreTypes.QString.callStaticMethod(ClsQString.number,param);
-		} else if(param.getType().equals(Types.QDate)) {
-			return param.callMethod(ClsQDate.toString, QString.fromStringConstant("yyyy-MM-dd"));
-		} else if(param.getType().equals(Types.QDateTime)) {
-			return param.callMethod(ClsQDateTime.toString, QString.fromStringConstant("yyyy-MM-dd HH:ii:ss"));
+	public static Expression convertToString(Expression expression) {
+		if(expression.getType().equals(CoreTypes.Int32) ||expression.getType().equals(CoreTypes.Int16) ||expression.getType().equals(CoreTypes.Int8)||expression.getType().equals(CoreTypes.Int64) ||
+				expression.getType().equals(CoreTypes.UInt32) ||expression.getType().equals(CoreTypes.UInt16) ||expression.getType().equals(CoreTypes.UInt8)||expression.getType().equals(CoreTypes.UInt64)) {
+			return CoreTypes.QString.callStaticMethod(ClsQString.number,expression);
+		} else if(expression.getType().equals(Types.QDate)) {
+			return expression.callMethod(ClsQDate.toString, QString.fromStringConstant("yyyy-MM-dd"));
+		} else if(expression.getType().equals(Types.QDateTime)) {
+			return expression.callMethod(ClsQDateTime.toString, QString.fromStringConstant("yyyy-MM-dd HH:ii:ss"));
 		}
-		return param;
+		return expression;
 	}
 }

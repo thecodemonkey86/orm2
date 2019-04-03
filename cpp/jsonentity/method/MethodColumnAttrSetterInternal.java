@@ -15,8 +15,12 @@ public class MethodColumnAttrSetterInternal extends Method{
 	Attr a;
 	Column col;
 	
+	public static String getMethodName(Column col) {
+		return "set"+StringUtil.ucfirst(col.getCamelCaseName())+"Internal";
+	}
+	
 	public MethodColumnAttrSetterInternal(Column col, Attr a) {
-		super(Public, Types.Void, "set"+StringUtil.ucfirst(a.getName())+"Internal");
+		super(Public, Types.Void, getMethodName(col));
 		this.a=a;
 		if (col.isNullable()) {
 			TplCls nullable=(TplCls) a.getType();

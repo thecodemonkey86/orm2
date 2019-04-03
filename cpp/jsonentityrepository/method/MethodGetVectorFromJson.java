@@ -12,6 +12,7 @@ import cpp.core.instruction.ForeachLoop;
 import cpp.core.instruction.IfBlock;
 import cpp.jsonentity.JsonEntities;
 import cpp.jsonentity.JsonEntity;
+import cpp.jsonentity.method.MethodColumnAttrSetterInternal;
 import cpp.lib.ClsQJsonDocument;
 import cpp.lib.ClsQJsonObject;
 import cpp.lib.ClsQJsonValue;
@@ -52,7 +53,7 @@ public class MethodGetVectorFromJson extends Method{
 				if( col.isNullable()) {
 					IfBlock ifValueIsNull = foreachJsonValue._ifNot(jsonobject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(col.getName())).callMethod(ClsQJsonValue.isNull));
 					//ifValueIsNull.thenBlock().addInstr( b1.callMethodInstruction(MethodColumnAttrSetNull.getMethodName(col)));
-					ifValueIsNull.thenBlock().addInstr( b1.callSetterMethodInstruction(col.getCamelCaseName(), JsonOrmUtil.jsonConvertMethod(jsonobject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(col.getName())), ((Nullable)( ((Cls)b1.getType()).getAttrByName(col.getCamelCaseName())).getType()).getElementType())));
+					ifValueIsNull.thenBlock().addInstr( b1.callMethodInstruction(MethodColumnAttrSetterInternal.getMethodName(col), JsonOrmUtil.jsonConvertMethod(jsonobject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(col.getName())), ((Nullable)( ((Cls)b1.getType()).getAttrByName(col.getCamelCaseName())).getType()).getElementType())));
 				} else {
 				
 					foreachJsonValue.addInstr( b1.callSetterMethodInstruction(col.getCamelCaseName(), JsonOrmUtil.jsonConvertMethod(jsonobject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(col.getName())), ((Cls)b1.getType()).getAttrByName(col.getCamelCaseName()).getType())));
