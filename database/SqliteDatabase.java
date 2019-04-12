@@ -54,11 +54,11 @@ public class SqliteDatabase extends Database {
 		return l;
 	}
 	
-	private static String getColName(String raw)  {
+	private static String filterColName(String raw)  {
 //		if(!raw.startsWith("`")) {
 //			throw new RuntimeException();
 //		}
-		return StringUtil.dropAll(raw, '`');
+		return StringUtil.dropAll(raw, '`','"');
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class SqliteDatabase extends Database {
 			while(!endOfColumnList) {
 				Column col = makeColumnInstance(tbl);
 				tbl.addColumn(col);
-				col.setName(getColName(l.get(index++)));
+				col.setName(filterColName(l.get(index++)));
 				
 				String type = l.get(index++);
 				switch(type.toUpperCase()) {
@@ -195,7 +195,7 @@ public class SqliteDatabase extends Database {
 					expectToken(l, index++, "KEY");
 					expectToken(l, index++, "(");
 					do {
-						pk.add(tbl.getColumnByName(StringUtil.dropAll(l.get(index++), '`')));
+						pk.add(tbl.getColumnByName(filterColName(l.get(index++))));
 						
 					} while(l.get(index++).equals(","));
 					
