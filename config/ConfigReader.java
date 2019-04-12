@@ -271,10 +271,16 @@ public class ConfigReader implements ContentHandler {
 			case "relation":
 				currentSrcTable = cfg.getEntityTable(atts.getValue("src"));
 				currentDestTable = cfg.getEntityTable(atts.getValue("dest"));
-				String substituteName = atts.getValue("name");
+				
+			
 				switch (section) {
 				case MANY_TO_MANY_RELATIONS:
+					if(atts.getValue("name") != null) {
+						throw new IOException("name must be replaced by nameSingular and namePlural");
+					}
 					
+					String substituteNameSingular = atts.getValue("nameSingular");
+					String substituteNamePlural = atts.getValue("namePlural");
 					String relQueryNameManyToManyRelation = atts.getValue("queryName");
 					currentManyToManyRelation = new ManyRelation(
 							relQueryNameManyToManyRelation == null || relQueryNameManyToManyRelation.isEmpty()
@@ -298,10 +304,17 @@ public class ConfigReader implements ContentHandler {
 					cfg.addMappingTable(mappingTable);
 					currentMappingTable = mappingTable;
 					currentManyToManyRelation.setMappingTable(mappingTable);
-					currentManyToManyRelation.setSubstituteName(substituteName);
+					currentManyToManyRelation.setSubstituteNameSingular(substituteNameSingular);
+					currentManyToManyRelation.setSubstituteNamePlural(substituteNamePlural);
 					manyToManyAliasCounter++;
 					break;
 				case ONE_TO_MANY_RELATIONS:
+					if(atts.getValue("name") != null) {
+						throw new IOException("name must be replaced by nameSingular and namePlural");
+					}
+					
+					substituteNameSingular = atts.getValue("nameSingular");
+					substituteNamePlural = atts.getValue("namePlural");
 					String relQueryNameOneToManyRelation = atts.getValue("queryName");
 					currentOneToManyRelation = new OneToManyRelation(
 							relQueryNameOneToManyRelation == null || relQueryNameOneToManyRelation.isEmpty()
@@ -311,7 +324,8 @@ public class ConfigReader implements ContentHandler {
 					cfg.addOneToManyRelation(currentOneToManyRelation, currentSrcTable);
 					currentOneToManyRelation.setSourceTable(currentSrcTable);
 					currentOneToManyRelation.setDestTable(currentDestTable);
-					currentOneToManyRelation.setSubstituteName(substituteName);
+					currentOneToManyRelation.setSubstituteNameSingular(substituteNameSingular);
+					currentOneToManyRelation.setSubstituteNamePlural(substituteNamePlural);
 					oneToManyAliasCounter++;
 					break;
 				case ONE_RELATIONS:
@@ -324,7 +338,8 @@ public class ConfigReader implements ContentHandler {
 					cfg.addOneRelation(currentOneRelation, currentSrcTable);
 					currentOneRelation.setSourceTable(currentSrcTable);
 					currentOneRelation.setDestTable(currentDestTable);
-					currentOneRelation.setSubstituteName(substituteName);
+					String substituteName = atts.getValue("name");
+					currentOneRelation.setSubstituteNameSingular(substituteName);
 					oneAliasCounter++;
 					break;
 				default:

@@ -13,7 +13,6 @@ import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.QString;
 import cpp.core.expression.BoolExpression;
-import cpp.core.expression.Expression;
 import cpp.core.expression.Expressions;
 import cpp.core.expression.Var;
 import cpp.core.instruction.ForeachLoop;
