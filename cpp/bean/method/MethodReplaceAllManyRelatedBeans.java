@@ -25,7 +25,7 @@ public class MethodReplaceAllManyRelatedBeans extends Method {
 	@Override
 	public void addImplementation() {
 		addInstr( _this().callMethodInstruction(MethodRemoveAllManyRelatedBeans.getMethodName(rel)));
-		ForeachLoop foreach = _foreach(new Var(Beans.get(rel.getDestTable()).toSharedPtr().toConstRef(),  OrmUtil.getManyRelationDestAttrNameSingular(rel)), beans);
+		ForeachLoop foreach = _foreach(new Var(Beans.get(rel.getDestTable()).toSharedPtr().toConstRef(), "_"+  rel.getDestTable().getCamelCaseName()), beans);
 		
 		if(rel instanceof OneToManyRelation)
 			foreach._callMethodInstr(_this(), MethodAddRelatedBean.getMethodName((OneToManyRelation) rel), foreach.getVar());

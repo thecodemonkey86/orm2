@@ -56,7 +56,7 @@ public class AbstractRelation {
 	}
 	
 	public boolean hasSubstituteName() {
-		return substituteNamePlural != null;
+		return substituteNameSingular != null;
 	}
 	
 	public void setSubstituteNameSingular(String substituteNameSingular) {

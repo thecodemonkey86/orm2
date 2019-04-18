@@ -310,11 +310,13 @@ public class ConfigReader implements ContentHandler {
 					break;
 				case ONE_TO_MANY_RELATIONS:
 					if(atts.getValue("name") != null) {
-						throw new IOException("name must be replaced by nameSingular and namePlural");
+						//throw new IOException("name must be replaced by nameSingular and namePlural");
 					}
 					
-					substituteNameSingular = atts.getValue("nameSingular");
-					substituteNamePlural = atts.getValue("namePlural");
+//					substituteNameSingular = atts.getValue("nameSingular");
+//					substituteNamePlural = atts.getValue("namePlural");
+					substituteNameSingular = atts.getValue("name");
+					substituteNamePlural = atts.getValue("name");
 					String relQueryNameOneToManyRelation = atts.getValue("queryName");
 					currentOneToManyRelation = new OneToManyRelation(
 							relQueryNameOneToManyRelation == null || relQueryNameOneToManyRelation.isEmpty()
