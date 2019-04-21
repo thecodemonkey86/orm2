@@ -17,6 +17,7 @@ import cpp.core.expression.ShortExpression;
 import database.column.Column;
 
 public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
+	@SuppressWarnings("deprecation")
 	@Override
 	public Method getQVariantConvertMethod(String pgType) {
 		return PgCppUtil.pgToQVariantConvertMethod(pgType);

@@ -30,7 +30,7 @@ public class OrmConfig {
 	protected Database database;
 	private DbCredentials credentials;
 	
-	private boolean enableStacktrace = false;
+	private boolean enableStacktrace = true;
 	private JsonMode jsonMode;
 	
 	public void setJsonMode(JsonMode jsonMode) {
