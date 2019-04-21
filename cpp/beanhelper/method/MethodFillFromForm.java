@@ -40,6 +40,8 @@ public class MethodFillFromForm extends Method{
 		}
 		if (type.equals(Types.Int)) {
 			return "intValue";
+		} else if (type.equals(Types.Int64)) {
+			return "int64Value";
 		} else if(type.equals(Types.QString)) {
 			return "stringValue";
 		} else if(type.equals(Types.Double)) {
@@ -51,7 +53,8 @@ public class MethodFillFromForm extends Method{
 		} else if(type.equals(Types.QDate)) {
 			return "dateValue";
 		}
-		throw new RuntimeException("type not implemented: "+type);
+		return null;
+		//throw new RuntimeException("type not implemented: "+type);
 	}
 	
 
@@ -60,14 +63,18 @@ public class MethodFillFromForm extends Method{
 		if (prefix) {
 			for(Column col:bean.getTbl().getColumnsWithoutPrimaryKey()) {
 				if (!col.hasOneRelation()) {
-					addInstr( getParam("bean").callMethod("set"+ col.getUc1stCamelCaseName(), getParam("form").callMethod(getFormGetterMethod(col),QString.fromStringConstant("%1_%2").callMethod("arg", getParam("prefix"), bean.callStaticMethod(MethodGetFieldName.getMethodName(col))))).asInstruction());
+					String formGetterMethod = getFormGetterMethod(col);
+					if(formGetterMethod!=null)
+						addInstr( getParam("bean").callMethod("set"+ col.getUc1stCamelCaseName(), getParam("form").callMethod(formGetterMethod,QString.fromStringConstant("%1_%2").callMethod("arg", getParam("prefix"), bean.callStaticMethod(MethodGetFieldName.getMethodName(col))))).asInstruction());
 				}
 						
 			}
 		} else {
 			for(Column col:bean.getTbl().getColumnsWithoutPrimaryKey()) {
 				if (!col.hasOneRelation()) {
-					addInstr( getParam("bean").callMethod("set"+ col.getUc1stCamelCaseName(), getParam("form").callMethod(getFormGetterMethod(col),bean.callStaticMethod(MethodGetFieldName.getMethodName(col)))).asInstruction());
+					String formGetterMethod = getFormGetterMethod(col);
+					if(formGetterMethod!=null)
+						addInstr( getParam("bean").callMethod("set"+ col.getUc1stCamelCaseName(), getParam("form").callMethod(formGetterMethod,bean.callStaticMethod(MethodGetFieldName.getMethodName(col)))).asInstruction());
 				}
 						
 			}
