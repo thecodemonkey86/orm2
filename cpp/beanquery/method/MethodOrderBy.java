@@ -1,7 +1,7 @@
 package cpp.beanquery.method;
 
 import cpp.Types;
-import cpp.beanquery.ClsBeanQuery;
+import cpp.core.Cls;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.instruction.Instruction;
@@ -12,7 +12,7 @@ public class MethodOrderBy extends Method{
 	Param pOrder;
 	Param pDirection;
 	
-	public MethodOrderBy(ClsBeanQuery parentType) {
+	public MethodOrderBy(Cls parentType) {
 		super(Public, parentType.toRef(), "orderBy");
 		pOrder = addParam(Types.QString.toConstRef(),"order");
 		pDirection = addParam(new Param( Types.OrderDirection,"direction",EnumSqlQueryOrderDirection.ORDER_ASC));

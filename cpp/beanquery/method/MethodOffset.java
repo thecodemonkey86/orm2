@@ -1,7 +1,8 @@
 package cpp.beanquery.method;
 
 import cpp.Types;
-import cpp.beanquery.ClsBeanQuery;
+import cpp.beanquery.BeanQueryType;
+import cpp.core.Cls;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.QString;
@@ -10,12 +11,16 @@ import cpp.core.instruction.Instruction;
 public class MethodOffset extends Method{
 
 	Param pJoinTableAlias, pOn;
-		
-	public MethodOffset(ClsBeanQuery parentType) {
+	BeanQueryType beanQueryType;
+	
+	public MethodOffset(Cls parentType, BeanQueryType beanQueryType) {
 		super(Public, parentType.toRef(), "offset");
 		addParam(Types.Int64, "offset");
-		addParam(Types.QString.toConstRef(),"condition");
-		addParam(new Param(Types.QString.toConstRef(),"orderBy", new QString()));
+		if(beanQueryType == BeanQueryType.Select) {
+			addParam(Types.QString.toConstRef(),"condition");
+			addParam(new Param(Types.QString.toConstRef(),"orderBy", new QString()));
+		}
+		this.beanQueryType = beanQueryType;
 		
 	}
 
@@ -24,11 +29,18 @@ public class MethodOffset extends Method{
 		addInstr(new Instruction() {
 			@Override
 			public String toString() {
-				return "this->limitResults = -1;\r\n" + 
-						"        this->resultOffset = offset;\r\n" + 
-						"        this->limitOffsetCondition = condition;\r\n" + 
-						"        this->limitOffsetOrderBy = orderBy;\r\n" + 
-						"        return *this;";
+				if(beanQueryType == BeanQueryType.Select) {
+					return "this->limitResults = -1;\r\n" + 
+							"        this->resultOffset = offset;\r\n" + 
+							"        this->limitOffsetCondition = condition;\r\n" + 
+							"        this->limitOffsetOrderBy = orderBy;\r\n" + 
+							"        return *this;";
+				} else {
+					return "this->limitResults = -1;\r\n" + 
+							"        this->resultOffset = offset;\r\n" + 
+							"        return *this;";
+				}
+				
 			}
 		});
 	}

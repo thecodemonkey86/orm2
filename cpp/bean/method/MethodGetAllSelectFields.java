@@ -3,16 +3,12 @@ package cpp.bean.method;
 import java.util.ArrayList;
 import java.util.List;
 
-import codegen.CodeUtil;
 import cpp.Types;
 import cpp.bean.BeanCls;
 import cpp.core.Method;
 import cpp.core.Param;
-import cpp.core.QString;
-import cpp.core.expression.Expression;
-import cpp.core.expression.Expressions;
-import cpp.core.expression.QChar;
-import cpp.core.expression.QStringPlusOperatorExpression;
+import cpp.core.QStringLiteral;
+import cpp.lib.ClsQString;
 import database.column.Column;
 import database.relation.AbstractRelation;
 import database.relation.OneRelation;
@@ -20,11 +16,12 @@ import database.relation.OneRelation;
 public class MethodGetAllSelectFields extends Method  {
 
 	protected List<Column> cols;
+	Param pAlias;
 	
 	public MethodGetAllSelectFields(List<Column> cols) {
 		super(Public, Types.QString, getMethodName());
 		setStatic(true);
-		addParam(new Param(Types.QString.toConstRef(), "alias"));
+		pAlias = addParam(new Param(Types.QString.toConstRef(), "alias"));
 		this.cols = cols;
 	}
 	
@@ -36,11 +33,11 @@ public class MethodGetAllSelectFields extends Method  {
 	public void addImplementation() {
 		BeanCls bean=(BeanCls) parent;
 		List<OneRelation> oneRelations =bean.getOneRelations();
-		List<AbstractRelation> relations = new ArrayList<>(bean.getOneToManyRelations().size()+bean.getManyToManyRelations().size());
-		relations.addAll(bean.getOneToManyRelations());
-		relations.addAll(bean.getManyToManyRelations());
+		List<AbstractRelation> manyRelations = new ArrayList<>(bean.getOneToManyRelations().size()+bean.getManyToManyRelations().size());
+		manyRelations.addAll(bean.getOneToManyRelations());
+		manyRelations.addAll(bean.getManyToManyRelations());
 		
-		ArrayList<Expression> l=new ArrayList<>();
+		/*ArrayList<Expression> l=new ArrayList<>();
 		for(Column col:cols) {
 			QStringPlusOperatorExpression e= new QStringPlusOperatorExpression(getParam("alias"), QString.fromStringConstant('.' + CodeUtil.sp(col.getEscapedName(),"as ") ));
 			QStringPlusOperatorExpression colExpression = e.concat(getParam("alias")).concat(QString.fromStringConstant("__" + col.getName()));
@@ -66,6 +63,26 @@ public class MethodGetAllSelectFields extends Method  {
 		if (!l2.isEmpty())
 			l.add(QString.fromStringConstant(CodeUtil.concat(l2, ",")));
 		_return(Expressions.concat(QChar.fromChar(','), l));		
+		*/
+		String sprintfTmpl = "%1." + cols.get(0).getEscapedName() + " as %1__" + cols.get(0).getName();
+
+		
+		for(int i=1;i<cols.size();i++) {
+			sprintfTmpl = sprintfTmpl + "," + "%1." + cols.get(i).getEscapedName() + " as %1__" + cols.get(i).getName();
+		}
+		for(OneRelation r:oneRelations) {
+			for(Column col:r.getDestTable().getAllColumns()) {
+				sprintfTmpl = sprintfTmpl + "," + r.getAlias()+"." + col.getEscapedName() + " as "+r.getAlias()+"__" + col.getName();
+			}
+		}
+		for(AbstractRelation r:manyRelations) {
+			for(Column col:r.getDestTable().getAllColumns()) {
+				sprintfTmpl = sprintfTmpl + "," + r.getAlias()+"." + col.getEscapedName() + " as "+r.getAlias()+"__" + col.getName();
+			}
+		}
+		_return (new QStringLiteral(sprintfTmpl).callMethod(ClsQString.arg,pAlias ));
+		
+		
 	}
 
 }

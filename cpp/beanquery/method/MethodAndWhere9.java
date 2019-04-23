@@ -1,7 +1,7 @@
 package cpp.beanquery.method;
 
 import cpp.Types;
-import cpp.beanquery.ClsBeanQuery;
+import cpp.core.Cls;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.instruction.Instruction;
@@ -11,7 +11,7 @@ public class MethodAndWhere9 extends Method{
 	Param pWhereCond;
 	Param pParam;
 	
-	public MethodAndWhere9(ClsBeanQuery parentType) {
+	public MethodAndWhere9(Cls parentType) {
 		super(Public, parentType.toRef(), "andWhere");
 		pWhereCond = addParam(Types.QString.toConstRef(),"whereCond");
 		pParam = addParam(Types.QVariant.toConstRef(),"param");

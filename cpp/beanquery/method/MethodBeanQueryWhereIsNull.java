@@ -1,27 +1,32 @@
 package cpp.beanquery.method;
 
 import cpp.bean.BeanCls;
-import cpp.beanquery.ClsBeanQuery;
+import cpp.beanquery.BeanQueryType;
+import cpp.core.Cls;
 import cpp.core.Method;
 import cpp.core.QString;
 import cpp.lib.ClsAbstractBeanQuery;
-import cpp.lib.ClsQString;
 import database.column.Column;
-import cpp.core.expression.Expressions;
-import cpp.core.expression.InlineIfExpression;
 
 public class MethodBeanQueryWhereIsNull extends Method{
 	BeanCls bean;
+	BeanQueryType beanQueryType;
 	Column c;
-	public MethodBeanQueryWhereIsNull(ClsBeanQuery query, BeanCls bean,Column c) {
+	public MethodBeanQueryWhereIsNull(Cls query,BeanQueryType beanQueryType, BeanCls bean,Column c) {
 		super(Public, query.toRef(), "where"+c.getUc1stCamelCaseName()+"isNull");
 		this.bean=bean;
 		this.c = c;
+		this.beanQueryType = beanQueryType;
 	}
 
 	@Override
 	public void addImplementation() {
-		_return( _this().callMethod(ClsAbstractBeanQuery.where, new InlineIfExpression(Expressions.not(_this().accessAttr(ClsBeanQuery.selectFields).callMethod(ClsQString.isEmpty)),QString.fromStringConstant("b1." + c.getEscapedName()+" is null"),QString.fromStringConstant(c.getEscapedName()+" is null"))));
+		if(beanQueryType == BeanQueryType.Select) {
+			_return( _this().callMethod(ClsAbstractBeanQuery.where,QString.fromStringConstant("b1." + c.getEscapedName()+" is null")));
+		} else {
+			_return( _this().callMethod(ClsAbstractBeanQuery.where,QString.fromStringConstant(c.getEscapedName()+" is null")));
+		}
+		
 		
 	}
 	@Override

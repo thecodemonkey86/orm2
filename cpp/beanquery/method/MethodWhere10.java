@@ -6,15 +6,15 @@ import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.instruction.Instruction;
 
-public class MethodAndWhere2 extends Method{
+public class MethodWhere10 extends Method{
 
 	Param pWhereCond;
 	Param pParam;
 	
-	public MethodAndWhere2(Cls parentType) {
-		super(Public, parentType.toRef(), "andWhere");
+	public MethodWhere10(Cls parentType) {
+		super(Public, parentType.toRef(), "where");
 		pWhereCond = addParam(Types.QString.toConstRef(),"whereCond");
-		pParam = addParam(Types.Int,"param");
+		pParam = addParam(Types.QByteArray.toConstRef(),"param");
 		
 	}
 
@@ -27,7 +27,7 @@ public class MethodAndWhere2 extends Method{
 						"            this->conditions.append(SqlQuery::AND);\r\n" + 
 						"        }\r\n" + 
 						"        this->conditions.append(whereCond);\r\n" + 
-						"        this->params.append(param);\r\n" + 
+						"        this->params.append(QVariant::fromValue(param));\r\n" + 
 						"        return *this;";
 			}
 		});

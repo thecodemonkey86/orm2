@@ -275,12 +275,21 @@ public class ConfigReader implements ContentHandler {
 			
 				switch (section) {
 				case MANY_TO_MANY_RELATIONS:
-					if(atts.getValue("name") != null) {
-						throw new IOException("name must be replaced by nameSingular and namePlural");
+					String attrName = atts.getValue("name");
+					String substituteNameSingular;
+					String substituteNamePlural;
+					if(attrName != null) {
+						if(attrName.endsWith("s")) {
+							substituteNameSingular = attrName.substring(0,attrName.length()-1);
+							substituteNamePlural = attrName;
+						} else {
+							throw new IOException("name must end with plural-s or be replaced by nameSingular and namePlural");
+						}
+					} else {
+						substituteNameSingular = atts.getValue("nameSingular");
+						substituteNamePlural = atts.getValue("namePlural");
 					}
 					
-					String substituteNameSingular = atts.getValue("nameSingular");
-					String substituteNamePlural = atts.getValue("namePlural");
 					String relQueryNameManyToManyRelation = atts.getValue("queryName");
 					currentManyToManyRelation = new ManyRelation(
 							relQueryNameManyToManyRelation == null || relQueryNameManyToManyRelation.isEmpty()

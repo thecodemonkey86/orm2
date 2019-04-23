@@ -1,13 +1,13 @@
 package cpp.beanquery.method;
 
 import cpp.Types;
-import cpp.beanquery.ClsBeanQuery;
+import cpp.core.Cls;
 import cpp.core.Method;
 import cpp.core.instruction.Instruction;
 
 public class MethodJoin3 extends Method{
 
-	public MethodJoin3(ClsBeanQuery parentType) {
+	public MethodJoin3(Cls parentType) {
 		super(Public, parentType.toRef(), "join");
 	    addParam(Types.QString.toConstRef(),"joinTable");
 		addParam(Types.QString.toConstRef(),"alias");

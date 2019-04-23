@@ -9,7 +9,7 @@ import cpp.beanrepository.method.MethodBeanRemove;
 import cpp.beanrepository.method.MethodBeanLoad;
 import cpp.beanrepository.method.MethodBeanSave;
 import cpp.beanrepository.method.MethodBeanSaveBulk;
-import cpp.beanrepository.method.MethodCreateQuery;
+import cpp.beanrepository.method.MethodCreateQuerySelect;
 import cpp.beanrepository.method.MethodFetchList;
 import cpp.beanrepository.method.MethodFetchOne;
 import cpp.beanrepository.method.MethodGetById;
@@ -46,7 +46,9 @@ public class ClsBeanRepository extends Cls{
 					);
 		for(BeanCls bean:beans) {
 			addIncludeHeader(BeanCls.getModelPath() + "beans/"+bean.getIncludeHeader());
-			addIncludeHeader("query/"+bean.getName().toLowerCase()+"beanquery");
+			addIncludeHeader("query/"+bean.getName().toLowerCase()+"beanqueryselect");
+			addIncludeHeader("query/"+bean.getName().toLowerCase()+"beanquerydelete");
+			addIncludeHeader("query/"+bean.getName().toLowerCase()+"beanqueryupdate");
 //			addAttr(new Attr(new ClsQHash(bean.getPkType(), bean.toRawPointer()), "loadedBeans"+bean.getName()));
 			addMethod(new MethodGetById(bean));
 			addMethod(new MethodGetById(bean,true));
@@ -61,7 +63,7 @@ public class ClsBeanRepository extends Cls{
 			addForwardDeclaredClass(Types.beanQuery(bean));
 //			addMethod(new MethodLoadCollection(new Param(Types.qset(bean.toSharedPtr()).toRawPointer(), "collection")));
 			addMethod(new MethodLoadCollection(new Param(Types.orderedSet(bean.toSharedPtr()).toRawPointer(),  "collection"), bean));
-			addMethod(new MethodCreateQuery(bean));
+			addMethod(new MethodCreateQuerySelect(bean));
 			addMethod(new MethodBeanLoad(bean));
 			addMethod(new MethodBeanSave(bean));
 			addMethod(new MethodBeanSaveBulk(bean,false));

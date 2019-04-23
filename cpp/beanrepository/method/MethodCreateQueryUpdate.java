@@ -1,17 +1,18 @@
 package cpp.beanrepository.method;
 
 import cpp.bean.BeanCls;
-import cpp.beanquery.ClsBeanQuery;
+import cpp.beanquery.ClsBeanQueryUpdate;
 import cpp.core.Method;
+import cpp.core.QString;
 import cpp.core.expression.CreateObjectExpression;
 import cpp.lib.EnableSharedFromThis;
 
-public class MethodCreateQuery extends Method {
+public class MethodCreateQueryUpdate extends Method {
 	BeanCls bean;
 	
-	public MethodCreateQuery(BeanCls cls) {
+	public MethodCreateQueryUpdate(BeanCls cls) {
 		//super(Public, new ClsBeanQuery(cls).toUniquePointer(), "createQuery"+cls.getName());
-		super(Public, new ClsBeanQuery(cls),getMethodName(cls)
+		super(Public, new ClsBeanQueryUpdate(cls),getMethodName(cls)
 				);
 //		setStatic(true);
 		this.bean=cls;
@@ -21,12 +22,12 @@ public class MethodCreateQuery extends Method {
 	public void addImplementation() {
 		//_return(new StdMoveExpression(new CreateObjectExpression(returnType, new NewOperator(new ClsBeanQuery(bean), parent.getAttrByName("sqlCon")) )));
 		//_return(new MakeSharedExpression((SharedPtr)returnType, parent.getStaticAttribute("sqlCon").callMethod("buildQuery")));
-		_return(new CreateObjectExpression(returnType,  parent.getAttrByName("sqlCon"), _this().callMethod(EnableSharedFromThis.SHARED_FROM_THIS) ));
+		_return(new CreateObjectExpression(returnType,  parent.getAttrByName("sqlCon"), _this().callMethod(EnableSharedFromThis.SHARED_FROM_THIS),QString.fromStringConstant(bean.getTbl().getEscapedName()) ));
 	}
 
 	public static String getMethodName(BeanCls cls) {
 		// TODO Auto-generated method stub
-		return "createQuery"+cls.getName();
+		return "update"+cls.getName();
 	}
 
 }

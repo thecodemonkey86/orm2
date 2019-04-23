@@ -3,41 +3,54 @@ package cpp.beanquery.method;
 import cpp.Types;
 import cpp.bean.BeanCls;
 import cpp.bean.Nullable;
-import cpp.beanquery.ClsBeanQuery;
+import cpp.beanquery.BeanQueryType;
+import cpp.core.Cls;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.QString;
 import cpp.core.instruction.IfBlock;
 import cpp.lib.ClsAbstractBeanQuery;
-import cpp.lib.ClsQString;
 import cpp.lib.ClsQVariant;
 import database.column.Column;
-import cpp.core.expression.Expressions;
 import cpp.core.Type;
-import cpp.core.expression.InlineIfExpression;
 
 public class MethodBeanQueryWhereNotEquals extends Method{
 	BeanCls bean;
 	Param pValue ;
+	BeanQueryType beanQueryType;
 	Column c;
-	public MethodBeanQueryWhereNotEquals(ClsBeanQuery query, BeanCls bean,Column c) {
+	public MethodBeanQueryWhereNotEquals(Cls query,BeanQueryType beanQueryType, BeanCls bean,Column c) {
 		super(Public, query.toRef(), "where"+c.getUc1stCamelCaseName()+"NotEquals");
 		this.bean=bean;
 		Type t = BeanCls.getDatabaseMapper().columnToType(c);
 		pValue = addParam(new Param(t.isPrimitiveType() ? t : t.toConstRef(), "value"));
 		this.c = c;
+		this.beanQueryType = beanQueryType;
 	}
 
 	@Override
 	public void addImplementation() {
-		//new InlineIfExpression(Expressions.not(_this().accessAttr(ClsBeanQuery.selectFields).callMethod(ClsQString.isEmpty)), 
-		if(c.isNullable()) {
-			IfBlock ifNull = _if(pValue.callMethod(Nullable.isNull));
-			ifNull.thenBlock()._return( _this().callMethod(ClsAbstractBeanQuery.where, new InlineIfExpression(Expressions.not(_this().accessAttr(ClsBeanQuery.selectFields).callMethod(ClsQString.isEmpty)),QString.fromStringConstant("b1." + c.getEscapedName()+" is null"),QString.fromStringConstant(c.getEscapedName()+" is not null"))) );
-			ifNull.elseBlock()._return( _this().callMethod(ClsAbstractBeanQuery.where, new InlineIfExpression(Expressions.not(_this().accessAttr(ClsBeanQuery.selectFields).callMethod(ClsQString.isEmpty)), QString.fromStringConstant("b1." + c.getEscapedName()+"=?"),QString.fromStringConstant(c.getEscapedName()+"<>?")), Types.QVariant.callStaticMethod(ClsQVariant.fromValue,  pValue.callMethod(Nullable.val) )) );
+		//new InlineIfExpression(Expressions.not(_this().accessAttr(ClsBeanQuery.selectFields).callMethod(ClsQString.isEmpty)),
+		
+		if(beanQueryType == BeanQueryType.Select) {
+			if(c.isNullable()) {
+				IfBlock ifNull = _if(pValue.callMethod(Nullable.isNull));
+				ifNull.thenBlock()._return( _this().callMethod(ClsAbstractBeanQuery.where, QString.fromStringConstant("b1."+ c.getEscapedName()+" is not null"))) ;
+				ifNull.elseBlock()._return( _this().callMethod(ClsAbstractBeanQuery.where, QString.fromStringConstant("b1."+c.getEscapedName()+"<>?"), Types.QVariant.callStaticMethod(ClsQVariant.fromValue,  pValue.callMethod(Nullable.val) ) ));
+			} else {
+				_return( _this().callMethod(ClsAbstractBeanQuery.where, QString.fromStringConstant( "b1."+c.getEscapedName()+"<>?"), Types.QVariant.callStaticMethod(ClsQVariant.fromValue, pValue) ));
+			}
 		} else {
-			_return( _this().callMethod(ClsAbstractBeanQuery.where, new InlineIfExpression(Expressions.not(_this().accessAttr(ClsBeanQuery.selectFields).callMethod(ClsQString.isEmpty)),QString.fromStringConstant( "b1." + c.getEscapedName()+"<>?"),QString.fromStringConstant( c.getEscapedName()+"<>?")), Types.QVariant.callStaticMethod(ClsQVariant.fromValue, pValue) ));
+			if(c.isNullable()) {
+				IfBlock ifNull = _if(pValue.callMethod(Nullable.isNull));
+				ifNull.thenBlock()._return( _this().callMethod(ClsAbstractBeanQuery.where, QString.fromStringConstant(c.getEscapedName()+" is not null"))) ;
+				ifNull.elseBlock()._return( _this().callMethod(ClsAbstractBeanQuery.where, QString.fromStringConstant(c.getEscapedName()+"<>?"), Types.QVariant.callStaticMethod(ClsQVariant.fromValue,  pValue.callMethod(Nullable.val) ) ));
+			} else {
+				_return( _this().callMethod(ClsAbstractBeanQuery.where, QString.fromStringConstant( c.getEscapedName()+"<>?"), Types.QVariant.callStaticMethod(ClsQVariant.fromValue, pValue) ));
+			}
 		}
+		
+		
 		
 	}
 	@Override

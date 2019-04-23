@@ -3,7 +3,7 @@ package cpp;
 import cpp.bean.BeanCls;
 import cpp.bean.Beans;
 import cpp.bean.Nullable;
-import cpp.beanquery.ClsBeanQuery;
+import cpp.beanquery.ClsBeanQuerySelect;
 import cpp.beanrepository.ClsBeanRepository;
 import cpp.core.Cls;
 import cpp.core.Type;
@@ -28,7 +28,7 @@ public class Types extends CoreTypes{
 	public static final EnumSqlQueryOrderDirection OrderDirection = EnumSqlQueryOrderDirection.INSTANCE;
 	
 	public static Cls beanQuery(BeanCls cls) {
-		return new ClsBeanQuery(cls); //
+		return new ClsBeanQuerySelect(cls); //
 	}
 
 	public static Type nullable(Type element) {

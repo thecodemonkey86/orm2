@@ -1,12 +1,13 @@
 package cpp.core;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 
+import codegen.CodeUtil;
 import util.CodeUtil2;
 
 public class Enum extends Type{
-	Cls parentCls;
-	EnumConstant[] enumConstants;
+	protected Cls parentCls;
+	protected EnumConstant[] enumConstants;
 	
 	public Enum(Cls parentCls, String name, EnumConstant ...enumConstants) {
 		super(name);
@@ -16,11 +17,40 @@ public class Enum extends Type{
 	
 	@Override
 	public String toDeclarationString() {
-		return CodeUtil2.concat(Arrays.asList(parentCls.getName(),"::",type)) ;
+		return CodeUtil2.sp((parentCls  != null ? parentCls.getName()+"::": null),type) ;
+	}
+	
+	public String toDefinitionString() {
+		StringBuilder sb = new StringBuilder(CodeUtil2.sp("enum",type,'{'));
+		ArrayList<String> constants = new ArrayList<>();
+		for(EnumConstant c : enumConstants) {
+			constants.add(c.getName());
+		}
+		sb.append(CodeUtil2.commaSep(constants)).append("};");
+		return sb.toString();
+	}
+	
+	public String toHeaderString() {
+		StringBuilder sb = new StringBuilder();
+		String includeGuardMacro = type.toUpperCase()+"_H";
+		CodeUtil2.writeLine(sb,CodeUtil.sp("#ifndef",includeGuardMacro));
+		CodeUtil2.writeLine(sb,CodeUtil.sp("#define",includeGuardMacro));
+		CodeUtil2.writeLine(sb,toDefinitionString());
+		CodeUtil2.writeLine(sb,"#endif");
+		return sb.toString();
 	}
 	
 	public EnumConstant[] getEnumConstants() {
 		return enumConstants;
+	}
+	
+	public EnumConstant constant(String name) {
+		for(EnumConstant e : enumConstants) {
+			if(e.getName().equals(name)) {
+				return e;
+			}
+		}
+		throw new RuntimeException();
 	}
 	
 	

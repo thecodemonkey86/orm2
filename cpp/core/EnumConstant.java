@@ -17,9 +17,13 @@ public class EnumConstant extends Expression {
 		return this.parent;
 	}
 
+	
+	public String getName() {
+		return name;
+	}
 	@Override
 	public String toString() {
-		return this.parent.getParentCls().getName()+"::"+name;
+		return  this.parent.getParentCls() == null ? name : this.parent.getParentCls().getName()+"::"+name;
 	}
 
 }

@@ -28,7 +28,9 @@ public class MethodCopyFields extends Method{
 	public MethodCopyFields(BeanCls bean) {
 		super(Public, CoreTypes.Void, "copyFieldsFrom");
 		pSrc = addParam(new Param(bean.toSharedPtr().toConstRef(), "src"));
-		pRelations = addParam(new Param(CoreTypes.Bool, "copyRelations"));
+		if(bean.hasRelations() ) {
+			pRelations = addParam(new Param(CoreTypes.Bool, "copyRelations"));
+		}
 		pExclude = addParam(new Param(Types.qset(Types.QString).toConstRef(), "exclude",new CreateObjectExpression(Types.qset(Types.QString))));
 	}
 

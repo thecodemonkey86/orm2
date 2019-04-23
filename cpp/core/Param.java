@@ -22,7 +22,7 @@ public class Param extends Var{
 	}
 	
 	public String toSourceString() {
-		return super.toDeclarationString();
+		return CodeUtil.sp(type.toDeclarationString(),name);
 		
 	}
 	

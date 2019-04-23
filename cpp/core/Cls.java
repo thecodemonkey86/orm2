@@ -9,6 +9,7 @@ import cpp.core.expression.NewOperator;
 import cpp.core.expression.StaticAccessExpression;
 import cpp.core.expression.StaticMethodCall;
 import cpp.core.expression.ThisExpression;
+import util.CodeUtil2;
 
 
 public class Cls extends Type implements IAttributeContainer{
@@ -26,6 +27,7 @@ public class Cls extends Type implements IAttributeContainer{
 	protected ArrayList<Cls> superclasses;
 	protected ArrayList<NonMemberMethod> nonMemberMethods;
 	protected ArrayList<Operator> nonMemberOperators;
+	protected ArrayList<Enum> enums;
 	protected String useNamespace;
 	protected String headerInclude;
 	
@@ -42,6 +44,13 @@ public class Cls extends Type implements IAttributeContainer{
 			this.superclasses = new ArrayList<>();
 		}
 		this.superclasses.add(superclass);
+	}
+	
+	public void addEnum(Enum e) {
+		if(enums==null) {
+			this.enums = new ArrayList<>();
+		}
+		this.enums.add(e);
 	}
 	
 	public Cls getSuperclass() {
@@ -208,7 +217,12 @@ public class Cls extends Type implements IAttributeContainer{
 			sb.append(CodeUtil.commaSep(superClassDecl));
 		}
 		sb.append("{\n");
-		
+		if(enums != null) {
+			for(Enum e : enums) {
+				CodeUtil.writeLine(sb, e.toDefinitionString());
+			}
+			sb.append(CodeUtil2.NL);
+		}
 		for(Attr a:attrs) {
 			CodeUtil.writeLine(sb, a.toDeclarationString());
 		}

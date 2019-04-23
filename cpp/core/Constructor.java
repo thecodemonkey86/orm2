@@ -26,7 +26,7 @@ public abstract class Constructor extends Method {
 	public String toString() {
 		ArrayList<String> params=new ArrayList<>();
 		for(Param p:this.params) {
-			params.add(p.toDeclarationString());
+			params.add(p.toSourceString());
 		}
 		
 		StringBuilder sb=new StringBuilder(CodeUtil.sp(parent.getName()+"::"+parent.getName(),CodeUtil.parentheses(CodeUtil.commaSep(params))

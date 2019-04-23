@@ -1,7 +1,7 @@
 package cpp.beanquery.method;
 
 import cpp.Types;
-import cpp.beanquery.ClsBeanQuery;
+import cpp.core.Cls;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.instruction.Instruction;
@@ -10,7 +10,7 @@ public class MethodLeftJoin5 extends Method{
 
 	Param pJoinTableAlias, pOn, pParams;
 	
-	public MethodLeftJoin5(ClsBeanQuery parentType) {
+	public MethodLeftJoin5(Cls parentType) {
 		super(Public, parentType.toRef(), "leftJoin");
 		addParam(new Param(Types.QString.toConstRef(),"joinTable"));
 		addParam(new Param(Types.QString.toConstRef(),"alias"));

@@ -16,7 +16,9 @@ import cpp.JsonTypes;
 import cpp.Types;
 import cpp.bean.BeanCls;
 import cpp.bean.Beans;
-import cpp.beanquery.ClsBeanQuery;
+import cpp.beanquery.ClsBeanQueryDelete;
+import cpp.beanquery.ClsBeanQuerySelect;
+import cpp.beanquery.ClsBeanQueryUpdate;
 import cpp.beanrepository.ClsBeanRepository;
 import cpp.core.instruction.Instruction;
 import cpp.jsonentity.JsonEntities;
@@ -227,16 +229,27 @@ Charset utf8 = Charset.forName("UTF-8");
 			} finally {
 				
 			}
-			
+//			Files.write(pathRepositoryQuery.resolve(EnumQueryMode.INSTANCE.getName().toLowerCase()+".h"), EnumQueryMode.INSTANCE.toHeaderString().getBytes(utf8), writeOptions);
 			
 			for (BeanCls c : Beans.getAllBeans()) {
 				
 				Files.write(pathBeans.resolve(c.getName().toLowerCase()+".h"), c.toHeaderString().getBytes(utf8), writeOptions);
 				Files.write(pathBeans.resolve(c.getName().toLowerCase()+".cpp"), c.toSourceString().getBytes(utf8), writeOptions);
-				ClsBeanQuery clsQuery = new ClsBeanQuery(c);
+				ClsBeanQuerySelect clsQuery = new ClsBeanQuerySelect(c);
 				clsQuery.addMethodImplementations();
 				Files.write(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+".h"), clsQuery.toHeaderString().getBytes(utf8), writeOptions);
 				Files.write(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+".cpp"), clsQuery.toSourceString().getBytes(utf8), writeOptions);
+				
+				ClsBeanQueryDelete clsDelete = new ClsBeanQueryDelete(c);
+				clsDelete.addMethodImplementations();
+				Files.write(pathRepositoryQuery.resolve(clsDelete.getName().toLowerCase()+".h"), clsDelete.toHeaderString().getBytes(utf8), writeOptions);
+				Files.write(pathRepositoryQuery.resolve(clsDelete.getName().toLowerCase()+".cpp"), clsDelete.toSourceString().getBytes(utf8), writeOptions);
+				
+				
+				ClsBeanQueryUpdate clsUpdate = new ClsBeanQueryUpdate(c);
+				clsUpdate.addMethodImplementations();
+				Files.write(pathRepositoryQuery.resolve(clsUpdate.getName().toLowerCase()+".h"), clsUpdate.toHeaderString().getBytes(utf8), writeOptions);
+				Files.write(pathRepositoryQuery.resolve(clsUpdate.getName().toLowerCase()+".cpp"), clsUpdate.toSourceString().getBytes(utf8), writeOptions);
 			}
 			
 			Files.write(pathRepository.resolve("beanrepository.h"), repo.toHeaderString().getBytes(utf8), writeOptions);
