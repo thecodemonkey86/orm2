@@ -235,7 +235,7 @@ Charset utf8 = Charset.forName("UTF-8");
 				
 				Files.write(pathBeans.resolve(c.getName().toLowerCase()+".h"), c.toHeaderString().getBytes(utf8), writeOptions);
 				Files.write(pathBeans.resolve(c.getName().toLowerCase()+".cpp"), c.toSourceString().getBytes(utf8), writeOptions);
-				ClsBeanQuerySelect clsQuery = new ClsBeanQuerySelect(c);
+				ClsBeanQuerySelect clsQuery = Types.beanQuerySelect(c);
 				clsQuery.addMethodImplementations();
 				Files.write(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+".h"), clsQuery.toHeaderString().getBytes(utf8), writeOptions);
 				Files.write(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+".cpp"), clsQuery.toSourceString().getBytes(utf8), writeOptions);

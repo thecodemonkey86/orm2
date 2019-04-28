@@ -1,11 +1,14 @@
 package cpp;
 
+import java.util.HashMap;
+
 import cpp.bean.BeanCls;
 import cpp.bean.Beans;
 import cpp.bean.Nullable;
+import cpp.beanquery.ClsBeanQueryDelete;
 import cpp.beanquery.ClsBeanQuerySelect;
+import cpp.beanquery.ClsBeanQueryUpdate;
 import cpp.beanrepository.ClsBeanRepository;
-import cpp.core.Cls;
 import cpp.core.Type;
 import cpp.jsonentity.JsonEntities;
 import cpp.jsonentity.JsonEntity;
@@ -27,10 +30,45 @@ public class Types extends CoreTypes{
 	public static final ClsBaseBean BaseBean = new ClsBaseBean();
 	public static final EnumSqlQueryOrderDirection OrderDirection = EnumSqlQueryOrderDirection.INSTANCE;
 	
-	public static Cls beanQuery(BeanCls cls) {
-		return new ClsBeanQuerySelect(cls); //
+	private static HashMap<String, ClsBeanQuerySelect> selectQueryClasses = new HashMap<>();
+	private static HashMap<String, ClsBeanQueryDelete> deleteQueryClasses = new HashMap<>();
+	private static HashMap<String, ClsBeanQueryUpdate> updateQueryClasses = new HashMap<>();
+	
+	public static ClsBeanQuerySelect beanQuerySelect(BeanCls cls) {
+		
+		
+		if(selectQueryClasses.containsKey(cls.getName())) {
+			return selectQueryClasses.get(cls.getName());
+		}
+		ClsBeanQuerySelect s= new ClsBeanQuerySelect(cls); //
+		selectQueryClasses.put(cls.getName(), s);
+		return s;
 	}
 
+	
+	
+	public static ClsBeanQueryDelete beanQueryDelete(BeanCls cls) {
+		
+		
+		if(deleteQueryClasses.containsKey(cls.getName())) {
+			return deleteQueryClasses.get(cls.getName());
+		}
+		ClsBeanQueryDelete d= new ClsBeanQueryDelete(cls); //
+		deleteQueryClasses.put(cls.getName(), d);
+		return d;
+	}
+	
+	public static ClsBeanQueryUpdate beanQueryUpdate(BeanCls cls) {
+		
+		
+		if(updateQueryClasses.containsKey(cls.getName())) {
+			return updateQueryClasses.get(cls.getName());
+		}
+		ClsBeanQueryUpdate u= new ClsBeanQueryUpdate(cls); //
+		updateQueryClasses.put(cls.getName(), u);
+		return u;
+	}
+	
 	public static Type nullable(Type element) {
 		return new Nullable( element);
 	}

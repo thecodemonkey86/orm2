@@ -1,7 +1,7 @@
 package cpp.beanrepository.method;
 
+import cpp.Types;
 import cpp.bean.BeanCls;
-import cpp.beanquery.ClsBeanQueryDelete;
 import cpp.core.Method;
 import cpp.core.QString;
 import cpp.core.expression.CreateObjectExpression;
@@ -12,7 +12,7 @@ public class MethodCreateQueryDelete extends Method {
 	
 	public MethodCreateQueryDelete(BeanCls cls) {
 		//super(Public, new ClsBeanQuery(cls).toUniquePointer(), "createQuery"+cls.getName());
-		super(Public, new ClsBeanQueryDelete(cls),getMethodName(cls)
+		super(Public, Types.beanQueryDelete(cls),getMethodName(cls)
 				);
 //		setStatic(true);
 		this.bean=cls;

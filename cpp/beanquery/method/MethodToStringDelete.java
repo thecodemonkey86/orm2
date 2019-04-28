@@ -24,16 +24,12 @@ public class MethodToStringDelete extends Method{
 						"\r\n" + 
 						"        if (!conditions.empty()) {\r\n" + 
 						"\r\n" + 
-						"            if (limitResults > 0 || resultOffset > -1) {\r\n" + 
-						"                query += QStringLiteral(\" WHERE (\");\r\n" + 
-						"            } else {\r\n" + 
-						"                query += QStringLiteral(\" WHERE \");\r\n" + 
-						"            }\r\n" + 
+				        "        query += QStringLiteral(\" WHERE \");\r\n" + 
 						"\r\n" + 
-						"            for(const QString &cond: conditions) {\r\n" + 
-						"                query += cond;\r\n" + 
-						"            }\r\n" + 
-						"        }\r\n" + 
+						"        for(const QString &cond: conditions) {\r\n" + 
+						"             query += cond;\r\n" + 
+						"         }\r\n" + 
+						"     	 }\r\n" + 
 						"\r\n" + 
 						"        return query;";
 			}

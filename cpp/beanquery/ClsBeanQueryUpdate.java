@@ -19,13 +19,12 @@ import cpp.beanquery.method.MethodBeanQueryWhereIsNull;
 import cpp.beanquery.method.MethodBeanQueryWhereNotEquals;
 import cpp.beanquery.method.MethodExecute;
 import cpp.beanquery.method.MethodGetDebugString;
-import cpp.beanquery.method.MethodLimit;
-import cpp.beanquery.method.MethodLimitAndOffset;
-import cpp.beanquery.method.MethodOffset;
 import cpp.beanquery.method.MethodPrintDebug;
 import cpp.beanquery.method.MethodPrintQDebug;
 import cpp.beanquery.method.MethodSqlFieldEquals;
 import cpp.beanquery.method.MethodToStringUpdate;
+import cpp.beanquery.method.MethodUpdateSet;
+import cpp.beanquery.method.MethodUpdateSetExpression;
 import cpp.beanquery.method.MethodWhere1;
 import cpp.beanquery.method.MethodWhere2;
 import cpp.beanquery.method.MethodWhere3;
@@ -47,6 +46,7 @@ public class ClsBeanQueryUpdate extends Cls {
 	public static final String params = "params";
 	public static final String lazyLoading = "lazyLoading";
 	public static final String table = "table";
+	public static final String updateFields = "updateFields";
 	
 	public ClsBeanQueryUpdate(BeanCls cls) {
 		super(cls.getName()+ "BeanQueryUpdate");
@@ -61,6 +61,9 @@ public class ClsBeanQueryUpdate extends Cls {
 			if(c.isNullable()) {
 				addMethod(new MethodBeanQueryWhereIsNull(this,BeanQueryType.Update, cls, c));
 			}
+			
+			addMethod(new MethodUpdateSet(cls,this,c));
+			addMethod(new MethodUpdateSetExpression(cls,this,c));
 		}
 		
 		addIncludeLib(ClsQVector.CLSNAME);
@@ -78,10 +81,7 @@ public class ClsBeanQueryUpdate extends Cls {
 		addAttr(new Attr(Types.QStringList,"joinTables"));
 		addAttr(new Attr(Types.QStringList,"conditions"));
 		addAttr(new Attr(Types.QStringList,"group"));
-		addAttr(new Attr(Types.Int64,"limitResults"));
-		addAttr(new Attr(Types.Int64,"resultOffset"));
-		addAttr(new Attr(Types.QString,"limitOffsetCondition"));
-		addAttr(new Attr(Types.QString,"limitOffsetOrderBy"));
+		addAttr(new Attr(Types.QStringList,updateFields));
 		addAttr(new Attr(Types.Bool,lazyLoading));
 		addAttr(new Attr(Types.QVariantList,params));
 		addAttr(new Attr(Types.Sql.toRawPointer(),"sqlCon"));
@@ -118,15 +118,15 @@ public class ClsBeanQueryUpdate extends Cls {
 		addMethod(new MethodAndWhere8(this));
 		addMethod(new MethodAndWhere9(this));
 		addMethod(new MethodAndWhere10(this));
-		addMethod(new MethodLimit(this,BeanQueryType.Update));
+//		addMethod(new MethodLimit(this,BeanQueryType.Update));
 //		addMethod(new MethodLimitAndOffset(this,BeanQueryType.Update,null,true));
 //		addMethod(new MethodLimitAndOffset(this,BeanQueryType.Update,new Param(Types.QString.toConstRef(), "param"),true));
 //		addMethod(new MethodLimitAndOffset(this,BeanQueryType.Update,new Param(Types.Int, "param"),true));
 //		addMethod(new MethodLimitAndOffset(this,BeanQueryType.Update,new Param(Types.Bool, "param"),true));
 //		addMethod(new MethodLimitAndOffset(this,BeanQueryType.Update,new Param(Types.Double, "param"),true));
 //		addMethod(new MethodLimitAndOffset(this,BeanQueryType.Update,new Param(Types.QVariant.toConstRef(), "param"),true));
-		addMethod(new MethodLimitAndOffset(this,BeanQueryType.Update,null,false));
-		addMethod(new MethodOffset(this,BeanQueryType.Update));
+//		addMethod(new MethodLimitAndOffset(this,BeanQueryType.Update,null,false));
+//		addMethod(new MethodOffset(this,BeanQueryType.Update));
 		addMethod(new MethodPrintDebug());
 		addMethod(new MethodPrintQDebug());
 		addMethod(new MethodExecute());
@@ -134,6 +134,7 @@ public class ClsBeanQueryUpdate extends Cls {
 		addMethod(new MethodAddQueryParameter(Types.Int));
 		addMethod(new MethodAddQueryParameter(Types.QString));
 		addMethod(new MethodAddQueryParameter(Types.QVariant));
+		
 	}
 	
 	@Override

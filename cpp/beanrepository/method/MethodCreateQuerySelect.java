@@ -2,7 +2,6 @@ package cpp.beanrepository.method;
 
 import cpp.Types;
 import cpp.bean.BeanCls;
-import cpp.beanquery.ClsBeanQuerySelect;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.expression.BoolExpression;
@@ -15,7 +14,7 @@ public class MethodCreateQuerySelect extends Method {
 	
 	public MethodCreateQuerySelect(BeanCls cls) {
 		//super(Public, new ClsBeanQuery(cls).toUniquePointer(), "createQuery"+cls.getName());
-		super(Public, new ClsBeanQuerySelect(cls),getMethodName(cls)
+		super(Public, Types.beanQuerySelect(cls),getMethodName(cls)
 				);
 		
 		if(cls.hasRelations()) {

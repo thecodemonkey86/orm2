@@ -1,7 +1,7 @@
 package cpp.beanrepository.method;
 
+import cpp.Types;
 import cpp.bean.BeanCls;
-import cpp.beanquery.ClsBeanQueryUpdate;
 import cpp.core.Method;
 import cpp.core.QString;
 import cpp.core.expression.CreateObjectExpression;
@@ -12,7 +12,7 @@ public class MethodCreateQueryUpdate extends Method {
 	
 	public MethodCreateQueryUpdate(BeanCls cls) {
 		//super(Public, new ClsBeanQuery(cls).toUniquePointer(), "createQuery"+cls.getName());
-		super(Public, new ClsBeanQueryUpdate(cls),getMethodName(cls)
+		super(Public, Types.beanQueryUpdate(cls),getMethodName(cls)
 				);
 //		setStatic(true);
 		this.bean=cls;

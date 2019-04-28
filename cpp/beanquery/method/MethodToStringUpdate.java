@@ -20,15 +20,11 @@ public class MethodToStringUpdate extends Method{
 		addInstr(new Instruction() {
 			@Override
 			public String toString() {
-				return "QString query = QStringLiteral(\"UPDATE %1 SET\").arg(table);\r\n" +
+				return "QString query = QStringLiteral(\"UPDATE %1 SET %2\").arg(table, updateFields.join(QChar(\',\')));\r\n" +
 						"\r\n" + 
 						"        if (!conditions.empty()) {\r\n" + 
 						"\r\n" + 
-						"            if (limitResults > 0 || resultOffset > -1) {\r\n" + 
-						"                query += QStringLiteral(\" WHERE (\");\r\n" + 
-						"            } else {\r\n" + 
-						"                query += QStringLiteral(\" WHERE \");\r\n" + 
-						"            }\r\n" + 
+						"           query += QStringLiteral(\" WHERE \");\r\n" + 
 						"\r\n" + 
 						"            for(const QString &cond: conditions) {\r\n" + 
 						"                query += cond;\r\n" + 
