@@ -31,6 +31,8 @@ import xml.reader.DefaultXMLReader;
 
 public class CppOrm extends OrmCommon {
 	
+	private static final String CPP_SOURCE_EXTENSION = ".cpp";
+	private static final String CPP_HEADER_EXTENSION = ".h";
 	private static final StandardOpenOption[] writeOptions={
 			StandardOpenOption.WRITE,StandardOpenOption.CREATE,StandardOpenOption.TRUNCATE_EXISTING
 			 
@@ -92,8 +94,8 @@ public class CppOrm extends OrmCommon {
 	//		}
 			Path pathBeans = pathModel.resolve("beans");
 			for (BeanCls c : Beans.getAllBeans()) {
-				Path pathHeader = pathBeans.resolve(c.getName().toLowerCase()+".h");
-				Path pathSrc = pathBeans.resolve(c.getName().toLowerCase()+".cpp");
+				Path pathHeader = pathBeans.resolve(c.getName().toLowerCase()+CPP_HEADER_EXTENSION);
+				Path pathSrc = pathBeans.resolve(c.getName().toLowerCase()+CPP_SOURCE_EXTENSION);
 				
 				
 				if (Files.exists(pathHeader) && Files.exists(pathSrc)) {
@@ -166,8 +168,26 @@ public class CppOrm extends OrmCommon {
 	
 			try(DirectoryStream<Path> dsPathBeans = Files.newDirectoryStream(pathBeans)) {
 				for(Path f : dsPathBeans) {
-					if(f.toString().endsWith(".h") || f.toString().endsWith(".cpp")) {
-						Files.delete(f);
+					String ext;
+					if(f.toString().endsWith(CPP_HEADER_EXTENSION) || f.toString().endsWith(CPP_SOURCE_EXTENSION)) {
+						
+						if(f.toString().endsWith(CPP_HEADER_EXTENSION)) {
+							ext = CPP_HEADER_EXTENSION;
+						} else {
+							ext = CPP_SOURCE_EXTENSION;
+						}
+						
+						boolean found = false;
+						
+						for(BeanCls c : Beans.getAllBeans()) {
+							if(f.getFileName().toString().equals(c.getName().toLowerCase()+ext)) {
+								found = true;
+								break;
+							}
+						}
+						if(!found) {
+							Files.delete(f);
+						}
 					}
 				}
 			} finally {
@@ -176,8 +196,27 @@ public class CppOrm extends OrmCommon {
 			
 			try(DirectoryStream<Path> dsPathQuery = Files.newDirectoryStream(pathRepositoryQuery)) {
 				for(Path f : dsPathQuery) {
-					if(f.toString().endsWith(".h") || f.toString().endsWith(".cpp")) {
-						Files.delete(f);
+					if(f.toString().endsWith(CPP_HEADER_EXTENSION) || f.toString().endsWith(CPP_SOURCE_EXTENSION)) {
+						String ext;
+						if(f.toString().endsWith(CPP_HEADER_EXTENSION) || f.toString().endsWith(CPP_SOURCE_EXTENSION)) {
+							
+							if(f.toString().endsWith(CPP_HEADER_EXTENSION)) {
+								ext = CPP_HEADER_EXTENSION;
+							} else {
+								ext = CPP_SOURCE_EXTENSION;
+							}
+							
+							boolean found = false;
+							for(BeanCls c : Beans.getAllBeans()) {
+								if(f.getFileName().toString().equals( (c.getName()+ "BeanQuery").toLowerCase()+ext)) {
+									found = true;
+									break;
+								}
+							}
+							if(!found) {
+								Files.delete(f);
+							}
+						}
 					}
 				}
 			} finally {
@@ -187,12 +226,12 @@ public class CppOrm extends OrmCommon {
 			
 			for (BeanCls c : Beans.getAllBeans()) {
 				
-				Files.write(pathBeans.resolve(c.getName().toLowerCase()+".h"), c.toHeaderString().getBytes(utf8), writeOptions);
-				Files.write(pathBeans.resolve(c.getName().toLowerCase()+".cpp"), c.toSourceString().getBytes(utf8), writeOptions);
+				Files.write(pathBeans.resolve(c.getName().toLowerCase()+CPP_HEADER_EXTENSION), c.toHeaderString().getBytes(utf8), writeOptions);
+				Files.write(pathBeans.resolve(c.getName().toLowerCase()+CPP_SOURCE_EXTENSION), c.toSourceString().getBytes(utf8), writeOptions);
 				ClsBeanQuery clsQuery = new ClsBeanQuery(c);
 				clsQuery.addMethodImplementations();
-				Files.write(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+".h"), clsQuery.toHeaderString().getBytes(utf8), writeOptions);
-				Files.write(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+".cpp"), clsQuery.toSourceString().getBytes(utf8), writeOptions);
+				Files.write(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+CPP_HEADER_EXTENSION), clsQuery.toHeaderString().getBytes(utf8), writeOptions);
+				Files.write(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+CPP_SOURCE_EXTENSION), clsQuery.toSourceString().getBytes(utf8), writeOptions);
 			}
 			
 			Files.write(pathRepository.resolve("beanrepository.h"), repo.toHeaderString().getBytes(utf8), writeOptions);
@@ -226,8 +265,8 @@ public class CppOrm extends OrmCommon {
 			}
 			Path pathBeans = pathModel.resolve("beans");
 			for (JsonEntity c : JsonEntities.getAllBeans()) {
-				Files.write(pathBeans.resolve(c.getName().toLowerCase()+".h"), c.toHeaderString().getBytes(utf8), writeOptions);
-				Files.write(pathBeans.resolve(c.getName().toLowerCase()+".cpp"), c.toSourceString().getBytes(utf8), writeOptions);
+				Files.write(pathBeans.resolve(c.getName().toLowerCase()+CPP_HEADER_EXTENSION), c.toHeaderString().getBytes(utf8), writeOptions);
+				Files.write(pathBeans.resolve(c.getName().toLowerCase()+CPP_SOURCE_EXTENSION), c.toSourceString().getBytes(utf8), writeOptions);
 			}
 		}
 	}
