@@ -2,8 +2,8 @@
 <launch4jConfig>
   <dontWrapJar>false</dontWrapJar>
   <headerType>gui</headerType>
-  <jar>E:\Programme\orm2\orm2.jar</jar>
-  <outfile>E:\Programme\orm2\orm2.exe</outfile>
+  <jar>E:\Programme\orm2\orm2_apilevel_1.1.jar</jar>
+  <outfile>E:\Programme\orm2\orm2_api_1.1.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>

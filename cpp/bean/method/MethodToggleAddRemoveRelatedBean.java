@@ -19,8 +19,12 @@ public class MethodToggleAddRemoveRelatedBean extends Method {
 	ManyAttr manyAttr;
 	AbstractRelation r;
 	
+	public static String getMethodName(AbstractRelation r) {
+		return "toggleAddRemoveRelatedBean" +(r.getSubstituteName() != null ? StringUtil.ucfirst(r.getSubstituteName())  : r.getDestTable().getUc1stCamelCaseName()+StringUtil.ucfirst( r.getAlias()));
+	}
+	
 	public MethodToggleAddRemoveRelatedBean(AbstractRelation r) {
-		super(Public, Types.Void, "toggleAddRemoveRelatedBean" +r.getDestTable().getUc1stCamelCaseName()+StringUtil.ucfirst( r.getAlias()));
+		super(Public, Types.Void, getMethodName(r));
 		if(r instanceof ManyRelation) {
 			manyAttr = new ManyAttr((ManyRelation) r);
 		} else if(r instanceof OneToManyRelation ) {
