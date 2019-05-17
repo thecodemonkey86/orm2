@@ -176,6 +176,7 @@ public class ClsBeanQuerySelect extends Cls {
 		addMethod(new MethodExecute());
 		addMethod(new MethodGetDebugString());
 		addMethod(new MethodAddQueryParameter(Types.Int));
+		addMethod(new MethodAddQueryParameter(Types.Int64));
 		addMethod(new MethodAddQueryParameter(Types.QString));
 		addMethod(new MethodAddQueryParameter(Types.QVariant));
 	}

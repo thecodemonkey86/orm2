@@ -67,11 +67,11 @@ public class MethodToStringSelect extends Method{
 						"                query += QStringLiteral(\" WHERE %1\").arg("+ MethodToStringSelect.this.bean.	getName() +"::getLimitQueryString(limitResults,resultOffset,limitOffsetCondition));\r\n" + 
 						"            }\r\n" + 
 						"        }\r\n" + 
-						"        query += QStringLiteral(\" ORDER BY \");\r\n" + 
+						"        query += QStringLiteral(\" ORDER BY \");\r\n" +
+						"        query += this->orderByPrimaryKey();\r\n" +
 						"        for(auto order : this->orderByExpressions) {\r\n" + 
-						"            query += QStringLiteral(\"%1,\").arg(order);\r\n" + 
+						"            query += QStringLiteral(\",%1\").arg(order);\r\n" + 
 						"        }\r\n" + 
-						"        query += this->orderByPrimaryKey();\r\n" + 
 						"        return query;";
 			}
 		});

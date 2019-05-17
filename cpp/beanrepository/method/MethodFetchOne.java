@@ -53,7 +53,7 @@ public class MethodFetchOne extends Method {
 		return new ThisBeanRepositoryExpression((ClsBeanRepository) parent);
 	}
 	
-	protected Expression getByRecordExpression(BeanCls bean, Var record, QString alias) {
+	protected Expression getByRecordExpression(BeanCls bean, Expression record, QString alias) {
 	//return new ThisBeanRepositoryExpression((BeanRepository) parent);
 		return _this().callMethod(MethodGetFromRecord.getMethodName(bean),  record, alias);
 }
@@ -75,9 +75,9 @@ protected Expression getExpressionQuery() {
 		
 		IfBlock ifQueryNext = _if(query.callMethod("next"));
 		InstructionBlock ifInstr = ifQueryNext.thenBlock();
-		Var recDoWhile =ifInstr._declare(Types.QSqlRecord, "rec",query.callMethod("record") );
+		
 		Var b1 = ifInstr
-				._declare(bean.toSharedPtr(), "b1", getByRecordExpression(bean, recDoWhile, QString.fromStringConstant("b1")));
+				._declare(bean.toSharedPtr(), "b1", getByRecordExpression(bean, query.callMethod(ClsQSqlQuery.record) , QString.fromStringConstant("b1")));
 		
 		Var fkHelper = null;
 		if (!manyRelations.isEmpty()) {
@@ -85,9 +85,9 @@ protected Expression getExpressionQuery() {
 			ifInstr._assign(fkHelper.accessAttr("b1"), b1);
 		}
 		
-		
+		Var recDoWhile =ifInstr._declare(Types.QSqlRecord, "rec" );		
 		DoWhile doWhileQueryNext = ifInstr._doWhile();
-		
+		 doWhileQueryNext._assign(recDoWhile,query.callMethod(ClsQSqlQuery.record) );
 		doWhileQueryNext.setCondition(Expressions.and(ifQueryNext.getCondition(),recDoWhile.callMethod(ClsQSqlRecord.value, QString.fromStringConstant("b1__" + bean.getTbl().getPrimaryKey().getFirstColumn().getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(bean.getTbl().getPrimaryKey().getFirstColumn()))._equals(b1.callAttrGetter(bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())) ));
 		
 		
