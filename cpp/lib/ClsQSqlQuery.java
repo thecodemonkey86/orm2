@@ -7,11 +7,12 @@ import cpp.core.UniquePtr;
 
 public class ClsQSqlQuery extends Cls{
 
-	public static String clear = "clear";
+	public static final String clear = "clear";
+	public static final String record = "record";
 	
 	public ClsQSqlQuery() {
 		super("QSqlQuery");
-		addMethod(new LibMethod(new ClsQSqlRecord(), "record") );
+		addMethod(new LibMethod(this, record) );
 		addMethod(new LibMethod(CoreTypes.Bool, "next") );
 		addMethod(new LibMethod(CoreTypes.Void, clear) );
 	}
