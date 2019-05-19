@@ -150,7 +150,7 @@ public class MethodGetById extends Method {
 							b1.callSetterMethodInstruction("loaded", BoolExpression.TRUE)//_assignInstruction(b1.accessAttr("loaded"), BoolExpression.TRUE)
 							);
 		
-		
+		if(bean.hasRelations()) {
 		DoWhile doWhileQSqlQueryNext = DoWhile.create();
 		Var rec = doWhileQSqlQueryNext._declare(Types.QSqlRecord, "rec",qSqlQuery.callMethod("record") );
 //		//bCount = 2;
@@ -218,7 +218,9 @@ public class MethodGetById extends Method {
 		}
 		
 		ifQSqlQueryNext.addIfInstr(doWhileQSqlQueryNext);
+		
 		doWhileQSqlQueryNext.setCondition(ifQSqlQueryNext.getCondition());
+		}
 		_return(b1);
 	}
 
