@@ -18,6 +18,7 @@ import cpp.core.expression.BoolExpression;
 import cpp.core.expression.Expression;
 import cpp.core.expression.Expressions;
 import cpp.core.expression.Var;
+import cpp.core.instruction.BreakInstruction;
 import cpp.core.instruction.DoWhile;
 import cpp.core.instruction.IfBlock;
 import cpp.core.instruction.InstructionBlock;
@@ -85,16 +86,19 @@ protected Expression getExpressionQuery() {
 			ifInstr._assign(fkHelper.accessAttr("b1"), b1);
 		}
 		
-		Var recDoWhile =ifInstr._declare(Types.QSqlRecord, "rec" );		
-		DoWhile doWhileQueryNext = ifInstr._doWhile();
-		 doWhileQueryNext._assign(recDoWhile,query.callMethod(ClsQSqlQuery.record) );
-		 doWhileQueryNext.setCondition(Expressions.and(ifQueryNext.getCondition(),recDoWhile.callMethod(ClsQSqlRecord.value, QString.fromStringConstant("b1__" + bean.getTbl().getPrimaryKey().getFirstColumn().getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(bean.getTbl().getPrimaryKey().getFirstColumn().getDbType()))._equals(b1.callAttrGetter(bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())) ));
 		
 		
 		
-		if (!manyRelations.isEmpty()) {
+		if (bean.hasRelations()) {
 			
 		
+			DoWhile doWhileQueryNext = ifInstr._doWhile();
+			Var recDoWhile =doWhileQueryNext._declare(Types.QSqlRecord, "rec" ,query.callMethod(ClsQSqlQuery.record) );
+			
+			IfBlock ifNotCurrentPrimaryKeyMatches = doWhileQueryNext._if(recDoWhile.callMethod(ClsQSqlRecord.value, QString.fromStringConstant("b1__" + bean.getTbl().getPrimaryKey().getFirstColumn().getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(bean.getTbl().getPrimaryKey().getFirstColumn().getDbType()))._notEquals(b1.callAttrGetter(bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())) );
+			ifNotCurrentPrimaryKeyMatches.thenBlock().addInstr(new BreakInstruction());
+			doWhileQueryNext.setCondition(ifQueryNext.getCondition());
+			
 
 			ifInstr._assignInstruction(recDoWhile, query.callMethod("record"));
 			
@@ -156,10 +160,8 @@ protected Expression getExpressionQuery() {
 			
 
 			
-		} else {
-			/* manyRelations.isEmpty() */
-		//	ifNotB1SetContains.getIfInstr()._callMethodInstr(b1Map, "insert", b1pk);
-		}
+		 
+	
 		for(OneRelation r:oneRelations) {
 			BeanCls foreignCls = Beans.get(r.getDestTable());
 			Expression foreignBeanExpression = getByRecordExpression(foreignCls, recDoWhile, QString.fromStringConstant(r.getAlias()));
@@ -185,8 +187,8 @@ protected Expression getExpressionQuery() {
 //				}
 //			}
 		}
+		}
 		
-		doWhileQueryNext.addInstr(recDoWhile.assign(query.callMethod("record")));
 		ifInstr._callMethodInstr(b1, "setLoaded", BoolExpression.TRUE);
 		ifInstr._return(b1);
 		_callMethodInstr(query, ClsQSqlQuery.clear); 
