@@ -15,6 +15,7 @@ import cpp.beanquery.method.MethodAndWhere7;
 import cpp.beanquery.method.MethodAndWhere8;
 import cpp.beanquery.method.MethodAndWhere9;
 import cpp.beanquery.method.MethodBeanQueryWhereEquals;
+import cpp.beanquery.method.MethodBeanQueryWhereIsNotNull;
 import cpp.beanquery.method.MethodBeanQueryWhereIsNull;
 import cpp.beanquery.method.MethodBeanQueryWhereNotEquals;
 import cpp.beanquery.method.MethodExecute;
@@ -60,6 +61,7 @@ public class ClsBeanQueryUpdate extends Cls {
 			
 			if(c.isNullable()) {
 				addMethod(new MethodBeanQueryWhereIsNull(this,BeanQueryType.Update, cls, c));
+				addMethod(new MethodBeanQueryWhereIsNotNull(this,BeanQueryType.Update, cls, c));
 			}
 			
 			addMethod(new MethodUpdateSet(cls,this,c));
