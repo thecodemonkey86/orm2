@@ -1,10 +1,10 @@
 package cpp.jsonentity.method;
 
 import cpp.CoreTypes;
-import cpp.bean.Nullable;
 import cpp.core.Method;
 import cpp.core.expression.Expression;
 import cpp.core.expression.Operators;
+import cpp.entity.Nullable;
 import cpp.lib.ClsQString;
 import database.column.Column;
 

@@ -23,7 +23,7 @@ import sunjava.core.method.MethodAttributeGetter;
 
 public class ClsBeanRepository extends JavaCls{
 //	protected ArrayList<ClsBeanQuery> beanQueryClasses;
-	public static final String CLSNAME = "BeanRepository";
+	public static final String CLSNAME = "EntityRepository";
 	protected static String beanRepositoryPackage;
 	
 	public static void setBeanRepositoryPackage(String beanRepositoryPackage) {

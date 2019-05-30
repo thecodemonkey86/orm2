@@ -52,8 +52,8 @@ public class MethodAddRelatedBeanInternal extends Method {
 		JavaCls parent = (JavaCls) this.parent;
 		Attr a=parent.getAttrByName(OrmUtil.getOneToManyRelationDestAttrName(rel));
 		_if(a.isNull()).addIfInstr(a.assign(new NewOperator(a.getType())));
-		addInstr(a.callMethod(ClsArrayList.add,getParam("bean")).asInstruction());
-//		addInstr(parent.getAttrByName("_added"+StringUtil.ucfirst(a.getName())).callMethod("append",getParam("bean")).asInstruction());
+		addInstr(a.callMethod(ClsArrayList.add,getParam("entity")).asInstruction());
+//		addInstr(parent.getAttrByName("_added"+StringUtil.ucfirst(a.getName())).callMethod("append",getParam("entity")).asInstruction());
 	}
 	
 	public static MethodAddRelatedBeanInternal prototype() {

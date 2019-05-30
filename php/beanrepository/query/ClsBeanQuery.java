@@ -26,7 +26,7 @@ public class ClsBeanQuery extends PhpCls {
 	}
 	
 	public ClsBeanQuery(BeanCls cls) {
-		super(cls.getName()+ "BeanQuery",beanQueryNamespace);
+		super(cls.getName()+ "EntityQuery",beanQueryNamespace);
 		
 		setSuperclass(new ClsBaseBeanQuery(cls));
 		setConstructor(new ConstructorBeanQuery());

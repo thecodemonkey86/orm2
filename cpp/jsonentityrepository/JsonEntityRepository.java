@@ -59,7 +59,7 @@ public class JsonEntityRepository extends Cls {
 		
 		for(JsonEntity e : entityClasses) {
 			addForwardDeclaredClass(e);
-			addIncludeHeader(JsonEntity.getModelPath() + "beans/"+e.getIncludeHeader());
+			addIncludeHeader(JsonEntity.getModelPath() + "entities/"+e.getIncludeHeader());
 			addMethod(new MethodGetOneFromJson(e,true));
 			addMethod(new MethodGetOneFromJson(e,false));
 			addMethod(new MethodGetVectorFromJson(e));
@@ -67,8 +67,8 @@ public class JsonEntityRepository extends Cls {
 			addMethod(new MethodLoadByIdFromUrlAsynchronous(e));
 			addMethod(new MethodLoadByIdFromUrlSynchronous(e));
 			addMethod(new MethodEntityLoad(e));
-			addMethod(new QtSignal(getSignalNameOnLoadedOne(e),new Param( e.toSharedPtr().toConstRef(),"bean")));
-			addMethod(new QtSignal(getSignalNameOnLoaded(e),new Param(Types.qvector(e.toSharedPtr()).toConstRef(),"beans")));
+			addMethod(new QtSignal(getSignalNameOnLoadedOne(e),new Param( e.toSharedPtr().toConstRef(),"entity")));
+			addMethod(new QtSignal(getSignalNameOnLoaded(e),new Param(Types.qvector(e.toSharedPtr()).toConstRef(),"entities")));
 		}
 		
 	}

@@ -17,7 +17,7 @@ public class Enum extends Type{
 	
 	@Override
 	public String toDeclarationString() {
-		return CodeUtil2.sp((parentCls  != null ? parentCls.getName()+"::": null),type) ;
+		return (parentCls  != null ? parentCls.toDeclarationString()+"::": null)+type ;
 	}
 	
 	public String toDefinitionString() {

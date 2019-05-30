@@ -51,7 +51,7 @@
 //		Path path = cfg.getBasePath();
 //		Path modelPath = cfg.getModelPath();
 //		Path repositoryPath = cfg.getRepositoryPath();
-//		Path beansPath = modelPath.resolve("beans");
+//		Path beansPath = modelPath.resolve("entities");
 //		Path fetchListHelperPath = beansPath.resolve("helper");
 //		
 //		
@@ -134,7 +134,7 @@
 //			}
 //		}
 //		
-//		Files.write(repositoryPath.resolve("BeanRepository.java"), repo.toSourceString().getBytes(utf8), writeOptions);
+//		Files.write(repositoryPath.resolve("EntityRepository.java"), repo.toSourceString().getBytes(utf8), writeOptions);
 //		*/
 //		throw new RuntimeException("must refactor");
 //	}

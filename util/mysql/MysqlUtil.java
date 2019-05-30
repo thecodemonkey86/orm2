@@ -1,12 +1,12 @@
 package util.mysql;
 
-import cpp.bean.BeanCls;
 import cpp.core.Attr;
 import cpp.core.ConstRef;
 import cpp.core.Method;
 import cpp.core.Ref;
 import cpp.core.SharedPtr;
 import cpp.core.expression.Expression;
+import cpp.entity.EntityCls;
 import database.column.Column;
 import database.relation.OneRelation;
 import util.CodeUtil2;
@@ -48,15 +48,15 @@ public class MysqlUtil {
 	}
 	
 	public static Expression getPkExpression(Expression e, Column colPk) {
-		BeanCls cls= e.getType() instanceof BeanCls 
-				? (BeanCls) e.getType() :
+		EntityCls cls= e.getType() instanceof EntityCls 
+				? (EntityCls) e.getType() :
 				(e.getType() instanceof Ref
 						?
-								(BeanCls)(((Ref)e.getType()).getBase())
+								(EntityCls)(((Ref)e.getType()).getBase())
 						: (e.getType() instanceof ConstRef 
 							
-							? (BeanCls)(((ConstRef)e.getType()).getBase())
-							: (BeanCls) ((SharedPtr)e.getType()).getElementType()));
+							? (EntityCls)(((ConstRef)e.getType()).getBase())
+							: (EntityCls) ((SharedPtr)e.getType()).getElementType()));
 								
 		if (colPk.hasOneRelation()) {
 			try{

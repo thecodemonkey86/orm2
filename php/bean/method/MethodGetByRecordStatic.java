@@ -27,8 +27,8 @@ public class MethodGetByRecordStatic extends Method {
 	
 	@Override
 	public void addImplementation() {
-	/*	Var bean = _declare(parent, "bean", getParam("sqlCon"));
-//		Var bean = _declareNewRaw(returnType, "bean", parent.getAttrByName("sqlCon"));
+	/*	Var bean = _declare(parent, "entity", getParam("sqlCon"));
+//		Var bean = _declareNewRaw(returnType, "entity", parent.getAttrByName("sqlCon"));
 		for(Column col:columns) {
 			try{
 //				if (!col.hasOneRelation()) {

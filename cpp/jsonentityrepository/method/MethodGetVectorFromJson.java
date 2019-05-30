@@ -2,7 +2,6 @@ package cpp.jsonentityrepository.method;
 
 import cpp.JsonTypes;
 import cpp.Types;
-import cpp.bean.Nullable;
 import cpp.core.Cls;
 import cpp.core.Method;
 import cpp.core.Param;
@@ -10,6 +9,7 @@ import cpp.core.QString;
 import cpp.core.expression.Var;
 import cpp.core.instruction.ForeachLoop;
 import cpp.core.instruction.IfBlock;
+import cpp.entity.Nullable;
 import cpp.jsonentity.JsonEntities;
 import cpp.jsonentity.JsonEntity;
 import cpp.jsonentity.method.MethodColumnAttrSetterInternal;

@@ -11,6 +11,7 @@ import cpp.core.expression.Expression;
 import cpp.core.expression.IntExpression;
 import cpp.core.expression.LongLongExpression;
 import cpp.core.expression.ShortExpression;
+import cpp.lib.ClsSqlQuery;
 import database.column.Column;
 
 public class SqliteDatabaseMapper extends DatabaseTypeMapper {
@@ -186,5 +187,10 @@ public class SqliteDatabaseMapper extends DatabaseTypeMapper {
 	@Override
 	public Type columnToType(Column col) {
 		return getTypeFromDbDataType(col.getDbType(), col.isNullable());
+	}
+	
+	@Override
+	public ClsSqlQuery getSqlQueryType() {
+		throw new RuntimeException("not impl");
 	}
 }

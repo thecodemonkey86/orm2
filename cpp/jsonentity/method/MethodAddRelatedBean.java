@@ -24,7 +24,7 @@ public class MethodAddRelatedBean extends Method {
 	public void addImplementation() {
 		Attr a=parent.getAttrByName(OrmUtil.getOneToManyRelationDestAttrName(rel));
 		addInstr(a.callMethod("append",pBean).asInstruction());
-//		addInstr(parent.getAttrByName("_added"+StringUtil.ucfirst(a.getName())).callMethod("append",getParam("bean")).asInstruction());
+//		addInstr(parent.getAttrByName("_added"+StringUtil.ucfirst(a.getName())).callMethod("append",getParam("entity")).asInstruction());
 
 		
 		if(!pBean.getType().getName().startsWith(ClsQVector.CLSNAME)) // TODO overloaded with QVector

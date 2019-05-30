@@ -14,6 +14,7 @@ import cpp.core.expression.Int64Expression;
 import cpp.core.expression.Int8Expression;
 import cpp.core.expression.IntExpression;
 import cpp.lib.ClsQVariant;
+import cpp.lib.ClsSqlQuery;
 import database.column.Column;
 
 public class MySqlDatabaseMapper extends DatabaseTypeMapper{
@@ -177,5 +178,10 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 	@Override
 	public Type columnToType(Column col) {
 		return getTypeFromDbDataType(col.getDbType(), col.isNullable());
+	}
+
+	@Override
+	public ClsSqlQuery getSqlQueryType() {
+		throw new RuntimeException("not impl");
 	}
 }

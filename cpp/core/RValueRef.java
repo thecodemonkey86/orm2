@@ -43,7 +43,7 @@ public class RValueRef extends Cls {
 			IAttributeContainer c=(IAttributeContainer) base;
 			return c.getAttr(prototype);
 		} 
-		throw new RuntimeException("type is not a class or a struct: "+name);
+		throw new RuntimeException("type is not a class or a struct: "+type);
 	}
 	
 	@Override

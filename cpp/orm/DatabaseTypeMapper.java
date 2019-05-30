@@ -3,6 +3,7 @@ package cpp.orm;
 import cpp.core.Method;
 import cpp.core.Type;
 import cpp.core.expression.Expression;
+import cpp.lib.ClsSqlQuery;
 import database.column.Column;
 
 public abstract class DatabaseTypeMapper {
@@ -15,5 +16,6 @@ public abstract class DatabaseTypeMapper {
 	public abstract Expression getColumnDefaultValueExpression(Column col);
 	public abstract Expression getGenericDefaultValueExpression(Column col);
 	
+	public abstract ClsSqlQuery getSqlQueryType();
 	public abstract Type columnToType(Column c);
 }

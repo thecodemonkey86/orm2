@@ -28,7 +28,7 @@ private static Map<String,JsonEntity> beans;
 		beans.put(cls.getName(), cls);
 	}
 	
-	public static Collection<JsonEntity> getAllBeans() {
+	public static Collection<JsonEntity> getAllEntities() {
 		return beans.values();
 	}
 }

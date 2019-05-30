@@ -10,15 +10,16 @@ public class ClsSqlQuery extends Cls{
 
 	public ClsSqlQuery() {
 		super("SqlQuery");
-		addMethod(new LibMethod(this.toRawPointer(), "select"));
-		addMethod(new LibMethod(this.toRawPointer(), "from"));
-		addMethod(new LibMethod(this.toRawPointer(), "leftJoin"));
-		addMethod(new LibMethod(this.toRawPointer(), "join"));
+		setUseNamespace("SqlUtil3");
+		addMethod(new LibMethod(this.toRef(), "select"));
+		addMethod(new LibMethod(this.toRef(), "from"));
+		addMethod(new LibMethod(this.toRef(), "leftJoin"));
+		addMethod(new LibMethod(this.toRef(), "join"));
 		addMethod(new LibMethod(Types.QSqlQuery, "execQuery"));
-		addMethod(new LibMethod(this.toRawPointer(), "where"));
-		addMethod(new LibMethod(this.toRawPointer(), "andWhereIn"));
-		addMethod(new LibMethod(this.toRawPointer(), "whereIn"));
-		addMethod(new LibMethod(this.toRawPointer(), orderBy));
+		addMethod(new LibMethod(this.toRef(), "where"));
+		addMethod(new LibMethod(this.toRef(), "andWhereIn"));
+		addMethod(new LibMethod(this.toRef(), "whereIn"));
+		addMethod(new LibMethod(this.toRef(), orderBy));
 		addAttr(new Attr(Attr.Public, Types.QString, "AND", null, true));
 	}
 

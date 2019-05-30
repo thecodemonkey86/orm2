@@ -22,7 +22,7 @@ import php.core.method.MethodAttributeGetter;
 
 public class ClsBeanRepository extends PhpCls{
 //	protected ArrayList<ClsBeanQuery> beanQueryClasses;
-	public static final String CLSNAME = "BeanRepository";
+	public static final String CLSNAME = "EntityRepository";
 	protected static String beanRepositoryNamespace;
 	
 	public static void setBeanRepositoryNamespace(String beanRepositoryNamespace) {

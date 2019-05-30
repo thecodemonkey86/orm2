@@ -26,8 +26,8 @@ public class MethodAddRelatedBean extends Method {
 		JavaCls parent = (JavaCls) this.parent;
 		Attr a=parent.getAttrByName(OrmUtil.getOneToManyRelationDestAttrName(rel));
 		_if(a.isNull()).addIfInstr(a.assign(new NewOperator(a.getType())));
-		addInstr(a.callMethod(methodCollectionAdd(a),getParam("bean")).asInstruction());
-//		addInstr(parent.getAttrByName("_added"+StringUtil.ucfirst(a.getName())).callMethod("append",getParam("bean")).asInstruction());
+		addInstr(a.callMethod(methodCollectionAdd(a),getParam("entity")).asInstruction());
+//		addInstr(parent.getAttrByName("_added"+StringUtil.ucfirst(a.getName())).callMethod("append",getParam("entity")).asInstruction());
 	}
 
 	protected String methodCollectionAdd(Attr a) {

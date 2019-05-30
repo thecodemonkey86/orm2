@@ -50,7 +50,7 @@ public class MethodGetFromQueryAssocArray extends Method{
 			pkExprArrayIndex = PhpFunctions.substr.call(pkExprArrayIndex,new IntExpression(0),new IntExpression(31));
 		}
 		_if(array.arrayIndex(pkExprArrayIndex).isNull()).thenBlock()._return(Expressions.Null); 
-		Var bean = _declareNew(returnType, "bean", BoolExpression.FALSE);
+		Var bean = _declareNew(returnType, "entity", BoolExpression.FALSE);
 		
 		for(Column col:columns) {
 			if (!col.isRelationDestColumn() || col.hasOneRelation() || col.isPartOfPk()) {

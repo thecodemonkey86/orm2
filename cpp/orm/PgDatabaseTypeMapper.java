@@ -14,6 +14,7 @@ import cpp.core.expression.Int64Expression;
 import cpp.core.expression.IntExpression;
 import cpp.core.expression.LongLongExpression;
 import cpp.core.expression.ShortExpression;
+import cpp.lib.ClsSqlQuery;
 import database.column.Column;
 
 public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
@@ -168,5 +169,9 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 	@Override
 	public Type columnToType(Column col) {
 		return getTypeFromDbDataType(col.getDbType(), col.isNullable());
+	}
+	@Override
+	public ClsSqlQuery getSqlQueryType() {
+		return Types.PgSqlQuery;
 	}
 }

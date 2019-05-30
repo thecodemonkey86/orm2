@@ -35,9 +35,9 @@ import cpp.jsonentity.method.MethodIsNullOrEmpty;
 import cpp.jsonentity.method.MethodManyAttrGetter;
 import cpp.jsonentity.method.MethodOneRelationAttrSetter;
 import cpp.jsonentity.method.MethodQHashPkStruct;
-import cpp.jsonentity.method.MethodRemoveAllManyRelatedBeans;
-import cpp.jsonentity.method.MethodReplaceAllManyRelatedBeans;
-import cpp.jsonentity.method.MethodToggleAddRemoveRelatedBean;
+import cpp.jsonentity.method.MethodRemoveAllManyRelatedEntities;
+import cpp.jsonentity.method.MethodReplaceAllManyRelatedEntities;
+import cpp.jsonentity.method.MethodToggleAddRemoveRelatedEntity;
 import cpp.orm.DatabaseTypeMapper;
 import cpp.orm.OrmUtil;
 import database.Database;
@@ -69,7 +69,7 @@ public class JsonEntity extends Cls {
 		this.manyRelations = manyToManyRelations;
 	}
 	
-	private static final String BEAN_PARAM_NAME = "bean";
+	private static final String BEAN_PARAM_NAME = "entity";
 	public static final String BEGIN_CUSTOM_CLASS_MEMBERS = "/*BEGIN_CUSTOM_CLASS_MEMBERS*/";
 	public static final String END_CUSTOM_CLASS_MEMBERS = "/*END_CUSTOM_CLASS_MEMBERS*/";
 	public static final String BEGIN_CUSTOM_PREPROCESSOR = "/*BEGIN_CUSTOM_PREPROCESSOR*/";
@@ -193,8 +193,8 @@ public class JsonEntity extends Cls {
 			addMethod(new MethodAddRelatedBeanInternal(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
 			addMethod(new MethodGetManyRelatedAtIndex(attr, r));
 			addMethod(new MethodGetManyRelatedCount(attr, r));
-			addMethod(new MethodRemoveAllManyRelatedBeans(r));
-			addMethod(new MethodReplaceAllManyRelatedBeans(r));
+			addMethod(new MethodRemoveAllManyRelatedEntities(r));
+			addMethod(new MethodReplaceAllManyRelatedEntities(r));
 			addMethod(new MethodGetLastItem(attr.getElementType(), r));
 		}
 		
@@ -263,10 +263,10 @@ public class JsonEntity extends Cls {
 		}
 		
 		for(OneToManyRelation r:oneToManyRelations) {
-			addMethod(new MethodToggleAddRemoveRelatedBean(r));
+			addMethod(new MethodToggleAddRemoveRelatedEntity(r));
 		}
 		for(ManyRelation r:manyRelations) {
-			addMethod(new MethodToggleAddRemoveRelatedBean(r));
+			addMethod(new MethodToggleAddRemoveRelatedEntity(r));
 		}
 //		addAttr(new RepositoryAttr());
 	}
@@ -347,12 +347,12 @@ public class JsonEntity extends Cls {
 	
 	@Override
 	public boolean equals(Object obj) {
-		return obj instanceof JsonEntity && name.equals(((JsonEntity)obj).name);
+		return obj instanceof JsonEntity && type.equals(((JsonEntity)obj).type);
 	}
 
 	@Override
 	public int hashCode() {
-		return name.hashCode();
+		return type.hashCode();
 	}
 
 	
@@ -545,7 +545,7 @@ public class JsonEntity extends Cls {
 			}
 		} else {
 			if (tbl.getPrimaryKey().getColumns().size()==0) {
-				throw new RuntimeException("pk info missing for "+name);
+				throw new RuntimeException("pk info missing for "+type);
 			}
 			Column col= tbl.getPrimaryKey().getFirstColumn();
 			Attr attrPrev = new Attr(JsonEntity.getDatabaseMapper().getTypeFromDbDataType(col.getDbType(), col.isNullable()), col.getCamelCaseName()+"Previous");

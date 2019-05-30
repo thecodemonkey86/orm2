@@ -70,8 +70,8 @@ public class MethodLimitAndOffset extends Method {
 						.asInstruction());
 		addInstr(varSql.binOp(".=", new PhpStringLiteral(") _limitjoin")).asInstruction());
 
-		addInstr(_this().assignAttr("beanQueryLimit", pLimit));
-		addInstr(_this().assignAttr("beanQueryOffset", pOffset));
+		addInstr(_this().assignAttr("entityQueryLimit", pLimit));
+		addInstr(_this().assignAttr("entityQueryOffset", pOffset));
 		ArrayList<String> listJoinCondition = new ArrayList<>();
 		
 		for(Column pkCol : pk) {

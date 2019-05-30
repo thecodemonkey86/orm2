@@ -52,9 +52,9 @@ public class RestMethodGetById extends Method {
 			}
 			
 			e = e.callMethod("fetchOne");
-			Var vBean = caseBeanType._declare(e.getType(),"bean",e );
+			Var vBean = caseBeanType._declare(e.getType(),"entity",e );
 			
-			Var beanData =  caseBeanType._declare(Types.array(Types.String), "beanData",vBean.callMethod(MethodGetFieldsAsAssocArray.METHOD_NAME));
+			Var beanData =  caseBeanType._declare(Types.array(Types.String), "entityData",vBean.callMethod(MethodGetFieldsAsAssocArray.METHOD_NAME));
 			
 			for(OneRelation r : bean.getOneRelations() ) {
 				IfBlock ifRelatedBeanIsNotNull = caseBeanType._if(vBean.callMethod( OrmUtil.getOneRelationDestAttrGetter(r)).isNotNull());

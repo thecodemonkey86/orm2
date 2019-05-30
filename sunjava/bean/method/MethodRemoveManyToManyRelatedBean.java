@@ -31,9 +31,9 @@ public class MethodRemoveManyToManyRelatedBean extends Method {
 	public void addImplementation() {
 		JavaCls parent = (JavaCls) this.parent;
 		Attr a=parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
-		addInstr(a.callMethod(ClsArrayList.remove,getParam("bean")).asInstruction());
+		addInstr(a.callMethod(ClsArrayList.remove,getParam("entity")).asInstruction());
 		BeanCls relationBean = Beans.get( rel.getDestTable());
-		Param pBean = getParam("bean");
+		Param pBean = getParam("entity");
 		Attr aRemoved = parent.getAttrByName(
 				a.getName()+"Removed");
 		_if(aRemoved.isNull()).addIfInstr(aRemoved.assign(new NewOperator(aRemoved.getType())));
@@ -48,7 +48,7 @@ Expression[] idAddedArgs = new Expression[relationBean.getTbl().getPrimaryKey().
 			Var idRemoved = _declareNew(pkType, "idRemoved", idAddedArgs);
 			for(Column col:relationBean.getTbl().getPrimaryKey().getColumns()) {
 				addInstr( idRemoved.callAttrSetterMethodInstr(col
-						.getCamelCaseName(), getParam("bean")
+						.getCamelCaseName(), getParam("entity")
 						.callAttrGetter(
 								col
 								.getCamelCaseName()
@@ -64,7 +64,7 @@ Expression[] idAddedArgs = new Expression[relationBean.getTbl().getPrimaryKey().
 			addInstr(
 					aRemoved
 							.callMethod(ClsArrayList.add,
-									getParam("bean")
+									getParam("entity")
 									.callAttrGetter(
 											relationBean.getTbl().getPrimaryKey().getFirstColumn()
 											.getCamelCaseName()

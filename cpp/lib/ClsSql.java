@@ -2,15 +2,21 @@ package cpp.lib;
 
 import cpp.Types;
 import cpp.core.Cls;
+import cpp.core.Type;
 
 public class ClsSql extends Cls {
 
-	public static final String buildQuery = "buildQuery";
-
+	public static final String execute ="execute" ;
+	
 	public ClsSql() {
 		super("Sql");
-		addMethod(new LibMethod(Types.SqlQuery.toSharedPtr(), buildQuery));
-		addMethod(new LibMethod(Types.Bool, "execute"));
+		setUseNamespace("SqlUtil3");
+		addMethod(new LibMethod(Types.Bool,execute,true ));
+	}
+	
+	@Override
+	public Type toRawPointer() {
+		throw new RuntimeException("private constructor. No instance");
 	}
 
 }

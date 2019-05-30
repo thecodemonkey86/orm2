@@ -2,13 +2,13 @@ package cpp.jsonentity.method;
 
 import util.StringUtil;
 import cpp.Types;
-import cpp.bean.BeanCls;
-import cpp.bean.Beans;
 import cpp.core.Attr;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.Struct;
 import cpp.core.expression.Var;
+import cpp.entity.Entities;
+import cpp.entity.EntityCls;
 import cpp.lib.ClsQVector;
 import cpp.orm.OrmUtil;
 import database.column.Column;
@@ -32,7 +32,7 @@ public class MethodAddManyToManyRelatedBean extends Method {
 	public void addImplementation() {
 		Attr a=parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
 		addInstr(a.callMethod(ClsQVector.append,pBean).asInstruction());
-		BeanCls relationBean = Beans.get( rel.getDestTable());
+		EntityCls relationBean = Entities.get( rel.getDestTable());
 		
 		if (relationBean.getTbl().getPrimaryKey().isMultiColumn()) {
 			Struct pkType=relationBean.getStructPk();

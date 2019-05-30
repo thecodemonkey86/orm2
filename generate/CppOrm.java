@@ -14,13 +14,13 @@ import config.OrmConfig;
 import config.SetPassConfigReader;
 import cpp.JsonTypes;
 import cpp.Types;
-import cpp.bean.BeanCls;
-import cpp.bean.Beans;
-import cpp.beanquery.ClsBeanQueryDelete;
-import cpp.beanquery.ClsBeanQuerySelect;
-import cpp.beanquery.ClsBeanQueryUpdate;
-import cpp.beanrepository.ClsBeanRepository;
 import cpp.core.instruction.Instruction;
+import cpp.entity.Entities;
+import cpp.entity.EntityCls;
+import cpp.entityquery.ClsEntityQueryDelete;
+import cpp.entityquery.ClsEntityQuerySelect;
+import cpp.entityquery.ClsEntityQueryUpdate;
+import cpp.entityrepository.ClsEntityRepository;
 import cpp.jsonentity.JsonEntities;
 import cpp.jsonentity.JsonEntity;
 import cpp.jsonentityrepository.JsonEntityRepository;
@@ -105,10 +105,10 @@ Charset utf8 = Charset.forName("UTF-8");
 		Path pathModel = cfg.getModelPath();
 		if(cfg.getJsonMode() == null) {
 			//default SQL mode
-			BeanCls.setModelPath(cfg.getBasePath().relativize(cfg.getModelPath()).toString().replace('\\', '/'));
-			BeanCls.setRepositoryPath(cfg.getBasePath().relativize(cfg.getRepositoryPath()).toString().replace('\\', '/'));
-			BeanCls.setDatabase(cfg.getDatabase());
-			BeanCls.setTypeMapper(getTypeMapper(cfg));
+			EntityCls.setModelPath(cfg.getBasePath().relativize(cfg.getModelPath()).toString().replace('\\', '/'));
+			EntityCls.setRepositoryPath(cfg.getBasePath().relativize(cfg.getRepositoryPath()).toString().replace('\\', '/'));
+			EntityCls.setDatabase(cfg.getDatabase());
+			EntityCls.setTypeMapper(getTypeMapper(cfg));
 
 		
 			for(Table tbl:cfg.getEntityTables() ) {
@@ -120,24 +120,24 @@ Charset utf8 = Charset.forName("UTF-8");
 	//			tableManyRelations.put(tbl, manyRelations);
 				
 				
-				BeanCls cls = new BeanCls(tbl,manyRelations, oneRelations,manyToManyRelations);
-				Beans.add(cls);
+				EntityCls cls = new EntityCls(tbl,manyRelations, oneRelations,manyToManyRelations);
+				Entities.add(cls);
 			}
 			
-			ClsBeanRepository repo=Types.BeanRepository;
-			repo.addDeclarations(Beans.getAllBeans());
-			for (BeanCls c : Beans.getAllBeans()) {
+			ClsEntityRepository repo=Types.EntityRepository;
+			repo.addDeclarations(Entities.getAllBeans());
+			for (EntityCls c : Entities.getAllBeans()) {
 				c.setPrimaryKeyType();
 			}
 			
-			for (BeanCls c : Beans.getAllBeans()) {
+			for (EntityCls c : Entities.getAllBeans()) {
 				c.addDeclarations();
 			}
 	//		for (BeanCls c : Beans.getAllBeans()) {
 	//			c.breakPointerCircles();
 	//		}
-			Path pathBeans = pathModel.resolve("beans");
-			for (BeanCls c : Beans.getAllBeans()) {
+			Path pathBeans = pathModel.resolve("entities");
+			for (EntityCls c : Entities.getAllBeans()) {
 				Path pathHeader = pathBeans.resolve(c.getName().toLowerCase()+".h");
 				Path pathSrc = pathBeans.resolve(c.getName().toLowerCase()+".cpp");
 				
@@ -149,12 +149,12 @@ Charset utf8 = Charset.forName("UTF-8");
 					Path pBackup  =Paths.get("bak_custom_class_members");
 					int startHdr = -1;
 					
-					while((startHdr = existingHeaderFile.indexOf(BeanCls.BEGIN_CUSTOM_CLASS_MEMBERS,startHdr+1))>-1) {
-						int endHdr = existingHeaderFile.indexOf(BeanCls.END_CUSTOM_CLASS_MEMBERS,startHdr);
+					while((startHdr = existingHeaderFile.indexOf(EntityCls.BEGIN_CUSTOM_CLASS_MEMBERS,startHdr+1))>-1) {
+						int endHdr = existingHeaderFile.indexOf(EntityCls.END_CUSTOM_CLASS_MEMBERS,startHdr);
 						if(endHdr == -1) {
 							throw new RuntimeException("Missing custom class members end marker: " + pathHeader);
 						}
-						String customClassMember = existingHeaderFile.substring(startHdr+BeanCls.BEGIN_CUSTOM_CLASS_MEMBERS.length(), endHdr);
+						String customClassMember = existingHeaderFile.substring(startHdr+EntityCls.BEGIN_CUSTOM_CLASS_MEMBERS.length(), endHdr);
 						//c.addMethod(new CustomClassMemberCode(customClassMember, implCode) );
 						
 						if(!Files.exists(pBackup)) {
@@ -166,12 +166,12 @@ Charset utf8 = Charset.forName("UTF-8");
 					}
 					int startSrc = -1;
 					
-					while((startSrc = existingSourceFile.indexOf(BeanCls.BEGIN_CUSTOM_CLASS_MEMBERS,startSrc+1))>-1) {
-						int endSrc = existingSourceFile.indexOf(BeanCls.END_CUSTOM_CLASS_MEMBERS,startSrc);
+					while((startSrc = existingSourceFile.indexOf(EntityCls.BEGIN_CUSTOM_CLASS_MEMBERS,startSrc+1))>-1) {
+						int endSrc = existingSourceFile.indexOf(EntityCls.END_CUSTOM_CLASS_MEMBERS,startSrc);
 						if(endSrc == -1) {
 							throw new RuntimeException("Missing custom class members end marker: " + pathSrc);
 						}
-						String implCode = existingSourceFile.substring(startSrc+BeanCls.BEGIN_CUSTOM_CLASS_MEMBERS.length(), endSrc);
+						String implCode = existingSourceFile.substring(startSrc+EntityCls.BEGIN_CUSTOM_CLASS_MEMBERS.length(), endSrc);
 						if(!Files.exists(pBackup)) {
 							Files.createDirectory(pBackup);
 						}
@@ -181,12 +181,12 @@ Charset utf8 = Charset.forName("UTF-8");
 						c.addCustomSourceCode(implCode);
 					}
 					startHdr = -1;
-					while((startHdr = existingHeaderFile.indexOf(BeanCls.BEGIN_CUSTOM_PREPROCESSOR,startHdr+1))>-1) {
-						int endHdr = existingHeaderFile.indexOf(BeanCls.END_CUSTOM_PREPROCESSOR,startHdr);
+					while((startHdr = existingHeaderFile.indexOf(EntityCls.BEGIN_CUSTOM_PREPROCESSOR,startHdr+1))>-1) {
+						int endHdr = existingHeaderFile.indexOf(EntityCls.END_CUSTOM_PREPROCESSOR,startHdr);
 						if(endHdr == -1) {
 							throw new RuntimeException("Missing custom preprocessor instructions end marker: " + pathHeader);
 						}
-						String customPp = existingHeaderFile.substring(startHdr+BeanCls.BEGIN_CUSTOM_PREPROCESSOR.length(), endHdr);
+						String customPp = existingHeaderFile.substring(startHdr+EntityCls.BEGIN_CUSTOM_PREPROCESSOR.length(), endHdr);
 						c.addCustomPreprocessorCode(customPp );
 					}
 					
@@ -231,36 +231,36 @@ Charset utf8 = Charset.forName("UTF-8");
 			}
 //			Files.write(pathRepositoryQuery.resolve(EnumQueryMode.INSTANCE.getName().toLowerCase()+".h"), EnumQueryMode.INSTANCE.toHeaderString().getBytes(utf8), writeOptions);
 			
-			for (BeanCls c : Beans.getAllBeans()) {
+			for (EntityCls c : Entities.getAllBeans()) {
 				
 				Files.write(pathBeans.resolve(c.getName().toLowerCase()+".h"), c.toHeaderString().getBytes(utf8), writeOptions);
 				Files.write(pathBeans.resolve(c.getName().toLowerCase()+".cpp"), c.toSourceString().getBytes(utf8), writeOptions);
-				ClsBeanQuerySelect clsQuery = Types.beanQuerySelect(c);
+				ClsEntityQuerySelect clsQuery = Types.beanQuerySelect(c);
 				clsQuery.addMethodImplementations();
 				Files.write(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+".h"), clsQuery.toHeaderString().getBytes(utf8), writeOptions);
 				Files.write(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+".cpp"), clsQuery.toSourceString().getBytes(utf8), writeOptions);
 				
-				ClsBeanQueryDelete clsDelete = new ClsBeanQueryDelete(c);
+				ClsEntityQueryDelete clsDelete = new ClsEntityQueryDelete(c);
 				clsDelete.addMethodImplementations();
 				Files.write(pathRepositoryQuery.resolve(clsDelete.getName().toLowerCase()+".h"), clsDelete.toHeaderString().getBytes(utf8), writeOptions);
 				Files.write(pathRepositoryQuery.resolve(clsDelete.getName().toLowerCase()+".cpp"), clsDelete.toSourceString().getBytes(utf8), writeOptions);
 				
 				
-				ClsBeanQueryUpdate clsUpdate = new ClsBeanQueryUpdate(c);
+				ClsEntityQueryUpdate clsUpdate = new ClsEntityQueryUpdate(c);
 				clsUpdate.addMethodImplementations();
 				Files.write(pathRepositoryQuery.resolve(clsUpdate.getName().toLowerCase()+".h"), clsUpdate.toHeaderString().getBytes(utf8), writeOptions);
 				Files.write(pathRepositoryQuery.resolve(clsUpdate.getName().toLowerCase()+".cpp"), clsUpdate.toSourceString().getBytes(utf8), writeOptions);
 			}
 			
-			Files.write(pathRepository.resolve("beanrepository.h"), repo.toHeaderString().getBytes(utf8), writeOptions);
-			Files.write(pathRepository.resolve("beanrepository.cpp"), repo.toSourceString().getBytes(utf8), writeOptions);
+			Files.write(pathRepository.resolve("entityrepository.h"), repo.toHeaderString().getBytes(utf8), writeOptions);
+			Files.write(pathRepository.resolve("entityrepository.cpp"), repo.toSourceString().getBytes(utf8), writeOptions);
 		
 //		BeanHelper helper = new BeanHelper(Beans.getAllBeans());
 //		helper.addMethodImplementations();
-//		Files.write(path.resolve("beanhelper").resolve("beanhelper.h"), helper.toHeaderString().getBytes(utf8), writeOptions);
-//		Files.write(path.resolve("beanhelper").resolve("beanhelper.cpp"), helper.toSourceString().getBytes(utf8), writeOptions);
+//		Files.write(path.resolve("entityhelper").resolve("entityhelper.h"), helper.toHeaderString().getBytes(utf8), writeOptions);
+//		Files.write(path.resolve("entityhelper").resolve("entityhelper.cpp"), helper.toSourceString().getBytes(utf8), writeOptions);
 		} else {
-			Path pathBeans = pathModel.resolve("beans");
+			Path pathEntities = pathModel.resolve("entities");
 			Path pathRepository = cfg.getRepositoryPath();
 			Path pathRepositoryQuery = pathRepository.resolve("query");
 			// json mode
@@ -277,20 +277,20 @@ Charset utf8 = Charset.forName("UTF-8");
 				JsonEntities.add(e);
 			}
 			
-			for (JsonEntity c : JsonEntities.getAllBeans()) {
+			for (JsonEntity c : JsonEntities.getAllEntities()) {
 				c.setPrimaryKeyType();
 			}
 			
-			for (JsonEntity c : JsonEntities.getAllBeans()) {
+			for (JsonEntity c : JsonEntities.getAllEntities()) {
 				c.addDeclarations();
 			}
 			JsonEntityRepository repo = JsonTypes.JsonEntityRepository;
-			repo.addDeclarations(JsonEntities.getAllBeans());
+			repo.addDeclarations(JsonEntities.getAllEntities());
 
 			repo.addMethodImplementations();
-			for (JsonEntity c : JsonEntities.getAllBeans()) {
-				Path pathHeader = pathBeans.resolve(c.getName().toLowerCase()+".h");
-				Path pathSrc = pathBeans.resolve(c.getName().toLowerCase()+".cpp");
+			for (JsonEntity c : JsonEntities.getAllEntities()) {
+				Path pathHeader = pathEntities.resolve(c.getName().toLowerCase()+".h");
+				Path pathSrc = pathEntities.resolve(c.getName().toLowerCase()+".cpp");
 				
 				
 				if (Files.exists(pathHeader) && Files.exists(pathSrc)) {
@@ -300,12 +300,12 @@ Charset utf8 = Charset.forName("UTF-8");
 					Path pBackup  =Paths.get("bak_custom_class_members");
 					int startHdr = -1;
 					
-					while((startHdr = existingHeaderFile.indexOf(BeanCls.BEGIN_CUSTOM_CLASS_MEMBERS,startHdr+1))>-1) {
-						int endHdr = existingHeaderFile.indexOf(BeanCls.END_CUSTOM_CLASS_MEMBERS,startHdr);
+					while((startHdr = existingHeaderFile.indexOf(EntityCls.BEGIN_CUSTOM_CLASS_MEMBERS,startHdr+1))>-1) {
+						int endHdr = existingHeaderFile.indexOf(EntityCls.END_CUSTOM_CLASS_MEMBERS,startHdr);
 						if(endHdr == -1) {
 							throw new RuntimeException("Missing custom class members end marker: " + pathHeader);
 						}
-						String customClassMember = existingHeaderFile.substring(startHdr+BeanCls.BEGIN_CUSTOM_CLASS_MEMBERS.length(), endHdr);
+						String customClassMember = existingHeaderFile.substring(startHdr+EntityCls.BEGIN_CUSTOM_CLASS_MEMBERS.length(), endHdr);
 						//c.addMethod(new CustomClassMemberCode(customClassMember, implCode) );
 						
 						if(!Files.exists(pBackup)) {
@@ -317,12 +317,12 @@ Charset utf8 = Charset.forName("UTF-8");
 					}
 					int startSrc = -1;
 					
-					while((startSrc = existingSourceFile.indexOf(BeanCls.BEGIN_CUSTOM_CLASS_MEMBERS,startSrc+1))>-1) {
-						int endSrc = existingSourceFile.indexOf(BeanCls.END_CUSTOM_CLASS_MEMBERS,startSrc);
+					while((startSrc = existingSourceFile.indexOf(EntityCls.BEGIN_CUSTOM_CLASS_MEMBERS,startSrc+1))>-1) {
+						int endSrc = existingSourceFile.indexOf(EntityCls.END_CUSTOM_CLASS_MEMBERS,startSrc);
 						if(endSrc == -1) {
 							throw new RuntimeException("Missing custom class members end marker: " + pathSrc);
 						}
-						String implCode = existingSourceFile.substring(startSrc+BeanCls.BEGIN_CUSTOM_CLASS_MEMBERS.length(), endSrc);
+						String implCode = existingSourceFile.substring(startSrc+EntityCls.BEGIN_CUSTOM_CLASS_MEMBERS.length(), endSrc);
 						if(!Files.exists(pBackup)) {
 							Files.createDirectory(pBackup);
 						}
@@ -332,12 +332,12 @@ Charset utf8 = Charset.forName("UTF-8");
 						c.addCustomSourceCode(implCode);
 					}
 					startHdr = -1;
-					while((startHdr = existingHeaderFile.indexOf(BeanCls.BEGIN_CUSTOM_PREPROCESSOR,startHdr+1))>-1) {
-						int endHdr = existingHeaderFile.indexOf(BeanCls.END_CUSTOM_PREPROCESSOR,startHdr);
+					while((startHdr = existingHeaderFile.indexOf(EntityCls.BEGIN_CUSTOM_PREPROCESSOR,startHdr+1))>-1) {
+						int endHdr = existingHeaderFile.indexOf(EntityCls.END_CUSTOM_PREPROCESSOR,startHdr);
 						if(endHdr == -1) {
 							throw new RuntimeException("Missing custom preprocessor instructions end marker: " + pathHeader);
 						}
-						String customPp = existingHeaderFile.substring(startHdr+BeanCls.BEGIN_CUSTOM_PREPROCESSOR.length(), endHdr);
+						String customPp = existingHeaderFile.substring(startHdr+EntityCls.BEGIN_CUSTOM_PREPROCESSOR.length(), endHdr);
 						c.addCustomPreprocessorCode(customPp );
 					}
 				}
@@ -346,10 +346,10 @@ Charset utf8 = Charset.forName("UTF-8");
 			
 			
 			
-			Files.createDirectories(pathBeans);
+			Files.createDirectories(pathEntities);
 			Files.createDirectories(pathRepositoryQuery);
 	
-			try(DirectoryStream<Path> dsPathBeans = Files.newDirectoryStream(pathBeans)) {
+			try(DirectoryStream<Path> dsPathBeans = Files.newDirectoryStream(pathEntities)) {
 				for(Path f : dsPathBeans) {
 					if(f.toString().endsWith(".h") || f.toString().endsWith(".cpp")) {
 						Files.delete(f);
@@ -369,9 +369,9 @@ Charset utf8 = Charset.forName("UTF-8");
 				
 			}
 			
-			for (JsonEntity c : JsonEntities.getAllBeans()) {
-				Files.write(pathBeans.resolve(c.getName().toLowerCase()+".h"), c.toHeaderString().getBytes(utf8), writeOptions);
-				Files.write(pathBeans.resolve(c.getName().toLowerCase()+".cpp"), c.toSourceString().getBytes(utf8), writeOptions);
+			for (JsonEntity c : JsonEntities.getAllEntities()) {
+				Files.write(pathEntities.resolve(c.getName().toLowerCase()+".h"), c.toHeaderString().getBytes(utf8), writeOptions);
+				Files.write(pathEntities.resolve(c.getName().toLowerCase()+".cpp"), c.toSourceString().getBytes(utf8), writeOptions);
 			}
 			Files.write(pathRepository.resolve(repo.getName().toLowerCase()+".h"), repo.toHeaderString().getBytes(utf8), writeOptions);
 			Files.write(pathRepository.resolve(repo.getName().toLowerCase()+".cpp"), repo.toSourceString().getBytes(utf8), writeOptions);

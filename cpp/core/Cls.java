@@ -13,7 +13,6 @@ import util.CodeUtil2;
 
 
 public class Cls extends Type implements IAttributeContainer{
-	protected String name;
 	protected ArrayList<Method> methods;
 	protected ArrayList<MethodTemplate> methodTemplates;
 	protected ArrayList<Constructor> constructors;
@@ -68,7 +67,6 @@ public class Cls extends Type implements IAttributeContainer{
 		this.constructors=new ArrayList<>();
 		this.includes=new LinkedHashSet<>();
 		this.operators = new ArrayList<>(); 
-		this.name=name;
 		this.forwardDeclaredTypes = new ArrayList<>(); 
 	}
 	
@@ -164,7 +162,7 @@ public class Cls extends Type implements IAttributeContainer{
 	
 	@Override
 	public String getName() {
-		return name;
+		return type;
 	}
 	
 	protected void addHeaderCodeBeforeClassDeclaration(StringBuilder sb){
@@ -176,7 +174,7 @@ public class Cls extends Type implements IAttributeContainer{
 	}
 	
 	protected void addBeforeSourceCode(StringBuilder sb){
-		CodeUtil.writeLine(sb, "#include "+CodeUtil.quote(name.toLowerCase()+".h"));
+		CodeUtil.writeLine(sb, "#include "+CodeUtil.quote(type.toLowerCase()+".h"));
 		sb.append('\n');
 	}
 	
@@ -191,8 +189,8 @@ public class Cls extends Type implements IAttributeContainer{
 	public String toHeaderString() {
 		StringBuilder sb=new StringBuilder();
 		addBeforeHeader(sb);
-		CodeUtil.writeLine(sb, "#ifndef "+name.toUpperCase()+"_H");
-		CodeUtil.writeLine(sb, "#define "+name.toUpperCase()+"_H");
+		CodeUtil.writeLine(sb, "#ifndef "+type.toUpperCase()+"_H");
+		CodeUtil.writeLine(sb, "#define "+type.toUpperCase()+"_H");
 		for(Type predef:forwardDeclaredTypes) {
 			CodeUtil.writeLine(sb, predef.getForwardDeclaration()+";");
 		}
@@ -205,7 +203,7 @@ public class Cls extends Type implements IAttributeContainer{
 			}
 		}
 		addHeaderCodeBeforeClassDeclaration(sb);
-		sb.append( "class " +name);
+		sb.append( "class " +type);
 		if (superclasses!=null) {
 			ArrayList<String> superClassDecl = new ArrayList<>();
 			for (Cls superclass : superclasses) {
@@ -405,7 +403,7 @@ public class Cls extends Type implements IAttributeContainer{
 
 	//@Deprecated
 	public String getIncludeHeader() {
-		return name.toLowerCase();
+		return type.toLowerCase();
 	}
 	
 	protected Attr getStaticAttributeInternal(String name) {

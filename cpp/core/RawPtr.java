@@ -37,7 +37,7 @@ public class RawPtr extends TplCls{
 			IAttributeContainer c=(IAttributeContainer) element;
 			return c.getAttr(prototype);
 		} 
-		throw new RuntimeException("type is not a class or a struct: "+name);
+		throw new RuntimeException("type is not a class or a struct: "+type);
 	}
 	
 	@Override

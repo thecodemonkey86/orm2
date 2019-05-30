@@ -6,7 +6,6 @@ import cpp.JsonTypes;
 import cpp.NetworkTypes;
 import cpp.QtCoreTypes;
 import cpp.Types;
-import cpp.bean.Nullable;
 import cpp.core.Attr;
 import cpp.core.Cls;
 import cpp.core.Method;
@@ -17,6 +16,7 @@ import cpp.core.expression.Expressions;
 import cpp.core.expression.Var;
 import cpp.core.instruction.ForeachLoop;
 import cpp.core.instruction.IfBlock;
+import cpp.entity.Nullable;
 import cpp.jsonentity.JsonEntities;
 import cpp.jsonentity.JsonEntity;
 import cpp.jsonentity.method.MethodColumnAttrSetterInternal;
@@ -61,7 +61,7 @@ public class MethodEntityLoad extends Method {
 		this.manyRelations = entity.getManyRelations();
 		this.primaryKey = entity.getTbl().getPrimaryKey();
 		this.entity = entity;
-		pBean = addParam(entity.toRawPointer(), "bean");
+		pBean = addParam(entity.toRawPointer(), "entity");
 		
 	}
 

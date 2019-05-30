@@ -45,11 +45,11 @@ public class RestMethodGet extends Method {
 			IfBlock ifIssetCondition= caseBeanType
 					._if(PhpFunctions.isset.call(PhpGlobals.$_GET.arrayIndex(new PhpStringLiteral("condition")))) ;
 			ifIssetCondition.thenBlock().addInstr(vQuery.callMethodInstruction(ClsBaseBeanQuery.where,PhpGlobals.$_GET.arrayIndex(new PhpStringLiteral("condition"))));
-			Var vBeans = caseBeanType._declare(e.getType(),"beans",vQuery.callMethod("fetch") );
+			Var vBeans = caseBeanType._declare(e.getType(),"entities",vQuery.callMethod("fetch") );
 			Var vResult = caseBeanType._declare(Types.array(Types.String), "result", new ArrayInitExpression());
-			ForeachLoop foreachBean = caseBeanType._foreach(new Var(bean, "bean"), vBeans);
+			ForeachLoop foreachBean = caseBeanType._foreach(new Var(bean, "entity"), vBeans);
 			
-			Var beanData =  foreachBean._declare(Types.array(Types.String), "beanData",foreachBean.getVar().callMethod(MethodGetFieldsAsAssocArray.METHOD_NAME));
+			Var beanData =  foreachBean._declare(Types.array(Types.String), "entityData",foreachBean.getVar().callMethod(MethodGetFieldsAsAssocArray.METHOD_NAME));
 			
 			for(OneRelation r : bean.getOneRelations() ) {
 				IfBlock ifRelatedBeanIsNotNull = foreachBean._if(foreachBean.getVar().callMethod( OrmUtil.getOneRelationDestAttrGetter(r)).isNotNull());

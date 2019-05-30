@@ -24,7 +24,7 @@ public class MethodAddManyToManyRelatedBean extends Method {
 		PhpCls parent = (PhpCls) this.parent;
 		Attr a=parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
 		_if(a.isNull()).addIfInstr(a.assign(new ArrayInitExpression()));
-		Param pBean = getParam("bean");
+		Param pBean = getParam("entity");
 		if(rel.getDestTable().getPrimaryKey().isMultiColumn()) {
 			throw new RuntimeException("unimplemented");
 		} else {

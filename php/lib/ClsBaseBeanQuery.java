@@ -15,9 +15,9 @@ public class ClsBaseBeanQuery extends PhpPseudoGenericClass{
 	public static final String select = "select";
 
 	public ClsBaseBeanQuery( BeanCls cls) {
-		super("BeanQuery",cls,"PhpLibs\\Orm\\Query");
-		addAttr(new Attr(Types.Int, "beanQueryLimit"));
-		addAttr(new Attr(Types.Int, "beanQueryOffset"));
+		super("EntityQuery",cls,"PhpLibs\\Orm\\Query");
+		addAttr(new Attr(Types.Int, "entityQueryLimit"));
+		addAttr(new Attr(Types.Int, "entityQueryOffset"));
 		addAttr(new Attr(Types.SqlQuery, sqlQuery));
 		addMethod(new LibMethod(this, select));
 		addMethod(new LibMethod(this, "leftJoin"));

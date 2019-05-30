@@ -2,7 +2,6 @@ package cpp.jsonentity.method;
 
 import util.StringUtil;
 import cpp.Types;
-import cpp.bean.Nullable;
 import cpp.core.Attr;
 import cpp.core.ConstRef;
 import cpp.core.Method;
@@ -13,6 +12,7 @@ import cpp.core.expression.CreateObjectExpression;
 import cpp.core.expression.Expression;
 import cpp.core.expression.Operators;
 import cpp.core.instruction.IfBlock;
+import cpp.entity.Nullable;
 import database.column.Column;
 
 public class MethodColumnAttrSetter extends Method{

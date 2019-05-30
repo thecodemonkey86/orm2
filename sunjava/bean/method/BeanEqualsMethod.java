@@ -19,13 +19,13 @@ public class BeanEqualsMethod extends Method {
 	public BeanEqualsMethod(BeanCls cls, PrimaryKey pk) {
 		super(Public, Types.Bool, "equals");
 		this.pk = pk;
-		addParam(new Param(Types.Object, "bean"));
+		addParam(new Param(Types.Object, "entity"));
 	}
 
 	@Override
 	public void addImplementation() {
 		BeanCls parent=(BeanCls) this.parent;
-		Param bean = getParam("bean");
+		Param bean = getParam("entity");
 		IfBlock ifInstanceOf = _if(bean._instanceof(parent));
 		
 		if (!pk.isMultiColumn()) {

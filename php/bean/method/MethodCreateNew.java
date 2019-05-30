@@ -19,7 +19,7 @@ public class MethodCreateNew extends Method {
 
 	@Override
 	public void addImplementation() {
-		Var bean = _declare(returnType, "bean", new NewOperator(cls
+		Var bean = _declare(returnType, "entity", new NewOperator(cls
 //				,getParam("sqlCon")
 				));
 		_callMethodInstr(bean, "setInsertNew");

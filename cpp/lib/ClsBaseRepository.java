@@ -1,10 +1,10 @@
 package cpp.lib;
 
 import cpp.Types;
-import cpp.beanrepository.ClsBeanRepository;
 import cpp.core.Attr;
 import cpp.core.Cls;
 import cpp.core.method.MethodAttributeGetter;
+import cpp.entityrepository.ClsEntityRepository;
 
 public class ClsBaseRepository extends Cls{
 
@@ -14,13 +14,13 @@ public class ClsBaseRepository extends Cls{
 	
 	public ClsBaseRepository() {
 		super("BaseRepository");
-		Attr sqlCon = new Attr(Types.Sql.toRawPointer(), ClsBeanRepository.sqlCon);
+		Attr sqlCon = new Attr(Types.QSqlDatabase.toConstRef(), ClsEntityRepository.sqlCon);
 		addAttr(sqlCon);
 		addMethod(new MethodAttributeGetter(sqlCon));
 		addMethod( new LibMethod(Types.Void, saveBean));
 		addMethod( new LibMethod(Types.Void, bulkSave));
 		addMethod( new LibMethod(Types.Void, bulkInsert));
-		headerInclude = name.toLowerCase();
+		headerInclude = type.toLowerCase();
 	}
 
 }

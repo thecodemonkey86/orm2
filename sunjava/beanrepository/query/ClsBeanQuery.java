@@ -19,7 +19,7 @@ public class ClsBeanQuery extends JavaCls {
 	}
 	
 	public ClsBeanQuery(BeanCls cls) {
-		super(cls.getName()+ "BeanQuery",beanQueryPackage);
+		super(cls.getName()+ "EntityQuery",beanQueryPackage);
 		addImport((JavaCls) BeanCls.getTypeMapper().getSqlQueryClass());
 		setSuperclass(new ClsBaseBeanQuery(cls));
 		addConstructor(new ConstructorBeanQuery());

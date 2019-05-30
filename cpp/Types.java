@@ -2,20 +2,21 @@ package cpp;
 
 import java.util.HashMap;
 
-import cpp.bean.BeanCls;
-import cpp.bean.Beans;
-import cpp.bean.Nullable;
-import cpp.beanquery.ClsBeanQueryDelete;
-import cpp.beanquery.ClsBeanQuerySelect;
-import cpp.beanquery.ClsBeanQueryUpdate;
-import cpp.beanrepository.ClsBeanRepository;
 import cpp.core.Type;
+import cpp.entity.Entities;
+import cpp.entity.EntityCls;
+import cpp.entity.Nullable;
+import cpp.entityquery.ClsEntityQueryDelete;
+import cpp.entityquery.ClsEntityQuerySelect;
+import cpp.entityquery.ClsEntityQueryUpdate;
+import cpp.entityrepository.ClsEntityRepository;
 import cpp.jsonentity.JsonEntities;
 import cpp.jsonentity.JsonEntity;
-import cpp.lib.ClsBaseBean;
+import cpp.lib.ClsBaseEntity;
 import cpp.lib.ClsOrderedSet;
 import cpp.lib.ClsSql;
 import cpp.lib.ClsSqlQuery;
+import cpp.lib.ClsPgSqlQuery;
 import cpp.lib.EnumSqlQueryOrderDirection;
 import database.relation.AbstractRelation;
 
@@ -25,46 +26,47 @@ public class Types extends CoreTypes{
 	
 	
 	public static final ClsSqlQuery SqlQuery = 	new ClsSqlQuery();
+	public static final ClsPgSqlQuery PgSqlQuery = 	new ClsPgSqlQuery();
 	public static final ClsSql Sql = 	new ClsSql();
-	public static final ClsBeanRepository BeanRepository = new ClsBeanRepository();
-	public static final ClsBaseBean BaseBean = new ClsBaseBean();
+	public static final ClsEntityRepository EntityRepository = new ClsEntityRepository();
+	public static final ClsBaseEntity BaseEntity = new ClsBaseEntity();
 	public static final EnumSqlQueryOrderDirection OrderDirection = EnumSqlQueryOrderDirection.INSTANCE;
 	
-	private static HashMap<String, ClsBeanQuerySelect> selectQueryClasses = new HashMap<>();
-	private static HashMap<String, ClsBeanQueryDelete> deleteQueryClasses = new HashMap<>();
-	private static HashMap<String, ClsBeanQueryUpdate> updateQueryClasses = new HashMap<>();
+	private static HashMap<String, ClsEntityQuerySelect> selectQueryClasses = new HashMap<>();
+	private static HashMap<String, ClsEntityQueryDelete> deleteQueryClasses = new HashMap<>();
+	private static HashMap<String, ClsEntityQueryUpdate> updateQueryClasses = new HashMap<>();
 	
-	public static ClsBeanQuerySelect beanQuerySelect(BeanCls cls) {
+	public static ClsEntityQuerySelect beanQuerySelect(EntityCls cls) {
 		
 		
 		if(selectQueryClasses.containsKey(cls.getName())) {
 			return selectQueryClasses.get(cls.getName());
 		}
-		ClsBeanQuerySelect s= new ClsBeanQuerySelect(cls); //
+		ClsEntityQuerySelect s= new ClsEntityQuerySelect(cls); //
 		selectQueryClasses.put(cls.getName(), s);
 		return s;
 	}
 
 	
 	
-	public static ClsBeanQueryDelete beanQueryDelete(BeanCls cls) {
+	public static ClsEntityQueryDelete beanQueryDelete(EntityCls cls) {
 		
 		
 		if(deleteQueryClasses.containsKey(cls.getName())) {
 			return deleteQueryClasses.get(cls.getName());
 		}
-		ClsBeanQueryDelete d= new ClsBeanQueryDelete(cls); //
+		ClsEntityQueryDelete d= new ClsEntityQueryDelete(cls); //
 		deleteQueryClasses.put(cls.getName(), d);
 		return d;
 	}
 	
-	public static ClsBeanQueryUpdate beanQueryUpdate(BeanCls cls) {
+	public static ClsEntityQueryUpdate beanQueryUpdate(EntityCls cls) {
 		
 		
 		if(updateQueryClasses.containsKey(cls.getName())) {
 			return updateQueryClasses.get(cls.getName());
 		}
-		ClsBeanQueryUpdate u= new ClsBeanQueryUpdate(cls); //
+		ClsEntityQueryUpdate u= new ClsEntityQueryUpdate(cls); //
 		updateQueryClasses.put(cls.getName(), u);
 		return u;
 	}
@@ -76,10 +78,10 @@ public class Types extends CoreTypes{
 	public static Type getRelationForeignPrimaryKeyType(AbstractRelation r) {
 		Type beanPk = null;
 		if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
-			beanPk = Beans.get(r.getDestTable().getUc1stCamelCaseName()).getStructPk();
+			beanPk = Entities.get(r.getDestTable().getUc1stCamelCaseName()).getStructPk();
 			
 		} else {
-			beanPk =BeanCls.getDatabaseMapper().columnToType(r.getDestTable().getPrimaryKey().getColumns().get(0));
+			beanPk =EntityCls.getDatabaseMapper().columnToType(r.getDestTable().getPrimaryKey().getColumns().get(0));
 		}
 		return beanPk;
 		

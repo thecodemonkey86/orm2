@@ -27,7 +27,7 @@ public class MethodAddManyToManyRelatedBeanInternal extends Method {
 		JavaCls parent = (JavaCls) this.parent;
 		Attr a=parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
 		_if(a.isNull()).addIfInstr(a.assign(new NewOperator(a.getType())));
-		addInstr(a.callMethod(ClsArrayList.add,getParam("bean")).asInstruction());
+		addInstr(a.callMethod(ClsArrayList.add,getParam("entity")).asInstruction());
 		
 	}
 	

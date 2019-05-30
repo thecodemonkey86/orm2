@@ -31,7 +31,7 @@ public class MethodAddRelatedBean extends Method {
 		Attr a=parent.getAttrByName(OrmUtil.getOneToManyRelationDestAttrName(rel));
 		_if(a.isNull()).addIfInstr(a.assign(new ArrayInitExpression()));
 		
-		Param pBean = getParam("bean");
+		Param pBean = getParam("entity");
 		for(int i=0;i < rel.getColumnCount(); i++) {
 			addInstr(pBean.callAttrSetterMethodInstr(rel.getDestMappingColumn(i).getCamelCaseName(), _this().callAttrGetter(rel.getColumns(i).getValue1().getCamelCaseName())));
 		}

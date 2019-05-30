@@ -17,7 +17,7 @@ public class JavaConfigReader extends ConfigReader{
 //		if (this.tag!=null) {
 //			String v=new String(ch, start, length);
 //			switch(this.tag) {
-//			case "beanJavaPackage":
+//			case "entityJavaPackage":
 //				cfg.setBeanPackageName(v);
 //				return;
 //			case "repositoryJavaPackage":
@@ -36,7 +36,7 @@ public class JavaConfigReader extends ConfigReader{
 		super.startElement(uri, localName, qName, atts);
 		switch (this.tags.peek()) {
 		case "java":
-			((JavaOrmOutputConfig)cfg).setBeanPackageName(atts.getValue("beanPackageName"));
+			((JavaOrmOutputConfig)cfg).setBeanPackageName(atts.getValue("entityPackageName"));
 			((JavaOrmOutputConfig)cfg).setRepositoryPackageName(atts.getValue("repositoryJavaPackage"));
 			break;
 		default:

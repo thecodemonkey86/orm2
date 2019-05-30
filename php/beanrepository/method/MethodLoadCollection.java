@@ -99,7 +99,7 @@ public class MethodLoadCollection extends Method{
 //		
 //		Var params= _declare(Types.arraylist(Types.SqlParam), "params");
 ////		_callMethodInstr(params, "reserve", collection.callMethod("size"));
-//		Var varForeachBean = new Var(bean, "bean");
+//		Var varForeachBean = new Var(bean, "entity");
 //		ForeachLoop foreach= _foreach(varForeachBean, collection);
 //		for (Column pkCol : pk.getColumns()) {
 //			
@@ -129,7 +129,7 @@ public class MethodLoadCollection extends Method{
 //		
 //		Var b1pk = null;
 //		ArrayList<Expression> listForeachPkCompare = new ArrayList<>();
-//		Var varIfNotB1SetContainsForeachBean = new Var(bean, "bean");
+//		Var varIfNotB1SetContainsForeachBean = new Var(bean, "entity");
 //		if (pk.isMultiColumn()) {
 //			b1pk =doWhileQueryNext._declare( bean.getStructPk(), "b1pk" );
 //			for(Column colPk:pk.getColumns()) {

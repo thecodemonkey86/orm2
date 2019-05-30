@@ -32,7 +32,7 @@ public class MethodAddManyToManyRelatedBean extends Method {
 		
 		Attr a=parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
 		_if(a.isNull()).addIfInstr(a.assign(new NewOperator(a.getType())));
-		Param pBean = getParam("bean");
+		Param pBean = getParam("entity");
 		addInstr(a.callMethod(ClsArrayList.add,pBean).asInstruction());
 		BeanCls relationBean = Beans.get( rel.getDestTable());
 		Attr aAdded = parent.getAttrByName(

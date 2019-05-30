@@ -126,8 +126,8 @@ public class PhpOrm extends OrmGenerator {
 			List<OneRelation> oneRelations = cfg.getOneRelations(tbl);
 			List<ManyRelation> manyToManyRelations = cfg.getManyRelations(tbl);
 			BeanCls cls = new BeanCls(tbl, manyRelations, oneRelations, manyToManyRelations);
-			if(cfg.hasRenameMethodNames("BeanCls")) {
-				cls.setRenameMethods(cfg.getRenameMethods("BeanCls"));
+			if(cfg.hasRenameMethodNames("EntityCls")) {
+				cls.setRenameMethods(cfg.getRenameMethods("EntityCls"));
 			}
 			Beans.add(cls);
 		}
@@ -139,7 +139,7 @@ public class PhpOrm extends OrmGenerator {
 			c.addDeclarations();
 		}
 
-		Path pathBeans = pathModel.resolve("Beans");
+		Path pathBeans = pathModel.resolve("Entitys");
 		Path pathRepository = cfg.getRepositoryPath();
 		Path helperPath = pathRepository.resolve("Helper");
 		Path pathRepositoryQuery = pathRepository.resolve("Query");
@@ -216,7 +216,7 @@ public class PhpOrm extends OrmGenerator {
 					clsQuery.toSourceString().getBytes(utf8), writeOptions);
 		}
 
-		Files.write(pathRepository.resolve("BeanRepository.php"), repo.toSourceString().getBytes(utf8), writeOptions);
+		Files.write(pathRepository.resolve("EntityRepository.php"), repo.toSourceString().getBytes(utf8), writeOptions);
 
 		if(cfg.getJsonMode() == OrmConfig.JsonMode.Server) {
 			PhpJsonRestServer server = new PhpJsonRestServer( Beans.getAllBeans());

@@ -39,7 +39,7 @@ public class MethodGetFromResultSet extends Method {
 	@Override
 	public void addImplementation() {
 		addThrowsException(Types.SqlException);
-		Var bean = _declareNew(returnType, "bean", BoolExpression.FALSE);
+		Var bean = _declareNew(returnType, "entity", BoolExpression.FALSE);
 		Param resultSet = getParam("resultSet");
 		Param alias = getParam("alias");
 		for(Column col:columns) {

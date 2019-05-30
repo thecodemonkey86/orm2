@@ -9,6 +9,7 @@ import cpp.lib.ClsQDate;
 import cpp.lib.ClsQDateTime;
 import cpp.lib.ClsQLatin1String;
 import cpp.lib.ClsQSet;
+import cpp.lib.ClsQSqlDatabase;
 import cpp.lib.ClsQSqlQuery;
 import cpp.lib.ClsQSqlRecord;
 import cpp.lib.ClsQString;
@@ -49,6 +50,7 @@ public class CoreTypes {
 	public static final ClsQStringList QStringList = new ClsQStringList();
 	public static final ClsQSqlRecord QSqlRecord = new ClsQSqlRecord();
 	public static final ClsQSqlQuery QSqlQuery = new ClsQSqlQuery();
+	public static final ClsQSqlDatabase QSqlDatabase = new ClsQSqlDatabase();
 	public static final PrimitiveType Uint = new PrimitiveType("uint");
 	
 	public static ClsQVector qvector(Type element) {

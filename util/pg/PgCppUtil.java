@@ -1,7 +1,6 @@
 package util.pg;
 
 import cpp.CoreTypes;
-import cpp.bean.BeanCls;
 import cpp.core.Attr;
 import cpp.core.ConstRef;
 import cpp.core.Method;
@@ -9,6 +8,7 @@ import cpp.core.MethodCall;
 import cpp.core.Ref;
 import cpp.core.SharedPtr;
 import cpp.core.expression.Expression;
+import cpp.entity.EntityCls;
 import cpp.orm.OrmUtil;
 import database.column.Column;
 import database.relation.ManyRelation;
@@ -72,17 +72,17 @@ public class PgCppUtil {
 	}
 	
 	public static Expression getPkExpression(Expression e, Column colPk) {
-		BeanCls cls= e.getType() instanceof BeanCls 
-				? (BeanCls) e.getType() :
+		EntityCls cls= e.getType() instanceof EntityCls 
+				? (EntityCls) e.getType() :
 				(e.getType() instanceof Ref
 						?
-								(BeanCls)(((Ref)e.getType()).getBase())
+								(EntityCls)(((Ref)e.getType()).getBase())
 						: (e.getType() instanceof ConstRef 
 							
-							? (((ConstRef)e.getType()).getBase()) instanceof BeanCls 
-									? (BeanCls)(((ConstRef)e.getType()).getBase())
-									: (BeanCls)((SharedPtr)(((ConstRef)e.getType()).getBase())).getElementType()
-							: (BeanCls) ((SharedPtr)e.getType()).getElementType()));
+							? (((ConstRef)e.getType()).getBase()) instanceof EntityCls 
+									? (EntityCls)(((ConstRef)e.getType()).getBase())
+									: (EntityCls)((SharedPtr)(((ConstRef)e.getType()).getBase())).getElementType()
+							: (EntityCls) ((SharedPtr)e.getType()).getElementType()));
 								
 		if (colPk.hasOneRelation()) {
 			try{
@@ -100,17 +100,17 @@ public class PgCppUtil {
 	}
 	
 	public static MethodCall getPkGetterExpression(Expression e, Column colPk) {
-		BeanCls cls= e.getType() instanceof BeanCls 
-				? (BeanCls) e.getType() :
+		EntityCls cls= e.getType() instanceof EntityCls 
+				? (EntityCls) e.getType() :
 				(e.getType() instanceof Ref
 						?
-								(BeanCls)(((Ref)e.getType()).getBase())
+								(EntityCls)(((Ref)e.getType()).getBase())
 						: (e.getType() instanceof ConstRef 
 							
-							? (((ConstRef)e.getType()).getBase()) instanceof BeanCls 
-									? (BeanCls)(((ConstRef)e.getType()).getBase())
-									: (BeanCls)((SharedPtr)(((ConstRef)e.getType()).getBase())).getElementType()
-							: (BeanCls) ((SharedPtr)e.getType()).getElementType()));
+							? (((ConstRef)e.getType()).getBase()) instanceof EntityCls 
+									? (EntityCls)(((ConstRef)e.getType()).getBase())
+									: (EntityCls)((SharedPtr)(((ConstRef)e.getType()).getBase())).getElementType()
+							: (EntityCls) ((SharedPtr)e.getType()).getElementType()));
 								
 		if (colPk.hasOneRelation()) {
 			try{

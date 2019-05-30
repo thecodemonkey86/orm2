@@ -21,7 +21,7 @@ public class PhpConfigReader extends ConfigReader{
 //		if (this.tag!=null) {
 //			String v=new String(ch, start, length);
 //			switch(this.tag) {
-//			case "beanPhpPackage":
+//			case "entityPhpPackage":
 //				cfg.setBeanPackageName(v);
 //				return;
 //			case "repositoryPhpPackage":

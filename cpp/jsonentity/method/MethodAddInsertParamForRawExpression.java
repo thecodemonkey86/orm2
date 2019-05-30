@@ -1,10 +1,10 @@
 package cpp.jsonentity.method;
 
 import cpp.Types;
-import cpp.bean.BeanCls;
 import cpp.core.Attr;
 import cpp.core.Method;
 import cpp.core.Param;
+import cpp.entity.EntityCls;
 import cpp.lib.ClsQVariantList;
 import database.column.Column;
 
@@ -21,7 +21,7 @@ public class MethodAddInsertParamForRawExpression extends Method {
 
 	@Override
 	public void addImplementation() {
-		BeanCls bean = (BeanCls) parent;
+		EntityCls bean = (EntityCls) parent;
 		Attr a = bean.getAttrByName("insertParamsForRawExpression"+col.getUc1stCamelCaseName());
 		_callMethodInstr(a, ClsQVariantList.append, param);
 	}

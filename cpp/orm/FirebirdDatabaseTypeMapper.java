@@ -12,6 +12,7 @@ import cpp.core.expression.IntExpression;
 import cpp.core.expression.LongLongExpression;
 import cpp.core.expression.ShortExpression;
 import cpp.lib.ClsQVariant;
+import cpp.lib.ClsSqlQuery;
 import database.column.Column;
 
 public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
@@ -192,6 +193,11 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 	@Override
 	public Type columnToType(Column col) {
 		return getTypeFromDbDataType(col.getDbType(), col.isNullable());
+	}
+
+	@Override
+	public ClsSqlQuery getSqlQueryType() {
+		throw new RuntimeException("not impl");
 	}
 
 }

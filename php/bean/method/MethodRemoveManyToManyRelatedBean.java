@@ -29,7 +29,7 @@ public class MethodRemoveManyToManyRelatedBean extends Method {
 	@Override
 	public void addImplementation() {
 		PhpCls parent = (PhpCls) this.parent;
-		Param pBean = getParam("bean");
+		Param pBean = getParam("entity");
 		Attr a = parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
 		BeanCls relationBean = Beans.get(rel.getDestTable());
 		

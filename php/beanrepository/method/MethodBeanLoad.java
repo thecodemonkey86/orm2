@@ -45,7 +45,7 @@ public class MethodBeanLoad extends Method {
 
 		setStatic(true);
 
-		addParam(new Param(bean, "bean"));
+		addParam(new Param(bean, "entity"));
 		this.bean = bean;
 	}
 
@@ -61,7 +61,7 @@ public class MethodBeanLoad extends Method {
 
 	@Override
 	public void addImplementation() {
-		Param pBean = getParam("bean");
+		Param pBean = getParam("entity");
 		List<OneRelation> oneRelations = bean.getOneRelations();
 		List<OneToManyRelation> oneToManyRelations = bean.getOneToManyRelations();
 		List<ManyRelation> manyToManyRelations = bean.getManyToManyRelations();

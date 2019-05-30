@@ -35,7 +35,7 @@ public class RestMethodGetOne extends Method {
 			Expression e = Types.BeanRepository.callStaticMethod("createQuery"+bean.getName())
 					.callMethod(ClsBaseBeanQuery.select)
 					.callMethod("fetchOne");
-			Var vBean = caseBeanType._declare(e.getType(),"beans",e );
+			Var vBean = caseBeanType._declare(e.getType(),"entities",e );
 			caseBeanType.addInstr(PhpFunctions.echo(PhpFunctions.json_encode.call(vBean.callMethod(MethodGetFieldsAsAssocArray.METHOD_NAME), PhpConstants.JSON_UNESCAPED_UNICODE)));
 			caseBeanType._break();
 		}

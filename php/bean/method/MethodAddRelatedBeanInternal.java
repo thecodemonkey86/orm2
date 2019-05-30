@@ -38,7 +38,7 @@ public class MethodAddRelatedBeanInternal extends Method {
 		PhpCls parent = (PhpCls) this.parent;
 		Attr a=parent.getAttrByName(OrmUtil.getOneToManyRelationDestAttrName(rel));
 		_if(a.isNull()).addIfInstr(a.assign(new ArrayInitExpression()));
-		Param pBean = getParam("bean");
+		Param pBean = getParam("entity");
 		PrimaryKey pk = rel.getDestTable().getPrimaryKey();
 		if(rel.getDestTable().getPrimaryKey().isMultiColumn()) {
 			Expression[] b1PkArgs = new Expression[pk.getColumnCount()];

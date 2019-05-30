@@ -44,7 +44,7 @@ public class MethodBeanSave extends Method {
 		super(Public, Types.Void, "save"+bean.getName());
 		setStatic(true);
 		this.bean = bean;
-		addParam(new Param(bean, "bean"));
+		addParam(new Param(bean, "entity"));
 		if( BeanCls.getTypeMapper().hasTransactionHandle()) {
 			pTransactionHandle = addParam(new Param(Types.Resource, "transactionHandle",Expressions.Null));
 		
@@ -62,7 +62,7 @@ public class MethodBeanSave extends Method {
 		}
 		InstructionBlock mainBlock = this; //tryCatch.getTryBlock()
 		
-		Param pBean = getParam("bean");
+		Param pBean = getParam("entity");
 	
 		IfBlock ifIsInsertNew = mainBlock._if(pBean.callMethod(ClsBaseBean.METHOD_NAME_IS_INSERT_NEW));
 //		ifIsInsertNew.thenBlock()._callMethodInstr(sqlQuery, ClsSqlQuery.METHOD_NAME_BEGIN_TRANSACTION);
