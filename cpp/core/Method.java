@@ -83,7 +83,7 @@ public abstract class Method extends InstructionBlock{
 		return addParam(new Param(type, name, defaultValue));
 	}
 	
-	private String retType() {
+	protected String retType() {
 		return getReturnType() instanceof SharedPtr ? "std::shared_ptr"+CodeUtil.abr(((SharedPtr)getReturnType()).getElementType().toUsageString()) : getReturnType().toDeclarationString();
 	}
 	

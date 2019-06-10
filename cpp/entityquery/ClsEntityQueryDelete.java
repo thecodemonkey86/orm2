@@ -8,6 +8,7 @@ import cpp.entityquery.method.ConstructorEntityQueryDelete;
 import cpp.entityquery.method.MethodAddQueryParameter;
 import cpp.entityquery.method.MethodAndWhere1;
 import cpp.entityquery.method.MethodAndWhere10;
+import cpp.entityquery.method.MethodAndWhere11;
 import cpp.entityquery.method.MethodAndWhere2;
 import cpp.entityquery.method.MethodAndWhere3;
 import cpp.entityquery.method.MethodAndWhere4;
@@ -26,6 +27,8 @@ import cpp.entityquery.method.MethodPrintQDebug;
 import cpp.entityquery.method.MethodSqlFieldEquals;
 import cpp.entityquery.method.MethodToStringDelete;
 import cpp.entityquery.method.MethodWhere1;
+import cpp.entityquery.method.MethodWhere10;
+import cpp.entityquery.method.MethodWhere11;
 import cpp.entityquery.method.MethodWhere2;
 import cpp.entityquery.method.MethodWhere3;
 import cpp.entityquery.method.MethodWhere4;
@@ -108,6 +111,8 @@ public class ClsEntityQueryDelete extends Cls {
 		addMethod(new MethodWhere8(this,true));
 		addMethod(new MethodWhere8(this,false));
 		addMethod(new MethodWhere9(this));
+		addMethod(new MethodWhere10(this));
+		addMethod(new MethodWhere11(this));
 		addMethod(new MethodAndWhere1(this));
 		addMethod(new MethodAndWhere2(this));
 		addMethod(new MethodAndWhere3(this));
@@ -118,6 +123,7 @@ public class ClsEntityQueryDelete extends Cls {
 		addMethod(new MethodAndWhere8(this));
 		addMethod(new MethodAndWhere9(this));
 		addMethod(new MethodAndWhere10(this));
+		addMethod(new MethodAndWhere11(this));
 	}
 	
 	@Override

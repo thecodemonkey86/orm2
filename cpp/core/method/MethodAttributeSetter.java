@@ -1,7 +1,7 @@
 package cpp.core.method;
 
 import util.StringUtil;
-import cpp.Types;
+import cpp.CoreTypes;
 import cpp.core.Attr;
 import cpp.core.Method;
 import cpp.core.Param;
@@ -9,7 +9,7 @@ import cpp.core.Param;
 public class MethodAttributeSetter extends Method{
 	protected Attr attr;
 	public MethodAttributeSetter(Attr a) {
-		super(Public, Types.Void,getMethodName(a) );
+		super(Public, CoreTypes.Void,getMethodName(a) );
 		this.attr=a;
 		addParam(new Param(a.getType().isPrimitiveType() ? a.getType() : a.getType().toConstRef() , a.getName()));
 	}
