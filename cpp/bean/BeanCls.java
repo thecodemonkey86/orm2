@@ -443,13 +443,15 @@ public class BeanCls extends Cls {
 	@Override
 	protected void addHeaderCodeBeforeClassDeclaration(StringBuilder sb) {
 		super.addHeaderCodeBeforeClassDeclaration(sb);
+		sb.append('\n').append(BEGIN_CUSTOM_PREPROCESSOR).append('\n');
 		if(customPreprocessorCode != null) {
-			sb.append('\n').append(BEGIN_CUSTOM_PREPROCESSOR).append('\n');
+			
 			for(String cc : customPreprocessorCode) {
 				sb.append(cc.trim());
 			}
-			sb.append('\n').append(END_CUSTOM_PREPROCESSOR).append('\n');
+			
 		}
+		sb.append('\n').append(END_CUSTOM_PREPROCESSOR).append('\n');
 		if (tbl.getPrimaryKey().isMultiColumn()) {
 			sb.append(getStructPk().toSourceString()).append('\n');
 		}
@@ -465,13 +467,13 @@ public class BeanCls extends Cls {
 
 	@Override
 	protected void addAfterSourceCode(StringBuilder sb) {
+		sb.append('\n').append(BEGIN_CUSTOM_CLASS_MEMBERS).append('\n');
 		if(customSourceCode != null) {
-			sb.append('\n').append(BEGIN_CUSTOM_CLASS_MEMBERS).append('\n');
 			for(String cc : customSourceCode) {
 				sb.append(cc.trim());
 			}
-			sb.append('\n').append(END_CUSTOM_CLASS_MEMBERS).append('\n');
 		}
+		sb.append('\n').append(END_CUSTOM_CLASS_MEMBERS).append('\n');
 	}
 	
 	public Attr getManyRelationAttr(OneRelation r) {
@@ -596,14 +598,15 @@ public class BeanCls extends Cls {
 	@Override
 	protected void addClassHeaderCode(StringBuilder sb) {
 		super.addClassHeaderCode(sb);
+		sb.append('\n').append(BEGIN_CUSTOM_CLASS_MEMBERS).append('\n');
 		if(customHeaderCode != null) {
-			sb.append('\n').append(BEGIN_CUSTOM_CLASS_MEMBERS).append('\n');
+			
 			for(String cc : customHeaderCode) {
 				sb.append(cc.trim());
 			}
-			sb.append('\n').append(END_CUSTOM_CLASS_MEMBERS).append('\n');
+			
 		}
-
+		sb.append('\n').append(END_CUSTOM_CLASS_MEMBERS).append('\n');
 	}
 	
 	
