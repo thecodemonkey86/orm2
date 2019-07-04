@@ -20,5 +20,15 @@ public class MethodPrintQDebug extends Method{
 			}
 		});
 	}
+	
+	@Override
+	public String toString() {
+		return "#ifdef QT_DEBUG\n"+ super.toString()+"\n#endif\n";
+	}
+	
+	@Override
+	public String toHeaderString() {
+		return "#ifdef QT_DEBUG\n"+ super.toHeaderString()+"\n#endif\n";
+	}
 
 }

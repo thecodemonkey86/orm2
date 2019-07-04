@@ -197,7 +197,7 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 
 	@Override
 	public ClsSqlQuery getSqlQueryType() {
-		throw new RuntimeException("not impl");
+		return Types.FirebirdSqlQuery;
 	}
 
 }
