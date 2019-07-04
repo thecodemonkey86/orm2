@@ -52,27 +52,27 @@ public class MethodGetOneFromJson extends Method {
 			_return(parent.callStaticMethod(getMethodName(entity),
 					_declare(JsonTypes.QJsonObject, "jsonobject", JsonTypes.QJsonDocument.callStaticMethod(ClsQJsonDocument.fromJson, pJson).callMethod(ClsQJsonDocument.object))));
 		} else {
-			Var b1 = _declareMakeShared((Cls) ((SharedPtr) returnType).getElementType(), "b1");
+			Var e1 = _declareMakeShared((Cls) ((SharedPtr) returnType).getElementType(), "e1");
 			for (Column col : entity.getTbl().getAllColumns()) {
 				if (col.isNullable()) {
 					IfBlock ifValueIsNull = _ifNot(
 							pJsonObject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(col.getName()))
 									.callMethod(ClsQJsonValue.isNull));
 					// ifValueIsNull.thenBlock().addInstr(
-					// b1.callMethodInstruction(MethodColumnAttrSetNull.getMethodName(col)));
-					ifValueIsNull.thenBlock().addInstr(b1.callMethodInstruction(MethodColumnAttrSetterInternal.getMethodName(col),
+					// e1.callMethodInstruction(MethodColumnAttrSetNull.getMethodName(col)));
+					ifValueIsNull.thenBlock().addInstr(e1.callMethodInstruction(MethodColumnAttrSetterInternal.getMethodName(col),
 							JsonOrmUtil.jsonConvertMethod(
 									pJsonObject.callMethod(ClsQJsonObject.value,
 											QString.fromStringConstant(col.getName())),
-									((Nullable) (((Cls) b1.getType()).getAttrByName(col.getCamelCaseName())).getType())
+									((Nullable) (((Cls) e1.getType()).getAttrByName(col.getCamelCaseName())).getType())
 											.getElementType())));
 				} else {
 
-					addInstr(b1.callSetterMethodInstruction(col.getCamelCaseName(),
+					addInstr(e1.callSetterMethodInstruction(col.getCamelCaseName(),
 							JsonOrmUtil.jsonConvertMethod(
 									pJsonObject.callMethod(ClsQJsonObject.value,
 											QString.fromStringConstant(col.getName())),
-									((Cls) b1.getType()).getAttrByName(col.getCamelCaseName()).getType())));
+									((Cls) e1.getType()).getAttrByName(col.getCamelCaseName()).getType())));
 				}
 			}
 			for(OneRelation r : entity.getOneRelations() ) {
@@ -82,7 +82,7 @@ public class MethodGetOneFromJson extends Method {
 						Expressions.not(pJsonObject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(OrmUtil.getOneRelationDestAttrName(r))).callMethod(ClsQJsonValue.isNull))));
 				JsonEntity e = JsonEntities.get(r.getDestTable());
 				Var relationBeanData =ifValueIsNull.thenBlock()._declare(e.toSharedPtr(),r.getAlias(),parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e), pJsonObject.callMethod(ClsQJsonObject.value,QString.fromStringConstant(OrmUtil.getOneRelationDestAttrName(r))).callMethod(ClsQJsonValue.toObject)));
-				ifValueIsNull.thenBlock().addInstr(b1.callSetterMethodInstruction(OrmUtil.getOneRelationDestAttrName(r), relationBeanData));
+				ifValueIsNull.thenBlock().addInstr(e1.callSetterMethodInstruction(OrmUtil.getOneRelationDestAttrName(r), relationBeanData));
 			}
 			for(OneToManyRelation r : entity.getOneToManyRelations() ) {
 				IfBlock ifValueIsNull = _if(Expressions.and(
@@ -92,7 +92,7 @@ public class MethodGetOneFromJson extends Method {
 				JsonEntity e = JsonEntities.get(r.getDestTable());
 				Var relationBeanDataArray  =ifValueIsNull.thenBlock()._declare(JsonTypes.QJsonArray,"_jsonDataArray" +r.getAlias(), pJsonObject.callMethod(ClsQJsonObject.value,QString.fromStringConstant(OrmUtil.getOneToManyRelationDestAttrNameSingular(r))).callMethod(ClsQJsonValue.toArray));
 				ForeachLoop foreachRelationBean = ifValueIsNull.thenBlock()._foreach(new Var(JsonTypes.QJsonValue.toConstRef(),"_jsonData" + r.getAlias()), relationBeanDataArray);
-				foreachRelationBean.addInstr(b1.callMethodInstruction(MethodAddRelatedBeanInternal.getMethodName(r), parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e),foreachRelationBean.getVar().callMethod(ClsQJsonValue.toObject))));
+				foreachRelationBean.addInstr(e1.callMethodInstruction(MethodAddRelatedBeanInternal.getMethodName(r), parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e),foreachRelationBean.getVar().callMethod(ClsQJsonValue.toObject))));
 			}
 			for(ManyRelation r : entity.getManyRelations() ) {
 				IfBlock ifValueIsNull = _if(Expressions.and(
@@ -102,9 +102,9 @@ public class MethodGetOneFromJson extends Method {
 				JsonEntity e = JsonEntities.get(r.getDestTable());
 				Var relationBeanDataArray  =ifValueIsNull.thenBlock()._declare(JsonTypes.QJsonArray,"_jsonDataArray" +r.getAlias(), pJsonObject.callMethod(ClsQJsonObject.value,QString.fromStringConstant(OrmUtil.getManyRelationDestAttrNameSingular(r))).callMethod(ClsQJsonValue.toArray));
 				ForeachLoop foreachRelationBean = ifValueIsNull.thenBlock()._foreach(new Var(JsonTypes.QJsonValue.toConstRef(),"_jsonData" + r.getAlias()), relationBeanDataArray);
-				foreachRelationBean.addInstr(b1.callMethodInstruction(MethodAddRelatedBeanInternal.getMethodName(r), parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e),foreachRelationBean.getVar().callMethod(ClsQJsonValue.toObject))));
+				foreachRelationBean.addInstr(e1.callMethodInstruction(MethodAddRelatedBeanInternal.getMethodName(r), parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e),foreachRelationBean.getVar().callMethod(ClsQJsonValue.toObject))));
 			}
-			_return(b1);
+			_return(e1);
 		}
 
 	}

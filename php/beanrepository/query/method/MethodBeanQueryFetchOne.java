@@ -49,7 +49,7 @@ public class MethodBeanQueryFetchOne extends Method{
 		List<OneToManyRelation> oneToManyRelations = bean.getOneToManyRelations();
 		List<ManyRelation> manyToManyRelations = bean.getManyToManyRelations();
 		
-		Var b1 = _declare(returnType, "b1", Expressions.Null);
+		Var e1 = _declare(returnType, "e1", Expressions.Null);
 		Var res =_declare(BeanCls.getTypeMapper().getDatabaseResultType() , "res",_this().accessAttr("sqlQuery").callMethod(ClsSqlQuery.query) );
 		
 		Var row = _declare(Types.array(Types.Mixed), "row", getFetchExpression(res) );
@@ -58,9 +58,9 @@ public class MethodBeanQueryFetchOne extends Method{
 				
 
 					.setIfInstr(
-							b1.assign(Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(bean),  row, new PhpStringLiteral("b1")))
+							e1.assign(Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(bean),  row, new PhpStringLiteral("e1")))
 							,
-							b1.callAttrSetterMethodInstr("loaded", BoolExpression.TRUE)//_assignInstruction(b1.accessAttr("loaded"), BoolExpression.TRUE)
+							e1.callAttrSetterMethodInstr("loaded", BoolExpression.TRUE)//_assignInstruction(e1.accessAttr("loaded"), BoolExpression.TRUE)
 							)
 							;
 		
@@ -75,9 +75,9 @@ public class MethodBeanQueryFetchOne extends Method{
 		
 		for(OneRelation r:oneRelations) {
 //			BeanCls foreignCls = Beans.get(r.getDestTable()); 
-			IfBlock ifBlock= doWhileQueryNext._if(Expressions.and( b1.callMethod(new MethodOneRelationBeanIsNull(r)),row.arrayIndex(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias() + "__" + r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull()) );
+			IfBlock ifBlock= doWhileQueryNext._if(Expressions.and( e1.callMethod(new MethodOneRelationBeanIsNull(r)),row.arrayIndex(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias() + "__" + r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull()) );
 			ifBlock.thenBlock().
-			_callMethodInstr(b1, new MethodOneRelationAttrSetter( b1.getClassConcreteType().getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)), true), 
+			_callMethodInstr(e1, new MethodOneRelationAttrSetter( e1.getClassConcreteType().getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)), true), 
 					Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Beans.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
 		}
 		
@@ -111,7 +111,7 @@ public class MethodBeanQueryFetchOne extends Method{
 			IfBlock ifNotIssetPk = ifNotPkForeignIsNull.thenBlock()._if(_not(PhpFunctions.isset.call(pkArrayIndex)));
 			Var foreignBean = ifNotIssetPk.thenBlock()._declare(foreignCls, "b" + r.getAlias(),  Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Beans.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
 			ifNotIssetPk.thenBlock()._assign(pkArrayIndex, foreignBean);
-			ifNotIssetPk.thenBlock()._callMethodInstr(b1, BeanCls.getAddRelatedBeanMethodName(r), foreignBean);
+			ifNotIssetPk.thenBlock()._callMethodInstr(e1, BeanCls.getAddRelatedBeanMethodName(r), foreignBean);
 			
 		}
 		
@@ -120,13 +120,13 @@ public class MethodBeanQueryFetchOne extends Method{
 		ArrayList<Expression> condExpressions = new ArrayList<>();
 		condExpressions.add(ifRowNotNull.getCondition());
 		for(Column colPk :  bean.getTbl().getPrimaryKey()) {
-			condExpressions.add(row.arrayIndex(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey("b1__" + colPk.getName()))).cast(BeanCls.getTypeMapper().columnToType(colPk))._equals(b1.callAttrGetter(colPk.getCamelCaseName())));
+			condExpressions.add(row.arrayIndex(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey("b1__" + colPk.getName()))).cast(BeanCls.getTypeMapper().columnToType(colPk))._equals(e1.callAttrGetter(colPk.getCamelCaseName())));
 		}
 		
 		doWhileQueryNext.setCondition(Expressions.and( condExpressions ));
 		
 		doWhileQueryNext.addInstr(row.assign(getFetchExpression(res)));
-		_return(b1);
+		_return(e1);
 	}
 	@Override
 	public boolean includeIfEmpty() {

@@ -16,11 +16,11 @@ public class FetchListHelperClass extends JavaCls{
 
 	public FetchListHelperClass(BeanCls bean) {
 		super(bean.getName()+"FetchListHelper",bean.getPackage()+".helper");
-		Attr b1 = new Attr(bean, "b1");
-		addAttr(b1);
+		Attr e1 = new Attr(bean, "e1");
+		addAttr(e1);
 
-		addMethod(new MethodAttributeSetter(b1));
-		addMethod(new MethodAttributeGetter(b1));
+		addMethod(new MethodAttributeSetter(e1));
+		addMethod(new MethodAttributeGetter(e1));
 		List<AbstractRelation> manyRelations = new ArrayList<>();
 		manyRelations.addAll(bean.getOneToManyRelations());
 		manyRelations.addAll(bean.getManyToManyRelations());

@@ -75,8 +75,8 @@ package php.beanrepository.method;
 ////		//IfBlock ifNotB1SetContains = ifInstr._if(Expressions.not(b1Map.callMethod("contains", b1pk)));
 ////		
 ////		
-////		Var b1 = ifInstr
-////				._declare(bean, "b1", getByRecordExpression(bean, recDoWhile, PhpString.fromStringConstant("b1")));
+////		Var e1 = ifInstr
+////				._declare(bean, "e1", getByRecordExpression(bean, recDoWhile, PhpString.fromStringConstant("e1")));
 ////		//bCount = 2;
 ////		if (!manyRelations.isEmpty()) {
 ////			
@@ -93,7 +93,7 @@ package php.beanrepository.method;
 ////		//	Var fkHelper = ifInstr._declare(bean.getFetchListHelperCls(), "fkHelper",b1Map.arrayIndex(b1pk));
 ////			
 ////		//	Var structHelperIfNotB1SetContains = ifNotB1SetContains.getIfInstr()._declare(bean.getFetchListHelperCls(), "structHelper");
-////		//	ifNotB1SetContains.getIfInstr()._assign(structHelperIfNotB1SetContains.accessAttr("b1"), b1);
+////		//	ifNotB1SetContains.getIfInstr()._assign(structHelperIfNotB1SetContains.accessAttr("e1"), e1);
 //////			//bCount = 2;
 //////			for(Relation r:manyRelations) {
 //////				Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
@@ -143,7 +143,7 @@ package php.beanrepository.method;
 ////				//					
 //////					
 ////				
-////				ifRecValueIsNotNull.getIfInstr().addInstr(fkHelper.accessAttr("b1")
+////				ifRecValueIsNotNull.getIfInstr().addInstr(fkHelper.accessAttr("e1")
 ////						.callMethodInstruction(BeanCls.getRelatedBeanMethodName(r), foreignBean));
 ////				ifRecValueIsNotNull.getIfInstr().addInstr(
 ////						fkHelper.accessAttr(r.getAlias()+"Set")
@@ -154,7 +154,7 @@ package php.beanrepository.method;
 ////				
 ////				for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
 ////					if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
-////						ifRecValueIsNotNull.getIfInstr().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("b1")));
+////						ifRecValueIsNotNull.getIfInstr().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("e1")));
 ////					}
 ////				}
 ////				//ifRecValueIsNotNull.getIfInstr()._callMethodInstr(foreignBean, "setLoaded", BoolExpression.TRUE);
@@ -173,12 +173,12 @@ package php.beanrepository.method;
 ////			Expression foreignBeanExpression = getByRecordExpression(foreignCls, recDoWhile, PhpString.fromStringConstant(r.getAlias()));
 ////			
 ////			IfBlock ifRelatedBeanIsNull= ifInstr.
-////					_if(b1.callMethod(new MethodOneRelationBeanIsNull(r)));
+////					_if(e1.callMethod(new MethodOneRelationBeanIsNull(r)));
 ////			
 ////			Var foreignBean =ifRelatedBeanIsNull.getIfInstr()._declare(foreignBeanExpression.getType(), "foreignB"+r.getAlias(),foreignBeanExpression) ;
 ////			ifRelatedBeanIsNull.getIfInstr()
 ////				._callMethodInstr(
-////						b1 ,
+////						e1 ,
 ////						new MethodAttrSetterInternal(foreignCls,
 ////								bean.getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)))
 ////						,  foreignBean);
@@ -186,15 +186,15 @@ package php.beanrepository.method;
 ////		
 ////			for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
 ////				if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
-////					ifRelatedBeanIsNull.getIfInstr().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", b1));
+////					ifRelatedBeanIsNull.getIfInstr().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", e1));
 ////				}
 ////			}
 //////			ifRelatedBeanIsNull.getIfInstr()._callMethodInstr(foreignBean, "setLoaded", BoolExpression.TRUE);
 ////			
 ////			//bCount++;
 ////		}
-////		ifInstr._callMethodInstr(b1, "setLoaded", BoolExpression.TRUE);
-////		ifInstr._return(b1);
+////		ifInstr._callMethodInstr(e1, "setLoaded", BoolExpression.TRUE);
+////		ifInstr._return(e1);
 ////		_return(Expressions.Null);
 //		
 //	}

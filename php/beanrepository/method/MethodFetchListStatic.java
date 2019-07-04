@@ -80,7 +80,7 @@ package php.beanrepository.method;
 ////		
 ////		
 ////		Var b1DoWhile = ifNotB1SetContains.getIfInstr()
-////				._declare(bean, "b1", getByRecordExpression(bean, recDoWhile, PhpString.fromStringConstant("b1")));
+////				._declare(bean, "e1", getByRecordExpression(bean, recDoWhile, PhpString.fromStringConstant("e1")));
 ////		//bCount = 2;
 ////		if (!manyRelations.isEmpty()) {
 ////			
@@ -97,7 +97,7 @@ package php.beanrepository.method;
 ////			Var fkHelper = doWhileQueryNext._declare(bean.getFetchListHelperCls(), "fkHelper",b1Map.arrayIndex(b1pk));
 ////			
 ////			Var structHelperIfNotB1SetContains = ifNotB1SetContains.getIfInstr()._declare(bean.getFetchListHelperCls(), "structHelper");
-////			ifNotB1SetContains.getIfInstr()._assign(structHelperIfNotB1SetContains.accessAttr("b1"), b1DoWhile);
+////			ifNotB1SetContains.getIfInstr()._assign(structHelperIfNotB1SetContains.accessAttr("e1"), b1DoWhile);
 //////			//bCount = 2;
 //////			for(Relation r:manyRelations) {
 //////				Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
@@ -146,7 +146,7 @@ package php.beanrepository.method;
 ////				foreignBean =ifRecValueIsNotNull.getIfInstr()._declare(foreignBeanExpression.getType(), "foreignB"+r.getAlias(),foreignBeanExpression) ;
 ////				
 ////								
-////				ifRecValueIsNotNull.getIfInstr().addInstr(fkHelper.accessAttr("b1")
+////				ifRecValueIsNotNull.getIfInstr().addInstr(fkHelper.accessAttr("e1")
 ////						.callMethodInstruction(BeanCls.getRelatedBeanMethodName(r), foreignBean));
 ////				ifRecValueIsNotNull.getIfInstr().addInstr(
 ////						fkHelper.accessAttr(r.getAlias()+"Set")
@@ -157,7 +157,7 @@ package php.beanrepository.method;
 ////				
 ////				for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
 ////					if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
-////						ifRecValueIsNotNull.getIfInstr().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("b1")));
+////						ifRecValueIsNotNull.getIfInstr().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("e1")));
 ////					}
 ////				}
 ////				//ifRecValueIsNotNull.getIfInstr()._callMethodInstr(foreignBean, "setLoaded", BoolExpression.TRUE);

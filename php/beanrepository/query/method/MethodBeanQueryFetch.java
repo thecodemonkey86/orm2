@@ -72,7 +72,7 @@ public class MethodBeanQueryFetch extends Method{
 		if (!manyRelations.isEmpty()) {
 			fetchListHelper = doWhileQueryNext._declare(bean.getFetchListHelperCls(), "fetchListHelper", Expressions.Null);
 		}
-		Var b1DoWhile = doWhileQueryNext._declare(bean, "b1", Expressions.Null);
+		Var b1DoWhile = doWhileQueryNext._declare(bean, "e1", Expressions.Null);
 		Expression b1ArrayIndexExpression = null;
 		if (pk.isMultiColumn()) {
 			
@@ -93,7 +93,7 @@ public class MethodBeanQueryFetch extends Method{
 		
 	
 		
-		ifNotB1SetContains.thenBlock()._assign(b1DoWhile, Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(bean), row,  new PhpStringLiteral("b1")));
+		ifNotB1SetContains.thenBlock()._assign(b1DoWhile, Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(bean), row,  new PhpStringLiteral("e1")));
 		
 		if (!manyRelations.isEmpty()) {
 			

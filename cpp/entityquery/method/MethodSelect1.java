@@ -24,7 +24,7 @@ package cpp.entityquery.method;
 //	public void addImplementation() {
 //		Expression attrMainBeanAlias = _this().accessAttr("mainBeanAlias");
 //		
-//		_assign(attrMainBeanAlias, QString.fromStringConstant("b1"));
+//		_assign(attrMainBeanAlias, QString.fromStringConstant("e1"));
 //		_assign(_this().accessAttr("selectFields"), this.bean.callStaticMethod(MethodGetAllSelectFields.getMethodName(), attrMainBeanAlias ));
 //		_assign(_this().accessAttr(ClsBeanQuerySelect.table), this.bean.callStaticMethod(MethodGetTableName.getMethodName(), attrMainBeanAlias ));
 //		

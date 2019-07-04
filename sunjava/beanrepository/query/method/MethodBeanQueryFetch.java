@@ -77,20 +77,20 @@ public class MethodBeanQueryFetch extends Method{
 			Expression[] b1pkConstructorArgs = new Expression[pk.getColumnCount()]; 
 			for(int i = 0; i < b1pkConstructorArgs.length; i++) {
 				Column colPk = pk.getColumn(i);
-				b1pkConstructorArgs[i] = BeanCls.getTypeMapper().getResultSetValueGetter(resultSet, colPk, "b1");
+				b1pkConstructorArgs[i] = BeanCls.getTypeMapper().getResultSetValueGetter(resultSet, colPk, "e1");
 			}
 			
 			b1pk =doWhileQueryNext._declareNew( bean.getPkType(), "b1pk", b1pkConstructorArgs );
 			
 		} else {
-			b1pk =doWhileQueryNext._declare( BeanCls.getTypeMapper().columnToType( pk.getFirstColumn()), "b1pk", BeanCls.getTypeMapper().getResultSetValueGetter(resultSet, pk.getFirstColumn(),"b1"));
+			b1pk =doWhileQueryNext._declare( BeanCls.getTypeMapper().columnToType( pk.getFirstColumn()), "b1pk", BeanCls.getTypeMapper().getResultSetValueGetter(resultSet, pk.getFirstColumn(),"e1"));
 		}
 		
 		IfBlock ifNotB1SetContains = doWhileQueryNext._if(Expressions.not(b1Map.callMethod(( (!manyRelations.isEmpty()) ?  ClsHashMap.containsKey : ClsHashSet.contains), b1pk)));
 		
 		
 		Var b1DoWhile = ifNotB1SetContains.thenBlock()
-				._declare(bean, "b1", Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(bean), resultSet,  JavaString.stringConstant("b1")));
+				._declare(bean, "e1", Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(bean), resultSet,  JavaString.stringConstant("e1")));
 		//bCount = 2;
 		if (!manyRelations.isEmpty()) {
 			
@@ -107,7 +107,7 @@ public class MethodBeanQueryFetch extends Method{
 			Var fkHelper = doWhileQueryNext._declare(bean.getFetchListHelperCls(), "fkHelper",b1Map.callMethod(  ClsHashMap.get,b1pk));
 			
 			Var fetchHelperIfNotB1SetContains = ifNotB1SetContains.thenBlock()._declareNew(bean.getFetchListHelperCls(), "fetchListHelper");
-			ifNotB1SetContains.thenBlock().addInstr(fetchHelperIfNotB1SetContains.callAttrSetterMethodInstr("b1", b1DoWhile));
+			ifNotB1SetContains.thenBlock().addInstr(fetchHelperIfNotB1SetContains.callAttrSetterMethodInstr("e1", b1DoWhile));
 //			//bCount = 2;
 //			for(Relation r:manyRelations) {
 //				Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
@@ -157,7 +157,7 @@ public class MethodBeanQueryFetch extends Method{
 				foreignBean =ifRecValueIsNotNull.thenBlock()._declare(foreignBeanExpression.getType(), "foreignB"+r.getAlias(),foreignBeanExpression) ;
 				
 								
-				ifRecValueIsNotNull.thenBlock().addInstr(fkHelper.callAttrGetter("b1")
+				ifRecValueIsNotNull.thenBlock().addInstr(fkHelper.callAttrGetter("e1")
 						.callMethodInstruction(BeanCls.getRelatedBeanMethodName(r), foreignBean));
 				ifRecValueIsNotNull.thenBlock().addInstr(
 						fkHelper.callAttrGetter(r.getAlias()+"Set")
@@ -168,7 +168,7 @@ public class MethodBeanQueryFetch extends Method{
 				
 				for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
 					if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
-						ifRecValueIsNotNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("b1")));
+						ifRecValueIsNotNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("e1")));
 					}
 				}
 				//ifRecValueIsNotNull.thenBlock()._callMethodInstr(foreignBean, "setLoaded", BoolExpression.TRUE);

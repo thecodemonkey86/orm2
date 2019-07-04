@@ -39,7 +39,7 @@ public class MethodLimitAndOffset extends Method {
 		//Expression aSqlQuery = _this().accessAttr("sqlQuery");
 		
 		PrimaryKey pk = bean.getTbl().getPrimaryKey();
-		//String mainBeanAlias = "b1.";
+		//String mainBeanAlias = "e1.";
 		StringBuilder sql = new StringBuilder();
 //		if (pk.isMultiColumn()) {
 //			sql.append('(').append(mainBeanAlias).append(pk.getFirstColumn().getEscapedName());
@@ -75,7 +75,7 @@ public class MethodLimitAndOffset extends Method {
 		ArrayList<String> listJoinCondition = new ArrayList<>();
 		
 		for(Column pkCol : pk) {
-			listJoinCondition.add("_limitjoin."+pkCol.getEscapedName()+" = b1."+pkCol.getEscapedName());
+			listJoinCondition.add("_limitjoin."+pkCol.getEscapedName()+" = e1."+pkCol.getEscapedName());
 		}
 		
 		_return(_this().callMethod(ClsBaseBeanQuery.join,varSql,new PhpStringLiteral(CodeUtil.concat(listJoinCondition, " AND ")),pQueryParams));

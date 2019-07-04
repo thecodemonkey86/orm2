@@ -103,7 +103,7 @@ public class MethodFetchList extends Method {
 		
 		
 		Var b1DoWhile = ifNotB1SetContains.thenBlock()
-				._declare(bean.toSharedPtr(), "b1", getByRecordExpression(bean, recDoWhile, QString.fromStringConstant("b1")));
+				._declare(bean.toSharedPtr(), "e1", getByRecordExpression(bean, recDoWhile, QString.fromStringConstant("e1")));
 		
 		if(!this.lazyLoading) {
 		
@@ -123,7 +123,7 @@ public class MethodFetchList extends Method {
 				Var fkHelper = doWhileQueryNext._declare(bean.getFetchListHelperCls().toRef(), "fkHelper",b1Map.arrayIndex(b1pk));
 				
 				Var structHelperIfNotB1SetContains = ifNotB1SetContains.thenBlock()._declare(bean.getFetchListHelperCls(), "structHelper");
-				ifNotB1SetContains.thenBlock()._assign(structHelperIfNotB1SetContains.accessAttr("b1"), b1DoWhile);
+				ifNotB1SetContains.thenBlock()._assign(structHelperIfNotB1SetContains.accessAttr("e1"), b1DoWhile);
 	//			//bCount = 2;
 	//			for(Relation r:manyRelations) {
 	//				Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
@@ -172,7 +172,7 @@ public class MethodFetchList extends Method {
 					foreignBean =ifRecValueIsNotNull.thenBlock()._declare(foreignBeanExpression.getType(), "foreignB"+r.getAlias(),foreignBeanExpression) ;
 					
 									
-					ifRecValueIsNotNull.thenBlock().addInstr(fkHelper.accessAttr("b1")
+					ifRecValueIsNotNull.thenBlock().addInstr(fkHelper.accessAttr("e1")
 							.callMethodInstruction(EntityCls.getRelatedBeanMethodName(r), foreignBean));
 					ifRecValueIsNotNull.thenBlock().addInstr(
 							fkHelper.accessAttr(r.getAlias()+"Set")
@@ -183,7 +183,7 @@ public class MethodFetchList extends Method {
 					
 					for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
 						if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
-							ifRecValueIsNotNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("b1")));
+							ifRecValueIsNotNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("e1")));
 						}
 					}
 					//ifRecValueIsNotNull.getIfInstr()._callMethodInstr(foreignBean, "setLoaded", BoolExpression.TRUE);

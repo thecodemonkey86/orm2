@@ -72,7 +72,7 @@ package cpp.entityrepository.method;
 //		
 //		
 //		Var b1DoWhile = ifNotB1SetContains.getIfInstr()
-//				._declare(bean.toSharedPtr(), "b1", getByRecordExpression(bean, recDoWhile, QString.fromStringConstant("b1")));
+//				._declare(bean.toSharedPtr(), "e1", getByRecordExpression(bean, recDoWhile, QString.fromStringConstant("e1")));
 //		//bCount = 2;
 //		if (!manyRelations.isEmpty()) {
 //			
@@ -89,7 +89,7 @@ package cpp.entityrepository.method;
 //			Var fkHelper = doWhileQueryNext._declare(bean.getFetchListHelperCls().toRef(), "fkHelper",b1Map.arrayIndex(b1pk));
 //			
 //			Var structHelperIfNotB1SetContains = ifNotB1SetContains.getIfInstr()._declare(bean.getFetchListHelperCls(), "structHelper");
-//			ifNotB1SetContains.getIfInstr()._assign(structHelperIfNotB1SetContains.accessAttr("b1"), b1DoWhile);
+//			ifNotB1SetContains.getIfInstr()._assign(structHelperIfNotB1SetContains.accessAttr("e1"), b1DoWhile);
 ////			//bCount = 2;
 ////			for(Relation r:manyRelations) {
 ////				Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
@@ -138,7 +138,7 @@ package cpp.entityrepository.method;
 //				foreignBean =ifRecValueIsNotNull.getIfInstr()._declare(foreignBeanExpression.getType(), "foreignB"+r.getAlias(),foreignBeanExpression) ;
 //				
 //								
-//				ifRecValueIsNotNull.getIfInstr().addInstr(fkHelper.accessAttr("b1")
+//				ifRecValueIsNotNull.getIfInstr().addInstr(fkHelper.accessAttr("e1")
 //						.callMethodInstruction(BeanCls.getRelatedBeanMethodName(r), foreignBean));
 //				ifRecValueIsNotNull.getIfInstr().addInstr(
 //						fkHelper.accessAttr(r.getAlias()+"Set")
@@ -149,7 +149,7 @@ package cpp.entityrepository.method;
 //				
 //				for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
 //					if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
-//						ifRecValueIsNotNull.getIfInstr().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("b1")));
+//						ifRecValueIsNotNull.getIfInstr().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("e1")));
 //					}
 //				}
 //				//ifRecValueIsNotNull.getIfInstr()._callMethodInstr(foreignBean, "setLoaded", BoolExpression.TRUE);

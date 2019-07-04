@@ -26,7 +26,7 @@ public class MethodToStringSelect extends Method{
 
 	@Override
 	public void addImplementation() {
-		Var mainBeanAlias = _declare(Types.QString, "mainBeanAlias", QString.fromStringConstant("b1"));
+		Var mainBeanAlias = _declare(Types.QString, "mainBeanAlias", QString.fromStringConstant("e1"));
 		InlineIfExpression selectFields = new InlineIfExpression(Expressions.not(_this().accessAttr(ClsEntityQuerySelect.lazyLoading)), bean.callStaticMethod(MethodGetAllSelectFields.getMethodName(), mainBeanAlias ), bean.callStaticMethod(MethodGetSelectFields.getMethodName(), mainBeanAlias ));
 		Expression tableExpr = bean.callStaticMethod(MethodGetTableName.getMethodName(), mainBeanAlias );
 		addInstr(new Instruction() {

@@ -77,7 +77,7 @@ public class MethodGetById extends Method {
 		
 		ArrayList<String> selectFields = new ArrayList<>();
 		for(Column col : bean.getTbl().getAllColumns()) {
-			selectFields.add("b1." + col.getEscapedName() + " as b1__" + col.getName());
+			selectFields.add("e1." + col.getEscapedName() + " as b1__" + col.getName());
 		}
 		List<AbstractRelation> allRelations = new ArrayList<>(oneRelations.size()+oneToManyRelations.size()+manyToManyRelations.size());
 		allRelations.addAll(oneRelations);
@@ -90,12 +90,12 @@ public class MethodGetById extends Method {
 			}
 		}
 		Expression exprQSqlQuery = sqlQuery.callMethod("select", QString.fromStringConstant(CodeUtil.commaSep( selectFields) ))
-									.callMethod("from", bean.callStaticMethod("getTableName",QString.fromStringConstant("b1")));
+									.callMethod("from", bean.callStaticMethod("getTableName",QString.fromStringConstant("e1")));
 		
 		for(OneRelation r:oneRelations) {
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getColumnCount();i++) {
-				joinConditions.add(CodeUtil.sp("b1."+r.getColumns(i).getValue1().getEscapedName(),'=',(r.getAlias())+"."+ r.getColumns(i).getValue2().getEscapedName()));
+				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',(r.getAlias())+"."+ r.getColumns(i).getValue2().getEscapedName()));
 			}
 			
 			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", QString.fromExpression(Entities.get(r.getDestTable()).callStaticMethod("getTableName")),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
@@ -103,7 +103,7 @@ public class MethodGetById extends Method {
 		for(OneToManyRelation r:oneToManyRelations) {
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getColumnCount();i++) {
-				joinConditions.add(CodeUtil.sp("b1."+r.getColumns(i).getValue1().getEscapedName(),'=',(r.getAlias())+"."+ r.getColumns(i).getValue2().getEscapedName()));
+				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',(r.getAlias())+"."+ r.getColumns(i).getValue2().getEscapedName()));
 			}
 			
 			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", QString.fromExpression(Entities.get(r.getDestTable()).callStaticMethod("getTableName")),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
@@ -111,7 +111,7 @@ public class MethodGetById extends Method {
 		for(ManyRelation r:manyToManyRelations) {
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getSourceColumnCount();i++) {
-				joinConditions.add(CodeUtil.sp("b1."+r.getSourceEntityColumn(i).getEscapedName(),'=',r.getAlias("mapping")+"."+ r.getSourceMappingColumn(i).getEscapedName()));
+				joinConditions.add(CodeUtil.sp("e1."+r.getSourceEntityColumn(i).getEscapedName(),'=',r.getAlias("mapping")+"."+ r.getSourceMappingColumn(i).getEscapedName()));
 			}
 			
 			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", QString.fromStringConstant(r.getMappingTable().getName()),QString.fromStringConstant(r.getAlias("mapping")), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
@@ -128,7 +128,7 @@ public class MethodGetById extends Method {
 
 		
 		for(Column col:bean.getTbl().getPrimaryKey().getColumns()) {
-			exprQSqlQuery = exprQSqlQuery.callMethod("where", QString.fromStringConstant("b1."+ col.getEscapedName()+"=?"),getParam(col.getCamelCaseName()));
+			exprQSqlQuery = exprQSqlQuery.callMethod("where", QString.fromStringConstant("e1."+ col.getEscapedName()+"=?"),getParam(col.getCamelCaseName()));
 					
 		}
 		
@@ -141,13 +141,13 @@ public class MethodGetById extends Method {
 		Var qSqlQuery = _declare(exprQSqlQuery.getType(),
 				"qSqlQuery", exprQSqlQuery
 				);
-		Var b1 = _declare(returnType, "b1", Expressions.Nullptr);
+		Var e1 = _declare(returnType, "e1", Expressions.Nullptr);
 		IfBlock ifQSqlQueryNext =
 				_if(qSqlQuery.callMethod("next"))
 					.setIfInstr(
-							b1.assign(_this().callMethod(MethodGetFromRecord.getMethodName(bean),  qSqlQuery.callMethod("record"), QString.fromStringConstant("b1")))
+							e1.assign(_this().callMethod(MethodGetFromRecord.getMethodName(bean),  qSqlQuery.callMethod("record"), QString.fromStringConstant("e1")))
 							,
-							b1.callSetterMethodInstruction("loaded", BoolExpression.TRUE)//_assignInstruction(b1.accessAttr("loaded"), BoolExpression.TRUE)
+							e1.callSetterMethodInstruction("loaded", BoolExpression.TRUE)//_assignInstruction(e1.accessAttr("loaded"), BoolExpression.TRUE)
 							);
 		
 		if(bean.hasRelations()) {
@@ -161,14 +161,14 @@ public class MethodGetById extends Method {
 		
 		for(OneRelation r:oneRelations) {
 			EntityCls foreignCls = Entities.get(r.getDestTable()); 
-			//AccessExpression acc = b1.accessAttr(PgCppUtil.getOneRelationDestAttrName(r));
+			//AccessExpression acc = e1.accessAttr(PgCppUtil.getOneRelationDestAttrName(r));
 			//IfBlock ifBlock= doWhileQSqlQueryNext._if(acc.isNull());
-			IfBlock ifBlock= doWhileQSqlQueryNext._if(Expressions.and( b1.callMethod(new MethodOneRelationEntityIsNull(r))
+			IfBlock ifBlock= doWhileQSqlQueryNext._if(Expressions.and( e1.callMethod(new MethodOneRelationEntityIsNull(r))
 					,
 					Expressions.not( rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getFirstColumn().getName())).callMethod(ClsQVariant.isNull))
 					));
 			ifBlock.thenBlock().
-			_callMethodInstr(b1, new MethodOneRelationAttrSetter( bean,r, true),  _this().callGetByRecordMethod(foreignCls, rec, QString.fromStringConstant(r.getAlias())));
+			_callMethodInstr(e1, new MethodOneRelationAttrSetter( bean,r, true),  _this().callGetByRecordMethod(foreignCls, rec, QString.fromStringConstant(r.getAlias())));
 			//ifBlock.getIfInstr()._assign(acc, _this().callGetByRecordMethod(foreignCls, rec, QString.fromStringConstant(r.getAlias())));
 //			//bCount++;
 		}
@@ -189,8 +189,8 @@ public class MethodGetById extends Method {
 //				IfBlock ifNotContains = 
 				ifNotPkForeignIsNull.thenBlock()._if(Expressions.not(pkSet.callMethod("contains", pk)))
 						.addIfInstr(pkSet.callMethodInstruction("insert", pk))
-						.addIfInstr(b1.callMethodInstruction(EntityCls.getRelatedBeanMethodName(r),_this().callGetByRecordMethod(foreignCls, rec, QString.fromStringConstant(r.getAlias()))));
-//						.addIfInstr(b1.accessAttr(CodeUtil2.plural(r.getDestTable().getCamelCaseName())).callMethodInstruction("append",  _this().callGetByRecordMethod(foreignCls, rec, QString.fromStringConstant(r.getAlias()))));
+						.addIfInstr(e1.callMethodInstruction(EntityCls.getRelatedBeanMethodName(r),_this().callGetByRecordMethod(foreignCls, rec, QString.fromStringConstant(r.getAlias()))));
+//						.addIfInstr(e1.accessAttr(CodeUtil2.plural(r.getDestTable().getCamelCaseName())).callMethodInstruction("append",  _this().callGetByRecordMethod(foreignCls, rec, QString.fromStringConstant(r.getAlias()))));
 				
 			} else {
 				Column colPk = r.getDestTable().getPrimaryKey().getColumns().get(0);
@@ -207,8 +207,8 @@ public class MethodGetById extends Method {
 						);
 				ifNotPkForeignIsNull.thenBlock()._if(Expressions.not(pkSet.callMethod("contains", pk)))
 					.addIfInstr(pkSet.callMethodInstruction("insert", pk))
-					.addIfInstr(b1.callMethodInstruction(EntityCls.getRelatedBeanMethodName(r),_this().callGetByRecordMethod(foreignCls, rec, QString.fromStringConstant(r.getAlias()))));
-//						.addIfInstr(b1.accessAttr(PgCppUtil.getManyRelationDestAttrName(r))
+					.addIfInstr(e1.callMethodInstruction(EntityCls.getRelatedBeanMethodName(r),_this().callGetByRecordMethod(foreignCls, rec, QString.fromStringConstant(r.getAlias()))));
+//						.addIfInstr(e1.accessAttr(PgCppUtil.getManyRelationDestAttrName(r))
 //								.callMethodInstruction("append",  _this().callGetByRecordMethod(foreignCls,  rec, QString.fromStringConstant(r.getAlias()))));
 			}
 			
@@ -221,7 +221,7 @@ public class MethodGetById extends Method {
 		
 		doWhileQSqlQueryNext.setCondition(ifQSqlQueryNext.getCondition());
 		}
-		_return(b1);
+		_return(e1);
 	}
 
 }

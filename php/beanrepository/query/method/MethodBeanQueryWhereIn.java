@@ -37,7 +37,7 @@ public class MethodBeanQueryWhereIn extends Method {
 	public void addImplementation() {
 		Expression aSqlQuery = _this().accessAttr(ClsBaseBeanQuery.sqlQuery);
 		
-		_return( _this().callMethod(ClsBaseBeanQuery.where, new ParenthesesExpression( new InlineIfExpression(aSqlQuery.callMethod(ClsSqlQuery.getMode)._equals(Types.SqlQuery.accessConstant(ClsSqlQuery.MODE_SELECT)),new PhpStringLiteral( "b1." + c.getEscapedName()+" in "),new PhpStringLiteral(c.getEscapedName()+" in "))).concat(Types.SqlUtil.callStaticMethod(ClsSqlUtil.getPlaceholders, PhpFunctions.count.call(pValue))), pValue  ));
+		_return( _this().callMethod(ClsBaseBeanQuery.where, new ParenthesesExpression( new InlineIfExpression(aSqlQuery.callMethod(ClsSqlQuery.getMode)._equals(Types.SqlQuery.accessConstant(ClsSqlQuery.MODE_SELECT)),new PhpStringLiteral( "e1." + c.getEscapedName()+" in "),new PhpStringLiteral(c.getEscapedName()+" in "))).concat(Types.SqlUtil.callStaticMethod(ClsSqlUtil.getPlaceholders, PhpFunctions.count.call(pValue))), pValue  ));
 		
 	}
 	@Override

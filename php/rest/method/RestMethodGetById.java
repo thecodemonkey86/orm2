@@ -48,7 +48,7 @@ public class RestMethodGetById extends Method {
 					.callMethod(ClsBaseBeanQuery.select);
 				
 			for(Column pkCol : pk) {
-				e = e.callMethod(ClsBaseBeanQuery.where, new PhpStringLiteral("b1."+pkCol.getEscapedName()+ "=?"), PhpGlobals.$_GET.arrayIndex(new PhpStringLiteral(pkCol.getName() )));
+				e = e.callMethod(ClsBaseBeanQuery.where, new PhpStringLiteral("e1."+pkCol.getEscapedName()+ "=?"), PhpGlobals.$_GET.arrayIndex(new PhpStringLiteral(pkCol.getName() )));
 			}
 			
 			e = e.callMethod("fetchOne");

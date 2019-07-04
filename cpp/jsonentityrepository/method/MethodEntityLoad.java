@@ -98,7 +98,7 @@ public class MethodEntityLoad extends Method {
 						pJsonObject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(col.getName()))
 								.callMethod(ClsQJsonValue.isNull));
 				// ifValueIsNull.thenBlock().addInstr(
-				// b1.callMethodInstruction(MethodColumnAttrSetNull.getMethodName(col)));
+				// e1.callMethodInstruction(MethodColumnAttrSetNull.getMethodName(col)));
 				ifValueIsNull.thenBlock().addInstr(pBean.callMethodInstruction(MethodColumnAttrSetterInternal.getMethodName(col),
 						JsonOrmUtil.jsonConvertMethod(
 								pJsonObject.callMethod(ClsQJsonObject.value,

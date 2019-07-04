@@ -55,7 +55,7 @@ public class MethodLoadCollection extends Method{
 //		Type b1PkType = pk.isMultiColumn() ? bean.getStructPk() : BeanCls.getTypeMapper().columnToType( pk.getColumns().get(0));
 //		
 //		//ArrayList<Expression> selectFields = new ArrayList<>();
-//		//selectFields.add(bean.callStaticMethod("getSelectFields",PhpString.fromStringConstant("b1")));
+//		//selectFields.add(bean.callStaticMethod("getSelectFields",PhpString.fromStringConstant("e1")));
 //		
 //		List<OneRelation> relations = new ArrayList<>(oneRelations);
 //		relations.addAll(oneRelations);
@@ -66,10 +66,10 @@ public class MethodLoadCollection extends Method{
 ////			//bCount++;
 ////		}
 ////		Expression exprQSqlQuery = sqlQuery.callMethod("select", Expressions.concat(QChar.fromChar(','), selectFields) )
-////									.callMethod("from", PhpString.fromExpression(bean.accessStaticAttribute("TABLENAME")).concat(PhpString.fromStringConstant(" b1")));
+////									.callMethod("from", PhpString.fromExpression(bean.accessStaticAttribute("TABLENAME")).concat(PhpString.fromStringConstant(" e1")));
 //		
-//		Expression exprQSqlQuery = sqlQuery.callMethod("select", bean.callStaticMethod("getAllSelectFields",PhpString.fromStringConstant("b1")))
-//				.callMethod("from", PhpString.fromExpression(bean.callStaticMethod("getTableName")).concat(PhpString.fromStringConstant(" b1")));
+//		Expression exprQSqlQuery = sqlQuery.callMethod("select", bean.callStaticMethod("getAllSelectFields",PhpString.fromStringConstant("e1")))
+//				.callMethod("from", PhpString.fromExpression(bean.callStaticMethod("getTableName")).concat(PhpString.fromStringConstant(" e1")));
 //		
 //		//int //bCount = 2;
 //		
@@ -79,7 +79,7 @@ public class MethodLoadCollection extends Method{
 //			}
 //			ArrayList<String> joinConditions=new ArrayList<>();
 //			for(int i=0;i<r.getColumnCount();i++) {
-//				joinConditions.add(CodeUtil.sp("b1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
+//				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
 //			}
 //			
 //			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", PhpString.fromExpression(Beans.get(r.getDestTable()).callStaticMethod("getTableName")),PhpString.fromStringConstant(r.getAlias()), PhpString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
@@ -90,7 +90,7 @@ public class MethodLoadCollection extends Method{
 //		ArrayInitList init=new ArrayInitList();
 //		
 //		for (Column pkCol : pk.getColumns()) {
-//			init.addElement(PhpString.fromStringConstant("b1."+ pkCol.getEscapedName()));
+//			init.addElement(PhpString.fromStringConstant("e1."+ pkCol.getEscapedName()));
 //		}
 //		Var varColumns = _declare(Types.array(Types.String), "columns",init);
 //		
@@ -176,7 +176,7 @@ public class MethodLoadCollection extends Method{
 //		
 //		
 //		
-////		ifForeachPkCompare.getIfInstr()._assign(structHelperIfNotB1SetContains.accessAttr("b1"), b1DoWhile);
+////		ifForeachPkCompare.getIfInstr()._assign(structHelperIfNotB1SetContains.accessAttr("e1"), b1DoWhile);
 ////		//bCount = 2;
 ////		for(Relation r:manyRelations) {
 ////			Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
@@ -188,7 +188,7 @@ public class MethodLoadCollection extends Method{
 //			ifForeachPkCompare.getIfInstr()._callMethodInstr(b1Map, "insert", b1pk );
 //		} else {
 //			Var structHelperIfNotB1SetContains = ifForeachPkCompare.getIfInstr()._declare(bean.getFetchListHelperCls(), "structHelper");
-//			ifForeachPkCompare.getIfInstr()._assign(structHelperIfNotB1SetContains.accessAttr("b1"), varIfNotB1SetContainsForeachBean);
+//			ifForeachPkCompare.getIfInstr()._assign(structHelperIfNotB1SetContains.accessAttr("e1"), varIfNotB1SetContainsForeachBean);
 //			ifForeachPkCompare.getIfInstr()._callMethodInstr(b1Map, "insert", b1pk, structHelperIfNotB1SetContains );
 //			
 //			Var fkHelper = doWhileQueryNext._declare(bean.getFetchListHelperCls(), "fkHelper",b1Map.arrayIndex(b1pk));
@@ -228,7 +228,7 @@ public class MethodLoadCollection extends Method{
 //					);
 //				foreignBean =ifRecValueIsNotNull.getIfInstr()._declare(foreignBeanExpression.getType(), "foreignB"+r.getAlias(),foreignBeanExpression) ;
 //				
-//				ifRecValueIsNotNull.getIfInstr().addInstr(fkHelper.accessAttr("b1")
+//				ifRecValueIsNotNull.getIfInstr().addInstr(fkHelper.accessAttr("e1")
 //						.callMethodInstruction(BeanCls.getRelatedBeanMethodName(r), foreignBean));
 //				ifRecValueIsNotNull.getIfInstr().addInstr(
 //						fkHelper.accessAttr(r.getAlias()+"Set")
@@ -239,7 +239,7 @@ public class MethodLoadCollection extends Method{
 //				
 //				for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
 //					if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
-//						ifRecValueIsNotNull.getIfInstr().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("b1")));
+//						ifRecValueIsNotNull.getIfInstr().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("e1")));
 //					}
 //				}
 //				

@@ -68,7 +68,7 @@ public class MethodGetById extends Method {
 		Var sqlQuery = _declare(Types.SqlQuery, "query",BeanCls.getSqlQueryCls().newInstance(aSqlCon));
 		
 		ArrayList<Expression> selectFields = new ArrayList<>();
-		selectFields.add(Types.BeanRepository.callStaticMethod("getSelectFields"+bean.getName(), JavaString.stringConstant("b1")));
+		selectFields.add(Types.BeanRepository.callStaticMethod("getSelectFields"+bean.getName(), JavaString.stringConstant("e1")));
 		
 		List<AbstractRelation> allRelations = new ArrayList<>(oneRelations.size()+oneToManyRelations.size()+manyToManyRelations.size());
 		allRelations.addAll(oneRelations);
@@ -80,12 +80,12 @@ public class MethodGetById extends Method {
 		}
 		
 		Expression exprSqlQuery = sqlQuery.callMethod("select", Expressions.concat(CharExpression.fromChar(','), selectFields) )
-									.callMethod("from", Types.BeanRepository.callStaticMethod(ClsBeanRepository.getMethodNameGetTableName(bean),JavaString.stringConstant("b1")));
+									.callMethod("from", Types.BeanRepository.callStaticMethod(ClsBeanRepository.getMethodNameGetTableName(bean),JavaString.stringConstant("e1")));
 		
 		for(OneRelation r:oneRelations) {
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getColumnCount();i++) {
-				joinConditions.add(CodeUtil.sp("b1."+r.getColumns(i).getValue1().getEscapedName(),'=',(r.getAlias())+"."+ r.getColumns(i).getValue2().getEscapedName()));
+				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',(r.getAlias())+"."+ r.getColumns(i).getValue2().getEscapedName()));
 			}
 			
 			exprSqlQuery = exprSqlQuery.callMethod("leftJoin", Types.BeanRepository.callStaticMethod(ClsBeanRepository.getMethodNameGetTableName(Beans.get(r.getDestTable()))),JavaString.stringConstant(r.getAlias()), JavaString.stringConstant(CodeUtil2.concat(joinConditions," AND ")));
@@ -93,7 +93,7 @@ public class MethodGetById extends Method {
 		for(OneToManyRelation r:oneToManyRelations) {
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getColumnCount();i++) {
-				joinConditions.add(CodeUtil.sp("b1."+r.getColumns(i).getValue1().getEscapedName(),'=',(r.getAlias())+"."+ r.getColumns(i).getValue2().getEscapedName()));
+				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',(r.getAlias())+"."+ r.getColumns(i).getValue2().getEscapedName()));
 			}
 			
 			exprSqlQuery = exprSqlQuery.callMethod("leftJoin", Types.BeanRepository.callStaticMethod(ClsBeanRepository.getMethodNameGetTableName(Beans.get(r.getDestTable()))),JavaString.stringConstant(r.getAlias()), JavaString.stringConstant(CodeUtil2.concat(joinConditions," AND ")));
@@ -101,7 +101,7 @@ public class MethodGetById extends Method {
 		for(ManyRelation r:manyToManyRelations) {
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getSourceColumnCount();i++) {
-				joinConditions.add(CodeUtil.sp("b1."+r.getSourceEntityColumn(i).getEscapedName(),'=',r.getAlias("mapping")+"."+ r.getSourceMappingColumn(i).getEscapedName()));
+				joinConditions.add(CodeUtil.sp("e1."+r.getSourceEntityColumn(i).getEscapedName(),'=',r.getAlias("mapping")+"."+ r.getSourceMappingColumn(i).getEscapedName()));
 			}
 			
 			exprSqlQuery = exprSqlQuery.callMethod("leftJoin", JavaString.stringConstant(r.getMappingTable().getName()),JavaString.stringConstant(r.getAlias("mapping")), JavaString.stringConstant(CodeUtil2.concat(joinConditions," AND ")));
@@ -118,24 +118,24 @@ public class MethodGetById extends Method {
 
 		
 		for(Column col:bean.getTbl().getPrimaryKey().getColumns()) {
-			exprSqlQuery = exprSqlQuery.callMethod("where", JavaString.stringConstant("b1."+ col.getEscapedName()+"=?"),getParam(col.getCamelCaseName()));
+			exprSqlQuery = exprSqlQuery.callMethod("where", JavaString.stringConstant("e1."+ col.getEscapedName()+"=?"),getParam(col.getCamelCaseName()));
 					
 		}
 		exprSqlQuery = exprSqlQuery.callMethod(ClsSqlQuery.query);
 		Var resultSet = _declare(exprSqlQuery.getType(),
 				"resultSet", exprSqlQuery
 				);
-		Var b1 = _declare(returnType, "b1", Expressions.Null);
+		Var e1 = _declare(returnType, "e1", Expressions.Null);
 		IfBlock ifQSqlQueryNext =
 				_if(resultSet.callMethod(ClsResultSet.METHOD_NAME_NEXT))
 				
 //		for(Column col:bean.getTbl().getPrimaryKey().getColumns()) {		
-//		OrmUtil.addAssignValueFromResultSetInstructions(resultSet, ifQSqlQueryNext.getIfInstr(), b1, col, "b1");
+//		OrmUtil.addAssignValueFromResultSetInstructions(resultSet, ifQSqlQueryNext.getIfInstr(), e1, col, "e1");
 //		}
 					.setIfInstr(
-							b1.assign(Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(bean),  resultSet, JavaString.stringConstant("b1")))
+							e1.assign(Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(bean),  resultSet, JavaString.stringConstant("e1")))
 							,
-							b1.callAttrSetterMethodInstr("loaded", BoolExpression.TRUE)//_assignInstruction(b1.accessAttr("loaded"), BoolExpression.TRUE)
+							e1.callAttrSetterMethodInstr("loaded", BoolExpression.TRUE)//_assignInstruction(e1.accessAttr("loaded"), BoolExpression.TRUE)
 							)
 							;
 		
@@ -149,9 +149,9 @@ public class MethodGetById extends Method {
 		
 		for(OneRelation r:oneRelations) {
 //			BeanCls foreignCls = Beans.get(r.getDestTable()); 
-			IfBlock ifBlock= doWhileQSqlQueryNext._if(b1.callMethod(new MethodOneRelationBeanIsNull(r)));
+			IfBlock ifBlock= doWhileQSqlQueryNext._if(e1.callMethod(new MethodOneRelationBeanIsNull(r)));
 			ifBlock.thenBlock().
-			_callMethodInstr(b1, new MethodOneRelationAttrSetter( b1.getClassConcreteType().getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)), true,r.isPartOfPk()), 
+			_callMethodInstr(e1, new MethodOneRelationAttrSetter( e1.getClassConcreteType().getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)), true,r.isPartOfPk()), 
 					Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Beans.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias())));
 		}
 		for(AbstractRelation r:manyRelations) {
@@ -171,8 +171,8 @@ public class MethodGetById extends Method {
 //				IfBlock ifNotContains = 
 						doWhileQSqlQueryNext._if(Expressions.not(pkSet.callMethod(ClsHashSet.contains, pk)))
 						.addIfInstr(pkSet.callMethodInstruction(ClsHashSet.add, pk))
-						.addIfInstr(b1.callMethodInstruction(BeanCls.getRelatedBeanMethodName(r), Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Beans.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias()))));
-//						.addIfInstr(b1.accessAttr(CodeUtil2.plural(r.getDestTable().getCamelCaseName())).callMethodInstruction("append",  _this().callGetByRecordMethod(foreignCls, rec, JavaString.fromStringConstant(r.getAlias()))));
+						.addIfInstr(e1.callMethodInstruction(BeanCls.getRelatedBeanMethodName(r), Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Beans.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias()))));
+//						.addIfInstr(e1.accessAttr(CodeUtil2.plural(r.getDestTable().getCamelCaseName())).callMethodInstruction("append",  _this().callGetByRecordMethod(foreignCls, rec, JavaString.fromStringConstant(r.getAlias()))));
 				
 			} else {
 				Column colPk = r.getDestTable().getPrimaryKey().getColumns().get(0);
@@ -196,14 +196,14 @@ public class MethodGetById extends Method {
 				IfBlock ifNotRecValueIsNull = doWhileQSqlQueryNext._if(_not(resultSet.callMethod(ClsResultSet.wasNull)));
 				ifNotRecValueIsNull.thenBlock()._if(Expressions.not(pkSet.callMethod(ClsHashSet.contains, pk)))
 					.addIfInstr(pkSet.callMethodInstruction(ClsHashSet.add, pk))
-					.addIfInstr(b1.callMethodInstruction(BeanCls.getRelatedBeanMethodName(r), Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Beans.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias()))));
+					.addIfInstr(e1.callMethodInstruction(BeanCls.getRelatedBeanMethodName(r), Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Beans.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias()))));
 			}
 			
 		}
 		
 		ifQSqlQueryNext.addIfInstr(doWhileQSqlQueryNext);
 		doWhileQSqlQueryNext.setCondition(ifQSqlQueryNext.getCondition());
-		_return(b1);
+		_return(e1);
 	}
 
 }

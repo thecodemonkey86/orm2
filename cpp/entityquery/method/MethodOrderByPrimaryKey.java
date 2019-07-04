@@ -18,11 +18,11 @@ public class MethodOrderByPrimaryKey extends Method{
 	@Override
 	public void addImplementation() {
 		
-		StringBuilder orderBy = new StringBuilder("b1.")
+		StringBuilder orderBy = new StringBuilder("e1.")
 				   .append(cls.getTbl().getPrimaryKey().getFirstColumn().getEscapedName())
 					.append(" ASC");
 		for(int i=1;i<cls.getTbl().getPrimaryKey().getColumnCount();i++) {
-			orderBy.append(",b1.").append(cls.getTbl().getPrimaryKey().getColumn(i).getEscapedName()).append(" ASC");
+			orderBy.append(",e1.").append(cls.getTbl().getPrimaryKey().getColumn(i).getEscapedName()).append(" ASC");
 		}
 		
 		

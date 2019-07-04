@@ -17,7 +17,7 @@ public class MethodGetSelectFields extends Method  {
 	public MethodGetSelectFields(BeanCls bean) {
 		super(Public, Types.String, getMethodName(bean));
 		setStatic(true);
-		addParam(new Param(Types.String, "alias", new PhpStringLiteral("b1")));
+		addParam(new Param(Types.String, "alias", new PhpStringLiteral("e1")));
 		this.bean = bean;
 	}
 

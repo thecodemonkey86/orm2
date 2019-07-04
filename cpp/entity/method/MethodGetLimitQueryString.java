@@ -28,7 +28,7 @@ public class MethodGetLimitQueryString extends Method {
 
 	@Override
 	public void addImplementation() {
-		String mainBeanAlias = "b1.";
+		String mainBeanAlias = "e1.";
 		EntityCls bean = (EntityCls) parent;
 		StringBuilder sql = new StringBuilder();
 		if (pk.isMultiColumn()) {
