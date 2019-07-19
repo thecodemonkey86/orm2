@@ -120,7 +120,7 @@ public class MethodBeanQueryFetchOne extends Method{
 		ArrayList<Expression> condExpressions = new ArrayList<>();
 		condExpressions.add(ifRowNotNull.getCondition());
 		for(Column colPk :  bean.getTbl().getPrimaryKey()) {
-			condExpressions.add(row.arrayIndex(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey("b1__" + colPk.getName()))).cast(BeanCls.getTypeMapper().columnToType(colPk))._equals(e1.callAttrGetter(colPk.getCamelCaseName())));
+			condExpressions.add(row.arrayIndex(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey("e1__" + colPk.getName()))).cast(BeanCls.getTypeMapper().columnToType(colPk))._equals(e1.callAttrGetter(colPk.getCamelCaseName())));
 		}
 		
 		doWhileQueryNext.setCondition(Expressions.and( condExpressions ));

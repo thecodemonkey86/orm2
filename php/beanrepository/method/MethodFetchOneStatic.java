@@ -48,7 +48,7 @@ package php.beanrepository.method;
 ////		
 ////		Expression query = getExpressionQuery();
 ////		//int //bCount = 2;
-////		//Type b1PkType = pk.isMultiColumn() ? bean.getStructPk() : pk.getColumns().get(0).toType();
+////		//Type e1PkType = pk.isMultiColumn() ? bean.getStructPk() : pk.getColumns().get(0).toType();
 ////		
 ////		ArrayList<AbstractRelation> manyRelations = new ArrayList<>();
 ////		
@@ -57,22 +57,22 @@ package php.beanrepository.method;
 ////		
 ////		IfBlock ifQueryNext = _if(query.callMethod("next"));
 ////		InstructionBlock ifInstr = ifQueryNext.getIfInstr();
-////		//Var b1Map =  ifInstr._declare((!manyRelations.isEmpty()) ? new ClsQHash(b1PkType, bean.getFetchListHelperCls()) : new ClsQSet(b1PkType), "b1Map");
+////		//Var e1Map =  ifInstr._declare((!manyRelations.isEmpty()) ? new ClsQHash(e1PkType, bean.getFetchListHelperCls()) : new ClsQSet(e1PkType), "e1Map");
 ////		Var recDoWhile =ifInstr._declare(Types.QSqlRecord, "rec",query.callMethod("record") );
 ////		
-/////*		Var b1pk = null;
+/////*		Var e1pk = null;
 ////		
 ////		if (pk.isMultiColumn()) {
-////			b1pk =ifInstr._declare( bean.getStructPk(), "b1pk" );
+////			e1pk =ifInstr._declare( bean.getStructPk(), "e1pk" );
 ////			for(Column colPk:pk.getColumns()) {
-////				ifInstr._assign(b1pk.accessAttr(colPk.getCamelCaseName()), recDoWhile.callMethod("value", PhpString.fromStringConstant("b1__"+ colPk.getName())).callMethod(BeanCls.getTypeMapper().getConvertMethod(colPk.getDbType())));
+////				ifInstr._assign(e1pk.accessAttr(colPk.getCamelCaseName()), recDoWhile.callMethod("value", PhpString.fromStringConstant("e1__"+ colPk.getName())).callMethod(BeanCls.getTypeMapper().getConvertMethod(colPk.getDbType())));
 ////			}
 ////			
 ////		} else {
-////			b1pk =ifInstr._declare( pk.getFirstColumn().toType(), "b1pk", recDoWhile.callMethod("value", PhpString.fromStringConstant("b1__"+ pk.getFirstColumn().getName())).callMethod(BeanCls.getTypeMapper().getConvertMethod(pk.getFirstColumn().getDbType())));
+////			e1pk =ifInstr._declare( pk.getFirstColumn().toType(), "e1pk", recDoWhile.callMethod("value", PhpString.fromStringConstant("e1__"+ pk.getFirstColumn().getName())).callMethod(BeanCls.getTypeMapper().getConvertMethod(pk.getFirstColumn().getDbType())));
 ////		}*/
 ////		
-////		//IfBlock ifNotB1SetContains = ifInstr._if(Expressions.not(b1Map.callMethod("contains", b1pk)));
+////		//IfBlock ifNotE1SetContains = ifInstr._if(Expressions.not(e1Map.callMethod("contains", e1pk)));
 ////		
 ////		
 ////		Var e1 = ifInstr
@@ -90,18 +90,18 @@ package php.beanrepository.method;
 ////
 ////			ifInstr._assignInstruction(recDoWhile, query.callMethod("record"));
 ////			
-////		//	Var fkHelper = ifInstr._declare(bean.getFetchListHelperCls(), "fkHelper",b1Map.arrayIndex(b1pk));
+////		//	Var fkHelper = ifInstr._declare(bean.getFetchListHelperCls(), "fkHelper",e1Map.arrayIndex(e1pk));
 ////			
-////		//	Var structHelperIfNotB1SetContains = ifNotB1SetContains.getIfInstr()._declare(bean.getFetchListHelperCls(), "structHelper");
-////		//	ifNotB1SetContains.getIfInstr()._assign(structHelperIfNotB1SetContains.accessAttr("e1"), e1);
+////		//	Var structHelperIfNotE1SetContains = ifNotE1SetContains.getIfInstr()._declare(bean.getFetchListHelperCls(), "structHelper");
+////		//	ifNotE1SetContains.getIfInstr()._assign(structHelperIfNotE1SetContains.accessAttr("e1"), e1);
 //////			//bCount = 2;
 //////			for(Relation r:manyRelations) {
 //////				Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
-//////				ifNotB1SetContains.getIfInstr()._assign(structHelperIfNotB1SetContains.accessAttr(r.getAlias()+"Set"),  new NewOperator(Types.qset(beanPk)));
+//////				ifNotE1SetContains.getIfInstr()._assign(structHelperIfNotE1SetContains.accessAttr(r.getAlias()+"Set"),  new NewOperator(Types.qset(beanPk)));
 //////				//bCount++;
 //////			}
 ////			
-////			//ifNotB1SetContains.getIfInstr()._callMethodInstr(b1Map, "insert", b1pk, structHelperIfNotB1SetContains );
+////			//ifNotE1SetContains.getIfInstr()._callMethodInstr(e1Map, "insert", e1pk, structHelperIfNotE1SetContains );
 ////			Var fkHelper = ifInstr._declare(bean.getFetchListHelperCls(), "fkHelper");		
 ////			
 ////			for(AbstractRelation r:manyRelations) {
@@ -166,7 +166,7 @@ package php.beanrepository.method;
 ////			
 ////		} else {
 ////			/* manyRelations.isEmpty() */
-////		//	ifNotB1SetContains.getIfInstr()._callMethodInstr(b1Map, "insert", b1pk);
+////		//	ifNotE1SetContains.getIfInstr()._callMethodInstr(e1Map, "insert", e1pk);
 ////		}
 ////		for(OneRelation r:oneRelations) {
 ////			BeanCls foreignCls = Beans.get(r.getDestTable());

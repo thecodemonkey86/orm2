@@ -77,7 +77,7 @@ public class MethodGetById extends Method {
 		
 		ArrayList<String> selectFields = new ArrayList<>();
 		for(Column col : bean.getTbl().getAllColumns()) {
-			selectFields.add("e1." + col.getEscapedName() + " as b1__" + col.getName());
+			selectFields.add("e1." + col.getEscapedName() + " as e1__" + col.getName());
 		}
 		List<AbstractRelation> allRelations = new ArrayList<>(oneRelations.size()+oneToManyRelations.size()+manyToManyRelations.size());
 		allRelations.addAll(oneRelations);

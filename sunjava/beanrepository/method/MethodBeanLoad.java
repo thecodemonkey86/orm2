@@ -111,9 +111,9 @@ public class MethodBeanLoad extends Method {
 			}
 			for(ManyRelation r:this.manyToManyRelations) {
 				ArrayList<String> joinConditionsMappingDest=new ArrayList<>();
-				ArrayList<String> joinConditionsB1Mapping=new ArrayList<>();
+				ArrayList<String> joinConditionsE1Mapping=new ArrayList<>();
 				for(int i=0;i<r.getSourceColumnCount();i++) {
-					joinConditionsB1Mapping.add(
+					joinConditionsE1Mapping.add(
 							CodeUtil.sp("e1."+r.getSourceEntityColumn(i).getEscapedName(),
 									'=',
 									r.getMappingAlias()+"."+ r.getSourceMappingColumn(i).getEscapedName()));
@@ -128,7 +128,7 @@ public class MethodBeanLoad extends Method {
 				exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", 
 						JavaString.stringConstant(r.getMappingTable().getName()),
 						JavaString.stringConstant(r.getMappingAlias()), 
-						JavaString.stringConstant(CodeUtil2.concat(joinConditionsB1Mapping," AND ")));
+						JavaString.stringConstant(CodeUtil2.concat(joinConditionsE1Mapping," AND ")));
 				exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", 
 						parent.callStaticMethod(MethodGetTableName.getMethodName(Beans.get(r.getDestTable()))),
 						JavaString.stringConstant(r.getAlias()), 

@@ -95,7 +95,7 @@ protected Expression getExpressionQuery() {
 			DoWhile doWhileQueryNext = ifInstr._doWhile();
 			Var recDoWhile =doWhileQueryNext._declare(Types.QSqlRecord, "rec" ,query.callMethod(ClsQSqlQuery.record) );
 			
-			IfBlock ifNotCurrentPrimaryKeyMatches = doWhileQueryNext._if(recDoWhile.callMethod(ClsQSqlRecord.value, QString.fromStringConstant("b1__" + bean.getTbl().getPrimaryKey().getFirstColumn().getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(bean.getTbl().getPrimaryKey().getFirstColumn()))._notEquals(e1.callAttrGetter(bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())) );
+			IfBlock ifNotCurrentPrimaryKeyMatches = doWhileQueryNext._if(recDoWhile.callMethod(ClsQSqlRecord.value, QString.fromStringConstant("e1__" + bean.getTbl().getPrimaryKey().getFirstColumn().getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(bean.getTbl().getPrimaryKey().getFirstColumn()))._notEquals(e1.callAttrGetter(bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())) );
 			ifNotCurrentPrimaryKeyMatches.thenBlock().addInstr(new BreakInstruction());
 			doWhileQueryNext.setCondition(ifQueryNext.getCondition());
 			
@@ -151,11 +151,11 @@ protected Expression getExpressionQuery() {
 									).asInstruction())
 					 ;
 				
-				for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
-					if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
-						ifRecValueIsNotNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("e1")));
-					}
-				}
+//				for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
+//					if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
+//						ifRecValueIsNotNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("e1")));
+//					}
+//				}
 			}
 			
 

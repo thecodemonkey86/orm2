@@ -105,9 +105,9 @@ public class MethodEntityLoad extends Method {
 		}
 		for(ManyRelation r:manyRelations) {
 			ArrayList<String> joinConditionsMappingDest=new ArrayList<>();
-			ArrayList<String> joinConditionsB1Mapping=new ArrayList<>();
+			ArrayList<String> joinConditionsE1Mapping=new ArrayList<>();
 			for(int i=0;i<r.getSourceColumnCount();i++) {
-				joinConditionsB1Mapping.add(
+				joinConditionsE1Mapping.add(
 						CodeUtil.sp("e1."+r.getSourceEntityColumn(i).getEscapedName(),
 								'=',
 								r.getMappingAlias()+"."+ r.getSourceMappingColumn(i).getEscapedName()));
@@ -122,7 +122,7 @@ public class MethodEntityLoad extends Method {
 			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", 
 					QString.fromStringConstant(r.getMappingTable().getName()),
 					QString.fromStringConstant(r.getMappingAlias()), 
-					QString.fromStringConstant(CodeUtil2.concat(joinConditionsB1Mapping," AND ")));
+					QString.fromStringConstant(CodeUtil2.concat(joinConditionsE1Mapping," AND ")));
 			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", 
 					Entities.get(r.getDestTable()).callStaticMethod("getTableName"),
 					QString.fromStringConstant(r.getAlias()), 

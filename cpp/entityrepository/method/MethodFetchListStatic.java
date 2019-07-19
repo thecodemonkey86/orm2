@@ -41,7 +41,7 @@ package cpp.entityrepository.method;
 //		Var result = _declare(returnType, "result");
 //		Expression query = getExpressionQuery();
 //		//int //bCount = 2;
-//		Type b1PkType = pk.isMultiColumn() ? bean.getStructPk() : BeanCls.getDatabaseMapper().columnToType( pk.getColumns().get(0));
+//		Type e1PkType = pk.isMultiColumn() ? bean.getStructPk() : BeanCls.getDatabaseMapper().columnToType( pk.getColumns().get(0));
 //		
 //		ArrayList<AbstractRelation> manyRelations = new ArrayList<>();
 //		
@@ -50,28 +50,28 @@ package cpp.entityrepository.method;
 //		
 //		IfBlock ifQueryNext = _if(query.callMethod("next"));
 //		InstructionBlock ifInstr = ifQueryNext.getIfInstr();
-//		Var b1Map =  ifInstr._declare((!manyRelations.isEmpty()) ? new ClsQHash(b1PkType, bean.getFetchListHelperCls()) : new ClsQSet(b1PkType), "b1Map");
+//		Var e1Map =  ifInstr._declare((!manyRelations.isEmpty()) ? new ClsQHash(e1PkType, bean.getFetchListHelperCls()) : new ClsQSet(e1PkType), "e1Map");
 //		
 //		DoWhile doWhileQueryNext = ifQueryNext.getIfInstr()._doWhile();
 //		doWhileQueryNext.setCondition(query.callMethod("next"));
 //		Var recDoWhile =doWhileQueryNext._declare(Types.QSqlRecord, "rec",query.callMethod("record") );
 //		
-//		Var b1pk = null;
+//		Var e1pk = null;
 //		
 //		if (pk.isMultiColumn()) {
-//			b1pk =doWhileQueryNext._declare( bean.getStructPk(), "b1pk" );
+//			e1pk =doWhileQueryNext._declare( bean.getStructPk(), "e1pk" );
 //			for(Column colPk:pk.getColumns()) {
-//				doWhileQueryNext._assign(b1pk.accessAttr(colPk.getCamelCaseName()), recDoWhile.callMethod("value", QString.fromStringConstant("b1__"+ colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk)));
+//				doWhileQueryNext._assign(e1pk.accessAttr(colPk.getCamelCaseName()), recDoWhile.callMethod("value", QString.fromStringConstant("e1__"+ colPk.getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(colPk)));
 //			}
 //			
 //		} else {
-//			b1pk =doWhileQueryNext._declare( BeanCls.getDatabaseMapper().columnToType(pk.getFirstColumn()), "b1pk", recDoWhile.callMethod("value", QString.fromStringConstant("b1__"+ pk.getFirstColumn().getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(pk.getFirstColumn().getDbType())));
+//			e1pk =doWhileQueryNext._declare( BeanCls.getDatabaseMapper().columnToType(pk.getFirstColumn()), "e1pk", recDoWhile.callMethod("value", QString.fromStringConstant("e1__"+ pk.getFirstColumn().getName())).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(pk.getFirstColumn().getDbType())));
 //		}
 //		
-//		IfBlock ifNotB1SetContains = doWhileQueryNext._if(Expressions.not(b1Map.callMethod("contains", b1pk)));
+//		IfBlock ifNotE1SetContains = doWhileQueryNext._if(Expressions.not(e1Map.callMethod("contains", e1pk)));
 //		
 //		
-//		Var b1DoWhile = ifNotB1SetContains.getIfInstr()
+//		Var e1DoWhile = ifNotE1SetContains.getIfInstr()
 //				._declare(bean.toSharedPtr(), "e1", getByRecordExpression(bean, recDoWhile, QString.fromStringConstant("e1")));
 //		//bCount = 2;
 //		if (!manyRelations.isEmpty()) {
@@ -86,18 +86,18 @@ package cpp.entityrepository.method;
 //
 //			doWhileQueryNext._assignInstruction(recDoWhile, query.callMethod("record"));
 //			
-//			Var fkHelper = doWhileQueryNext._declare(bean.getFetchListHelperCls().toRef(), "fkHelper",b1Map.arrayIndex(b1pk));
+//			Var fkHelper = doWhileQueryNext._declare(bean.getFetchListHelperCls().toRef(), "fkHelper",e1Map.arrayIndex(e1pk));
 //			
-//			Var structHelperIfNotB1SetContains = ifNotB1SetContains.getIfInstr()._declare(bean.getFetchListHelperCls(), "structHelper");
-//			ifNotB1SetContains.getIfInstr()._assign(structHelperIfNotB1SetContains.accessAttr("e1"), b1DoWhile);
+//			Var structHelperIfNotE1SetContains = ifNotE1SetContains.getIfInstr()._declare(bean.getFetchListHelperCls(), "structHelper");
+//			ifNotE1SetContains.getIfInstr()._assign(structHelperIfNotE1SetContains.accessAttr("e1"), e1DoWhile);
 ////			//bCount = 2;
 ////			for(Relation r:manyRelations) {
 ////				Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
-////				ifNotB1SetContains.getIfInstr()._assign(structHelperIfNotB1SetContains.accessAttr(r.getAlias()+"Set"),  new CreateObjectExpression(Types.qset(beanPk)));
+////				ifNotE1SetContains.getIfInstr()._assign(structHelperIfNotE1SetContains.accessAttr(r.getAlias()+"Set"),  new CreateObjectExpression(Types.qset(beanPk)));
 ////				//bCount++;
 ////			}
 //			
-//			ifNotB1SetContains.getIfInstr()._callMethodInstr(b1Map, "insert", b1pk, structHelperIfNotB1SetContains );
+//			ifNotE1SetContains.getIfInstr()._callMethodInstr(e1Map, "insert", e1pk, structHelperIfNotE1SetContains );
 //					
 //			
 //			for(AbstractRelation r:manyRelations) {
@@ -161,19 +161,19 @@ package cpp.entityrepository.method;
 //			
 //		} else {
 //			/* manyRelations.isEmpty() */
-//			ifNotB1SetContains.getIfInstr()._callMethodInstr(b1Map, "insert", b1pk);
+//			ifNotE1SetContains.getIfInstr()._callMethodInstr(e1Map, "insert", e1pk);
 //		}
 //		for(OneRelation r:oneRelations) {
 //			BeanCls foreignCls = Beans.get(r.getDestTable());
 //			Expression foreignBeanExpression = getByRecordExpression(foreignCls, recDoWhile, QString.fromStringConstant(r.getAlias()));
 //			
-//			IfBlock ifRelatedBeanIsNull= ifNotB1SetContains.getIfInstr().
-//					_if(b1DoWhile.callMethod(new MethodOneRelationBeanIsNull(r)));
+//			IfBlock ifRelatedBeanIsNull= ifNotE1SetContains.getIfInstr().
+//					_if(e1DoWhile.callMethod(new MethodOneRelationBeanIsNull(r)));
 //			
 //			Var foreignBean =ifRelatedBeanIsNull.getIfInstr()._declare(foreignBeanExpression.getType(), "foreignB"+r.getAlias(),foreignBeanExpression) ;
 //			ifRelatedBeanIsNull.getIfInstr()
 //				._callMethodInstr(
-//						b1DoWhile ,
+//						e1DoWhile ,
 //						new MethodAttrSetterInternal(foreignCls,
 //								bean.getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)))
 //						,  foreignBean);
@@ -181,15 +181,15 @@ package cpp.entityrepository.method;
 //		
 //			for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
 //				if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
-//					ifRelatedBeanIsNull.getIfInstr().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", b1DoWhile));
+//					ifRelatedBeanIsNull.getIfInstr().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", e1DoWhile));
 //				}
 //			}
 ////			ifRelatedBeanIsNull.getIfInstr()._callMethodInstr(foreignBean, "setLoaded", BoolExpression.TRUE);
 //			
 //			//bCount++;
 //		}
-//		ifNotB1SetContains.getIfInstr()._callMethodInstr(b1DoWhile, "setLoaded", BoolExpression.TRUE);
-//		ifNotB1SetContains.getIfInstr()._callMethodInstr(result, "append", b1DoWhile);
+//		ifNotE1SetContains.getIfInstr()._callMethodInstr(e1DoWhile, "setLoaded", BoolExpression.TRUE);
+//		ifNotE1SetContains.getIfInstr()._callMethodInstr(result, "append", e1DoWhile);
 //		_return(result);
 //		
 //	}
