@@ -74,7 +74,7 @@ public class MethodBeanLoad extends Method {
 			Var sqlQuery =  _declare(Types.SqlQuery, "query",BeanCls.getSqlQueryCls().newInstance(aSqlCon));
 
 			ArrayList<Expression> selectFields = new ArrayList<>();
-			selectFields.add(parent.callStaticMethod(MethodGetSelectFields.getMethodName(bean),JavaString.stringConstant("b1")));
+			selectFields.add(parent.callStaticMethod(MethodGetSelectFields.getMethodName(bean),JavaString.stringConstant("e1")));
 
 			List<AbstractRelation> allRelations = new ArrayList<>(oneRelations.size()+oneToManyRelations.size()+manyToManyRelations.size());
 			allRelations.addAll(oneRelations);
@@ -90,13 +90,13 @@ public class MethodBeanLoad extends Method {
 
 			}
 			Expression exprQSqlQuery = sqlQuery.callMethod("select", Expressions.concat(CharExpression.fromChar(','), selectFields) )
-					.callMethod("from", parent.callStaticMethod(MethodGetTableName.getMethodName(bean),JavaString.stringConstant("b1")));
+					.callMethod("from", parent.callStaticMethod(MethodGetTableName.getMethodName(bean),JavaString.stringConstant("e1")));
 
 
 			for(OneRelation r:oneRelations) {
 				ArrayList<String> joinConditions=new ArrayList<>();
 				for(int i=0;i<r.getColumnCount();i++) {
-					joinConditions.add(CodeUtil.sp("b1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
+					joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
 				}
 
 				exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", parent.callStaticMethod(MethodGetTableName.getMethodName(Beans.get(r.getDestTable()))),JavaString.stringConstant(r.getAlias()), JavaString.stringConstant(CodeUtil2.concat(joinConditions," AND ")));
@@ -104,17 +104,17 @@ public class MethodBeanLoad extends Method {
 			for(OneToManyRelation r:oneToManyRelations) {
 				ArrayList<String> joinConditions=new ArrayList<>();
 				for(int i=0;i<r.getColumnCount();i++) {
-					joinConditions.add(CodeUtil.sp("b1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
+					joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
 				}
 
 				exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", parent.callStaticMethod(MethodGetTableName.getMethodName(Beans.get(r.getDestTable()))),JavaString.stringConstant(r.getAlias()), JavaString.stringConstant(CodeUtil2.concat(joinConditions," AND ")));
 			}
 			for(ManyRelation r:this.manyToManyRelations) {
 				ArrayList<String> joinConditionsMappingDest=new ArrayList<>();
-				ArrayList<String> joinConditionsB1Mapping=new ArrayList<>();
+				ArrayList<String> joinConditionsE1Mapping=new ArrayList<>();
 				for(int i=0;i<r.getSourceColumnCount();i++) {
-					joinConditionsB1Mapping.add(
-							CodeUtil.sp("b1."+r.getSourceEntityColumn(i).getEscapedName(),
+					joinConditionsE1Mapping.add(
+							CodeUtil.sp("e1."+r.getSourceEntityColumn(i).getEscapedName(),
 									'=',
 									r.getMappingAlias()+"."+ r.getSourceMappingColumn(i).getEscapedName()));
 
@@ -128,7 +128,7 @@ public class MethodBeanLoad extends Method {
 				exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", 
 						JavaString.stringConstant(r.getMappingTable().getName()),
 						JavaString.stringConstant(r.getMappingAlias()), 
-						JavaString.stringConstant(CodeUtil2.concat(joinConditionsB1Mapping," AND ")));
+						JavaString.stringConstant(CodeUtil2.concat(joinConditionsE1Mapping," AND ")));
 				exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", 
 						parent.callStaticMethod(MethodGetTableName.getMethodName(Beans.get(r.getDestTable()))),
 						JavaString.stringConstant(r.getAlias()), 
@@ -139,7 +139,7 @@ public class MethodBeanLoad extends Method {
 
 			for(Column col:primaryKey.getColumns()) {
 
-				exprQSqlQuery = exprQSqlQuery.callMethod("where", JavaString.stringConstant("b1."+ col.getEscapedName()+"=?"),pBean.callAttrGetter(col.getCamelCaseName()));
+				exprQSqlQuery = exprQSqlQuery.callMethod("where", JavaString.stringConstant("e1."+ col.getEscapedName()+"=?"),pBean.callAttrGetter(col.getCamelCaseName()));
 
 			}
 			exprQSqlQuery = exprQSqlQuery.callMethod(ClsSqlQuery.query);

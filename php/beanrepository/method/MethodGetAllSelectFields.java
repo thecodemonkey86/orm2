@@ -18,7 +18,7 @@ public class MethodGetAllSelectFields extends Method  {
 	public MethodGetAllSelectFields(BeanCls bean) {
 		super(Public, Types.String, "getAllSelectFields"+ bean.getName());
 		setStatic(true);
-		addParam(new Param(Types.String, "alias", new PhpStringLiteral("b1")));
+		addParam(new Param(Types.String, "alias", new PhpStringLiteral("e1")));
 		this.bean = bean;
 	}
 

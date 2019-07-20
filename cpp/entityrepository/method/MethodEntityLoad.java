@@ -71,7 +71,7 @@ public class MethodEntityLoad extends Method {
 		Var sqlQuery = _declareInitConstructor( EntityCls.getDatabaseMapper().getSqlQueryType(),"query",aSqlCon);
 		
 		ArrayList<Expression> selectFields = new ArrayList<>();
-		selectFields.add(bean.callStaticMethod("getSelectFields",QString.fromStringConstant("b1")));
+		selectFields.add(bean.callStaticMethod("getSelectFields",QString.fromStringConstant("e1")));
 		
 		List<AbstractRelation> allRelations = new ArrayList<>(oneRelations.size()+oneToManyRelations.size()+manyRelations.size());
 		allRelations.addAll(oneRelations);
@@ -84,13 +84,13 @@ public class MethodEntityLoad extends Method {
 			
 		}
 		Expression exprQSqlQuery = sqlQuery.callMethod("select", Expressions.concat(QChar.fromChar(','), selectFields) )
-									.callMethod("from", QString.fromExpression(bean.callStaticMethod("getTableName",QString.fromStringConstant("b1"))));
+									.callMethod("from", QString.fromExpression(bean.callStaticMethod("getTableName",QString.fromStringConstant("e1"))));
 		
 				
 		for(OneRelation r:oneRelations) {
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getColumnCount();i++) {
-				joinConditions.add(CodeUtil.sp("b1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
+				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
 			}
 			
 			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", QString.fromExpression(Entities.get(r.getDestTable()).callStaticMethod("getTableName")),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
@@ -98,17 +98,17 @@ public class MethodEntityLoad extends Method {
 		for(OneToManyRelation r:oneToManyRelations) {
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getColumnCount();i++) {
-				joinConditions.add(CodeUtil.sp("b1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
+				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
 			}
 			
 			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", QString.fromExpression(Entities.get(r.getDestTable()).callStaticMethod("getTableName")),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
 		}
 		for(ManyRelation r:manyRelations) {
 			ArrayList<String> joinConditionsMappingDest=new ArrayList<>();
-			ArrayList<String> joinConditionsB1Mapping=new ArrayList<>();
+			ArrayList<String> joinConditionsE1Mapping=new ArrayList<>();
 			for(int i=0;i<r.getSourceColumnCount();i++) {
-				joinConditionsB1Mapping.add(
-						CodeUtil.sp("b1."+r.getSourceEntityColumn(i).getEscapedName(),
+				joinConditionsE1Mapping.add(
+						CodeUtil.sp("e1."+r.getSourceEntityColumn(i).getEscapedName(),
 								'=',
 								r.getMappingAlias()+"."+ r.getSourceMappingColumn(i).getEscapedName()));
 				
@@ -122,7 +122,7 @@ public class MethodEntityLoad extends Method {
 			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", 
 					QString.fromStringConstant(r.getMappingTable().getName()),
 					QString.fromStringConstant(r.getMappingAlias()), 
-					QString.fromStringConstant(CodeUtil2.concat(joinConditionsB1Mapping," AND ")));
+					QString.fromStringConstant(CodeUtil2.concat(joinConditionsE1Mapping," AND ")));
 			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", 
 					Entities.get(r.getDestTable()).callStaticMethod("getTableName"),
 					QString.fromStringConstant(r.getAlias()), 
@@ -133,7 +133,7 @@ public class MethodEntityLoad extends Method {
 		
 		for(Column col:primaryKey.getColumns()) {
 			
-			exprQSqlQuery = exprQSqlQuery.callMethod("where", QString.fromStringConstant("b1."+ col.getEscapedName()+"=?"),EntityCls.accessThisAttrGetterByColumn(pBean,col));
+			exprQSqlQuery = exprQSqlQuery.callMethod("where", QString.fromStringConstant("e1."+ col.getEscapedName()+"=?"),EntityCls.accessThisAttrGetterByColumn(pBean,col));
 					
 		}
 		exprQSqlQuery = exprQSqlQuery.callMethod("execQuery");

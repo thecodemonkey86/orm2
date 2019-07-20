@@ -52,7 +52,7 @@ public class MethodBeanQueryFetch extends Method{
 		Var result = _declareNewArray( "result");
 		Var res =_declare(Types.mysqli_result, "res",_this().accessAttr("sqlQuery").callMethod(ClsSqlQuery.query) );
 		
-		Type b1PkType = pk.isMultiColumn() ? bean.getPkType() : BeanCls.getTypeMapper().columnToType( pk.getFirstColumn());
+		Type e1PkType = pk.isMultiColumn() ? bean.getPkType() : BeanCls.getTypeMapper().columnToType( pk.getFirstColumn());
 
 		
 		ArrayList<AbstractRelation> manyRelations = new ArrayList<>();
@@ -63,7 +63,7 @@ public class MethodBeanQueryFetch extends Method{
 		Var row = _declare(Types.array(Types.Mixed), "row", getFetchExpression(res) );
 		IfBlock ifRowNotNull =	_if(row);
 		InstructionBlock ifInstr = ifRowNotNull.thenBlock();
-		Var b1Map =  ifInstr._declareNewArray((!manyRelations.isEmpty()) ? Types.array(b1PkType, bean.getFetchListHelperCls()) : Types.array(b1PkType), "b1Map");
+		Var e1Map =  ifInstr._declareNewArray((!manyRelations.isEmpty()) ? Types.array(e1PkType, bean.getFetchListHelperCls()) : Types.array(e1PkType), "e1Map");
 		
 		DoWhile doWhileQueryNext = ifRowNotNull.thenBlock()._doWhile();
 		doWhileQueryNext.setCondition(ifRowNotNull.getCondition());
@@ -72,37 +72,37 @@ public class MethodBeanQueryFetch extends Method{
 		if (!manyRelations.isEmpty()) {
 			fetchListHelper = doWhileQueryNext._declare(bean.getFetchListHelperCls(), "fetchListHelper", Expressions.Null);
 		}
-		Var b1DoWhile = doWhileQueryNext._declare(bean, "b1", Expressions.Null);
-		Expression b1ArrayIndexExpression = null;
+		Var e1DoWhile = doWhileQueryNext._declare(bean, "e1", Expressions.Null);
+		Expression e1ArrayIndexExpression = null;
 		if (pk.isMultiColumn()) {
 			
-			Expression[] b1PkArgs = new Expression[pk.getColumnCount()];
+			Expression[] e1PkArgs = new Expression[pk.getColumnCount()];
 			for(int i = 0; i < pk.getColumnCount(); i++) {
-				b1PkArgs[i] = row.arrayIndex(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey("b1__" + pk.getColumn(i).getName())));
+				e1PkArgs[i] = row.arrayIndex(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey("e1__" + pk.getColumn(i).getName())));
 			}
 			
-			Var b1Pk = doWhileQueryNext._declareNew(bean.getPkType(), "b1pk", b1PkArgs);
-			b1ArrayIndexExpression = PhpFunctions.md5.call(PhpFunctions.serialize.call(b1Pk));
+			Var e1Pk = doWhileQueryNext._declareNew(bean.getPkType(), "e1pk", e1PkArgs);
+			e1ArrayIndexExpression = PhpFunctions.md5.call(PhpFunctions.serialize.call(e1Pk));
 			//throw new RuntimeException("not implemented");
 		} else {
-			b1ArrayIndexExpression = row.arrayIndex( new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey("b1__"+ pk.getFirstColumn().getName())));
+			e1ArrayIndexExpression = row.arrayIndex( new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey("e1__"+ pk.getFirstColumn().getName())));
 		}
 		
-		IfBlock ifNotB1SetContains = doWhileQueryNext._if(Expressions.not(PhpFunctions.isset.call(b1Map.arrayIndex(b1ArrayIndexExpression))));
+		IfBlock ifNotE1SetContains = doWhileQueryNext._if(Expressions.not(PhpFunctions.isset.call(e1Map.arrayIndex(e1ArrayIndexExpression))));
 		
 		
 	
 		
-		ifNotB1SetContains.thenBlock()._assign(b1DoWhile, Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(bean), row,  new PhpStringLiteral("b1")));
+		ifNotE1SetContains.thenBlock()._assign(e1DoWhile, Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(bean), row,  new PhpStringLiteral("e1")));
 		
 		if (!manyRelations.isEmpty()) {
 			
 			
-			ifNotB1SetContains.thenBlock()._assign(fetchListHelper, new NewOperator(fetchListHelper.getType(), b1DoWhile));
-			ifNotB1SetContains.thenBlock()._arraySet(b1Map, b1ArrayIndexExpression, fetchListHelper );
+			ifNotE1SetContains.thenBlock()._assign(fetchListHelper, new NewOperator(fetchListHelper.getType(), e1DoWhile));
+			ifNotE1SetContains.thenBlock()._arraySet(e1Map, e1ArrayIndexExpression, fetchListHelper );
 			
-			ifNotB1SetContains.elseBlock()._assign(fetchListHelper, b1Map.arrayIndex( b1ArrayIndexExpression));		
-			ifNotB1SetContains.elseBlock()._assign(b1DoWhile, fetchListHelper.callMethod("getB1"));		
+			ifNotE1SetContains.elseBlock()._assign(fetchListHelper, e1Map.arrayIndex( e1ArrayIndexExpression));		
+			ifNotE1SetContains.elseBlock()._assign(e1DoWhile, fetchListHelper.callMethod("getE1"));		
 			
 			for(AbstractRelation r:manyRelations) {
 				Type beanPk=OrmUtil.getRelationForeignPrimaryKeyType(r);
@@ -144,7 +144,7 @@ public class MethodBeanQueryFetch extends Method{
 						._declare(foreignBeanExpression.getType(), "foreignB"+r.getAlias(),foreignBeanExpression) ;
 				
 								
-				ifNotContainsRelationPk.thenBlock().addInstr(b1DoWhile
+				ifNotContainsRelationPk.thenBlock().addInstr(e1DoWhile
 						.callMethodInstruction(BeanCls.getAddRelatedBeanMethodName(r), foreignBean));
 				ifNotContainsRelationPk.thenBlock().addInstr(
 						fetchListHelper.callMethod("addPk" + StringUtil.ucfirst(r.getAlias()), 
@@ -159,19 +159,19 @@ public class MethodBeanQueryFetch extends Method{
 			
 		} else {
 			/* manyRelations.isEmpty() */
-			ifNotB1SetContains.thenBlock()._arraySet(b1Map,  b1ArrayIndexExpression, b1DoWhile);
+			ifNotE1SetContains.thenBlock()._arraySet(e1Map,  e1ArrayIndexExpression, e1DoWhile);
 		}
 		for(OneRelation r:oneRelations) {
 			BeanCls foreignCls = Beans.get(r.getDestTable());
 			Expression foreignBeanExpression = Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(foreignCls), row, new PhpStringLiteral(r.getAlias()));
 			
-			IfBlock ifRelatedBeanIsNull= ifNotB1SetContains.thenBlock().
-					_if(Expressions.and( b1DoWhile.callMethod(new MethodOneRelationBeanIsNull(r)) ,row.arrayIndex(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias() + "__" + r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull()));
+			IfBlock ifRelatedBeanIsNull= ifNotE1SetContains.thenBlock().
+					_if(Expressions.and( e1DoWhile.callMethod(new MethodOneRelationBeanIsNull(r)) ,row.arrayIndex(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias() + "__" + r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull()));
 			
 			Var foreignBean =ifRelatedBeanIsNull.thenBlock()._declare(foreignBeanExpression.getType(), "foreignB"+r.getAlias(),foreignBeanExpression) ;
 			ifRelatedBeanIsNull.thenBlock()
 				._callMethodInstr(
-						b1DoWhile ,
+						e1DoWhile ,
 						new MethodAttrSetterInternal(foreignCls,
 								bean.getAttrByName(OrmUtil.getOneRelationDestAttrName(r)))
 						,  foreignBean);
@@ -179,14 +179,14 @@ public class MethodBeanQueryFetch extends Method{
 		// FIXME bidirectional relations
 //			for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
 //				if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
-//					ifRelatedBeanIsNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", b1DoWhile));
+//					ifRelatedBeanIsNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", e1DoWhile));
 //				}
 //			}
 			
 		}
 		doWhileQueryNext._assign(row, getFetchExpression(res));
-		ifNotB1SetContains.thenBlock()._callMethodInstr(b1DoWhile, ClsBaseBean.setLoaded, BoolExpression.TRUE);
-		ifNotB1SetContains.thenBlock()._arrayPush(result, b1DoWhile);
+		ifNotE1SetContains.thenBlock()._callMethodInstr(e1DoWhile, ClsBaseBean.setLoaded, BoolExpression.TRUE);
+		ifNotE1SetContains.thenBlock()._arrayPush(result, e1DoWhile);
 		_return(result);
 	}
 	@Override

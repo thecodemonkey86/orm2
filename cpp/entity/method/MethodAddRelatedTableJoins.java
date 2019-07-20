@@ -33,7 +33,7 @@ public class MethodAddRelatedTableJoins extends Method {
 		for(OneRelation r:bean.getOneRelations()) {
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getColumnCount();i++) {
-				joinConditions.add(CodeUtil.sp("b1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
+				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
 			}
 			
 			query = query.callMethod("leftJoin", Entities.get(r.getDestTable()).callStaticMethod("getTableName"),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
@@ -41,7 +41,7 @@ public class MethodAddRelatedTableJoins extends Method {
 		for(OneToManyRelation r:bean.getOneToManyRelations()) {
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getColumnCount();i++) {
-				joinConditions.add(CodeUtil.sp("b1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
+				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
 			}
 			
 			query = query.callMethod("leftJoin", Entities.get(r.getDestTable()).callStaticMethod("getTableName"),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
@@ -49,7 +49,7 @@ public class MethodAddRelatedTableJoins extends Method {
 		for(ManyRelation r:bean.getManyRelations()) {
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getSourceColumnCount();i++) {
-				joinConditions.add(CodeUtil.sp("b1."+r.getSourceEntityColumn(i).getEscapedName(),'=',r.getAlias("mapping")+"."+ r.getSourceMappingColumn(i).getEscapedName()));
+				joinConditions.add(CodeUtil.sp("e1."+r.getSourceEntityColumn(i).getEscapedName(),'=',r.getAlias("mapping")+"."+ r.getSourceMappingColumn(i).getEscapedName()));
 			}
 			
 			query = query.callMethod("leftJoin", QString.fromStringConstant(r.getMappingTable().getName()),QString.fromStringConstant(r.getAlias("mapping")), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));

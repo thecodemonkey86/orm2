@@ -47,17 +47,17 @@ public class MethodBeanQueryFetchOne extends Method{
 		
 		Var resultSet =_declare(Types.ResultSet, "resultSet",_this().callMethod(ClsSqlQuery.query) );
 		
-		Var b1 = _declare(returnType, "b1", Expressions.Null);
+		Var e1 = _declare(returnType, "e1", Expressions.Null);
 		IfBlock ifQSqlQueryNext =
 				_if(resultSet.callMethod(ClsResultSet.METHOD_NAME_NEXT))
 				
 //		for(Column col:bean.getTbl().getPrimaryKey().getColumns()) {		
-//		OrmUtil.addAssignValueFromResultSetInstructions(resultSet, ifQSqlQueryNext.getIfInstr(), b1, col, "b1");
+//		OrmUtil.addAssignValueFromResultSetInstructions(resultSet, ifQSqlQueryNext.getIfInstr(), e1, col, "e1");
 //		}
 					.setIfInstr(
-							b1.assign(Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(bean),  resultSet, JavaString.stringConstant("b1")))
+							e1.assign(Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(bean),  resultSet, JavaString.stringConstant("e1")))
 							,
-							b1.callAttrSetterMethodInstr("loaded", BoolExpression.TRUE)//_assignInstruction(b1.accessAttr("loaded"), BoolExpression.TRUE)
+							e1.callAttrSetterMethodInstr("loaded", BoolExpression.TRUE)//_assignInstruction(e1.accessAttr("loaded"), BoolExpression.TRUE)
 							)
 							;
 		
@@ -71,9 +71,9 @@ public class MethodBeanQueryFetchOne extends Method{
 		
 		for(OneRelation r:oneRelations) {
 //			BeanCls foreignCls = Beans.get(r.getDestTable()); 
-			IfBlock ifBlock= doWhileQSqlQueryNext._if(b1.callMethod(new MethodOneRelationBeanIsNull(r)));
+			IfBlock ifBlock= doWhileQSqlQueryNext._if(e1.callMethod(new MethodOneRelationBeanIsNull(r)));
 			ifBlock.thenBlock().
-			_callMethodInstr(b1, new MethodOneRelationAttrSetter( b1.getClassConcreteType().getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)), true,r.isPartOfPk()), 
+			_callMethodInstr(e1, new MethodOneRelationAttrSetter( e1.getClassConcreteType().getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)), true,r.isPartOfPk()), 
 					Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Beans.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias())));
 		}
 		for(AbstractRelation r:manyRelations) {
@@ -93,8 +93,8 @@ public class MethodBeanQueryFetchOne extends Method{
 //				IfBlock ifNotContains = 
 						doWhileQSqlQueryNext._if(Expressions.not(pkSet.callMethod(ClsHashSet.contains, pk)))
 						.addIfInstr(pkSet.callMethodInstruction(ClsHashSet.add, pk))
-						.addIfInstr(b1.callMethodInstruction(BeanCls.getRelatedBeanMethodName(r), Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Beans.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias()))));
-//						.addIfInstr(b1.accessAttr(CodeUtil2.plural(r.getDestTable().getCamelCaseName())).callMethodInstruction("append",  _this().callGetByRecordMethod(foreignCls, rec, JavaString.fromStringConstant(r.getAlias()))));
+						.addIfInstr(e1.callMethodInstruction(BeanCls.getRelatedBeanMethodName(r), Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Beans.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias()))));
+//						.addIfInstr(e1.accessAttr(CodeUtil2.plural(r.getDestTable().getCamelCaseName())).callMethodInstruction("append",  _this().callGetByRecordMethod(foreignCls, rec, JavaString.fromStringConstant(r.getAlias()))));
 				
 			} else {
 				Column colPk = r.getDestTable().getPrimaryKey().getColumns().get(0);
@@ -118,14 +118,14 @@ public class MethodBeanQueryFetchOne extends Method{
 				IfBlock ifNotRecValueIsNull = doWhileQSqlQueryNext._if(_not(resultSet.callMethod(ClsResultSet.wasNull)));
 				ifNotRecValueIsNull.thenBlock()._if(Expressions.not(pkSet.callMethod(ClsHashSet.contains, pk)))
 					.addIfInstr(pkSet.callMethodInstruction(ClsHashSet.add, pk))
-					.addIfInstr(b1.callMethodInstruction(BeanCls.getRelatedBeanMethodName(r), Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Beans.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias()))));
+					.addIfInstr(e1.callMethodInstruction(BeanCls.getRelatedBeanMethodName(r), Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Beans.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias()))));
 			}
 			
 		}
 		
 		ifQSqlQueryNext.addIfInstr(doWhileQSqlQueryNext);
 		doWhileQSqlQueryNext.setCondition(ifQSqlQueryNext.getCondition());
-		_return(b1);
+		_return(e1);
 	}
 	@Override
 	public boolean includeIfEmpty() {

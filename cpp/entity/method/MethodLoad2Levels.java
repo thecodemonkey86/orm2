@@ -75,7 +75,7 @@ public class MethodLoad2Levels extends Method {
 
 		ArrayList<Expression> selectFields = new ArrayList<>();
 		selectFields.add(parent.callStaticMethod("getSelectFields",
-				QString.fromStringConstant("b1")));
+				QString.fromStringConstant("e1")));
 
 
 		List<AbstractRelation> allRelations = new ArrayList<>(
@@ -141,13 +141,13 @@ public class MethodLoad2Levels extends Method {
 						"from",
 						QString.fromExpression(parent.callStaticMethod(
 								"getTableName",
-								QString.fromStringConstant("b1"))));
+								QString.fromStringConstant("e1"))));
 
 		for (OneRelation r : oneRelations) {
 			ArrayList<String> joinConditions = new ArrayList<>();
 			for (int i = 0; i < r.getColumnCount(); i++) {
 				joinConditions
-						.add(CodeUtil.sp("b1."
+						.add(CodeUtil.sp("e1."
 								+ r.getColumns(i).getValue1().getEscapedName(),
 								'=', r.getAlias()
 										+ "."
@@ -166,7 +166,7 @@ public class MethodLoad2Levels extends Method {
 			ArrayList<String> joinConditions = new ArrayList<>();
 			for (int i = 0; i < r.getColumnCount(); i++) {
 				joinConditions
-						.add(CodeUtil.sp("b1."
+						.add(CodeUtil.sp("e1."
 								+ r.getColumns(i).getValue1().getEscapedName(),
 								'=', r.getAlias()
 										+ "."
@@ -184,9 +184,9 @@ public class MethodLoad2Levels extends Method {
 
 		for (ManyRelation r : manyRelations) {
 			ArrayList<String> joinConditionsMappingDest = new ArrayList<>();
-			ArrayList<String> joinConditionsB1Mapping = new ArrayList<>();
+			ArrayList<String> joinConditionsE1Mapping = new ArrayList<>();
 			for (int i = 0; i < r.getSourceColumnCount(); i++) {
-				joinConditionsB1Mapping.add(CodeUtil.sp("b1."
+				joinConditionsE1Mapping.add(CodeUtil.sp("e1."
 						+ r.getSourceEntityColumn(i)
 								.getEscapedName(), '=', r.getMappingAlias()
 						+ "."
@@ -209,7 +209,7 @@ public class MethodLoad2Levels extends Method {
 					.fromStringConstant(r.getMappingTable().getName()), QString
 					.fromStringConstant(r.getMappingAlias()), QString
 					.fromStringConstant(CodeUtil2.concat(
-							joinConditionsB1Mapping, " AND ")));
+							joinConditionsE1Mapping, " AND ")));
 			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin",
 					Entities.get(r.getDestTable())
 							.callStaticMethod("getTableName"), QString
@@ -271,9 +271,9 @@ public class MethodLoad2Levels extends Method {
 			}
 			for (ManyRelation r2ndLevel : destBean.getManyRelations()) {
 				ArrayList<String> joinConditionsMappingDest = new ArrayList<>();
-				ArrayList<String> joinConditionsB1Mapping = new ArrayList<>();
+				ArrayList<String> joinConditionsE1Mapping = new ArrayList<>();
 				for (int i = 0; i < r2ndLevel.getSourceColumnCount(); i++) {
-					joinConditionsB1Mapping.add(CodeUtil.sp(r.getAlias()+"."
+					joinConditionsE1Mapping.add(CodeUtil.sp(r.getAlias()+"."
 							+ r2ndLevel.getSourceEntityColumn(i)
 									.getEscapedName(), '=',
 							r2ndLevel.getMappingAlias(r.getAlias())
@@ -299,7 +299,7 @@ public class MethodLoad2Levels extends Method {
 						.fromStringConstant(r2ndLevel.getMappingTable().getName()),
 						QString.fromStringConstant(r2ndLevel.getMappingAlias(r.getAlias())),
 						QString.fromStringConstant(CodeUtil2.concat(
-								joinConditionsB1Mapping, " AND ")));
+								joinConditionsE1Mapping, " AND ")));
 				exprQSqlQuery = exprQSqlQuery.callMethod(
 						"leftJoin",
 						Entities.get(r2ndLevel.getDestTable()).callStaticMethod(
@@ -316,7 +316,7 @@ public class MethodLoad2Levels extends Method {
 
 			exprQSqlQuery = exprQSqlQuery.callMethod(
 					"where",
-					QString.fromStringConstant("b1." + col.getEscapedName()
+					QString.fromStringConstant("e1." + col.getEscapedName()
 							+ "=?"), parent.accessThisAttrGetterByColumn(col));
 
 		}

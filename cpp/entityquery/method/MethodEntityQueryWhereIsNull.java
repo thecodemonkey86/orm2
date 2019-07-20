@@ -22,7 +22,7 @@ public class MethodEntityQueryWhereIsNull extends Method{
 	@Override
 	public void addImplementation() {
 		if(beanQueryType == EntityQueryType.Select) {
-			_return( _this().callMethod(ClsAbstractBeanQuery.where,QString.fromStringConstant("b1." + c.getEscapedName()+" is null")));
+			_return( _this().callMethod(ClsAbstractBeanQuery.where,QString.fromStringConstant("e1." + c.getEscapedName()+" is null")));
 		} else {
 			_return( _this().callMethod(ClsAbstractBeanQuery.where,QString.fromStringConstant(c.getEscapedName()+" is null")));
 		}

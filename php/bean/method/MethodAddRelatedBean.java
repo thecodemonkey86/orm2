@@ -37,13 +37,13 @@ public class MethodAddRelatedBean extends Method {
 		}
 		PrimaryKey pk = rel.getDestTable().getPrimaryKey();
 		if(pk.isMultiColumn()) {
-			Expression[] b1PkArgs = new Expression[pk.getColumnCount()];
+			Expression[] e1PkArgs = new Expression[pk.getColumnCount()];
 			int i=0;
 			for(Column colPk : pk) {
-				b1PkArgs[i++] = pBean.callAttrGetter(colPk.getCamelCaseName());
+				e1PkArgs[i++] = pBean.callAttrGetter(colPk.getCamelCaseName());
 			}
 			
-			Var relPk = _declareNew(Beans.get( rel.getDestTable() ).getPkType(), "relPk", b1PkArgs);
+			Var relPk = _declareNew(Beans.get( rel.getDestTable() ).getPkType(), "relPk", e1PkArgs);
 			addInstr(a.arrayIndexSet(PhpFunctions.md5.call(PhpFunctions.serialize.call(relPk)),pBean));
 		} else {
 			addInstr(a.arrayIndexSet(pBean.callAttrGetter(rel.getDestTable().getPrimaryKey().getFirstColumn().getCamelCaseName()),pBean));

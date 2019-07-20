@@ -30,7 +30,7 @@ public class MethodBeanQueryWhereIsNull extends Method {
 	@Override
 	public void addImplementation() {
 		Expression aSqlQuery = _this().accessAttr(ClsBaseBeanQuery.sqlQuery);
-		_return( _this().callMethod(ClsBaseBeanQuery.where, new InlineIfExpression(aSqlQuery.callMethod(ClsSqlQuery.getMode)._equals(Types.SqlQuery.accessConstant(ClsSqlQuery.MODE_SELECT)), new PhpStringLiteral("b1." + c.getEscapedName()+" is null"), new PhpStringLiteral(c.getEscapedName()+" is null")) ) );
+		_return( _this().callMethod(ClsBaseBeanQuery.where, new InlineIfExpression(aSqlQuery.callMethod(ClsSqlQuery.getMode)._equals(Types.SqlQuery.accessConstant(ClsSqlQuery.MODE_SELECT)), new PhpStringLiteral("e1." + c.getEscapedName()+" is null"), new PhpStringLiteral(c.getEscapedName()+" is null")) ) );
 		
 	}
 	@Override

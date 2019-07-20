@@ -77,13 +77,13 @@ protected Expression getExpressionQuery() {
 		IfBlock ifQueryNext = _if(query.callMethod("next"));
 		InstructionBlock ifInstr = ifQueryNext.thenBlock();
 		
-		Var b1 = ifInstr
-				._declare(bean.toSharedPtr(), "b1", getByRecordExpression(bean, query.callMethod(ClsQSqlQuery.record) , QString.fromStringConstant("b1")));
+		Var e1 = ifInstr
+				._declare(bean.toSharedPtr(), "e1", getByRecordExpression(bean, query.callMethod(ClsQSqlQuery.record) , QString.fromStringConstant("e1")));
 		
 		Var fkHelper = null;
 		if (!manyRelations.isEmpty()) {
 			fkHelper = ifInstr._declare(bean.getFetchListHelperCls(), "fkHelper");		
-			ifInstr._assign(fkHelper.accessAttr("b1"), b1);
+			ifInstr._assign(fkHelper.accessAttr("e1"), e1);
 		}
 		
 		
@@ -95,7 +95,7 @@ protected Expression getExpressionQuery() {
 			DoWhile doWhileQueryNext = ifInstr._doWhile();
 			Var recDoWhile =doWhileQueryNext._declare(Types.QSqlRecord, "rec" ,query.callMethod(ClsQSqlQuery.record) );
 			
-			IfBlock ifNotCurrentPrimaryKeyMatches = doWhileQueryNext._if(recDoWhile.callMethod(ClsQSqlRecord.value, QString.fromStringConstant("b1__" + bean.getTbl().getPrimaryKey().getFirstColumn().getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(bean.getTbl().getPrimaryKey().getFirstColumn()))._notEquals(b1.callAttrGetter(bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())) );
+			IfBlock ifNotCurrentPrimaryKeyMatches = doWhileQueryNext._if(recDoWhile.callMethod(ClsQSqlRecord.value, QString.fromStringConstant("e1__" + bean.getTbl().getPrimaryKey().getFirstColumn().getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(bean.getTbl().getPrimaryKey().getFirstColumn()))._notEquals(e1.callAttrGetter(bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())) );
 			ifNotCurrentPrimaryKeyMatches.thenBlock().addInstr(new BreakInstruction());
 			doWhileQueryNext.setCondition(ifQueryNext.getCondition());
 			
@@ -142,7 +142,7 @@ protected Expression getExpressionQuery() {
 					);
 				Var foreignBean =ifRecValueIsNotNull.thenBlock()._declare(foreignBeanExpression.getType(), "foreignB"+r.getAlias(),foreignBeanExpression) ;
 				
-				ifRecValueIsNotNull.thenBlock().addInstr(fkHelper.accessAttr("b1")
+				ifRecValueIsNotNull.thenBlock().addInstr(fkHelper.accessAttr("e1")
 						.callMethodInstruction(EntityCls.getRelatedBeanMethodName(r), foreignBean));
 				ifRecValueIsNotNull.thenBlock().addInstr(
 						fkHelper.accessAttr(r.getAlias()+"Set")
@@ -153,7 +153,7 @@ protected Expression getExpressionQuery() {
 				
 //				for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
 //					if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
-//						ifRecValueIsNotNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("b1")));
+//						ifRecValueIsNotNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("e1")));
 //					}
 //				}
 			}
@@ -167,7 +167,7 @@ protected Expression getExpressionQuery() {
 			Expression foreignBeanExpression = getByRecordExpression(foreignCls, recDoWhile, QString.fromStringConstant(r.getAlias()));
 			
 			IfBlock ifRelatedBeanIsNull= doWhileQueryNext.
-					_if(Expressions.and( b1.callMethod(new MethodOneRelationEntityIsNull(r))
+					_if(Expressions.and( e1.callMethod(new MethodOneRelationEntityIsNull(r))
 							,
 							Expressions.not( recDoWhile.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getFirstColumn().getName())).callMethod(ClsQVariant.isNull))
 							));
@@ -175,7 +175,7 @@ protected Expression getExpressionQuery() {
 			Var foreignBean =ifRelatedBeanIsNull.thenBlock()._declare(foreignBeanExpression.getType(), "foreignB"+r.getAlias(),foreignBeanExpression) ;
 			ifRelatedBeanIsNull.thenBlock()
 				._callMethodInstr(
-						b1 ,
+						e1 ,
 						new MethodAttrSetterInternal(foreignCls,
 								bean.getAttrByName(OrmUtil.getOneRelationDestAttrName(r)))
 						,  foreignBean);
@@ -183,14 +183,14 @@ protected Expression getExpressionQuery() {
 		
 //			for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
 //				if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
-//					ifRelatedBeanIsNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", b1));
+//					ifRelatedBeanIsNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", e1));
 //				}
 //			}
 		}
 		}
 		
-		ifInstr._callMethodInstr(b1, "setLoaded", BoolExpression.TRUE);
-		ifInstr._return(b1);
+		ifInstr._callMethodInstr(e1, "setLoaded", BoolExpression.TRUE);
+		ifInstr._return(e1);
 		_callMethodInstr(query, ClsQSqlQuery.clear); 
 		_return(Expressions.Nullptr);
 	}

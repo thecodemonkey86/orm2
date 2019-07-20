@@ -17,12 +17,12 @@ public class FetchListHelperConstructor extends Constructor{
 	
 	public FetchListHelperConstructor(BeanCls bean) {
 		this.bean = bean;
-		addParam(new Param(bean, "b1"));
+		addParam(new Param(bean, "e1"));
 	}
 	
 	@Override
 	public void addImplementation() {
-		addInstr(_this().assignAttr("b1", getParam("b1")));
+		addInstr(_this().assignAttr("e1", getParam("e1")));
 		List<AbstractRelation> manyRelations = new ArrayList<>();
 		manyRelations.addAll(bean.getOneToManyRelations());
 		manyRelations.addAll(bean.getManyToManyRelations());

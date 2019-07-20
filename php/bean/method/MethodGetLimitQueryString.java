@@ -26,7 +26,7 @@
 //
 //	@Override
 //	public void addImplementation() {
-//		String mainBeanAlias = "b1.";
+//		String mainBeanAlias = "e1.";
 //		BeanCls bean = (BeanCls) parent;
 //		StringBuilder sql = new StringBuilder();
 //		if (pk.isMultiColumn()) {

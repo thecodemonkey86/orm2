@@ -13,13 +13,13 @@ public class FetchListHelperClass extends Struct{
 
 	public FetchListHelperClass(EntityCls parent) {
 		super(parent.getName()+"FetchListHelper");
-		Attr b1 = new Attr(parent.toSharedPtr(), "b1");
-		addAttr(b1);
-//		addMethod(new Method(Method.Public, b1.getType().toRef(), "get"+StringUtil.ucfirst(b1.getName())) {
+		Attr e1 = new Attr(parent.toSharedPtr(), "e1");
+		addAttr(e1);
+//		addMethod(new Method(Method.Public, e1.getType().toRef(), "get"+StringUtil.ucfirst(e1.getName())) {
 //
 //			@Override
 //			public void addImplementation() {
-//				_return(b1);
+//				_return(e1);
 //			}
 //			
 //		});

@@ -80,10 +80,10 @@ public class MethodLoadCollection extends Method{
 		Attr aSqlCon = this.parent.getAttrByName(ClsEntityRepository.sqlCon);
 		Var sqlQuery = _declareInitConstructor( EntityCls.getDatabaseMapper().getSqlQueryType(),"sqlQuery",aSqlCon);
 		
-		Type b1PkType = pk.isMultiColumn() ? bean.getStructPk() : EntityCls.getDatabaseMapper().columnToType(pk.getColumns().get(0));
+		Type e1PkType = pk.isMultiColumn() ? bean.getStructPk() : EntityCls.getDatabaseMapper().columnToType(pk.getColumns().get(0));
 		
 		//ArrayList<Expression> selectFields = new ArrayList<>();
-		//selectFields.add(bean.callStaticMethod("getSelectFields",QString.fromStringConstant("b1")));
+		//selectFields.add(bean.callStaticMethod("getSelectFields",QString.fromStringConstant("e1")));
 		
 		List<OneRelation> relations = new ArrayList<>(oneRelations);
 		relations.addAll(oneRelations);
@@ -94,10 +94,10 @@ public class MethodLoadCollection extends Method{
 //			//bCount++;
 //		}
 //		Expression exprQSqlQuery = sqlQuery.callMethod("select", Expressions.concat(QChar.fromChar(','), selectFields) )
-//									.callMethod("from", QString.fromExpression(bean.accessStaticAttribute("TABLENAME")).concat(QString.fromStringConstant(" b1")));
+//									.callMethod("from", QString.fromExpression(bean.accessStaticAttribute("TABLENAME")).concat(QString.fromStringConstant(" e1")));
 		
-		Expression exprQSqlQuery = sqlQuery.callMethod("select", bean.callStaticMethod("getAllSelectFields",QString.fromStringConstant("b1")))
-				.callMethod("from", QString.fromExpression(bean.callStaticMethod("getTableName")).concat(QString.fromStringConstant(" b1")));
+		Expression exprQSqlQuery = sqlQuery.callMethod("select", bean.callStaticMethod("getAllSelectFields",QString.fromStringConstant("e1")))
+				.callMethod("from", QString.fromExpression(bean.callStaticMethod("getTableName")).concat(QString.fromStringConstant(" e1")));
 		
 		//int //bCount = 2;
 		
@@ -107,7 +107,7 @@ public class MethodLoadCollection extends Method{
 			}
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getColumnCount();i++) {
-				joinConditions.add(CodeUtil.sp("b1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
+				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
 			}
 			
 			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", QString.fromExpression(Entities.get(r.getDestTable()).callStaticMethod("getTableName")),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
@@ -118,7 +118,7 @@ public class MethodLoadCollection extends Method{
 		QStringInitList init=new QStringInitList();
 		
 		for (Column pkCol : pk.getColumns()) {
-			init.addString(QString.fromStringConstant("b1."+ pkCol.getEscapedName()));
+			init.addString(QString.fromStringConstant("e1."+ pkCol.getEscapedName()));
 		}
 		Var varColumns = _declare(Types.QStringList, "columns",init);
 		
@@ -149,29 +149,29 @@ public class MethodLoadCollection extends Method{
 		
 		IfBlock ifQueryNext = _if(query.callMethod("next"));
 		InstructionBlock ifInstr = ifQueryNext.thenBlock();
-		Var b1Map =  ifInstr._declare((!manyRelations.isEmpty()) ? new ClsQHash(b1PkType, bean.getFetchListHelperCls()) : new ClsQSet(b1PkType), "b1Map");
+		Var e1Map =  ifInstr._declare((!manyRelations.isEmpty()) ? new ClsQHash(e1PkType, bean.getFetchListHelperCls()) : new ClsQSet(e1PkType), "e1Map");
 		
 		DoWhile doWhileQueryNext = ifQueryNext.thenBlock()._doWhile();
 		doWhileQueryNext.setCondition(query.callMethod("next"));
 		Var recDoWhile =doWhileQueryNext._declare(Types.QSqlRecord, "rec",query.callMethod("record") );
 		
-		Var b1pk = null;
+		Var e1pk = null;
 		ArrayList<Expression> listForeachPkCompare = new ArrayList<>();
-		Var varIfNotB1SetContainsForeachBean = new Var(bean.toSharedPtr().toConstRef(), "entity");
+		Var varIfNotE1SetContainsForeachBean = new Var(bean.toSharedPtr().toConstRef(), "entity");
 		if (pk.isMultiColumn()) {
-			b1pk =doWhileQueryNext._declare( bean.getStructPk(), "b1pk" );
+			e1pk =doWhileQueryNext._declare( bean.getStructPk(), "e1pk" );
 			for(Column colPk:pk.getColumns()) {
-				doWhileQueryNext._assign(b1pk.accessAttr(colPk.getCamelCaseName()), recDoWhile.callMethod("value", QString.fromStringConstant("b1__"+ colPk.getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk)));
+				doWhileQueryNext._assign(e1pk.accessAttr(colPk.getCamelCaseName()), recDoWhile.callMethod("value", QString.fromStringConstant("e1__"+ colPk.getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk)));
 				
 				listForeachPkCompare.add(
 						new BinaryOperatorExpression(
 								
 								(colPk.hasOneRelation() 
-									? varIfNotB1SetContainsForeachBean.callMethod( OrmUtil.getOneRelationDestAttrGetter(colPk.getOneRelation())).callMethod("get"+colPk.getOneRelationMappedColumn().getUc1stCamelCaseName())								
-									: varIfNotB1SetContainsForeachBean.callMethod("get"+colPk.getUc1stCamelCaseName())
+									? varIfNotE1SetContainsForeachBean.callMethod( OrmUtil.getOneRelationDestAttrGetter(colPk.getOneRelation())).callMethod("get"+colPk.getOneRelationMappedColumn().getUc1stCamelCaseName())								
+									: varIfNotE1SetContainsForeachBean.callMethod("get"+colPk.getUc1stCamelCaseName())
 								),
 								new LibEqualsOperator(),
-								b1pk.accessAttr(colPk.getCamelCaseName())
+								e1pk.accessAttr(colPk.getCamelCaseName())
 						));
 			}
 			/*if(col.hasOneRelation()){
@@ -183,43 +183,43 @@ public class MethodLoadCollection extends Method{
 			
 		} else {
 			Column colPk=pk.getFirstColumn();
-			b1pk =doWhileQueryNext._declare( EntityCls.getDatabaseMapper().columnToType(pk.getFirstColumn()), "b1pk", recDoWhile.callMethod("value", QString.fromStringConstant("b1__"+ pk.getFirstColumn().getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(pk.getFirstColumn())));
+			e1pk =doWhileQueryNext._declare( EntityCls.getDatabaseMapper().columnToType(pk.getFirstColumn()), "e1pk", recDoWhile.callMethod("value", QString.fromStringConstant("e1__"+ pk.getFirstColumn().getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(pk.getFirstColumn())));
 			listForeachPkCompare.add(
 					new BinaryOperatorExpression(
-							varIfNotB1SetContainsForeachBean.callMethod("get"+colPk.getUc1stCamelCaseName()),
+							varIfNotE1SetContainsForeachBean.callMethod("get"+colPk.getUc1stCamelCaseName()),
 							new LibEqualsOperator(),
-							b1pk
+							e1pk
 					));
 		}
 		
 		
-		IfBlock ifNotB1SetContains = doWhileQueryNext._if(Expressions.not(b1Map.callMethod("contains", b1pk)));
+		IfBlock ifNotE1SetContains = doWhileQueryNext._if(Expressions.not(e1Map.callMethod("contains", e1pk)));
 		
 
-		ForeachLoop foreachIfNotB1SetContains= ifNotB1SetContains.thenBlock()._foreach(varIfNotB1SetContainsForeachBean, collection.deref());
-		IfBlock ifForeachPkCompare = foreachIfNotB1SetContains._if(Expressions.and(listForeachPkCompare));
+		ForeachLoop foreachIfNotE1SetContains= ifNotE1SetContains.thenBlock()._foreach(varIfNotE1SetContainsForeachBean, collection.deref());
+		IfBlock ifForeachPkCompare = foreachIfNotE1SetContains._if(Expressions.and(listForeachPkCompare));
 
 		doWhileQueryNext._assignInstruction(recDoWhile, query.callMethod("record"));
 		
 		
 		
 		
-//		ifForeachPkCompare.getIfInstr()._assign(structHelperIfNotB1SetContains.accessAttr("b1"), b1DoWhile);
+//		ifForeachPkCompare.getIfInstr()._assign(structHelperIfNotE1SetContains.accessAttr("e1"), e1DoWhile);
 //		//bCount = 2;
 //		for(Relation r:manyRelations) {
 //			Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
-//			ifNotB1SetContains.getIfInstr()._assign(structHelperIfNotB1SetContains.accessAttr(r.getAlias()+"Set"),  new CreateObjectExpression(Types.qset(beanPk)));
+//			ifNotE1SetContains.getIfInstr()._assign(structHelperIfNotE1SetContains.accessAttr(r.getAlias()+"Set"),  new CreateObjectExpression(Types.qset(beanPk)));
 //			//bCount++;
 //		}
 		//bCount = 2;
 		if (manyRelations.isEmpty()) {
-			ifForeachPkCompare.thenBlock()._callMethodInstr(b1Map, "insert", b1pk );
+			ifForeachPkCompare.thenBlock()._callMethodInstr(e1Map, "insert", e1pk );
 		} else {
-			Var structHelperIfNotB1SetContains = ifForeachPkCompare.thenBlock()._declare(bean.getFetchListHelperCls(), "structHelper");
-			ifForeachPkCompare.thenBlock()._assign(structHelperIfNotB1SetContains.accessAttr("b1"), varIfNotB1SetContainsForeachBean);
-			ifForeachPkCompare.thenBlock()._callMethodInstr(b1Map, "insert", b1pk, structHelperIfNotB1SetContains );
+			Var structHelperIfNotE1SetContains = ifForeachPkCompare.thenBlock()._declare(bean.getFetchListHelperCls(), "structHelper");
+			ifForeachPkCompare.thenBlock()._assign(structHelperIfNotE1SetContains.accessAttr("e1"), varIfNotE1SetContainsForeachBean);
+			ifForeachPkCompare.thenBlock()._callMethodInstr(e1Map, "insert", e1pk, structHelperIfNotE1SetContains );
 			
-			Var fkHelper = doWhileQueryNext._declare(bean.getFetchListHelperCls().toRef(), "fkHelper",b1Map.arrayIndex(b1pk));
+			Var fkHelper = doWhileQueryNext._declare(bean.getFetchListHelperCls().toRef(), "fkHelper",e1Map.arrayIndex(e1pk));
 			
 			for(AbstractRelation r:manyRelations) {
 				Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
@@ -256,7 +256,7 @@ public class MethodLoadCollection extends Method{
 					);
 				foreignBean =ifRecValueIsNotNull.thenBlock()._declare(foreignBeanExpression.getType(), "foreignB"+r.getAlias(),foreignBeanExpression) ;
 				
-				ifRecValueIsNotNull.thenBlock().addInstr(fkHelper.accessAttr("b1")
+				ifRecValueIsNotNull.thenBlock().addInstr(fkHelper.accessAttr("e1")
 						.callMethodInstruction(EntityCls.getRelatedBeanMethodName(r), foreignBean));
 				ifRecValueIsNotNull.thenBlock().addInstr(
 						fkHelper.accessAttr(r.getAlias()+"Set")
@@ -267,7 +267,7 @@ public class MethodLoadCollection extends Method{
 				
 //				for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
 //					if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
-//						ifRecValueIsNotNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("b1")));
+//						ifRecValueIsNotNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("e1")));
 //					}
 //				}
 				
@@ -279,7 +279,7 @@ public class MethodLoadCollection extends Method{
 			EntityCls foreignCls = Entities.get(r.getDestTable());
 			Expression foreignBeanExpression = getByRecordExpression(foreignCls, recDoWhile, QString.fromStringConstant(r.getAlias()));
 			
-			IfBlock ifRelatedBeanIsNull= foreachIfNotB1SetContains.
+			IfBlock ifRelatedBeanIsNull= foreachIfNotE1SetContains.
 					_if(varForeachBean.callMethod(new MethodOneRelationEntityIsNull(r)));
 			
 			Var foreignBean =ifRelatedBeanIsNull.thenBlock()._declare(foreignBeanExpression.getType(), "foreignB"+r.getAlias(),foreignBeanExpression) ;
@@ -301,12 +301,12 @@ public class MethodLoadCollection extends Method{
 			//bCount++;
 		}
 		
-		foreachIfNotB1SetContains._callMethodInstr(varForeachBean, "setLoaded", BoolExpression.TRUE);
+		foreachIfNotE1SetContains._callMethodInstr(varForeachBean, "setLoaded", BoolExpression.TRUE);
 				
 		for(Column col:bean.getTbl().getAllColumns()) {
 			try{
 				if (!col.hasOneRelation() && !col.isPartOfPk()) {
-					ifForeachPkCompare.thenBlock().addInstr(varIfNotB1SetContainsForeachBean.callMethodInstruction("set"+ col.getUc1stCamelCaseName()+"Internal",recDoWhile.callMethod("value", QString.fromStringConstant("b1__"+ col.getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(col))));
+					ifForeachPkCompare.thenBlock().addInstr(varIfNotE1SetContainsForeachBean.callMethodInstruction("set"+ col.getUc1stCamelCaseName()+"Internal",recDoWhile.callMethod("value", QString.fromStringConstant("e1__"+ col.getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(col))));
 				}
 //					_callMethodInstr(bean, "set"+col.getUc1stCamelCaseName(), getParam("record").callMethod("value", new QStringPlusOperatorExpression(getParam("alias"), QString.fromStringConstant("__"+ col.getName()))).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(col)));
 			} catch (Exception e) {
