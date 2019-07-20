@@ -151,11 +151,11 @@ protected Expression getExpressionQuery() {
 									).asInstruction())
 					 ;
 				
-				for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
-					if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
-						ifRecValueIsNotNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("b1")));
-					}
-				}
+//				for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
+//					if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
+//						ifRecValueIsNotNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("b1")));
+//					}
+//				}
 			}
 			
 

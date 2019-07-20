@@ -181,11 +181,11 @@ public class MethodFetchList extends Method {
 										).asInstruction())
 						 ;
 					
-					for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
-						if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
-							ifRecValueIsNotNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("b1")));
-						}
-					}
+//					for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
+//						if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
+//							ifRecValueIsNotNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("b1")));
+//						}
+//					}
 					//ifRecValueIsNotNull.getIfInstr()._callMethodInstr(foreignBean, "setLoaded", BoolExpression.TRUE);
 					
 					//bCount++;
