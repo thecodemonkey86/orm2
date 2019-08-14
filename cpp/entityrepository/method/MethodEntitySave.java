@@ -26,6 +26,7 @@ import cpp.lib.ClsQVector;
 import cpp.lib.ClsSql;
 import cpp.orm.OrmUtil;
 import database.column.Column;
+import database.relation.AbstractRelation;
 import database.relation.ManyRelation;
 import util.CodeUtil2;
 
@@ -148,7 +149,7 @@ public class MethodEntitySave extends Method {
 						));
 				
 				if(EntityCls.getDatabase().supportsMultiRowInsert()) {
-					String sqlAdded= EntityCls.getDatabase().supportsInsertOrIgnore() ?
+					String sqlAdded= EntityCls.getDatabase().supportsInsertOrIgnore() && !r.hasSqlOption(AbstractRelation.RelationSqlOptions.disableOnConflictDoNothing) ?
 							
 							EntityCls.getDatabase().sqlInsertOrIgnoreMultiRow(r.getMappingTable(),"%1") :
 								

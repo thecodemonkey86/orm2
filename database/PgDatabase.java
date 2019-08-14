@@ -137,8 +137,17 @@ public class PgDatabase extends Database {
 
 	@Override
 	public String sqlInsertMultiRow(AbstractTable tbl,  String placeholders) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<String> pkColNames = new ArrayList<>(); 
+		for(Column c:tbl.getPrimaryKey().getColumns()) {
+			pkColNames.add(c.getEscapedName());
+		}
+		ArrayList<String> columns = new ArrayList<>(); 
+		for(Column c:tbl.getAllColumns()) {
+			columns.add(c.getEscapedName());
+		}	
+		return "insert into " +getEscapedTableName(tbl) + " " + CodeUtil2.parentheses( CodeUtil2.concat(columns, ",")) + " values "+placeholders
+				 
+				;
 	}
 
 	@Override

@@ -31,6 +31,7 @@ import database.SqliteCredentials;
 import database.SqliteDatabase;
 import database.PgCredentials;
 import database.column.Column;
+import database.relation.AbstractRelation;
 import database.relation.M2MColumns;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
@@ -315,6 +316,19 @@ public class ConfigReader implements ContentHandler {
 					currentManyToManyRelation.setMappingTable(mappingTable);
 					currentManyToManyRelation.setSubstituteNameSingular(substituteNameSingular);
 					currentManyToManyRelation.setSubstituteNamePlural(substituteNamePlural);
+					
+					String attrSqlOptions=atts.getValue("sqlOptions");
+					if(attrSqlOptions != null) {
+						String[] sqloptions = attrSqlOptions.split(",");
+						for(String s : sqloptions) {
+							try {
+								currentManyToManyRelation.setSqlOption(AbstractRelation.RelationSqlOptions.valueOf(s));
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+							
+						}
+					}
 					manyToManyAliasCounter++;
 					break;
 				case ONE_TO_MANY_RELATIONS:

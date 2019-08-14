@@ -1,14 +1,19 @@
 package database.relation;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import database.table.Table;
 
 public class AbstractRelation {
+	public static enum RelationSqlOptions{disableOnConflictDoNothing};
 	protected RelationType relationType;
 	protected Table sourceTable;
 	protected Table destTable;
 	protected String alias;
 	protected String substituteNameSingular;
 	protected String substituteNamePlural;
+	protected Set<RelationSqlOptions> sqlOptions;
 	
 	public AbstractRelation(String alias) {
 		this.alias = alias;
@@ -65,5 +70,12 @@ public class AbstractRelation {
 	
 	public String getSubstituteNameSingular() {
 		return substituteNameSingular;
+	}
+	
+	public void setSqlOption(RelationSqlOptions opt) {
+		if(this.sqlOptions == null) {
+			this.sqlOptions = new HashSet<>();
+		}
+		this.sqlOptions.add(opt);
 	}
 }

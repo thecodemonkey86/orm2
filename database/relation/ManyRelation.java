@@ -64,4 +64,8 @@ public class ManyRelation extends AbstractRelation implements IManyRelation{
 	public Column getDestMappingColumn(int index) {
 		return destMappings.getMappingColumn(index);
 	}
+
+	public boolean hasSqlOption(RelationSqlOptions opt) {
+		return sqlOptions!=null && sqlOptions.contains(opt);
+	}
 }
