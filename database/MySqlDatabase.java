@@ -120,6 +120,12 @@ public class MySqlDatabase extends Database {
 	}
 
 
+	@Override
+	public String sqlInsertMultiRow(AbstractTable tbl, List<Column> columnsInSpecificOrder, String placeholders) {
+		throw new RuntimeException("not implemented");
+	}
+
+
 	
 
 }

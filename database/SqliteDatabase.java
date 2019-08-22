@@ -308,4 +308,9 @@ public class SqliteDatabase extends Database {
 		}
 		return false;
 	}
+
+	@Override
+	public String sqlInsertMultiRow(AbstractTable tbl, List<Column> columnsInSpecificOrder, String placeholders) {
+		throw new RuntimeException("not implemented");
+	}
 }
