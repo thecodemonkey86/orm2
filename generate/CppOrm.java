@@ -2,7 +2,6 @@ package generate;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -236,21 +235,25 @@ Charset utf8 = Charset.forName("UTF-8");
 				
 				FileUtil2.writeFileIfContentChanged(pathBeans.resolve(c.getName().toLowerCase()+".h"), c.toHeaderString().getBytes(utf8), writeOptions);
 				FileUtil2.writeFileIfContentChanged(pathBeans.resolve(c.getName().toLowerCase()+".cpp"), c.toSourceString().getBytes(utf8), writeOptions);
+				
+				
 				ClsEntityQuerySelect clsQuery = Types.beanQuerySelect(c);
 				clsQuery.addMethodImplementations();
 				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+".h"), clsQuery.toHeaderString().getBytes(utf8), writeOptions);
 				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+".cpp"), clsQuery.toSourceString().getBytes(utf8), writeOptions);
 				
-				ClsEntityQueryDelete clsDelete = new ClsEntityQueryDelete(c);
-				clsDelete.addMethodImplementations();
-				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsDelete.getName().toLowerCase()+".h"), clsDelete.toHeaderString().getBytes(utf8), writeOptions);
-				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsDelete.getName().toLowerCase()+".cpp"), clsDelete.toSourceString().getBytes(utf8), writeOptions);
-				
-				
-				ClsEntityQueryUpdate clsUpdate = new ClsEntityQueryUpdate(c);
-				clsUpdate.addMethodImplementations();
-				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsUpdate.getName().toLowerCase()+".h"), clsUpdate.toHeaderString().getBytes(utf8), writeOptions);
-				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsUpdate.getName().toLowerCase()+".cpp"), clsUpdate.toSourceString().getBytes(utf8), writeOptions);
+				if(c.getTbl().hasQueryType(Table.QueryType.Delete)) {
+					ClsEntityQueryDelete clsDelete = new ClsEntityQueryDelete(c);
+					clsDelete.addMethodImplementations();
+					FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsDelete.getName().toLowerCase()+".h"), clsDelete.toHeaderString().getBytes(utf8), writeOptions);
+					FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsDelete.getName().toLowerCase()+".cpp"), clsDelete.toSourceString().getBytes(utf8), writeOptions);
+				}
+				if(c.getTbl().hasQueryType(Table.QueryType.Update)) {
+					ClsEntityQueryUpdate clsUpdate = new ClsEntityQueryUpdate(c);
+					clsUpdate.addMethodImplementations();
+					FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsUpdate.getName().toLowerCase()+".h"), clsUpdate.toHeaderString().getBytes(utf8), writeOptions);
+					FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsUpdate.getName().toLowerCase()+".cpp"), clsUpdate.toSourceString().getBytes(utf8), writeOptions);
+				}
 			}
 			
 			FileUtil2.writeFileIfContentChanged(pathRepository.resolve("entityrepository.h"), repo.toHeaderString().getBytes(utf8), writeOptions);

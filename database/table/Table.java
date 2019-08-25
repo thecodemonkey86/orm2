@@ -1,7 +1,9 @@
 package database.table;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import database.Database;
 import database.column.Column;
@@ -13,7 +15,9 @@ public class Table extends AbstractTable{
 	protected int oid;
 	
 	protected ArrayList<ForeignKey> foreignKeys;
+	public static enum QueryType{Update, Delete};
 	
+	protected Set<QueryType> queryTypes;
 
 
 	public boolean addForeignKey(ForeignKey e) {
@@ -113,5 +117,18 @@ public class Table extends AbstractTable{
 	}
 
 
+	public void addQueryType(QueryType queryType) {
+		if(this.queryTypes == null) {
+			this.queryTypes = new HashSet<>();
+		}
+		this.queryTypes.add(queryType);
+	}
+	
+	public boolean hasQueryType(QueryType queryType) {
+		if(this.queryTypes == null) {
+			return false;
+		}
+		return queryTypes.contains(queryType);
+	}
 	
 }

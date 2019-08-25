@@ -1,13 +1,13 @@
 package database.table;
 
 import java.util.ArrayList;
-
 import database.Database;
 import database.column.Column;
 import database.relation.PrimaryKey;
 
 
 public abstract class AbstractTable {
+	
 	protected String schema;
 	protected String name;
 	protected ArrayList<Column> allColumns;
@@ -106,4 +106,5 @@ public abstract class AbstractTable {
 		}
 		return false;
 	}
+	
 }

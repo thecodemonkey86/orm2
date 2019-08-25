@@ -248,7 +248,28 @@ public class ConfigReader implements ContentHandler {
 					if(atts.getValue("overrideNoAutoIncrement")!=null) {
 						currentEntityTable.getPrimaryKey().getFirstColumn().setAutoIncrement(false);
 					}
-				
+					String strQueryTypes = atts.getValue("queryTypes");
+					if(strQueryTypes!=null) {
+						String[] strArrQueryTypes = strQueryTypes.split(",");
+						for (String qt : strArrQueryTypes) {
+							switch(qt) {
+							case "all":
+								currentEntityTable.addQueryType(Table.QueryType.Delete);
+								currentEntityTable.addQueryType(Table.QueryType.Update);
+								break;							
+							case "delete":
+								currentEntityTable.addQueryType(Table.QueryType.Delete);
+								break;
+							case "update":
+								currentEntityTable.addQueryType(Table.QueryType.Update);
+								break;
+							default:
+								throw new IOException("valid values are: all,delete,update");
+							
+							}
+						}
+						
+					} 
 					
 					if(atts.getValue("enableRawValue") !=null) {
 						enableRawValueColumns = atts.getValue("enableRawValue").split(",");

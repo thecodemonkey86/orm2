@@ -24,6 +24,7 @@ import cpp.entityrepository.method.MethodRepoCreateNewNonNullableOnly;
 import cpp.lib.ClsBaseRepository;
 import cpp.lib.EnableSharedFromThis;
 import database.column.Column;
+import database.table.Table;
 
 public class ClsEntityRepository extends Cls{
 //	protected ArrayList<ClsBeanQuery> beanQueryClasses;
@@ -50,8 +51,12 @@ public class ClsEntityRepository extends Cls{
 		for(EntityCls bean:beans) {
 			addIncludeHeader(EntityCls.getModelPath() + "entities/"+bean.getIncludeHeader());
 			addIncludeHeader("query/"+bean.getName().toLowerCase()+"entityqueryselect");
-			addIncludeHeader("query/"+bean.getName().toLowerCase()+"entityquerydelete");
-			addIncludeHeader("query/"+bean.getName().toLowerCase()+"entityqueryupdate");
+			
+			if(bean.getTbl().hasQueryType(Table.QueryType.Delete))
+				addIncludeHeader("query/"+bean.getName().toLowerCase()+"entityquerydelete");
+			
+			if(bean.getTbl().hasQueryType(Table.QueryType.Update))
+				addIncludeHeader("query/"+bean.getName().toLowerCase()+"entityqueryupdate");
 //			addAttr(new Attr(new ClsQHash(bean.getPkType(), bean.toRawPointer()), "loadedBeans"+bean.getName()));
 			addMethod(new MethodGetById(bean));
 			addMethod(new MethodGetById(bean,true));
@@ -65,13 +70,22 @@ public class ClsEntityRepository extends Cls{
 //			beanQueryClasses.add(new ClsBeanQuery(bean));
 			addForwardDeclaredClass(bean);
 			addForwardDeclaredClass(Types.beanQuerySelect(bean));
-			addForwardDeclaredClass(Types.beanQueryUpdate(bean));
-			addForwardDeclaredClass(Types.beanQueryDelete(bean));
+			
+			if(bean.getTbl().hasQueryType(Table.QueryType.Update))
+				addForwardDeclaredClass(Types.beanQueryUpdate(bean));
+			
+			if(bean.getTbl().hasQueryType(Table.QueryType.Delete))
+				addForwardDeclaredClass(Types.beanQueryDelete(bean));
 //			addMethod(new MethodLoadCollection(new Param(Types.qset(bean.toSharedPtr()).toRawPointer(), "collection")));
 			addMethod(new MethodLoadCollection(new Param(Types.orderedSet(bean.toSharedPtr()).toRawPointer(),  "collection"), bean));
 			addMethod(new MethodCreateQuerySelect(bean));
-			addMethod(new MethodCreateQueryDelete(bean));
-			addMethod(new MethodCreateQueryUpdate(bean));
+			
+			if(bean.getTbl().hasQueryType(Table.QueryType.Delete))
+				addMethod(new MethodCreateQueryDelete(bean));
+			
+			if(bean.getTbl().hasQueryType(Table.QueryType.Update))
+				addMethod(new MethodCreateQueryUpdate(bean));
+			
 			addMethod(new MethodEntityLoad(bean));
 			addMethod(new MethodEntitySave(bean));
 			addMethod(new MethodEntitySaveBulk(bean,false));
