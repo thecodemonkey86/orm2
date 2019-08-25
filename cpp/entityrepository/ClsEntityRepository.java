@@ -59,7 +59,8 @@ public class ClsEntityRepository extends Cls{
 			addMethod(new MethodFetchList(bean, bean.getTbl().getPrimaryKey(),false));
 			addMethod(new MethodFetchList(bean, bean.getTbl().getPrimaryKey(),true));
 //			addMethod(new MethodFetchListStatic(bean));
-			addMethod(new MethodFetchOne(bean.getOneRelations(),bean.getOneToManyRelations(), bean, null));
+			addMethod(new MethodFetchOne(bean.getOneRelations(),bean.getOneToManyRelations(), bean, null, true));
+			addMethod(new MethodFetchOne(bean.getOneRelations(),bean.getOneToManyRelations(), bean, null, false));
 //			addMethod(new MethodFetchOneStatic(bean));
 //			beanQueryClasses.add(new ClsBeanQuery(bean));
 			addForwardDeclaredClass(bean);
