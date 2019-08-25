@@ -35,6 +35,7 @@ import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
 import database.table.Table;
 import io.PasswordManager;
+import util.FileUtil2;
 import xml.reader.DefaultXMLReader;
 
 public class CppOrm extends OrmGenerator {
@@ -161,7 +162,7 @@ Charset utf8 = Charset.forName("UTF-8");
 							Files.createDirectory(pBackup);
 						}
 						
-						Files.write(pBackup.resolve(pathHeader.getFileName().toString()),customClassMember.getBytes(utf8), writeOptions);
+						FileUtil2.writeFileIfContentChanged(pBackup.resolve(pathHeader.getFileName().toString()),customClassMember.getBytes(utf8), writeOptions);
 						c.addCustomHeaderCode(customClassMember);
 					}
 					int startSrc = -1;
@@ -175,7 +176,7 @@ Charset utf8 = Charset.forName("UTF-8");
 						if(!Files.exists(pBackup)) {
 							Files.createDirectory(pBackup);
 						}
-						Files.write(pBackup.resolve(pathSrc.getFileName().toString()),implCode.getBytes(utf8), writeOptions);
+						FileUtil2.writeFileIfContentChanged(pBackup.resolve(pathSrc.getFileName().toString()),implCode.getBytes(utf8), writeOptions);
 						
 						//c.addMethod(new CustomClassMemberCode(customClassMember, implCode) );
 						c.addCustomSourceCode(implCode);
@@ -191,10 +192,10 @@ Charset utf8 = Charset.forName("UTF-8");
 					}
 					
 	//				if (sbHdr.length()>0)
-	//					Files.write(Paths.get("bak_custom_class_members", pathHeader.getFileName().toString()),sbHdr.toString().getBytes(utf8), writeOptions);
+	//					FileUtil2.writeFileIfContentChanged(Paths.get("bak_custom_class_members", pathHeader.getFileName().toString()),sbHdr.toString().getBytes(utf8), writeOptions);
 	//				
 	//				if (sbSrc.length()>0)
-	//					Files.write(Paths.get("bak_custom_class_members", pathSrc.getFileName().toString()),sbSrc.toString().getBytes(utf8), writeOptions);
+	//					FileUtil2.writeFileIfContentChanged(Paths.get("bak_custom_class_members", pathSrc.getFileName().toString()),sbSrc.toString().getBytes(utf8), writeOptions);
 	//				
 				}
 				
@@ -210,7 +211,7 @@ Charset utf8 = Charset.forName("UTF-8");
 			Files.createDirectories(pathBeans);
 			Files.createDirectories(pathRepositoryQuery);
 	
-			try(DirectoryStream<Path> dsPathBeans = Files.newDirectoryStream(pathBeans)) {
+			/*try(DirectoryStream<Path> dsPathBeans = Files.newDirectoryStream(pathBeans)) {
 				for(Path f : dsPathBeans) {
 					if(f.toString().endsWith(".h") || f.toString().endsWith(".cpp")) {
 						Files.delete(f);
@@ -228,37 +229,37 @@ Charset utf8 = Charset.forName("UTF-8");
 				}
 			} finally {
 				
-			}
-//			Files.write(pathRepositoryQuery.resolve(EnumQueryMode.INSTANCE.getName().toLowerCase()+".h"), EnumQueryMode.INSTANCE.toHeaderString().getBytes(utf8), writeOptions);
+			}*/
+//			FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(EnumQueryMode.INSTANCE.getName().toLowerCase()+".h"), EnumQueryMode.INSTANCE.toHeaderString().getBytes(utf8), writeOptions);
 			
 			for (EntityCls c : Entities.getAllBeans()) {
 				
-				Files.write(pathBeans.resolve(c.getName().toLowerCase()+".h"), c.toHeaderString().getBytes(utf8), writeOptions);
-				Files.write(pathBeans.resolve(c.getName().toLowerCase()+".cpp"), c.toSourceString().getBytes(utf8), writeOptions);
+				FileUtil2.writeFileIfContentChanged(pathBeans.resolve(c.getName().toLowerCase()+".h"), c.toHeaderString().getBytes(utf8), writeOptions);
+				FileUtil2.writeFileIfContentChanged(pathBeans.resolve(c.getName().toLowerCase()+".cpp"), c.toSourceString().getBytes(utf8), writeOptions);
 				ClsEntityQuerySelect clsQuery = Types.beanQuerySelect(c);
 				clsQuery.addMethodImplementations();
-				Files.write(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+".h"), clsQuery.toHeaderString().getBytes(utf8), writeOptions);
-				Files.write(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+".cpp"), clsQuery.toSourceString().getBytes(utf8), writeOptions);
+				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+".h"), clsQuery.toHeaderString().getBytes(utf8), writeOptions);
+				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+".cpp"), clsQuery.toSourceString().getBytes(utf8), writeOptions);
 				
 				ClsEntityQueryDelete clsDelete = new ClsEntityQueryDelete(c);
 				clsDelete.addMethodImplementations();
-				Files.write(pathRepositoryQuery.resolve(clsDelete.getName().toLowerCase()+".h"), clsDelete.toHeaderString().getBytes(utf8), writeOptions);
-				Files.write(pathRepositoryQuery.resolve(clsDelete.getName().toLowerCase()+".cpp"), clsDelete.toSourceString().getBytes(utf8), writeOptions);
+				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsDelete.getName().toLowerCase()+".h"), clsDelete.toHeaderString().getBytes(utf8), writeOptions);
+				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsDelete.getName().toLowerCase()+".cpp"), clsDelete.toSourceString().getBytes(utf8), writeOptions);
 				
 				
 				ClsEntityQueryUpdate clsUpdate = new ClsEntityQueryUpdate(c);
 				clsUpdate.addMethodImplementations();
-				Files.write(pathRepositoryQuery.resolve(clsUpdate.getName().toLowerCase()+".h"), clsUpdate.toHeaderString().getBytes(utf8), writeOptions);
-				Files.write(pathRepositoryQuery.resolve(clsUpdate.getName().toLowerCase()+".cpp"), clsUpdate.toSourceString().getBytes(utf8), writeOptions);
+				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsUpdate.getName().toLowerCase()+".h"), clsUpdate.toHeaderString().getBytes(utf8), writeOptions);
+				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsUpdate.getName().toLowerCase()+".cpp"), clsUpdate.toSourceString().getBytes(utf8), writeOptions);
 			}
 			
-			Files.write(pathRepository.resolve("entityrepository.h"), repo.toHeaderString().getBytes(utf8), writeOptions);
-			Files.write(pathRepository.resolve("entityrepository.cpp"), repo.toSourceString().getBytes(utf8), writeOptions);
+			FileUtil2.writeFileIfContentChanged(pathRepository.resolve("entityrepository.h"), repo.toHeaderString().getBytes(utf8), writeOptions);
+			FileUtil2.writeFileIfContentChanged(pathRepository.resolve("entityrepository.cpp"), repo.toSourceString().getBytes(utf8), writeOptions);
 		
 //		BeanHelper helper = new BeanHelper(Beans.getAllBeans());
 //		helper.addMethodImplementations();
-//		Files.write(path.resolve("entityhelper").resolve("entityhelper.h"), helper.toHeaderString().getBytes(utf8), writeOptions);
-//		Files.write(path.resolve("entityhelper").resolve("entityhelper.cpp"), helper.toSourceString().getBytes(utf8), writeOptions);
+//		FileUtil2.writeFileIfContentChanged(path.resolve("entityhelper").resolve("entityhelper.h"), helper.toHeaderString().getBytes(utf8), writeOptions);
+//		FileUtil2.writeFileIfContentChanged(path.resolve("entityhelper").resolve("entityhelper.cpp"), helper.toSourceString().getBytes(utf8), writeOptions);
 		} else {
 			Path pathEntities = pathModel.resolve("entities");
 			Path pathRepository = cfg.getRepositoryPath();
@@ -312,7 +313,7 @@ Charset utf8 = Charset.forName("UTF-8");
 							Files.createDirectory(pBackup);
 						}
 						
-						Files.write(pBackup.resolve(pathHeader.getFileName().toString()),customClassMember.getBytes(utf8), writeOptions);
+						FileUtil2.writeFileIfContentChanged(pBackup.resolve(pathHeader.getFileName().toString()),customClassMember.getBytes(utf8), writeOptions);
 						c.addCustomHeaderCode(customClassMember);
 					}
 					int startSrc = -1;
@@ -326,7 +327,7 @@ Charset utf8 = Charset.forName("UTF-8");
 						if(!Files.exists(pBackup)) {
 							Files.createDirectory(pBackup);
 						}
-						Files.write(pBackup.resolve(pathSrc.getFileName().toString()),implCode.getBytes(utf8), writeOptions);
+						FileUtil2.writeFileIfContentChanged(pBackup.resolve(pathSrc.getFileName().toString()),implCode.getBytes(utf8), writeOptions);
 						
 						//c.addMethod(new CustomClassMemberCode(customClassMember, implCode) );
 						c.addCustomSourceCode(implCode);
@@ -349,7 +350,7 @@ Charset utf8 = Charset.forName("UTF-8");
 			Files.createDirectories(pathEntities);
 			Files.createDirectories(pathRepositoryQuery);
 	
-			try(DirectoryStream<Path> dsPathBeans = Files.newDirectoryStream(pathEntities)) {
+			/*try(DirectoryStream<Path> dsPathBeans = Files.newDirectoryStream(pathEntities)) {
 				for(Path f : dsPathBeans) {
 					if(f.toString().endsWith(".h") || f.toString().endsWith(".cpp")) {
 						Files.delete(f);
@@ -367,14 +368,14 @@ Charset utf8 = Charset.forName("UTF-8");
 				}
 			} finally {
 				
-			}
+			}*/
 			
 			for (JsonEntity c : JsonEntities.getAllEntities()) {
-				Files.write(pathEntities.resolve(c.getName().toLowerCase()+".h"), c.toHeaderString().getBytes(utf8), writeOptions);
-				Files.write(pathEntities.resolve(c.getName().toLowerCase()+".cpp"), c.toSourceString().getBytes(utf8), writeOptions);
+				FileUtil2.writeFileIfContentChanged(pathEntities.resolve(c.getName().toLowerCase()+".h"), c.toHeaderString().getBytes(utf8), writeOptions);
+				FileUtil2.writeFileIfContentChanged(pathEntities.resolve(c.getName().toLowerCase()+".cpp"), c.toSourceString().getBytes(utf8), writeOptions);
 			}
-			Files.write(pathRepository.resolve(repo.getName().toLowerCase()+".h"), repo.toHeaderString().getBytes(utf8), writeOptions);
-			Files.write(pathRepository.resolve(repo.getName().toLowerCase()+".cpp"), repo.toSourceString().getBytes(utf8), writeOptions);
+			FileUtil2.writeFileIfContentChanged(pathRepository.resolve(repo.getName().toLowerCase()+".h"), repo.toHeaderString().getBytes(utf8), writeOptions);
+			FileUtil2.writeFileIfContentChanged(pathRepository.resolve(repo.getName().toLowerCase()+".cpp"), repo.toSourceString().getBytes(utf8), writeOptions);
 			
 		}
 		

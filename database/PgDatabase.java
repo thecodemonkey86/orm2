@@ -60,7 +60,7 @@ public class PgDatabase extends Database {
 		
 		PrimaryKey primaryKey = new PrimaryKey();
 		
-		String sql=String.format("SELECT a.attname as colname , exists(select s.relname as seq, n.nspname as sch, t.relname as tab, a.attname as col from pg_class s  join pg_depend d on d.objid=s.oid and d.classid='pg_class'::regclass and d.refclassid='pg_class'::regclass  join pg_class t on t.oid=d.refobjid  join pg_namespace n on n.oid=t.relnamespace  join pg_attribute a0 on a0.attrelid=t.oid and a0.attnum=d.refobjsubid where s.relkind='S' and d.deptype='a'and n.nspname = '%s' and a.attname = a0.attname )  as autoincrement FROM   pg_index i JOIN   pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey) WHERE  i.indrelid = '%s.%s'::regclass AND    i.indisprimary;", tbl.getSchema(), tbl.getSchema(), tbl.getName());
+		String sql=String.format("SELECT a.attname as colname , exists(select s.relname as seq, n.nspname as sch, t.relname as tab, a0.attname as col from pg_class s  join pg_depend d on d.objid=s.oid and d.classid='pg_class'::regclass and d.refclassid='pg_class'::regclass  join pg_class t on t.oid=d.refobjid  join pg_namespace n on n.oid=t.relnamespace  join pg_attribute a0 on a0.attrelid=t.oid and a0.attnum=d.refobjsubid where s.relkind='S' and d.deptype='a'and n.nspname = '%s' and a.attname = a0.attname )  as autoincrement FROM   pg_index i JOIN   pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey) WHERE  i.indrelid = '%s.%s'::regclass AND    i.indisprimary;", tbl.getSchema(), tbl.getSchema(), tbl.getName());
 		Statement stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_READ_ONLY  );
 		System.out.println(sql);
 		ResultSet rs = stmt.executeQuery(sql);
@@ -171,6 +171,23 @@ public class PgDatabase extends Database {
 	@Override
 	public Column makeColumnInstance(AbstractTable tbl) {
 		return new PgColumn(tbl);
+	}
+
+
+
+	@Override
+	public String sqlInsertMultiRow(AbstractTable tbl, List<Column> columnsInSpecificOrder, String placeholders) {
+		ArrayList<String> pkColNames = new ArrayList<>(); 
+		for(Column c:tbl.getPrimaryKey().getColumns()) {
+			pkColNames.add(c.getEscapedName());
+		}
+		ArrayList<String> columns = new ArrayList<>(); 
+		for(Column c:columnsInSpecificOrder) {
+			columns.add(c.getEscapedName());
+		}	
+		return "insert into " +getEscapedTableName(tbl) + " " + CodeUtil2.parentheses( CodeUtil2.concat(columns, ",")) + " values "+placeholders
+				 
+				;
 	}
 
 	

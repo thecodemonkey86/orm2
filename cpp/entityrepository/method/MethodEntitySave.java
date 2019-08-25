@@ -149,11 +149,18 @@ public class MethodEntitySave extends Method {
 						));
 				
 				if(EntityCls.getDatabase().supportsMultiRowInsert()) {
+					List<Column> mappingTableColumns = new ArrayList<>();
+					for(int i=0;i<r.getSourceColumnCount();i++) {
+						mappingTableColumns.add(r.getSourceMappingColumn(i));
+					}
+					for(int i=0;i<r.getDestColumnCount();i++) {
+						mappingTableColumns.add(r.getDestMappingColumn(i));
+					}
 					String sqlAdded= EntityCls.getDatabase().supportsInsertOrIgnore() && !r.hasSqlOption(AbstractRelation.RelationSqlOptions.disableOnConflictDoNothing) ?
 							
 							EntityCls.getDatabase().sqlInsertOrIgnoreMultiRow(r.getMappingTable(),"%1") :
 								
-								EntityCls.getDatabase().sqlInsertMultiRow(r.getMappingTable(),"%1");
+								EntityCls.getDatabase().sqlInsertMultiRow(r.getMappingTable(),mappingTableColumns ,"%1");
 								;
 					Var varAddSql = ifAddBeans.thenBlock()._declare(Types.QString, "addedSql",QString.fromStringConstant(sqlAdded));
 					Type foreachAddElementType = ((ClsQVector) attrManyToManyAdded.getType()).getElementType();

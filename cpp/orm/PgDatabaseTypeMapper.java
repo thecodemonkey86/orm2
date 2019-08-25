@@ -79,6 +79,8 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 				return Types.nullable(Types.Double);
 			case "bytea":
 				return Types.nullable(Types.QByteArray);	
+			case "boolean":
+				return Types.nullable(CoreTypes.Bool);	
 			default:
 				return Types.nullable(CoreTypes.QVariant);
 			}
@@ -139,7 +141,9 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 				case "numeric":
 					 return new CreateObjectExpression(Types.nullable(Types.Double));
 				case "bytea":
-					return new CreateObjectExpression(Types.nullable(Types.QByteArray)) ;		
+					return new CreateObjectExpression(Types.nullable(Types.QByteArray)) ;	
+				case "boolean":
+					return new CreateObjectExpression(Types.nullable(CoreTypes.Bool));
 				default:
 					return new CreateObjectExpression(Types.nullable(CoreTypes.QVariant)) ;
 				}
@@ -162,6 +166,25 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 			}
 		} else if (string.startsWith("nextval(")) {
 			return null;
+		} else if(!col.isNullable())
+		{
+			switch(col.getDbType()) {
+			case "integer":
+				return new IntExpression(Integer.valueOf(col.getDefaultValue()));
+			case "bigint":
+				return new LongLongExpression(Long.valueOf(col.getDefaultValue()));
+			case "smallint":
+				return new ShortExpression(Short.valueOf(col.getDefaultValue()));
+			case "character varying":
+			case "character":	
+			case "text":
+				return QString.fromStringConstant(col.getDefaultValue());
+			case "double precision":
+			case "numeric":
+				return new DoubleExpression(Double.valueOf(col.getDefaultValue()));
+			case "boolean":
+				return col.getDefaultValue().equals("true") ||col.getDefaultValue().equals("1") ?  BoolExpression.TRUE : BoolExpression.FALSE;
+			}
 		}
 		return null;
 	}
