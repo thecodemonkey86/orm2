@@ -57,7 +57,7 @@ public class MethodEntityRemove extends Method {
 						}
 					}
 					
-					Types.Sql.callStaticMethod(ClsSql.execute,  _this().accessAttr("sqlCon"), QStringLiteral.fromStringConstant(sql), varParams);
+				 addInstr(Types.Sql.callStaticMethod(ClsSql.execute,  _this().accessAttr("sqlCon"), QStringLiteral.fromStringConstant(sql), varParams).asInstruction());
 				} else {
 					throw new RuntimeException("not implemented");
 				}
