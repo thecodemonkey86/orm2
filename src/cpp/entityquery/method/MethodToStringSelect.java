@@ -68,10 +68,11 @@ public class MethodToStringSelect extends Method{
 						"            }\r\n" + 
 						"        }\r\n" + 
 						"        query += QStringLiteral(\" ORDER BY \");\r\n" +
-						"        query += this->orderByPrimaryKey();\r\n" +
+		
 						"        for(auto order : this->orderByExpressions) {\r\n" + 
-						"            query += QStringLiteral(\",%1\").arg(order);\r\n" + 
-						"        }\r\n" + 
+						"            query += QStringLiteral(\"%1,\").arg(order);\r\n" + 
+						"        }\r\n" + 				
+						"        query += this->orderByPrimaryKey();\r\n" +
 						"        return query;";
 			}
 		});
