@@ -44,7 +44,7 @@ public class MethodGetLimitQueryString extends Method {
 		for(int i=1;i<pk.getColumnCount();i++) {
 			sql.append(',').append(pk.getColumn(i).getEscapedName());
 		}
-		sql.append(" FROM ").append(bean.getTbl().getEscapedName()).append(" WHERE %1" );
+		sql.append(" FROM ").append(bean.getTbl().getEscapedName()).append(' ').append("e1_limit").append(" WHERE %1" );
 		
 		/*if (!limitOffsetOrderBy.isEmpty()) {\r\n" + 
 						"                query += QStringLiteral(\" ORDER BY %1\").arg(limitOffsetOrderBy);\r\n" + 

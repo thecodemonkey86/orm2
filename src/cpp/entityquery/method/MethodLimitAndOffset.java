@@ -35,7 +35,7 @@ public class MethodLimitAndOffset extends Method{
 			@Override
 			public String toString() {
 				
-				String str=(pQueryParams!=null)? "this->params.append("+ (Types.QVariant.toConstRef().equals(pQueryParams.getType()) ? pQueryParams.getReadAccessString() : Types.QVariant.callStaticMethod(ClsQVariant.fromValue, pQueryParams )) +");\r\n" : "";
+				String str=(pQueryParams!=null)? "this->params.append("+ (Types.QVariant.toConstRef().equals(pQueryParams.getType()) ||(Types.QVariantList.toConstRef().equals(pQueryParams.getType())) ? pQueryParams.getReadAccessString() : Types.QVariant.callStaticMethod(ClsQVariant.fromValue, pQueryParams )) +");\r\n" : "";
 				
 				   str+="	this->limitResults = limit;\r\n" + 
 						"	this->resultOffset = offset;\r\n";
