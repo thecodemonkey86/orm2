@@ -23,7 +23,7 @@ public class MethodAndWhere6 extends Method{
 		addInstr(new Instruction() {
 			@Override
 			public String toString() {
-				return "this->params.append(params);\r\n" + 
+				return "for(const auto & p : params)\t\r\n this->params.append(p);\r\n" + 
 						"        if (!conditions.empty()) {\r\n" + 
 						"            this->conditions.append(SqlUtil3::SqlQuery::AND);\r\n" + 
 						"        }\r\n" + 
