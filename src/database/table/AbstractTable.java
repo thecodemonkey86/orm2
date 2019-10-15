@@ -31,15 +31,15 @@ public abstract class AbstractTable {
 	}*/
 	
 	public void setPrimaryKey(PrimaryKey primaryKey) {
-		if (primaryKey.getColumns().size() == 0) {
-			throw new IllegalArgumentException("pk columns missing: " + name);
-		}
 		this.primaryKey = primaryKey;
 	}
 	
 	public PrimaryKey getPrimaryKey() {
 		if(primaryKey==null) {
 			throw new NullPointerException();
+		}
+		if (primaryKey.getColumns().size() == 0) {
+			throw new IllegalArgumentException("pk columns missing: " + name);
 		}
 		return primaryKey;
 	}
