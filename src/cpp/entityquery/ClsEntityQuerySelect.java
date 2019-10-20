@@ -1,9 +1,11 @@
 package cpp.entityquery;
 
+import cpp.CoreTypes;
 import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.Cls;
 import cpp.core.Param;
+import cpp.core.Type;
 import cpp.entity.EntityCls;
 import cpp.entityquery.method.ConstructorEntityQuerySelect;
 import cpp.entityquery.method.MethodAddQueryParameter;
@@ -21,6 +23,7 @@ import cpp.entityquery.method.MethodAndWhere9;
 import cpp.entityquery.method.MethodEntityQueryFetch;
 import cpp.entityquery.method.MethodEntityQueryFetchOne;
 import cpp.entityquery.method.MethodEntityQueryWhereEquals;
+import cpp.entityquery.method.MethodEntityQueryWhereIn;
 import cpp.entityquery.method.MethodEntityQueryWhereIsNotNull;
 import cpp.entityquery.method.MethodEntityQueryWhereIsNull;
 import cpp.entityquery.method.MethodEntityQueryWhereNotEquals;
@@ -82,6 +85,10 @@ public class ClsEntityQuerySelect extends Cls {
 			addMethod(new MethodSqlFieldEquals(c,true));
 			addMethod(new MethodEntityQueryWhereEquals(this,EntityQueryType.Select, cls, c));
 			addMethod(new MethodEntityQueryWhereNotEquals(this,EntityQueryType.Select, cls, c));
+			Type colType = EntityCls.getDatabaseMapper().columnToType(c);
+			addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Select, cls, c,CoreTypes.qvector(colType)));
+			addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Select, cls, c,CoreTypes.qset(colType)));
+			addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Select, cls, c,CoreTypes.qlist(colType)));
 			
 			if(c.isNullable()) {
 				addMethod(new MethodEntityQueryWhereIsNull(this,EntityQueryType.Select, cls, c));

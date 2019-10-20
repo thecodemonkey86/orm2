@@ -8,6 +8,7 @@ import cpp.lib.ClsQByteArray;
 import cpp.lib.ClsQDate;
 import cpp.lib.ClsQDateTime;
 import cpp.lib.ClsQLatin1String;
+import cpp.lib.ClsQList;
 import cpp.lib.ClsQSet;
 import cpp.lib.ClsQSqlDatabase;
 import cpp.lib.ClsQSqlQuery;
@@ -60,6 +61,6 @@ public class CoreTypes {
 		return new ClsQSet(element);
 	}
 	public static TplCls qlist(Type element) {
-		return new TplCls("QList", element);
+		return new ClsQList(element);
 	}
 }
