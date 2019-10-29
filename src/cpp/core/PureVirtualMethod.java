@@ -13,7 +13,7 @@ public class PureVirtualMethod extends Method {
 
 	@Override
 	public final void addImplementation() {
-		throw new RuntimeException("Pure virtual methods must not define an implemention");
+		//throw new RuntimeException("Pure virtual methods must not define an implemention");
 	}
 	
 	public String toHeaderString() {
