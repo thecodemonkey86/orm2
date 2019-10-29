@@ -20,7 +20,7 @@ public class Cls extends Type implements IAttributeContainer{
 	protected Destructor destructor;
 	protected ArrayList<Attr> attrs;
 	protected LinkedHashSet<Include> includes;
-	protected ArrayList<Type> forwardDeclaredTypes;
+	protected LinkedHashSet<Type> forwardDeclaredTypes;
 	protected ArrayList<String> preprocessorInstructions;
 	
 	protected ArrayList<Cls> superclasses;
@@ -67,7 +67,7 @@ public class Cls extends Type implements IAttributeContainer{
 		this.constructors=new ArrayList<>();
 		this.includes=new LinkedHashSet<>();
 		this.operators = new ArrayList<>(); 
-		this.forwardDeclaredTypes = new ArrayList<>(); 
+		this.forwardDeclaredTypes = new LinkedHashSet<>(); 
 	}
 	
 	public void addInclude(String i) {

@@ -6,7 +6,7 @@ import cpp.core.Type;
 
 public class ClsQSet extends TplCls{
 
-	public static String contains = "contains";
+	public static final String contains = "contains";
 	
 	public ClsQSet(Type element) {
 		super("QSet", element);

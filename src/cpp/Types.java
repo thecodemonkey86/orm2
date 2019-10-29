@@ -17,6 +17,7 @@ import cpp.lib.ClsFirebirdSqlQuery;
 import cpp.lib.ClsOrderedSet;
 import cpp.lib.ClsSql;
 import cpp.lib.ClsSqlQuery;
+import cpp.lib.ClsSqlUtil;
 import cpp.lib.ClsPgSqlQuery;
 import cpp.lib.EnumSqlQueryOrderDirection;
 import database.relation.AbstractRelation;
@@ -30,6 +31,7 @@ public class Types extends CoreTypes{
 	public static final ClsPgSqlQuery PgSqlQuery = 	new ClsPgSqlQuery();
 	public static final ClsFirebirdSqlQuery FirebirdSqlQuery = 	new ClsFirebirdSqlQuery();
 	public static final ClsSql Sql = 	new ClsSql();
+	public static final ClsSqlUtil SqlUtil = 	new ClsSqlUtil();
 	public static final ClsEntityRepository EntityRepository = new ClsEntityRepository();
 	public static final ClsBaseEntity BaseEntity = new ClsBaseEntity();
 	public static final EnumSqlQueryOrderDirection OrderDirection = EnumSqlQueryOrderDirection.INSTANCE;
