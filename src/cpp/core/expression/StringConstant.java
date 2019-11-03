@@ -23,7 +23,7 @@ public class StringConstant extends Expression {
 	
 	@Override
 	public String toString() {
-		return CodeUtil.quote(StringUtil.replaceAll(str,"\"", "\\\""));
+		return CodeUtil.quote(StringUtil.replaceAll(StringUtil.replaceAll(str,"\\", "\\\\"),"\"","\\\""));
 	}
 
 }
