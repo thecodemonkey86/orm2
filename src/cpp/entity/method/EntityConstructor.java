@@ -36,9 +36,7 @@ public class EntityConstructor extends Constructor{
 		_assign(parent.getAttrByName("autoIncrement"), autoIncrement ? BoolExpression.TRUE : BoolExpression.FALSE);
 		
 		for(Column col:cols) {
-			if(col.getName().equals("is_male")) {
-				System.out.println();
-			}
+			 
 			if (!col.isPartOfPk() && !col.hasOneRelation()) {
 				_assign(parent.getAttrByName(col.getCamelCaseName()+ "Modified"), BoolExpression.FALSE);
 				

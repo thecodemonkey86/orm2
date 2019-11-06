@@ -16,6 +16,7 @@ import cpp.core.Method;
 import cpp.core.Operator;
 import cpp.core.Param;
 import cpp.core.Struct;
+import cpp.core.TplCls;
 import cpp.core.Type;
 import cpp.core.expression.Expression;
 import cpp.core.expression.StaticAccessExpression;
@@ -166,7 +167,7 @@ public class EntityCls extends Cls {
 			OneAttr attr = new OneAttr(r);
 				addAttr(attr);
 				addIncludeHeader(attr.getElementType().getName().toLowerCase());
-				addForwardDeclaredClass(attr.getClassType());
+				addForwardDeclaredClass( (Cls) ((TplCls)attr.getClassType()).getElementType());
 				addMethod(new MethodAttrGetter(attr,true));	
 				addMethod(new MethodOneRelationEntityIsNull(r,true));
 				addMethod(new MethodOneRelationEntityIsNull(r,false));
@@ -192,7 +193,7 @@ public class EntityCls extends Cls {
 			Attr attrManyToManyRemoved = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Removed");
 			addAttr(attrManyToManyRemoved);
 			addIncludeHeader(attr.getClassType().getIncludeHeader());
-			addForwardDeclaredClass((Cls) attr.getElementType());
+			addForwardDeclaredClass( (Cls) ((TplCls) (Cls) attr.getElementType()).getElementType());
 			addMethod(new MethodManyAttrGetter(attr));
 			addMethod(new MethodAddRelatedEntity(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
 			//addMethod(new MethodAddRelatedBean(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
@@ -209,7 +210,7 @@ public class EntityCls extends Cls {
 			ManyAttr attr = new ManyAttr(r);
 			addAttr(attr);
 			addIncludeHeader(attr.getClassType().getIncludeHeader());
-			addForwardDeclaredClass((Cls) attr.getElementType());
+			addForwardDeclaredClass( (Cls) ((TplCls) (Cls) attr.getElementType()).getElementType());
 			addMethod(new MethodManyAttrGetter(attr));
 			Attr attrManyToManyAdded = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Added");
 			addAttr(attrManyToManyAdded);

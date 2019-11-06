@@ -310,6 +310,9 @@ public class Cls extends Type implements IAttributeContainer{
 //		if(cls instanceof TplCls) {
 //			throw new IllegalArgumentException();
 //		}
+		if(cls instanceof SharedPtr) {
+			System.out.println();
+		}
 		this.forwardDeclaredTypes.add(cls);
 	}
 	
