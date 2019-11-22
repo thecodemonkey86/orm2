@@ -31,7 +31,7 @@ public class ClsQVariant extends Cls{
 
 			@Override
 			public TplMethod getConcreteMethod(Type... types) {
-				return new LibTplMethod(LibTplMethod.Public, types[0], value,types);
+				return new LibTplMethod(this,LibTplMethod.Public, types[0], value,types);
 			}
 			
 		});

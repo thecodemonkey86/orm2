@@ -33,5 +33,10 @@ public class PureVirtualMethod extends Method {
 	public boolean includeIfEmpty() {
 		return true;
 	}
+	
+	@Override
+	public boolean isHeaderOnly() {
+		return true;
+	}
 
 }

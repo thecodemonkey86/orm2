@@ -61,10 +61,14 @@ public class MethodToStringSelect extends Method{
 						"            }\r\n" + 
 						"        }\r\n" + 
 						"        if (limitResults > 0 || resultOffset > -1) {\r\n" + 
+						"            if(!limitOffsetCondition.isEmpty()){ \r\n"+
 						"            if (!conditions.empty()) {\r\n" + 
 						"                query += QStringLiteral(\") AND %1\").arg("+  MethodToStringSelect.this.bean.getName() +"::getLimitQueryString(limitResults,resultOffset,limitOffsetCondition));\r\n" + 
 						"            } else {\r\n" + 
 						"                query += QStringLiteral(\" WHERE %1\").arg("+ MethodToStringSelect.this.bean.	getName() +"::getLimitQueryString(limitResults,resultOffset,limitOffsetCondition));\r\n" + 
+						"            }\r\n" + 
+						"            } else {\r\n" +
+						"               query += QStringLiteral(\"LIMIT %1 OFFSET %2\").arg(QString::number(limitResults), QString::number(resultOffset));\r\n"+	
 						"            }\r\n" + 
 						"        }\r\n" + 
 						"        query += QStringLiteral(\" ORDER BY \");\r\n" +

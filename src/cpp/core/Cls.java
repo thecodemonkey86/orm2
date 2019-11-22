@@ -274,9 +274,11 @@ public class Cls extends Type implements IAttributeContainer{
 			CodeUtil.writeLine(sb, destructor);
 		
 		for(Method m:methods) {
-			if (m.getInstructions().size()>0 || m.includeIfEmpty()) {
-				CodeUtil.writeLine(sb, m);
-				sb.append('\n');
+			if(!m.isHeaderOnly()) {
+				if (m.getInstructions().size()>0 || m.includeIfEmpty()) {
+					CodeUtil.writeLine(sb, m);
+					sb.append('\n');
+				}
 			}
 		}
 		

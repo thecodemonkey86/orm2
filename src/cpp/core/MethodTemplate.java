@@ -26,4 +26,8 @@ public abstract class MethodTemplate {
 	public String getName() {
 		return name;
 	}
+	
+	public ArrayList<TplSymbol> getTplTypes() {
+		return tplTypes;
+	}
 }

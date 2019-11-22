@@ -36,6 +36,7 @@ import cpp.entityquery.method.MethodJoin3;
 import cpp.entityquery.method.MethodJoin4;
 import cpp.entityquery.method.MethodJoin5;
 import cpp.entityquery.method.MethodJoin6;
+import cpp.entityquery.method.MethodJoin7;
 import cpp.entityquery.method.MethodLeftJoin1;
 import cpp.entityquery.method.MethodLeftJoin2;
 import cpp.entityquery.method.MethodLeftJoin3;
@@ -53,6 +54,7 @@ import cpp.entityquery.method.MethodToStringSelect;
 import cpp.entityquery.method.MethodWhere1;
 import cpp.entityquery.method.MethodWhere10;
 import cpp.entityquery.method.MethodWhere11;
+import cpp.entityquery.method.MethodWhere12;
 import cpp.entityquery.method.MethodWhere2;
 import cpp.entityquery.method.MethodWhere3;
 import cpp.entityquery.method.MethodWhere4;
@@ -131,6 +133,7 @@ public class ClsEntityQuerySelect extends Cls {
 		addMethod(new MethodJoin4(this));
 		addMethod(new MethodJoin5(this));
 		addMethod(new MethodJoin6(this));
+		addMethod(new MethodJoin7(this).getConcreteMethod(Types.Int64)); // QSet<int64_t>
 		/*boolean[] booleanValues = new boolean[] {true,false};
 		for(boolean qlatin1Literal1 : booleanValues) {
 			for(boolean qlatin1Literal2 : booleanValues) {
@@ -159,6 +162,7 @@ public class ClsEntityQuerySelect extends Cls {
 		addMethod(new MethodWhere9(this));
 		addMethod(new MethodWhere10(this));
 		addMethod(new MethodWhere11(this));
+		addMethod(new MethodWhere12(this).getConcreteMethod(Types.Int64)); // QSet<int64_t>
 		addMethod(new MethodAndWhere1(this));
 		addMethod(new MethodAndWhere2(this));
 		addMethod(new MethodAndWhere3(this));

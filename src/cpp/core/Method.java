@@ -206,5 +206,9 @@ public abstract class Method extends InstructionBlock{
 		return super._this();
 	}
 	
+	public boolean isHeaderOnly() {
+		return false;
+	}
+	
 	
 }
