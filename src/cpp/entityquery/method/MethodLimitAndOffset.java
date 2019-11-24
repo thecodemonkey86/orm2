@@ -5,7 +5,6 @@ import cpp.core.Cls;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.instruction.Instruction;
-import cpp.entity.EntityCls;
 import cpp.entityquery.EntityQueryType;
 import cpp.lib.ClsQVariant;
 
@@ -43,8 +42,8 @@ public class MethodLimitAndOffset extends Method{
 				   if(beanQueryType == EntityQueryType.Select) {
 						 if(MethodLimitAndOffset.this.withConditionParameter) {
 							 str+="	this->limitOffsetCondition = condition;\r\n";
-						 } else {
-							 str+="	this->limitOffsetCondition = QLatin1Literal(\""+EntityCls.getDatabase().getBooleanExpressionTrue()+ "\");\r\n";
+						// } else {
+							// str+="	this->limitOffsetCondition = QLatin1Literal(\""+EntityCls.getDatabase().getBooleanExpressionTrue()+ "\");\r\n";
 						 }
 				   }
 				 str+="	return *this;";

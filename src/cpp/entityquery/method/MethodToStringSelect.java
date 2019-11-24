@@ -27,7 +27,7 @@ public class MethodToStringSelect extends Method{
 	@Override
 	public void addImplementation() {
 		Var mainBeanAlias = _declare(Types.QString, "mainBeanAlias", QString.fromStringConstant("e1"));
-		InlineIfExpression selectFields = new InlineIfExpression(Expressions.not(_this().accessAttr(ClsEntityQuerySelect.lazyLoading)), bean.callStaticMethod(MethodGetAllSelectFields.getMethodName(), mainBeanAlias ), bean.callStaticMethod(MethodGetSelectFields.getMethodName(), mainBeanAlias ));
+		Expression selectFields = bean.hasRelations() ? new InlineIfExpression(Expressions.not(_this().accessAttr(ClsEntityQuerySelect.lazyLoading)), bean.callStaticMethod(MethodGetAllSelectFields.getMethodName(), mainBeanAlias ), bean.callStaticMethod(MethodGetSelectFields.getMethodName(), mainBeanAlias )) : bean.callStaticMethod(MethodGetSelectFields.getMethodName(), mainBeanAlias );
 		Expression tableExpr = bean.callStaticMethod(MethodGetTableName.getMethodName(), mainBeanAlias );
 		addInstr(new Instruction() {
 			@Override
@@ -43,7 +43,7 @@ public class MethodToStringSelect extends Method{
 						"\r\n" + 
 						"        if (!conditions.empty()) {\r\n" + 
 						"\r\n" + 
-						"            if (limitResults > 0 || resultOffset > -1) {\r\n" + 
+						"            if (!limitOffsetCondition.isEmpty() && (limitResults > 0 || resultOffset > -1)) {\r\n" + 
 						"                query += QStringLiteral(\" WHERE (\");\r\n" + 
 						"            } else {\r\n" + 
 						"                query += QStringLiteral(\" WHERE \");\r\n" + 
@@ -67,16 +67,23 @@ public class MethodToStringSelect extends Method{
 						"            } else {\r\n" + 
 						"                query += QStringLiteral(\" WHERE %1\").arg("+ MethodToStringSelect.this.bean.	getName() +"::getLimitQueryString(limitResults,resultOffset,limitOffsetCondition));\r\n" + 
 						"            }\r\n" + 
+						"             query += QStringLiteral(\" ORDER BY \");\r\n" +
+						"             for(auto order : this->orderByExpressions) {\r\n" + 
+						"               query += QStringLiteral(\"%1,\").arg(order);\r\n" + 
+						"             }\r\n" + 				
+						"             query += this->orderByPrimaryKey();\r\n" +
 						"            } else {\r\n" +
-						"               query += QStringLiteral(\"LIMIT %1 OFFSET %2\").arg(QString::number(limitResults), QString::number(resultOffset));\r\n"+	
+						"             query += QStringLiteral(\" ORDER BY \");\r\n" +
+						"             for(auto order : this->orderByExpressions) {\r\n" + 
+						"               query += QStringLiteral(\"%1,\").arg(order);\r\n" + 
+						"             }\r\n" + 				
+						"             query += this->orderByPrimaryKey();\r\n" +
+						"             query += QStringLiteral(\" LIMIT %1 OFFSET %2\").arg(QString::number(limitResults), QString::number(resultOffset));\r\n"+	
 						"            }\r\n" + 
 						"        }\r\n" + 
-						"        query += QStringLiteral(\" ORDER BY \");\r\n" +
+						
 		
-						"        for(auto order : this->orderByExpressions) {\r\n" + 
-						"            query += QStringLiteral(\"%1,\").arg(order);\r\n" + 
-						"        }\r\n" + 				
-						"        query += this->orderByPrimaryKey();\r\n" +
+						
 						"        return query;";
 			}
 		});

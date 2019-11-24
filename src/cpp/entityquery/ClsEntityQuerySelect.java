@@ -119,7 +119,8 @@ public class ClsEntityQuerySelect extends Cls {
 		addAttr(new Attr(Types.Int64,"resultOffset"));
 		addAttr(new Attr(Types.QString,"limitOffsetCondition"));
 		addAttr(new Attr(Types.QString,"limitOffsetOrderBy"));
-		addAttr(new Attr(Types.Bool,lazyLoading));
+		if(cls.hasRelations())
+			addAttr(new Attr(Types.Bool,lazyLoading));
 		addAttr(new Attr(Types.QVariantList,params));
 		addAttr(new Attr(Types.QSqlDatabase,"sqlCon"));
 //		addAttr(new Attr(EnumQueryMode.INSTANCE,queryMode));
@@ -182,7 +183,9 @@ public class ClsEntityQuerySelect extends Cls {
 		addMethod(new MethodLimitAndOffset(this,EntityQueryType.Select,new Param(Types.Double, "param"),true));
 		addMethod(new MethodLimitAndOffset(this,EntityQueryType.Select,new Param(Types.QVariant.toConstRef(), "param"),true));
 		addMethod(new MethodLimitAndOffset(this,EntityQueryType.Select,new Param(Types.QVariantList.toConstRef(), "params"),true));
-		addMethod(new MethodLimitAndOffset(this,EntityQueryType.Select,null,false));
+		
+		if(!cls.hasRelations())
+			addMethod(new MethodLimitAndOffset(this,EntityQueryType.Select,null,false));
 		addMethod(new MethodOffset(this,EntityQueryType.Select));
 		addMethod(new MethodOrderBy(this));
 //		addMethod(new MethodPrintDebug());
