@@ -191,6 +191,7 @@ public class ClsEntityQuerySelect extends Cls {
 //		addMethod(new MethodPrintDebug());
 		addMethod(new MethodPrintQDebug());
 		addMethod(new MethodExecQuery());
+		addMethod(new MethodExecQuery(true));
 //		addMethod(new MethodSelect1(cls,this));
 //		addMethod(new MethodSelect2(cls,this));
 //		addMethod(new MethodSelect3(cls,this));
