@@ -4,8 +4,6 @@ import cpp.Types;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.instruction.Instruction;
-import cpp.entityquery.ClsEntityQuerySelect;
-import cpp.lib.ClsQString;
 
 public class MethodExecQuery extends Method{
 	Param pRewriteSql;;
@@ -52,7 +50,7 @@ public class MethodExecQuery extends Method{
 						"            #ifdef QT_DEBUG\r\nqDebug()<<msg;\r\n"
 						+ "			 #endif\r\n" + 
 						"            throw SqlUtil3::SqlException(sqlCon.lastError().nativeErrorCode(), sqlCon.driver()->lastError().text(),toString());\r\n" + 
-						"        }",pRewriteSql==null?"toString()": pRewriteSql.callMethod(ClsQString.arg, _this().callMethod("toString") ) );
+						"        }",pRewriteSql==null?"toString()": pRewriteSql );
 			}
 		});
 	}
