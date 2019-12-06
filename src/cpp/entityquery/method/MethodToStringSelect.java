@@ -80,9 +80,13 @@ public class MethodToStringSelect extends Method{
 						"             query += this->orderByPrimaryKey();\r\n" +
 						"             query += QStringLiteral(\" LIMIT %1 OFFSET %2\").arg(QString::number(limitResults), QString::number(resultOffset));\r\n"+	
 						"            }\r\n" + 
-						"        }\r\n" + 
-						
-		
+						"        } else {\r\n" + 
+						"             query += QStringLiteral(\" ORDER BY \");\r\n" +
+						"             for(auto order : this->orderByExpressions) {\r\n" + 
+						"               query += QStringLiteral(\"%1,\").arg(order);\r\n" + 
+						"             }\r\n" + 				
+						"             query += this->orderByPrimaryKey();\r\n" +
+						"            }\r\n" +	
 						
 						"        return query;";
 			}
