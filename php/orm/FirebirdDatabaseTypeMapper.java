@@ -171,14 +171,23 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 			case "37":
 				return e;
 			case "12":
-				return new NewOperator(Types.DateTime,e, new NewOperator(Types.DateTimeZone,new PhpStringLiteral("UTC"))) ;
+				if(!expr.getType().equals(Types.DateTime)) {
+					return new NewOperator(Types.DateTime,e, new NewOperator(Types.DateTimeZone,new PhpStringLiteral("UTC"))) ;
+				} else {
+					return expr;
+				}
+				
 			case "10":
 			case "27":
 				return e.cast(Types.Float);
 			case "261":
 				return e;
 			case "35":
-				return new NewOperator(Types.DateTime,e, new NewOperator(Types.DateTimeZone,new PhpStringLiteral("UTC"))) ;
+				if(!expr.getType().equals(Types.DateTime)) {
+					return new NewOperator(Types.DateTime,e, new NewOperator(Types.DateTimeZone,new PhpStringLiteral("UTC"))) ;
+				} else {
+					return expr;
+				}
 			case "13":
 				return e;
 			default:
