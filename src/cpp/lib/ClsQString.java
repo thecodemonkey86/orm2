@@ -9,6 +9,7 @@ public class ClsQString extends Cls {
 	public static final String isNull = "isNull";
 	public static final String isEmpty = "isEmpty";
 	public static final String left = "left";
+	public static final String trimmed = "trimmed";
 	public static final String number = "number";
 	
 	public ClsQString() {
@@ -20,6 +21,7 @@ public class ClsQString extends Cls {
 		addMethod(new LibMethod(this, isEmpty));
 		addMethod(new LibMethod(this, isNull));
 		addMethod(new LibMethod(this, left));
+		addMethod(new LibMethod(this, trimmed));
 		addMethod(new LibMethod(this, number,true));
 	}
 

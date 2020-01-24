@@ -29,6 +29,7 @@ public class Cls extends Type implements IAttributeContainer{
 	protected ArrayList<Enum> enums;
 	protected String useNamespace;
 	protected String headerInclude;
+	protected String classDocumentation;
 	
 	public void setUseNamespace(String useNamespace) {
 		this.useNamespace = useNamespace;
@@ -203,6 +204,9 @@ public class Cls extends Type implements IAttributeContainer{
 			}
 		}
 		addHeaderCodeBeforeClassDeclaration(sb);
+		if(classDocumentation != null) {
+			CodeUtil.writeLine(sb,classDocumentation);
+		}
 		sb.append( "class " +type);
 		if (superclasses!=null) {
 			ArrayList<String> superClassDecl = new ArrayList<>();

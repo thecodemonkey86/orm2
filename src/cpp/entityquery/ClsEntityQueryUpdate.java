@@ -19,6 +19,7 @@ import cpp.entityquery.method.MethodAndWhere6;
 import cpp.entityquery.method.MethodAndWhere7;
 import cpp.entityquery.method.MethodAndWhere8;
 import cpp.entityquery.method.MethodAndWhere9;
+import cpp.entityquery.method.MethodEntityQueryWhereCompareOperator;
 import cpp.entityquery.method.MethodEntityQueryWhereEquals;
 import cpp.entityquery.method.MethodEntityQueryWhereIn;
 import cpp.entityquery.method.MethodEntityQueryWhereIsNotNull;
@@ -73,6 +74,10 @@ public class ClsEntityQueryUpdate extends Cls {
 			if(c.isNullable()) {
 				addMethod(new MethodEntityQueryWhereIsNull(this,EntityQueryType.Update, cls, c));
 				addMethod(new MethodEntityQueryWhereIsNotNull(this,EntityQueryType.Update, cls, c));
+			} else {
+				for(MethodEntityQueryWhereCompareOperator.Operator o : MethodEntityQueryWhereCompareOperator.Operator.values()) {
+					addMethod(new MethodEntityQueryWhereCompareOperator(this, EntityQueryType.Update, cls, c, o));
+				}		
 			}
 			
 			addMethod(new MethodUpdateSet(cls,this,c));

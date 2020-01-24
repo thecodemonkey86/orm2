@@ -295,6 +295,7 @@ public class EntityCls extends Cls {
 		this.oneToManyRelations= manyRelations;
 		this.oneRelations = oneRelations;
 		this.manyRelations = manyToManyRelations;
+		classDocumentation = String.format("/**\n * @brief auto-generated entity class representing the %s database table\n*/", tbl.getName());
 	}
 	
 	/*public void breakPointerCircles() {

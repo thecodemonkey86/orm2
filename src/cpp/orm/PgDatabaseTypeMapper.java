@@ -42,6 +42,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 				return Types.QDate;
 			case "double precision":
 			case "numeric":
+			case "real":
 				return Types.Double;
 			case "bytea":
 				return Types.QByteArray;	
@@ -76,6 +77,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 				return Types.nullable(Types.QTime);
 			case "double precision":
 			case "numeric":
+			case "real":
 				return Types.nullable(Types.Double);
 			case "bytea":
 				return Types.nullable(Types.QByteArray);	
@@ -139,6 +141,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 					return new CreateObjectExpression(Types.nullable(Types.QTime) );
 				case "double precision":
 				case "numeric":
+				case "real":
 					 return new CreateObjectExpression(Types.nullable(Types.Double));
 				case "bytea":
 					return new CreateObjectExpression(Types.nullable(Types.QByteArray)) ;	
@@ -181,6 +184,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 				return QString.fromStringConstant(col.getDefaultValue());
 			case "double precision":
 			case "numeric":
+			case "real":
 				return new DoubleExpression(Double.valueOf(col.getDefaultValue()));
 			case "boolean":
 				return col.getDefaultValue().equals("true") ||col.getDefaultValue().equals("1") ?  BoolExpression.TRUE : BoolExpression.FALSE;
