@@ -14,7 +14,7 @@ public class QStringLiteral extends QString {
 	public String toString() {
 		String s = expression.toString();
 		if(s.equals("\"\"")) {
-			return "QLatin1Literal(\"\")";
+			return "QLatin1String(\"\")";
 		} else if(s.matches("\\A\\p{ASCII}*\\z")) {
 			// TODO causes ambiguous method calls: disabled temporarily
 			
@@ -24,7 +24,7 @@ public class QStringLiteral extends QString {
 				return "QStringLiteral"+CodeUtil.parentheses(s);
 			}
 			
-			return "QLatin1Literal"+CodeUtil.parentheses(s);
+			return "QLatin1String"+CodeUtil.parentheses(s);
 			
 		} else {
 			return "QStringLiteral"+CodeUtil.parentheses(s);
