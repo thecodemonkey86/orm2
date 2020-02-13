@@ -26,7 +26,7 @@ public class PgCppUtil {
 		case "oid":
 			return CoreTypes.QVariant.getMethod("toLongLong");
 		case "smallint":
-			return CoreTypes.QVariant.getMethod("toInt");
+			return CoreTypes.QVariant.getTemplateMethod("value",CoreTypes.Short);
 		case "character varying":
 		case "character":	
 		case "text":
