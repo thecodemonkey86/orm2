@@ -203,7 +203,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 	}
 
 	@Override
-	public String getRepositoryUpsertMethod() {
-		return "upsertPg";
+	public String getRepositoryInsertOrIgnoreMethod() {
+		return "insertOrIgnorePg";
 	}
 }

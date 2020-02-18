@@ -18,5 +18,5 @@ public abstract class DatabaseTypeMapper {
 	
 	public abstract ClsSqlQuery getSqlQueryType();
 	public abstract Type columnToType(Column c);
-	public abstract String getRepositoryUpsertMethod();
+	public abstract String getRepositoryInsertOrIgnoreMethod();
 }

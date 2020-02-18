@@ -88,7 +88,7 @@ public class MySqlDatabase extends Database {
 
 
 	@Override
-	public boolean supportsUpsert() {
+	public boolean supportsInsertOrIgnore() {
 		// TODO Auto-generated method stub
 		return false;
 	}

@@ -159,7 +159,7 @@ public class MethodEntitySaveBulk extends Method {
 							));
 					
 					if(EntityCls.getDatabase().supportsMultiRowInsert()) {
-						String sqlAdded= EntityCls.getDatabase().supportsUpsert() ?
+						String sqlAdded= EntityCls.getDatabase().supportsInsertOrIgnore() ?
 								
 								EntityCls.getDatabase().sqlInsertOrIgnoreMultiRow(r.getMappingTable(),"%1") :
 									

@@ -258,7 +258,7 @@ public class SqliteDatabase extends Database {
 	}
 
 	@Override
-	public boolean supportsUpsert() {
+	public boolean supportsInsertOrIgnore() {
 		return false;
 	}
 

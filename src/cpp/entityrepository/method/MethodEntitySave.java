@@ -40,7 +40,7 @@ public class MethodEntitySave extends Method {
 	public MethodEntitySave(EntityCls bean,boolean upsert
 //			, boolean overloadCascadeSaveRelations
 			) {
-		super(Public, Types.Void, upsert?"upsert": "save");
+		super(Public, Types.Void, upsert?"insertOrIgnore": "save");
 //		if (!overloadCascadeSaveRelations)
 //			this.addParam(new Param(Types.Bool, "cascadeSaveRelations"));
 //		this.setVirtualQualifier(true);
@@ -62,7 +62,7 @@ public class MethodEntitySave extends Method {
 //			addInstr(new StaticMethodCall(parent.getSuperclass(), parent.getMethod("save" ), getParam("cascadeSaveRelations")).asInstruction()) ;
 			
 			if(upsert) {
-				addInstr(_this().callMethodInstruction(EntityCls.getDatabaseMapper().getRepositoryUpsertMethod(),pBean)) ;
+				addInstr(_this().callMethodInstruction(EntityCls.getDatabaseMapper().getRepositoryInsertOrIgnoreMethod(),pBean)) ;
 			} else {
 				addInstr(_this().callMethodInstruction(ClsBaseRepository.saveBean,pBean));
 			}
@@ -162,7 +162,7 @@ public class MethodEntitySave extends Method {
 					for(int i=0;i<r.getDestColumnCount();i++) {
 						mappingTableColumns.add(r.getDestMappingColumn(i));
 					}
-					String sqlAdded= EntityCls.getDatabase().supportsUpsert() && !r.hasSqlOption(AbstractRelation.RelationSqlOptions.disableOnConflictDoNothing) ?
+					String sqlAdded= EntityCls.getDatabase().supportsInsertOrIgnore() && !r.hasSqlOption(AbstractRelation.RelationSqlOptions.disableOnConflictDoNothing) ?
 							
 							EntityCls.getDatabase().sqlInsertOrIgnoreMultiRow(r.getMappingTable(),"%1") :
 								

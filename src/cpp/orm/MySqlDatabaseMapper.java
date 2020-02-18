@@ -186,7 +186,7 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 	}
 
 	@Override
-	public String getRepositoryUpsertMethod() {
+	public String getRepositoryInsertOrIgnoreMethod() {
 		// TODO Auto-generated method stub
 		return null;
 	}
