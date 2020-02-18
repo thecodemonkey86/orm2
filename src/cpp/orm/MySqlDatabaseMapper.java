@@ -184,4 +184,10 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 	public ClsSqlQuery getSqlQueryType() {
 		throw new RuntimeException("not impl");
 	}
+
+	@Override
+	public String getRepositoryUpsertMethod() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -201,4 +201,9 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 	public ClsSqlQuery getSqlQueryType() {
 		return Types.PgSqlQuery;
 	}
+
+	@Override
+	public String getRepositoryUpsertMethod() {
+		return "upsertPg";
+	}
 }

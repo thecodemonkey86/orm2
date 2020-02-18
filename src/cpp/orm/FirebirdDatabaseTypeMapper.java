@@ -200,4 +200,10 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 		return Types.FirebirdSqlQuery;
 	}
 
+	@Override
+	public String getRepositoryUpsertMethod() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

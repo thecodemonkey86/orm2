@@ -92,7 +92,10 @@ public class ClsEntityRepository extends Cls{
 				addMethod(new MethodCreateQueryUpdate(bean));
 			
 			addMethod(new MethodEntityLoad(bean));
-			addMethod(new MethodEntitySave(bean));
+			
+			if(EntityCls.getDatabase().supportsUpsert())
+				addMethod(new MethodEntitySave(bean,true));
+			addMethod(new MethodEntitySave(bean,false));
 			addMethod(new MethodEntitySaveBulk(bean,false));
 			addMethod(new MethodEntitySaveBulk(bean,true));
 			addMethod(new MethodGetFromRecord(bean,false));

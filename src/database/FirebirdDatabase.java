@@ -91,7 +91,7 @@ public class FirebirdDatabase extends Database {
 	}
 
 	@Override
-	public boolean supportsInsertOrIgnore() {
+	public boolean supportsUpsert() {
 		return false;
 	}
 

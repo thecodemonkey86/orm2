@@ -35,18 +35,20 @@ public class MethodEntitySave extends Method {
 //	protected boolean overloadCascadeSaveRelations;
 	protected EntityCls bean;
 	protected Param pBean;
+	protected boolean upsert;
 	
-	
-	public MethodEntitySave(EntityCls bean
+	public MethodEntitySave(EntityCls bean,boolean upsert
 //			, boolean overloadCascadeSaveRelations
 			) {
-		super(Public, Types.Void, "save");
+		super(Public, Types.Void, upsert?"upsert": "save");
 //		if (!overloadCascadeSaveRelations)
 //			this.addParam(new Param(Types.Bool, "cascadeSaveRelations"));
 //		this.setVirtualQualifier(true);
 //		this.overloadCascadeSaveRelations = overloadCascadeSaveRelations;
 		pBean = addParam(bean.toSharedPtr().toConstRef(), "entity");
 		this.bean = bean;
+		this.upsert = upsert;
+		
 	}
 
 	
@@ -59,7 +61,11 @@ public class MethodEntitySave extends Method {
 //		} else {
 //			addInstr(new StaticMethodCall(parent.getSuperclass(), parent.getMethod("save" ), getParam("cascadeSaveRelations")).asInstruction()) ;
 			
-			addInstr(_this().callMethodInstruction(ClsBaseRepository.saveBean,pBean));
+			if(upsert) {
+				addInstr(_this().callMethodInstruction(EntityCls.getDatabaseMapper().getRepositoryUpsertMethod(),pBean)) ;
+			} else {
+				addInstr(_this().callMethodInstruction(ClsBaseRepository.saveBean,pBean));
+			}
 		
 			// TODO FIXME one to many relations @see BeanCls.getAllManyRelations
 			List<ManyRelation> manyRelations = bean.getManyToManyRelations();
@@ -156,7 +162,7 @@ public class MethodEntitySave extends Method {
 					for(int i=0;i<r.getDestColumnCount();i++) {
 						mappingTableColumns.add(r.getDestMappingColumn(i));
 					}
-					String sqlAdded= EntityCls.getDatabase().supportsInsertOrIgnore() && !r.hasSqlOption(AbstractRelation.RelationSqlOptions.disableOnConflictDoNothing) ?
+					String sqlAdded= EntityCls.getDatabase().supportsUpsert() && !r.hasSqlOption(AbstractRelation.RelationSqlOptions.disableOnConflictDoNothing) ?
 							
 							EntityCls.getDatabase().sqlInsertOrIgnoreMultiRow(r.getMappingTable(),"%1") :
 								

@@ -107,7 +107,7 @@ public class PgDatabase extends Database {
 
 
 	@Override
-	public boolean supportsInsertOrIgnore() {
+	public boolean supportsUpsert() {
 		return true;
 	}
 

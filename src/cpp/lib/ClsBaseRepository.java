@@ -9,6 +9,7 @@ import cpp.entityrepository.ClsEntityRepository;
 public class ClsBaseRepository extends Cls{
 
 	public static final String saveBean = "saveBean"; 
+	public static final String upsertPg = "upsertPg"; 
 	public static final String bulkSave = "bulkSave"; 
 	public static final String bulkInsert = "bulkInsert"; 
 	
@@ -20,6 +21,7 @@ public class ClsBaseRepository extends Cls{
 		addMethod( new LibMethod(Types.Void, saveBean));
 		addMethod( new LibMethod(Types.Void, bulkSave));
 		addMethod( new LibMethod(Types.Void, bulkInsert));
+		addMethod( new LibMethod(Types.Void, upsertPg));
 		headerInclude = type.toLowerCase();
 	}
 
