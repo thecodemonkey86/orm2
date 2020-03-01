@@ -14,6 +14,7 @@ import database.relation.PrimaryKey;
 import database.table.AbstractTable;
 import database.table.Table;
 import util.CodeUtil2;
+import util.StringUtil;
 
 public class PgDatabase extends Database {
 	protected String defaultSchema;
@@ -44,7 +45,11 @@ public class PgDatabase extends Database {
 			col.setPosition(rsColumndata.getInt("ordinal_position"));
 			col.setDbType(rsColumndata.getString("data_type"));
 			col.setNullable(rsColumndata.getString("is_nullable").equals("YES"));
-			col.setDefaultValue( rsColumndata.getString("column_default"));
+			String defaultValue = rsColumndata.getString("column_default");
+			if(defaultValue != null && defaultValue.contains("::")) {
+				defaultValue = StringUtil.dropAll( defaultValue.split("::")[0], '\'');
+			}
+			col.setDefaultValue(defaultValue );
 			tbl.addColumn(col);
 		}
 		rsColumndata.close();
