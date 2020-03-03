@@ -3,7 +3,7 @@ package cpp.entity;
 import java.util.ArrayList;
 
 import cpp.Types;
-import cpp.core.Operator;
+import cpp.core.NonMemberOperator;
 import cpp.core.Param;
 import cpp.core.expression.BinaryOperatorExpression;
 import cpp.core.expression.Expression;
@@ -12,7 +12,7 @@ import database.column.Column;
 import database.relation.PrimaryKey;
 import util.pg.PgCppUtil;
 
-public class NonMemberOperatorEntityEquals extends Operator{
+public class NonMemberOperatorEntityEquals extends NonMemberOperator{
 
 	PrimaryKey pk;
 	

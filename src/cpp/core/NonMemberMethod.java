@@ -8,6 +8,7 @@ import cpp.core.instruction.Instruction;
 public abstract class NonMemberMethod extends Method {
 
 	protected boolean defaultScope; 
+	String exportMacro;
 	
 	public NonMemberMethod(Type returnType,String name) {
 		super(null,returnType,name);
@@ -28,7 +29,7 @@ public abstract class NonMemberMethod extends Method {
 		for(Param p:this.params) {
 			params.add(p.toSourceString());
 		}
-		return CodeUtil.sp((inlineQualifier?"inline":null), isStatic?"static":null,getReturnType().toDeclarationString(),getName(),CodeUtil.parentheses(CodeUtil.commaSep(params)),(constQualifier?"const":null), ";");
+		return CodeUtil.sp(exportMacro,(inlineQualifier?"inline":null), isStatic?"static":null,getReturnType().toDeclarationString(),getName(),CodeUtil.parentheses(CodeUtil.commaSep(params)),(constQualifier?"const":null), ";");
 	}
 	
 	@Override
@@ -48,7 +49,9 @@ public abstract class NonMemberMethod extends Method {
 		return sb.toString();
 	}
 
-	
+	public void setExportMacro(String exportMacro) {
+		this.exportMacro = exportMacro;
+	}
 
 
 }

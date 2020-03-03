@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import cpp.Types;
 import cpp.core.Attr;
-import cpp.core.Operator;
+import cpp.core.NonMemberOperator;
 import cpp.core.Param;
 import cpp.core.Struct;
 import cpp.core.expression.BinaryOperatorExpression;
@@ -12,7 +12,7 @@ import cpp.core.expression.Expression;
 import cpp.core.expression.Expressions;
 import cpp.core.instruction.ReturnInstruction;
 
-public class StructPkEqOperator extends Operator {
+public class StructPkEqOperator extends NonMemberOperator {
 	Struct structPk;
 	public StructPkEqOperator(Struct structPk) {
 		super("==", Types.Bool, false);

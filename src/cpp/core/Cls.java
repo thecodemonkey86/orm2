@@ -25,11 +25,11 @@ public class Cls extends Type implements IAttributeContainer{
 	
 	protected ArrayList<Cls> superclasses;
 	protected ArrayList<NonMemberMethod> nonMemberMethods;
-	protected ArrayList<Operator> nonMemberOperators;
+	protected ArrayList<NonMemberOperator> nonMemberOperators;
 	protected ArrayList<Enum> enums;
 	protected String useNamespace;
 	protected String headerInclude;
-	protected String classDocumentation;
+	protected String classDocumentation,exportMacro;
 	
 	public void setUseNamespace(String useNamespace) {
 		this.useNamespace = useNamespace;
@@ -207,7 +207,7 @@ public class Cls extends Type implements IAttributeContainer{
 		if(classDocumentation != null) {
 			CodeUtil.writeLine(sb,classDocumentation);
 		}
-		sb.append( "class " +type);
+		sb.append(CodeUtil.sp("class",exportMacro,type));
 		if (superclasses!=null) {
 			ArrayList<String> superClassDecl = new ArrayList<>();
 			for (Cls superclass : superclasses) {
@@ -447,9 +447,10 @@ public class Cls extends Type implements IAttributeContainer{
 		}
 	}
 	
-	public void addNonMemberOperator(Operator op) {
+	public void addNonMemberOperator(NonMemberOperator op) {
 		if(nonMemberOperators==null)
 			nonMemberOperators = new ArrayList<>();
+		
 		nonMemberOperators.add(op);
 	}
 	
@@ -552,4 +553,18 @@ public class Cls extends Type implements IAttributeContainer{
 		}
 		return false;
 	}
+	
+	public void setExportMacro(String exportMacro, String exportMacroIncludeHeader) {
+		this.exportMacro = exportMacro;
+		addInclude(exportMacroIncludeHeader);
+		if(nonMemberMethods!=null)
+		for(NonMemberMethod m:nonMemberMethods) {
+			m.setExportMacro(exportMacro);
+		}
+		if(nonMemberOperators!=null)
+		for(NonMemberOperator o:nonMemberOperators) {
+			o.setExportMacro(exportMacro);
+		}
+	}
+	
 }

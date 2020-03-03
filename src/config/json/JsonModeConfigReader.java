@@ -13,6 +13,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import config.ConfigReader;
 import config.OrmConfig;
 import config.OrmConfig.JsonMode;
+import config.cpp.CppConfigReader;
 import config.php.PhpConfigReader;
 import generate.CppOrm;
 import generate.OrmGenerator;
@@ -48,7 +49,7 @@ public class JsonModeConfigReader {
 			
 			inputStream.reset();
 			boolean clientIsCpp = clientType.equals("cpp");
-			ConfigReader clientCfgReader = clientIsCpp ? new ConfigReader(xmlFile) : new PhpConfigReader(xmlFile);
+			ConfigReader clientCfgReader = clientIsCpp ? new CppConfigReader(xmlFile) : new PhpConfigReader(xmlFile);
 			
 		
 			xr = XMLReaderFactory.createXMLReader();

@@ -8,9 +8,10 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.HashSet;
 import java.util.List;
-import config.ConfigReader;
 import config.OrmConfig;
 import config.SetPassConfigReader;
+import config.cpp.CppConfigReader;
+import config.cpp.CppOrmConfig;
 import cpp.JsonTypes;
 import cpp.Types;
 import cpp.core.instruction.Instruction;
@@ -90,7 +91,7 @@ public class CppOrm extends OrmGenerator {
 			PasswordManager.saveToFile(cfgReader.getCredentials(), args[1] );
 			return;
 		}
-		ConfigReader cfgReader = new ConfigReader(xmlFile.getParent());
+		CppConfigReader cfgReader = new CppConfigReader(xmlFile.getParent());
 		DefaultXMLReader.read(xmlFile, cfgReader);
 		OrmConfig cfg=cfgReader.getCfg();
 		new CppOrm(cfg).generate();
@@ -98,7 +99,8 @@ public class CppOrm extends OrmGenerator {
 
 	@Override
 	public void generate() throws IOException 	{
-Charset utf8 = Charset.forName("UTF-8");
+		CppOrmConfig cfg = (CppOrmConfig) this.cfg;
+		Charset utf8 = Charset.forName("UTF-8");
 		Instruction.setStackTraceEnabled(cfg.isEnableStacktrace());
 		
 		
@@ -197,9 +199,10 @@ Charset utf8 = Charset.forName("UTF-8");
 	//					FileUtil2.writeFileIfContentChanged(Paths.get("bak_custom_class_members", pathSrc.getFileName().toString()),sbSrc.toString().getBytes(utf8), writeOptions);
 	//				
 				}
-				
+				c.setExportMacro(cfg.getExportMacro(),cfg.getExportMacroIncludeHeader());
 				c.addMethodImplementations();
 			}
+			repo.setExportMacro(cfg.getExportMacro(),cfg.getExportMacroIncludeHeader());
 			repo.addMethodImplementations();
 	//		List<ManyRelation> list = tableManyRelations.get(getTableByName("artist"));
 	//		System.out.println(list);
@@ -238,18 +241,21 @@ Charset utf8 = Charset.forName("UTF-8");
 				
 				
 				ClsEntityQuerySelect clsQuery = Types.beanQuerySelect(c);
+				clsQuery.setExportMacro(cfg.getExportMacro(),cfg.getExportMacroIncludeHeader());
 				clsQuery.addMethodImplementations();
 				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+".h"), clsQuery.toHeaderString().getBytes(utf8), writeOptions);
 				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+".cpp"), clsQuery.toSourceString().getBytes(utf8), writeOptions);
 				
 				if(c.getTbl().hasQueryType(Table.QueryType.Delete)) {
 					ClsEntityQueryDelete clsDelete = new ClsEntityQueryDelete(c);
+					clsDelete.setExportMacro(cfg.getExportMacro(),cfg.getExportMacroIncludeHeader());
 					clsDelete.addMethodImplementations();
 					FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsDelete.getName().toLowerCase()+".h"), clsDelete.toHeaderString().getBytes(utf8), writeOptions);
 					FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsDelete.getName().toLowerCase()+".cpp"), clsDelete.toSourceString().getBytes(utf8), writeOptions);
 				}
 				if(c.getTbl().hasQueryType(Table.QueryType.Update)) {
 					ClsEntityQueryUpdate clsUpdate = new ClsEntityQueryUpdate(c);
+					clsUpdate.setExportMacro(cfg.getExportMacro(),cfg.getExportMacroIncludeHeader());
 					clsUpdate.addMethodImplementations();
 					FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsUpdate.getName().toLowerCase()+".h"), clsUpdate.toHeaderString().getBytes(utf8), writeOptions);
 					FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsUpdate.getName().toLowerCase()+".cpp"), clsUpdate.toSourceString().getBytes(utf8), writeOptions);
@@ -290,7 +296,7 @@ Charset utf8 = Charset.forName("UTF-8");
 			}
 			JsonEntityRepository repo = JsonTypes.JsonEntityRepository;
 			repo.addDeclarations(JsonEntities.getAllEntities());
-
+			repo.setExportMacro(cfg.getExportMacro(),cfg.getExportMacroIncludeHeader());
 			repo.addMethodImplementations();
 			for (JsonEntity c : JsonEntities.getAllEntities()) {
 				Path pathHeader = pathEntities.resolve(c.getName().toLowerCase()+".h");
@@ -345,6 +351,7 @@ Charset utf8 = Charset.forName("UTF-8");
 						c.addCustomPreprocessorCode(customPp );
 					}
 				}
+				c.setExportMacro(cfg.getExportMacro(),cfg.getExportMacroIncludeHeader());
 				c.addMethodImplementations();
 			}
 			
