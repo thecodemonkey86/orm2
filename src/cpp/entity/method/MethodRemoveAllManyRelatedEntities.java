@@ -46,22 +46,25 @@ public class MethodRemoveAllManyRelatedEntities extends Method {
 								.getCamelCaseName()
 						));
 			}
-			foreachRelationBeans.addInstr(
+			
+			
+			
+			/*foreachRelationBeans.addInstr(
 					parent.getAttrByName(
 							a.getName()+"Removed")
 							.callMethod("append",
 									idRemoved
-								).asInstruction());	
+								).asInstruction());	*/
 		} else {
 			ForeachLoop foreachRelationBeans = _foreach(varForeach, a);	
 			
-			foreachRelationBeans.addInstr(
+			/*foreachRelationBeans.addInstr(
 				parent.getAttrByName(
 						a.getName()+"Removed")
 						.callMethod("append",
 								varForeach.callMethod("get" + relationBean.getTbl().getPrimaryKey().getFirstColumn().getUc1stCamelCaseName())
 																
-							).asInstruction());	
+							).asInstruction());	*/
 			
 		}
 		

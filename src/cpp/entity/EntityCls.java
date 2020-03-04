@@ -186,12 +186,13 @@ public class EntityCls extends Cls {
 		for(OneToManyRelation r:oneToManyRelations) {
 			ManyAttr attr = new ManyAttr(r);
 			addAttr(attr);
-			Attr attrManyToManyAdded = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Added");
-			addAttr(attrManyToManyAdded);
-			addMethod(new MethodAttributeGetter(attrManyToManyAdded));
+			//Attr attrManyToManyAdded = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Added");
+			//addAttr(attrManyToManyAdded);
+			//addMethod(new MethodAttributeGetter(attrManyToManyAdded));
 			
-			Attr attrManyToManyRemoved = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Removed");
-			addAttr(attrManyToManyRemoved);
+			//Attr attrManyToManyRemoved = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Removed");
+			//addAttr(attrManyToManyRemoved);
+			//addMethod(new MethodAttributeGetter(attrManyToManyRemoved));
 			addIncludeHeader(attr.getClassType().getIncludeHeader());
 			addForwardDeclaredClass( (Cls) ((TplCls) (Cls) attr.getElementType()).getElementType());
 			addMethod(new MethodManyAttrGetter(attr));
@@ -201,8 +202,8 @@ public class EntityCls extends Cls {
 			addMethod(new MethodAddRelatedEntityInternal(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
 			addMethod(new MethodGetManyRelatedAtIndex(attr, r));
 			addMethod(new MethodGetManyRelatedCount(attr, r));
-			addMethod(new MethodRemoveAllManyRelatedEntities(r));
-			addMethod(new MethodReplaceAllManyRelatedEntities(r));
+			//addMethod(new MethodRemoveAllManyRelatedEntities(r));
+			//addMethod(new MethodReplaceAllManyRelatedEntities(r));
 			addMethod(new MethodGetLastItem(attr.getElementType(), r));
 		}
 		
@@ -216,16 +217,16 @@ public class EntityCls extends Cls {
 			addAttr(attrManyToManyAdded);
 			addMethod(new MethodAttributeGetter(attrManyToManyAdded));
 			
-			Attr attrManyToManyRemoved = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Removed");
-			addAttr(attrManyToManyRemoved);
-			addMethod(new MethodAttributeGetter(attrManyToManyRemoved));
+			//Attr attrManyToManyRemoved = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Removed");
+			//addAttr(attrManyToManyRemoved);
+			//addMethod(new MethodAttributeGetter(attrManyToManyRemoved));
 			addMethod(new MethodAddManyToManyRelatedEntity(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
 			//addMethod(new MethodAddManyToManyRelatedBean(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
 			addMethod(new MethodAddManyToManyRelatedEntityInternal(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
 			addMethod(new MethodAddManyToManyRelatedEntityInternal(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
 			
-			addMethod(new MethodRemoveManyToManyRelatedEntity(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
-			addMethod(new MethodRemoveAllManyRelatedEntities(r));
+			//addMethod(new MethodRemoveManyToManyRelatedEntity(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
+			//addMethod(new MethodRemoveAllManyRelatedEntities(r));
 		}
 		
 		Type nullstring = Types.nullable(Types.QString);
@@ -280,12 +281,12 @@ public class EntityCls extends Cls {
 			
 		}
 		
-		for(OneToManyRelation r:oneToManyRelations) {
-			addMethod(new MethodToggleAddRemoveRelatedEntity(r));
-		}
-		for(ManyRelation r:manyRelations) {
-			addMethod(new MethodToggleAddRemoveRelatedEntity(r));
-		}
+		//for(OneToManyRelation r:oneToManyRelations) {
+		//	addMethod(new MethodToggleAddRemoveRelatedEntity(r));
+		//}
+		//for(ManyRelation r:manyRelations) {
+		//	addMethod(new MethodToggleAddRemoveRelatedEntity(r));
+		//}
 //		addAttr(new RepositoryAttr());
 	}
 	

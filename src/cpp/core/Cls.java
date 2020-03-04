@@ -556,7 +556,8 @@ public class Cls extends Type implements IAttributeContainer{
 	
 	public void setExportMacro(String exportMacro, String exportMacroIncludeHeader) {
 		this.exportMacro = exportMacro;
-		addInclude(exportMacroIncludeHeader);
+		if(exportMacro != null)
+			addInclude(exportMacroIncludeHeader);
 		if(nonMemberMethods!=null)
 		for(NonMemberMethod m:nonMemberMethods) {
 			m.setExportMacro(exportMacro);

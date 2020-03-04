@@ -19,11 +19,13 @@ import cpp.entityrepository.method.MethodFetchOne;
 import cpp.entityrepository.method.MethodGetById;
 import cpp.entityrepository.method.MethodGetFromRecord;
 import cpp.entityrepository.method.MethodLoadCollection;
+import cpp.entityrepository.method.MethodRemoveAllRelated;
 import cpp.entityrepository.method.MethodRepoCreateNew;
 import cpp.entityrepository.method.MethodRepoCreateNewNonNullableOnly;
 import cpp.lib.ClsBaseRepository;
 import cpp.lib.EnableSharedFromThis;
 import database.column.Column;
+import database.relation.IManyRelation;
 import database.table.Table;
 
 public class ClsEntityRepository extends Cls{
@@ -129,6 +131,9 @@ public class ClsEntityRepository extends Cls{
 				}
 			}
 			addMethod(new MethodEntityRemove(bean,false));
+			
+			for(IManyRelation r:bean.getAllManyRelations())
+				addMethod(new MethodRemoveAllRelated(bean, r));
 		}
 		
 	}
