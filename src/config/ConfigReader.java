@@ -464,6 +464,12 @@ public class ConfigReader implements ContentHandler {
 					if(overrideSelect != null) {
 						col.setOverrideSelect(overrideSelect);
 					}
+					
+					String enableRawValue = atts.getValue("enableRawValue");
+					
+					if(enableRawValue != null) {
+						col.setEnableRawValue(enableRawValue.equals("true") || enableRawValue.equals("1"));
+					}
 					currentEntityTable.addColumn(col);
 					break;
 				default:

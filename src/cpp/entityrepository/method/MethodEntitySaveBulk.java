@@ -89,7 +89,8 @@ public class MethodEntitySaveBulk extends Method {
 					}
 					
 					// removed
-					Expression attrManyToManyRemoved = foreach.getVar().callAttrGetter(OrmUtil.getManyRelationDestAttrName(r)+"Removed" );
+					// delete from mapping table should be handled by foreign key
+					/*Expression attrManyToManyRemoved = foreach.getVar().callAttrGetter(OrmUtil.getManyRelationDestAttrName(r)+"Removed" );
 					IfBlock ifRemoveBeans = foreach._if(Expressions.not(attrManyToManyRemoved
 							.callMethod("empty")
 							));
@@ -142,7 +143,7 @@ public class MethodEntitySaveBulk extends Method {
 					
 					foreachAttrRemove.addInstr(new BinaryOperatorExpression(varPlaceholdersForeachRemove, new QStringPlusEqOperator(), QString.fromStringConstant(bean.getTbl().getPrimaryKey().isMultiColumn() ? ","+CodeUtil2.parentheses( CodeUtil2.strMultiply("?", ",", r.getDestTable().getPrimaryKey().getColumns().size())):",?" )).asInstruction() );
 					ifRemoveBeans.thenBlock().addInstr(Types.Sql.callStaticMethod(ClsSql.execute, _this().accessAttr("sqlCon"), varDeleteSql.callMethod("arg", varPlaceholdersForeachRemove.callMethod("mid", new IntExpression(1))), varParamsForeachRemove).asInstruction());
-					
+					*/
 					// added
 					
 	//				ArrayList<String> columnsInsert=new ArrayList<>();
