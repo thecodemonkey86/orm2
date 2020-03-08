@@ -62,9 +62,7 @@ import cpp.entity.method.MethodQHashEntitySharedPtr;
 import cpp.entity.method.MethodQHashPkStruct;
 import cpp.entity.method.MethodRemoveAllManyRelatedEntities;
 import cpp.entity.method.MethodRemoveManyToManyRelatedEntity;
-import cpp.entity.method.MethodReplaceAllManyRelatedEntities;
 import cpp.entity.method.MethodSetAutoIncrementId;
-import cpp.entity.method.MethodToggleAddRemoveRelatedEntity;
 import cpp.entity.method.MethodUnload;
 import cpp.orm.DatabaseTypeMapper;
 import cpp.orm.OrmUtil;
@@ -84,7 +82,7 @@ public class EntityCls extends Cls {
 	public static final String END_CUSTOM_CLASS_MEMBERS = "/*END_CUSTOM_CLASS_MEMBERS*/";
 	public static final String BEGIN_CUSTOM_PREPROCESSOR = "/*BEGIN_CUSTOM_PREPROCESSOR*/";
 	public static final String END_CUSTOM_PREPROCESSOR = "/*END_CUSTOM_PREPROCESSOR*/";
-	public static final String APILEVEL = "3.2";
+	public static final String APILEVEL = "3.3";
 	
 	static Database database;
 	static DatabaseTypeMapper mapper;
@@ -225,8 +223,8 @@ public class EntityCls extends Cls {
 			addMethod(new MethodAddManyToManyRelatedEntityInternal(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
 			addMethod(new MethodAddManyToManyRelatedEntityInternal(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
 			
-			//addMethod(new MethodRemoveManyToManyRelatedEntity(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
-			//addMethod(new MethodRemoveAllManyRelatedEntities(r));
+			addMethod(new MethodRemoveManyToManyRelatedEntity(r));
+			addMethod(new MethodRemoveAllManyRelatedEntities(r));
 		}
 		
 		Type nullstring = Types.nullable(Types.QString);

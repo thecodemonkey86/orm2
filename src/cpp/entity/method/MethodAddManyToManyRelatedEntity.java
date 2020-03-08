@@ -1,15 +1,21 @@
 package cpp.entity.method;
 
 import util.StringUtil;
+
+import java.util.ArrayList;
+
+import codegen.CodeUtil;
 import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.Method;
 import cpp.core.Param;
-import cpp.core.Struct;
+import cpp.core.QString;
 import cpp.core.expression.Var;
-import cpp.entity.Entities;
 import cpp.entity.EntityCls;
+import cpp.entityrepository.ClsEntityRepository;
+import cpp.lib.ClsQVariantList;
 import cpp.lib.ClsQVector;
+import cpp.lib.ClsSql;
 import cpp.orm.OrmUtil;
 import database.column.Column;
 import database.relation.ManyRelation;
@@ -30,11 +36,35 @@ public class MethodAddManyToManyRelatedEntity extends Method {
 
 	@Override
 	public void addImplementation() {
+		EntityCls parent = (EntityCls) this.parent;
 		Attr a=parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
 		addInstr(a.callMethod(ClsQVector.append,pBean).asInstruction());
-		EntityCls relationBean = Entities.get( rel.getDestTable());
+		//EntityCls relationBean = Entities.get( rel.getDestTable());
+		ArrayList<String> placeholders = new ArrayList<>();
+		ArrayList<String> columns = new ArrayList<>();
+		Var varParams = _declare(Types.QVariantList, "params");
 		
-		if (relationBean.getTbl().getPrimaryKey().isMultiColumn()) {
+		for(int i=0;i<rel.getSourceColumnCount();i++) {
+			columns.add(rel.getSourceMappingColumn(i).getEscapedName());
+		}
+		for(int i=0;i<rel.getDestColumnCount();i++) {
+			columns.add(rel.getDestMappingColumn(i).getEscapedName());
+		}
+		
+		for(Column colPk : rel.getSourceTable().getPrimaryKey()) {
+			placeholders.add("?");
+			_callMethodInstr(varParams, ClsQVariantList.append,parent.accessThisAttrGetterByColumn(colPk));
+		}
+		for(Column colPk : rel.getDestTable().getPrimaryKey()) {
+			placeholders.add("?");
+			_callMethodInstr(varParams, ClsQVariantList.append, pBean.callAttrGetter(colPk.getCamelCaseName()));
+		}
+		
+		String sql = String.format("insert into %s (%s) values (%s)",rel.getMappingTable().getEscapedName(), CodeUtil.commaSep(columns), CodeUtil.commaSep(placeholders));
+		
+		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, _this().accessAttr(EntityCls.repository).callAttrGetter(ClsEntityRepository.sqlCon),QString.fromStringConstant(sql),varParams).asInstruction());
+		
+		/*if (relationBean.getTbl().getPrimaryKey().isMultiColumn()) {
 			Struct pkType=relationBean.getStructPk();
 			Var idAdded = _declare(pkType, "idAdded");
 			for(Column col:relationBean.getTbl().getPrimaryKey().getColumns()) {
@@ -63,7 +93,7 @@ public class MethodAddManyToManyRelatedEntity extends Method {
 											.getCamelCaseName()
 									)
 								).asInstruction());	
-		}
+		}*/
 		
 		
 		

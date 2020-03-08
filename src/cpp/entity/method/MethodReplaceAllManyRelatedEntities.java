@@ -4,13 +4,9 @@ import util.StringUtil;
 import cpp.Types;
 import cpp.core.Method;
 import cpp.core.Param;
-import cpp.core.expression.Var;
-import cpp.core.instruction.ForeachLoop;
 import cpp.entity.Entities;
 import cpp.orm.OrmUtil;
 import database.relation.IManyRelation;
-import database.relation.ManyRelation;
-import database.relation.OneToManyRelation;
 
 public class MethodReplaceAllManyRelatedEntities extends Method {
 
@@ -24,13 +20,13 @@ public class MethodReplaceAllManyRelatedEntities extends Method {
 
 	@Override
 	public void addImplementation() {
-		addInstr( _this().callMethodInstruction(MethodRemoveAllManyRelatedEntities.getMethodName(rel)));
-		ForeachLoop foreach = _foreach(new Var(Entities.get(rel.getDestTable()).toSharedPtr().toConstRef(), "_"+  rel.getDestTable().getCamelCaseName()), beans);
-		
-		if(rel instanceof OneToManyRelation)
-			foreach._callMethodInstr(_this(), MethodAddRelatedEntity.getMethodName((OneToManyRelation) rel), foreach.getVar());
-		else if(rel instanceof ManyRelation)
-			foreach._callMethodInstr(_this(), MethodAddManyToManyRelatedEntity.getMethodName((ManyRelation) rel), foreach.getVar());
+//		addInstr( _this().callMethodInstruction(MethodRemoveAllManyRelatedEntities.getMethodName(rel)));
+//		ForeachLoop foreach = _foreach(new Var(Entities.get(rel.getDestTable()).toSharedPtr().toConstRef(), "_"+  rel.getDestTable().getCamelCaseName()), beans);
+//		
+//		if(rel instanceof OneToManyRelation)
+//			foreach._callMethodInstr(_this(), MethodAddRelatedEntity.getMethodName((OneToManyRelation) rel), foreach.getVar());
+//		else if(rel instanceof ManyRelation)
+//			foreach._callMethodInstr(_this(), MethodAddManyToManyRelatedEntity.getMethodName((ManyRelation) rel), foreach.getVar());
 	}
 
 }
