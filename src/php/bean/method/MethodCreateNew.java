@@ -1,6 +1,6 @@
 package php.bean.method;
 
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.expression.BoolExpression;
 import php.core.expression.NewOperator;
 import php.core.expression.Var;
@@ -8,9 +8,9 @@ import php.core.method.Method;
 
 public class MethodCreateNew extends Method {
 
-	BeanCls cls;
+	EntityCls cls;
 	
-	public MethodCreateNew(BeanCls cls) {
+	public MethodCreateNew(EntityCls cls) {
 		super(Public, cls, "createNew");
 //		addParam(new Param(Types.Sql, "sqlCon"));
 		setStatic(true);

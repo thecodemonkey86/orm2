@@ -1,7 +1,7 @@
 package php.bean.method;
 
 import database.column.Column;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.Types;
 import php.core.expression.ArrayInitExpression;
 import php.core.expression.PhpStringLiteral;
@@ -9,7 +9,7 @@ import php.core.method.Method;
 
 public class MethodGetPrimaryKeyFields extends Method {
 
-	public MethodGetPrimaryKeyFields(BeanCls bean) {
+	public MethodGetPrimaryKeyFields(EntityCls bean) {
 		super(Public, bean.getTbl().getPrimaryKey().isMultiColumn() ? Types.array(Types.String) : Types.String, "getPrimaryKeyField"+(bean.getTbl().getPrimaryKey().isMultiColumn() ?"s":""));
 		setStatic(true);
 	}
@@ -17,7 +17,7 @@ public class MethodGetPrimaryKeyFields extends Method {
 	@Override
 	public void addImplementation() {
 		
-		BeanCls bean = (BeanCls) parent;
+		EntityCls bean = (EntityCls) parent;
 		
 		if(bean.getTbl().getPrimaryKey().isMultiColumn()) {
 			ArrayInitExpression pkFieldNames = new ArrayInitExpression();

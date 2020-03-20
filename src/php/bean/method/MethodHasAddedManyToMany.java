@@ -1,7 +1,7 @@
 package php.bean.method;
 
 import database.relation.ManyRelation;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.Attr;
 import php.core.Types;
 import php.core.expression.Expressions;
@@ -20,7 +20,7 @@ public class MethodHasAddedManyToMany extends Method{
 
 	@Override
 	public void addImplementation() {
-		BeanCls bean = (BeanCls) parent;
+		EntityCls bean = (EntityCls) parent;
 		Attr attrAdded = bean.getAttrByName(OrmUtil.getManyRelationDestAttrName(r)+"Added" );
 		_return(Expressions.and(
 				attrAdded.isNotNull(),

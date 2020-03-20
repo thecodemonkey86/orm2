@@ -1,7 +1,7 @@
 package php.bean.method;
 
 import database.column.Column;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.Attr;
 import php.core.PhpCls;
 import php.core.expression.Expressions;
@@ -15,7 +15,7 @@ public class MethodManyDelegateGetter extends Method {
 	protected String foreignClsName;
 	
 	public MethodManyDelegateGetter(Attr attr,Column col,String foreignClsName) {
-		super(Method.Public, BeanCls.getTypeMapper().getTypeFromDbDataType( col), "get"+StringUtil.ucfirst(attr.getName())+col.getUc1stCamelCaseName());
+		super(Method.Public, EntityCls.getTypeMapper().getTypeFromDbDataType( col), "get"+StringUtil.ucfirst(attr.getName())+col.getUc1stCamelCaseName());
 		this.attr = attr;
 		this.col = col;
 		this.foreignClsName = foreignClsName;

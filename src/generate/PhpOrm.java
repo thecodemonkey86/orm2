@@ -19,8 +19,8 @@ import database.relation.OneToManyRelation;
 import database.table.Table;
 import io.PasswordManager;
 import php.Php;
-import php.bean.BeanCls;
-import php.bean.Beans;
+import php.bean.EntityCls;
+import php.bean.Entities;
 import php.bean.CustomClassMemberCode;
 import php.beanrepository.ClsBeanRepository;
 import php.beanrepository.query.ClsBeanQuery;
@@ -32,6 +32,7 @@ import php.orm.FirebirdDatabaseTypeMapper;
 import php.orm.MySqlDatabaseTypeMapper;
 import php.orm.PgDatabaseTypeMapper;
 import php.rest.PhpJsonRestServer;
+import util.StringUtil;
 import xml.reader.DefaultXMLReader;
 
 public class PhpOrm extends OrmGenerator {
@@ -106,15 +107,15 @@ public class PhpOrm extends OrmGenerator {
 	@Override
 	public void generate() throws IOException  {
 		Php.phpVersion = ((PhpOrmConfig) cfg).getPhpversion();
-		BeanCls.setTypeMapper(getTypeMapper(cfg));
+		EntityCls.setTypeMapper(getTypeMapper(cfg));
 		Charset utf8 = Charset.forName("UTF-8");
 		ClsBeanRepository.setBeanRepositoryNamespace(cfg.getBasePath().relativize(cfg.getRepositoryPath()).toString().replace("/", "\\"));
-		BeanCls.setBeanNamespace(cfg.getBasePath().relativize(cfg.getModelPath()).toString().replace("/", "\\")+"\\Beans");
-		BeanCls.setBeanRepoNamespace(cfg.getBasePath().relativize(cfg.getRepositoryPath()).toString().replace("/", "\\"));
+		EntityCls.setBeanNamespace(cfg.getBasePath().relativize(cfg.getModelPath()).toString().replace("/", "\\")+"\\Entities");
+		EntityCls.setBeanRepoNamespace(cfg.getBasePath().relativize(cfg.getRepositoryPath()).toString().replace("/", "\\"));
 		ClsBeanQuery.setBeanQueryNamespace(ClsBeanRepository.getBeanRepositoryNamespace()+"\\Query");
 		
-		BeanCls.setSqlQueryCls(getSqlQueryCls(cfg));
-		BeanCls.setDatabase(cfg.getDatabase());
+		EntityCls.setSqlQueryCls(getSqlQueryCls(cfg));
+		EntityCls.setDatabase(cfg.getDatabase());
 	
 		InstructionBlock.setEnableStacktrace(cfg.isEnableStacktrace());
 		
@@ -125,21 +126,21 @@ public class PhpOrm extends OrmGenerator {
 			List<OneToManyRelation> manyRelations = cfg.getOneToManyRelations(tbl);
 			List<OneRelation> oneRelations = cfg.getOneRelations(tbl);
 			List<ManyRelation> manyToManyRelations = cfg.getManyRelations(tbl);
-			BeanCls cls = new BeanCls(tbl, manyRelations, oneRelations, manyToManyRelations);
+			EntityCls cls = new EntityCls(tbl, manyRelations, oneRelations, manyToManyRelations);
 			if(cfg.hasRenameMethodNames("EntityCls")) {
 				cls.setRenameMethods(cfg.getRenameMethods("EntityCls"));
 			}
-			Beans.add(cls);
+			Entities.add(cls);
 		}
 
 		ClsBeanRepository repo = Types.BeanRepository;
-		repo.addDeclarations(Beans.getAllBeans());
+		repo.addDeclarations(Entities.getAllEntities());
 
-		for (BeanCls c : Beans.getAllBeans()) {
+		for (EntityCls c : Entities.getAllEntities()) {
 			c.addDeclarations();
 		}
 
-		Path pathBeans = pathModel.resolve("Entitys");
+		Path pathBeans = pathModel.resolve("Entities");
 		Path pathRepository = cfg.getRepositoryPath();
 		Path helperPath = pathRepository.resolve("Helper");
 		Path pathRepositoryQuery = pathRepository.resolve("Query");
@@ -151,25 +152,17 @@ public class PhpOrm extends OrmGenerator {
 		
 		try(DirectoryStream<Path> dsPathBeans = Files.newDirectoryStream(pathBeans)) {
 			for(Path f : dsPathBeans) {
-				if(f.toString().endsWith(".php")) {
+				if(!Entities.exists(StringUtil.dropAll(f.getFileName().toString(),".php")) && f.toString().endsWith(".php")) {
 					Files.delete(f);
 				}
 			}
 		} finally {
 			
 		}
-		try(DirectoryStream<Path> dsPathRepo = Files.newDirectoryStream(pathRepository)) {
-			for(Path f : dsPathRepo) {
-				if(f.toString().endsWith(".php")) {
-					Files.delete(f);
-				}
-			}
-		} finally {
-			
-		}
+	 
 		try(DirectoryStream<Path> dsPathQuery = Files.newDirectoryStream(pathRepositoryQuery)) {
 			for(Path f : dsPathQuery) {
-				if(f.toString().endsWith(".php")) {
+				if(!Entities.exists(StringUtil.dropAll(f.getFileName().toString(),"EntityQuery.php")) && f.toString().endsWith(".php")) {
 					Files.delete(f);
 				}
 			}
@@ -177,7 +170,7 @@ public class PhpOrm extends OrmGenerator {
 			
 		}
 		
-		for (BeanCls c : Beans.getAllBeans()) {
+		for (EntityCls c : Entities.getAllEntities()) {
 			Path pathSrc = pathBeans.resolve(c.getName() + ".php");
 			if (Files.exists(pathSrc)) {
 				String existingSourceFile = new String(Files.readAllBytes(pathSrc), utf8);
@@ -202,7 +195,7 @@ public class PhpOrm extends OrmGenerator {
 		
 		
 
-		for (BeanCls c : Beans.getAllBeans()) {
+		for (EntityCls c : Entities.getAllEntities()) {
 			if(c.getTbl().getPrimaryKey().isMultiColumn()) {
 				Files.write(pathBeanPk.resolve("Pk"+ c.getName() + ".php"), ((PhpCls) c.getPkType()).toSourceString().getBytes(utf8), writeOptions);
 			}
@@ -219,7 +212,7 @@ public class PhpOrm extends OrmGenerator {
 		Files.write(pathRepository.resolve("EntityRepository.php"), repo.toSourceString().getBytes(utf8), writeOptions);
 
 		if(cfg.getJsonMode() == OrmConfig.JsonMode.Server) {
-			PhpJsonRestServer server = new PhpJsonRestServer( Beans.getAllBeans());
+			PhpJsonRestServer server = new PhpJsonRestServer( Entities.getAllEntities());
 			server.addMethodImplementations();
 			Files.write (cfg.getBasePath().resolve(server.getName()+ ".php"),
 					server.toSourceString().getBytes(utf8), writeOptions);

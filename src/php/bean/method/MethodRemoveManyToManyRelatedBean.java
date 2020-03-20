@@ -2,8 +2,8 @@ package php.bean.method;
 
 import database.column.Column;
 import database.relation.ManyRelation;
-import php.bean.BeanCls;
-import php.bean.Beans;
+import php.bean.EntityCls;
+import php.bean.Entities;
 import php.core.Attr;
 import php.core.Param;
 import php.core.PhpCls;
@@ -31,7 +31,7 @@ public class MethodRemoveManyToManyRelatedBean extends Method {
 		PhpCls parent = (PhpCls) this.parent;
 		Param pBean = getParam("entity");
 		Attr a = parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
-		BeanCls relationBean = Beans.get(rel.getDestTable());
+		EntityCls relationBean = Entities.get(rel.getDestTable());
 		
 		if (relationBean.getTbl().getPrimaryKey().isMultiColumn()) {
 			throw new RuntimeException("not impl");

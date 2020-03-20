@@ -2,7 +2,7 @@ package php.rest;
 
 import java.util.Collection;
 
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.Constructor;
 import php.core.PhpCls;
 import php.rest.method.RestMethodGet;
@@ -11,7 +11,7 @@ import php.rest.method.RestMethodGetOne;
 
 public class PhpJsonRestServer extends PhpCls {
 	
-	public PhpJsonRestServer(Collection<BeanCls> beans) {
+	public PhpJsonRestServer(Collection<EntityCls> beans) {
 		super("PhpJsonRestServer", null);
 		addMethod(new RestMethodGet(beans));
 		addMethod(new RestMethodGetOne(beans));

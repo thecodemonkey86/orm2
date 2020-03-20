@@ -2,7 +2,7 @@ package php.beanrepository;
 
 import java.util.Collection;
 
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.beanrepository.method.ConstructorBeanRepository;
 import php.beanrepository.method.MethodBeanLoad;
 import php.beanrepository.method.MethodBeanSave;
@@ -35,7 +35,7 @@ public class ClsBeanRepository extends PhpCls{
 	
 	public ClsBeanRepository() {
 		super(CLSNAME,beanRepositoryNamespace);
-		Attr sqlCon = new Attr(BeanCls.getTypeMapper().getDatabaseLinkType(), "sqlCon");
+		Attr sqlCon = new Attr(EntityCls.getTypeMapper().getDatabaseLinkType(), "sqlCon");
 		sqlCon.setStatic(true);
 		addAttr(sqlCon);
 		addMethod(new MethodAttributeGetter(sqlCon));
@@ -50,13 +50,13 @@ public class ClsBeanRepository extends PhpCls{
 		addImport("sql.orm.BeanQuery");
 	}*/
 	
-	public void addDeclarations(Collection<BeanCls> beans) {
+	public void addDeclarations(Collection<EntityCls> beans) {
 		setConstructor(new ConstructorBeanRepository());
 		addMethod(new MethodSetSqlCon());
-		addMethod(BeanCls.getTypeMapper().getBeanRepositoryBeginTransactionMethod());
-		addMethod(BeanCls.getTypeMapper().getBeanRepositoryCommitTransactionMethod());
-		addMethod(BeanCls.getTypeMapper().getBeanRepositoryRollbackTransactionMethod());
-		for(BeanCls bean:beans) {
+		addMethod(EntityCls.getTypeMapper().getBeanRepositoryBeginTransactionMethod());
+		addMethod(EntityCls.getTypeMapper().getBeanRepositoryCommitTransactionMethod());
+		addMethod(EntityCls.getTypeMapper().getBeanRepositoryRollbackTransactionMethod());
+		for(EntityCls bean:beans) {
 //			addAttr(new Attr(new ClsQHash(bean.getPkType(), bean), "loadedBeans"+bean.getName()));
 			addMethod(new MethodGetById(bean));
 //			addMethod(new MethodFetchList(bean.getOneRelations(), bean.getOneToManyRelations(), bean, bean.getTbl().getPrimaryKey()));
@@ -79,17 +79,17 @@ public class ClsBeanRepository extends PhpCls{
 //		addImports();
 	}
 
-	public static String getMethodNameGetTableName(BeanCls bean) {
+	public static String getMethodNameGetTableName(EntityCls bean) {
 		// TODO Auto-generated method stub
 		return "getTableName"+bean.getName();
 	}
 
-	public static String getMethodNameGetSelectFields(BeanCls bean) {
+	public static String getMethodNameGetSelectFields(EntityCls bean) {
 		// TODO Auto-generated method stub
 		return "getSelectFields"+bean.getName();
 	}
 	
-	public static String getMethodNameGetAllSelectFields(BeanCls bean) {
+	public static String getMethodNameGetAllSelectFields(EntityCls bean) {
 		// TODO Auto-generated method stub
 		return "getAllSelectFields"+bean.getName();
 	}

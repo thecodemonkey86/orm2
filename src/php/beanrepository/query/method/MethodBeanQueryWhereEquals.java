@@ -1,7 +1,7 @@
 package php.beanrepository.query.method;
 
 import database.column.Column;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.beanrepository.query.ClsBeanQuery;
 import php.core.Param;
 import php.core.Type;
@@ -11,20 +11,20 @@ import php.core.expression.InlineIfExpression;
 import php.core.expression.PhpStringLiteral;
 import php.core.instruction.IfBlock;
 import php.core.method.Method;
-import php.lib.ClsBaseBeanQuery;
+import php.lib.ClsBaseEntityQuery;
 import php.lib.ClsSqlQuery;
 
 public class MethodBeanQueryWhereEquals extends Method {
-	BeanCls bean;
+	EntityCls bean;
 	Param pValue ;
 	Column c;
-	public MethodBeanQueryWhereEquals(ClsBeanQuery query, BeanCls bean,Column c) {
+	public MethodBeanQueryWhereEquals(ClsBeanQuery query, EntityCls bean,Column c) {
 		super(Public, query, "where"+c.getUc1stCamelCaseName()+"Equals");
 		this.bean=bean;
-		Type t = BeanCls.getTypeMapper().columnToType(c);
+		Type t = EntityCls.getTypeMapper().columnToType(c);
 		
 		if(t == null) {
-			System.out.println(BeanCls.getTypeMapper().columnToType(c));
+			System.out.println(EntityCls.getTypeMapper().columnToType(c));
 		}
 		
 		pValue = addParam(new Param(t, "value"));
@@ -33,13 +33,13 @@ public class MethodBeanQueryWhereEquals extends Method {
 
 	@Override
 	public void addImplementation() {
-		Expression aSqlQuery = _this().accessAttr(ClsBaseBeanQuery.sqlQuery);
+		Expression aSqlQuery = _this().accessAttr(ClsBaseEntityQuery.sqlQuery);
 		if(c.isNullable()) {
 			IfBlock ifNull = _if(pValue.isNull());
-			ifNull.thenBlock()._return( _this().callMethod(ClsBaseBeanQuery.where, new InlineIfExpression(aSqlQuery.callMethod(ClsSqlQuery.getMode)._equals(Types.SqlQuery.accessConstant(ClsSqlQuery.MODE_SELECT)), new PhpStringLiteral("e1." + c.getEscapedName()+" is null"), new PhpStringLiteral(c.getEscapedName()+" is null")) ) );
-			ifNull.elseBlock()._return( _this().callMethod(ClsBaseBeanQuery.where, new InlineIfExpression(aSqlQuery.callMethod(ClsSqlQuery.getMode)._equals(Types.SqlQuery.accessConstant(ClsSqlQuery.MODE_SELECT)), new PhpStringLiteral("e1." + c.getEscapedName()+"=?"),new PhpStringLiteral(c.getEscapedName()+"=?")), BeanCls.getTypeMapper().getConvertSqlParamExpression(pValue, c) ) );
+			ifNull.thenBlock()._return( _this().callMethod(ClsBaseEntityQuery.where, new InlineIfExpression(aSqlQuery.callMethod(ClsSqlQuery.getMode)._equals(Types.SqlQuery.accessConstant(ClsSqlQuery.MODE_SELECT)), new PhpStringLiteral("e1." + c.getEscapedName()+" is null"), new PhpStringLiteral(c.getEscapedName()+" is null")) ) );
+			ifNull.elseBlock()._return( _this().callMethod(ClsBaseEntityQuery.where, new InlineIfExpression(aSqlQuery.callMethod(ClsSqlQuery.getMode)._equals(Types.SqlQuery.accessConstant(ClsSqlQuery.MODE_SELECT)), new PhpStringLiteral("e1." + c.getEscapedName()+"=?"),new PhpStringLiteral(c.getEscapedName()+"=?")), EntityCls.getTypeMapper().getConvertSqlParamExpression(pValue, c) ) );
 		} else {
-			_return( _this().callMethod(ClsBaseBeanQuery.where, new InlineIfExpression(aSqlQuery.callMethod(ClsSqlQuery.getMode)._equals(Types.SqlQuery.accessConstant(ClsSqlQuery.MODE_SELECT)),new PhpStringLiteral( "e1." + c.getEscapedName()+"=?"),new PhpStringLiteral(c.getEscapedName()+"=?")), BeanCls.getTypeMapper().getConvertSqlParamExpression(pValue, c)  ));
+			_return( _this().callMethod(ClsBaseEntityQuery.where, new InlineIfExpression(aSqlQuery.callMethod(ClsSqlQuery.getMode)._equals(Types.SqlQuery.accessConstant(ClsSqlQuery.MODE_SELECT)),new PhpStringLiteral( "e1." + c.getEscapedName()+"=?"),new PhpStringLiteral(c.getEscapedName()+"=?")), EntityCls.getTypeMapper().getConvertSqlParamExpression(pValue, c)  ));
 		}
 		
 	}

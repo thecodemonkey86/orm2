@@ -1,15 +1,15 @@
 package php.beanrepository.method;
 
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.beanrepository.query.ClsBeanQuery;
 import php.core.PhpCls;
 import php.core.expression.NewOperator;
 import php.core.method.Method;
 
 public class MethodCreateQuery extends Method {
-	BeanCls bean;
+	EntityCls bean;
 	
-	public MethodCreateQuery(BeanCls cls) {
+	public MethodCreateQuery(EntityCls cls) {
 		//super(Public, new ClsBeanQuery(cls), "createQuery"+cls.getName());
 		super(Public, new ClsBeanQuery(cls), "createQuery"+cls.getName());
 //		setStatic(true);

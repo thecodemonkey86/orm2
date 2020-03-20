@@ -3,7 +3,7 @@ package php.bean.method;
 import java.util.List;
 
 import database.column.Column;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.Param;
 import php.core.Types;
 import php.core.method.Method;
@@ -11,7 +11,7 @@ import php.core.method.Method;
 public class MethodGetByRecordStatic extends Method {
 	protected List<Column> columns;
 	
-	public MethodGetByRecordStatic(List<Column> columns,BeanCls cls) {
+	public MethodGetByRecordStatic(List<Column> columns,EntityCls cls) {
 		super(Public, cls, "getByRecord");
 		setStatic(true);
 		addParam(new Param(Types.mysqli, "sqlCon"));

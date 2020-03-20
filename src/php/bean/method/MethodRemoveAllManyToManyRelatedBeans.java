@@ -2,8 +2,8 @@ package php.bean.method;
 
 import database.column.Column;
 import database.relation.ManyRelation;
-import php.bean.BeanCls;
-import php.bean.Beans;
+import php.bean.EntityCls;
+import php.bean.Entities;
 import php.core.Attr;
 import php.core.PhpCls;
 import php.core.Type;
@@ -30,9 +30,9 @@ public class MethodRemoveAllManyToManyRelatedBeans extends Method {
 		PhpCls parent = (PhpCls) this.parent;
 		
 		Attr a = parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
-		BeanCls relationBean = Beans.get(rel.getDestTable());
+		EntityCls relationBean = Entities.get(rel.getDestTable());
 		
-		Var vRelatedBean = new Var(Beans.get(rel.getDestTable()), "relatedBean");
+		Var vRelatedBean = new Var(Entities.get(rel.getDestTable()), "relatedBean");
 		 ForeachLoop foreach = _foreach(vRelatedBean,  _this().accessAttr(a));
 		
 				

@@ -1,7 +1,7 @@
 package php.orm;
 
 import database.column.Column;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.beanrepository.method.MysqliBeanRepositoryBeginTransactionMethod;
 import php.beanrepository.method.MysqliBeanRepositoryCommitTransactionMethod;
 import php.beanrepository.method.MysqliBeanRepositoryRollbackTransactionMethod;
@@ -103,11 +103,11 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 	}
 
 	@Override
-	public Type getBeanQueryClass(BeanCls beanCls) {
+	public Type getBeanQueryClass(EntityCls beanCls) {
 		throw new RuntimeException("not implemented");
 	}
 	@Override
-	public Type getLibBeanQueryClass(BeanCls beanCls) {
+	public Type getLibBeanQueryClass(EntityCls beanCls) {
 		throw new RuntimeException("not implemented");
 	}
 
@@ -151,18 +151,18 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 
 	@Override
 	public Expression getInsertUpdateValueExpression(Expression obj, Column col) {
-		return Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(col)), getSaveConvertExpression(obj,col));
+		return Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(EntityCls.getTypeMapper().columnToType(col)), getSaveConvertExpression(obj,col));
 			
 	}
 	
 	@Override
 	public Expression getInsertUpdateValueGetterExpression(Expression obj, Column col) {
-		return Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(col)), getSaveConvertExpression(obj.callAttrGetter(new Attr(BeanCls.getTypeMapper().columnToType(col), col.getCamelCaseName())),col));
+		return Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(EntityCls.getTypeMapper().columnToType(col)), getSaveConvertExpression(obj.callAttrGetter(new Attr(EntityCls.getTypeMapper().columnToType(col), col.getCamelCaseName())),col));
 	}
 
 	@Override
 	public Expression getNullInsertUpdateValueExpression(Column col) {
-		return Types.SqlParam.callStaticMethod(ClsSqlParam.getNullMethodName(BeanCls.getTypeMapper().columnToType(col)));
+		return Types.SqlParam.callStaticMethod(ClsSqlParam.getNullMethodName(EntityCls.getTypeMapper().columnToType(col)));
 	}
 
 	@Override

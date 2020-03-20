@@ -4,7 +4,7 @@ import php.core.Attr;
 import php.core.PhpCls;
 import php.core.Types;
 
-public class ClsBaseBean extends PhpCls{
+public class ClsBaseEntity extends PhpCls{
 
 	public static final String setLoaded = "setLoaded";
 	public static final String METHOD_NAME_IS_INSERT_NEW = "isInsertNew";
@@ -14,8 +14,8 @@ public class ClsBaseBean extends PhpCls{
 	public static final String METHOD_NAME_IS_PRIMARY_KEY_MODIFIED = "isPrimaryKeyModified";
 	public static final String insert = "insert";
 
-	public ClsBaseBean() {
-		super("BaseBean", "PhpLibs\\Orm\\Model");
+	public ClsBaseEntity() {
+		super("BaseEntity", "PhpLibs\\Orm\\Model");
 		//Attr attrSqlCon = new Attr(Types.Sql, "sqlCon");
 //		attrSqlCon.setStatic(true);
 		//addAttr(attrSqlCon);

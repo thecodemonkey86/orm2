@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import database.relation.AbstractRelation;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.Attr;
 import php.core.Constructor;
 import php.core.Param;
@@ -13,9 +13,9 @@ import php.core.expression.ArrayInitExpression;
 
 public class FetchListHelperConstructor extends Constructor{
 
-	BeanCls bean;
+	EntityCls bean;
 	
-	public FetchListHelperConstructor(BeanCls bean) {
+	public FetchListHelperConstructor(EntityCls bean) {
 		this.bean = bean;
 		addParam(new Param(bean, "e1"));
 	}

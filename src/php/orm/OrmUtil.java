@@ -5,8 +5,8 @@ import database.relation.IManyRelation;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
-import php.bean.BeanCls;
-import php.bean.Beans;
+import php.bean.EntityCls;
+import php.bean.Entities;
 import php.core.Type;
 import util.CodeUtil2;
 import util.StringUtil;
@@ -88,10 +88,10 @@ public class OrmUtil {
 	public static Type getRelationForeignPrimaryKeyType(AbstractRelation r) {
 		Type beanPk = null;
 		if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
-			beanPk = Beans.get(r.getDestTable().getUc1stCamelCaseName()).getPkType();
+			beanPk = Entities.get(r.getDestTable().getUc1stCamelCaseName()).getPkType();
 			
 		} else {
-			beanPk = BeanCls.getTypeMapper().columnToType( r.getDestTable().getPrimaryKey().getColumns().get(0));
+			beanPk = EntityCls.getTypeMapper().columnToType( r.getDestTable().getPrimaryKey().getColumns().get(0));
 		}
 		return beanPk;
 	}

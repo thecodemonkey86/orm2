@@ -1,6 +1,6 @@
 package php.beanrepository.method;
 
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.Param;
 import php.core.PhpCls;
 import php.core.Types;
@@ -9,9 +9,9 @@ import php.core.expression.Var;
 import php.core.method.Method;
 
 public class MethodLoadCollection extends Method{
-	BeanCls bean;
+	EntityCls bean;
 	
-	public MethodLoadCollection(Param p,BeanCls bean) {
+	public MethodLoadCollection(Param p,EntityCls bean) {
 		super(Public, Types.Void, getMethodName(bean));
 //		addParam(new Param(Types.QSqlQuery, "query"));	
 		//addParam(new Param(Types.qset(cls), "collection"));
@@ -19,7 +19,7 @@ public class MethodLoadCollection extends Method{
 		this.bean=bean;
 	}
 
-	public static String getMethodName(BeanCls bean) {
+	public static String getMethodName(EntityCls bean) {
 		return "loadCollection"+bean.getName();
 	}
 	
@@ -28,7 +28,7 @@ public class MethodLoadCollection extends Method{
 		return parent.getAttrByName("sqlCon");
 	}
 	
-	protected Expression getByRecordExpression(BeanCls bean, Var record, Expression alias) {
+	protected Expression getByRecordExpression(EntityCls bean, Var record, Expression alias) {
 		//return new ThisBeanRepositoryExpression((BeanRepository) parent);
 		return bean.callStaticMethod("getByRecord", getVarSqlCon(), record, alias);
 	}

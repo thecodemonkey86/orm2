@@ -5,7 +5,7 @@ import java.util.List;
 import database.column.Column;
 import database.relation.OneRelation;
 import database.relation.PrimaryKey;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.Param;
 import php.core.Types;
 import php.core.expression.Expression;
@@ -29,7 +29,7 @@ public class MethodGetUpdateFields extends Method{
 
 	@Override
 	public void addImplementation() {
-		BeanCls parent = (BeanCls) this.parent;
+		EntityCls parent = (EntityCls) this.parent;
 		Var fields = _declareInitDefaultConstructor(Types.array(Types.String), "fields");
 		IfBlock ifIdModified= _if(parent.getAttrByName("primaryKeyModified"));
 		for(Column colPk:pk.getColumns()) {
@@ -37,7 +37,7 @@ public class MethodGetUpdateFields extends Method{
 			ifIdModified.setIfInstr(
 					fields.arrayPush( new PhpStringLiteral(colPk.getEscapedName()+"=?"))
 					,
-					getParam("params").arrayPush( Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(colPk)),colAttr))
+					getParam("params").arrayPush( Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(EntityCls.getTypeMapper().columnToType(colPk)),colAttr))
 					
 					);
 		}
@@ -49,7 +49,7 @@ public class MethodGetUpdateFields extends Method{
 					.setIfInstr(
 							fields.arrayPush(  new PhpStringLiteral(col.getEscapedName()+"=?"))
 							,
-							getParam("params").arrayPush(  Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(col)),colAttr))
+							getParam("params").arrayPush(  Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(EntityCls.getTypeMapper().columnToType(col)),colAttr))
 							
 							);
 				}

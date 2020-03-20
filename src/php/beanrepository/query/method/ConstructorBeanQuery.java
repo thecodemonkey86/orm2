@@ -3,15 +3,15 @@ package php.beanrepository.query.method;
 import php.core.Constructor;
 import php.core.Param;
 import php.core.expression.NewOperator;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 
 public class ConstructorBeanQuery extends Constructor {
 
 	public ConstructorBeanQuery() {
 		super();
-		Param sqlCon = new Param(BeanCls.getTypeMapper().getDatabaseLinkType(), "sqlCon");
+		Param sqlCon = new Param(EntityCls.getTypeMapper().getDatabaseLinkType(), "sqlCon");
 		addParam(sqlCon);
-		addPassToSuperConstructor(new NewOperator( BeanCls.getTypeMapper().getSqlQueryClass(), sqlCon));
+		addPassToSuperConstructor(new NewOperator( EntityCls.getTypeMapper().getSqlQueryClass(), sqlCon));
 	}
 
 	@Override

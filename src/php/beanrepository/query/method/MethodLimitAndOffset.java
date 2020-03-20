@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import codegen.CodeUtil;
 import database.column.Column;
 import database.relation.PrimaryKey;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.beanrepository.query.ClsBeanQuery;
 import php.core.Param;
 import php.core.PhpFunctions;
@@ -17,15 +17,15 @@ import php.core.expression.PhpStringLiteral;
 import php.core.expression.Var;
 import php.core.instruction.IfBlock;
 import php.core.method.Method;
-import php.lib.ClsBaseBeanQuery;
+import php.lib.ClsBaseEntityQuery;
 
 public class MethodLimitAndOffset extends Method {
 
 	Param pJoinTableAlias, pOn, pQueryParams, pCondition;
 	Param pLimit, pOffset;
-	BeanCls bean;
+	EntityCls bean;
 
-	public MethodLimitAndOffset(BeanCls bean, ClsBeanQuery parentType) {
+	public MethodLimitAndOffset(EntityCls bean, ClsBeanQuery parentType) {
 		super(Public, parentType, "limitAndOffset");
 		this.pLimit = addParam(Types.Int, "limit");
 		this.pOffset = addParam(Types.Int, "offset");
@@ -58,7 +58,7 @@ public class MethodLimitAndOffset extends Method {
 
 		Var varSql = _declare(returnType, "sql", PhpFunctions.sprintf.call(new PhpStringLiteral(sql.toString()),
 				new InlineIfExpression(pCondition.isNull(),
-						new PhpStringLiteral(BeanCls.getDatabase().getBooleanExpressionTrue()),
+						new PhpStringLiteral(EntityCls.getDatabase().getBooleanExpressionTrue()),
 						pCondition)));
 	
 		IfBlock ifIsSetLimit = _if(pLimit.greaterThan(new IntExpression(-1)));
@@ -78,7 +78,7 @@ public class MethodLimitAndOffset extends Method {
 			listJoinCondition.add("_limitjoin."+pkCol.getEscapedName()+" = e1."+pkCol.getEscapedName());
 		}
 		
-		_return(_this().callMethod(ClsBaseBeanQuery.join,varSql,new PhpStringLiteral(CodeUtil.concat(listJoinCondition, " AND ")),pQueryParams));
+		_return(_this().callMethod(ClsBaseEntityQuery.join,varSql,new PhpStringLiteral(CodeUtil.concat(listJoinCondition, " AND ")),pQueryParams));
 
 	}
 

@@ -5,7 +5,7 @@ import java.util.List;
 
 import database.column.Column;
 import database.relation.AbstractRelation;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.Param;
 import php.core.PhpFunctions;
 import php.core.Types;
@@ -14,8 +14,8 @@ import php.core.method.Method;
 
 public class MethodGetAllSelectFields extends Method  {
 
-	protected BeanCls bean;
-	public MethodGetAllSelectFields(BeanCls bean) {
+	protected EntityCls bean;
+	public MethodGetAllSelectFields(EntityCls bean) {
 		super(Public, Types.String, "getAllSelectFields"+ bean.getName());
 		setStatic(true);
 		addParam(new Param(Types.String, "alias", new PhpStringLiteral("e1")));

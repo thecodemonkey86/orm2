@@ -53,7 +53,7 @@ import php.orm.OrmUtil;
 import util.CodeUtil2;
 import util.StringUtil;
 
-public class BeanCls extends PhpCls {
+public class EntityCls extends PhpCls {
 
 
 	static Database database;
@@ -63,11 +63,11 @@ public class BeanCls extends PhpCls {
 	protected static String beanRepoNamespace;
 
 	public static void setBeanRepoNamespace(String beanRepoClsNamespace) {
-		BeanCls.beanRepoNamespace = beanRepoClsNamespace;
+		EntityCls.beanRepoNamespace = beanRepoClsNamespace;
 	}
 
 	public static void setSqlQueryCls(PhpCls sqlQueryCls) {
-		BeanCls.sqlQueryCls = sqlQueryCls;
+		EntityCls.sqlQueryCls = sqlQueryCls;
 	}
 
 	public static PhpCls getSqlQueryCls() {
@@ -75,11 +75,11 @@ public class BeanCls extends PhpCls {
 	}
 
 	public static void setBeanNamespace(String beanPackage) {
-		BeanCls.beanNamespace = beanPackage;
+		EntityCls.beanNamespace = beanPackage;
 	}
 
 	public static void setDatabase(Database database) {
-		BeanCls.database = database;
+		EntityCls.database = database;
 	}
 
 	public static Database getDatabase() {
@@ -91,7 +91,7 @@ public class BeanCls extends PhpCls {
 	}
 
 	public static void setTypeMapper(DatabaseTypeMapper typeMapper) {
-		BeanCls.typeMapper = typeMapper;
+		EntityCls.typeMapper = typeMapper;
 	}
 
 	protected Table tbl;
@@ -130,10 +130,10 @@ public class BeanCls extends PhpCls {
 			addMethod(new MethodManyAttrGetter(attr));
 			addMethod(new MethodAddRelatedBean(r, new Param(attr.getElementType(), "entity")));
 			addMethod(new MethodAddRelatedBeanInternal(r, new Param(attr.getElementType(), "entity")));
-			Attr manyRelAdded = new Attr(Types.array(Beans.get(r.getDestTable())) ,attr.getName()+"Added");
+			Attr manyRelAdded = new Attr(Types.array(Entities.get(r.getDestTable())) ,attr.getName()+"Added");
 			addAttr(manyRelAdded);
 			
-			Attr manyRelRemoved = new Attr(Types.array(Beans.get(r.getDestTable())) ,attr.getName()+"Removed");
+			Attr manyRelRemoved = new Attr(Types.array(Entities.get(r.getDestTable())) ,attr.getName()+"Removed");
 			addAttr(manyRelRemoved);
 			
 			addMethod(new MethodRemoveAllOneToManyRelatedBeans(r)
@@ -145,11 +145,11 @@ public class BeanCls extends PhpCls {
 			addAttr(attr);
 			addMethod(new MethodManyAttrGetter(attr));
 			
-			Attr manyRelAdded = new Attr(Types.array(Beans.get(r.getDestTable())) ,attr.getName()+"Added");
+			Attr manyRelAdded = new Attr(Types.array(Entities.get(r.getDestTable())) ,attr.getName()+"Added");
 			addAttr(manyRelAdded);
 			
 			addMethod(new MethodAttributeGetter(manyRelAdded));
-			Attr manyRelRemoved = new Attr(Types.array(Beans.get(r.getDestTable())) ,attr.getName()+"Removed");
+			Attr manyRelRemoved = new Attr(Types.array(Entities.get(r.getDestTable())) ,attr.getName()+"Removed");
 			addAttr(manyRelRemoved);
 			addMethod(new MethodAttributeGetter(manyRelRemoved));
 			
@@ -169,7 +169,7 @@ public class BeanCls extends PhpCls {
 			if (!col.hasOneRelation()
 
 					) {
-				Attr attr = new Attr(BeanCls.getTypeMapper().getTypeFromDbDataType(col), col.getCamelCaseName());
+				Attr attr = new Attr(EntityCls.getTypeMapper().getTypeFromDbDataType(col), col.getCamelCaseName());
 				addAttr(attr);
 				addMethod(new MethodAttrGetter(attr,false));	
 				addMethod(new MethodColumnAttrSetter(this,col,attr));
@@ -197,7 +197,7 @@ public class BeanCls extends PhpCls {
 				}
 			}
 			else {
-				Attr attr = new Attr(BeanCls.getTypeMapper().getTypeFromDbDataType(col), col.getCamelCaseName());
+				Attr attr = new Attr(EntityCls.getTypeMapper().getTypeFromDbDataType(col), col.getCamelCaseName());
 				addAttr(attr);
 				addMethod(new MethodAttrGetter(attr,false));	
 			}
@@ -212,7 +212,7 @@ public class BeanCls extends PhpCls {
 		
 	}
 
-	public BeanCls(Table tbl,List<OneToManyRelation> manyRelations,List<OneRelation> oneRelations, List<ManyRelation> manyToManyRelations) {
+	public EntityCls(Table tbl,List<OneToManyRelation> manyRelations,List<OneRelation> oneRelations, List<ManyRelation> manyToManyRelations) {
 		super(CodeUtil2.uc1stCamelCase(tbl.getName()), beanNamespace);
 		this.tbl = tbl;
 		this.oneToManyRelations= manyRelations;
@@ -223,7 +223,7 @@ public class BeanCls extends PhpCls {
 			pkType = new PkMultiColumnType("Pk"+tbl.getUc1stCamelCaseName(),beanNamespace+"\\Pk", tbl);
 			
 			for(Column col: tbl.getPrimaryKey().getColumns()) {
-				Attr attrPrev = new Attr(BeanCls.getTypeMapper().getTypeFromDbDataType(col), col.getCamelCaseName()+"Previous");
+				Attr attrPrev = new Attr(EntityCls.getTypeMapper().getTypeFromDbDataType(col), col.getCamelCaseName()+"Previous");
 				addAttr(attrPrev);
 				addMethod(new MethodAttrGetter(attrPrev, false));
 			}
@@ -233,7 +233,7 @@ public class BeanCls extends PhpCls {
 				throw new RuntimeException("pk info missing for "+getName());
 			}
 			Column col= tbl.getPrimaryKey().getFirstColumn();
-			Attr attrPrev = new Attr(BeanCls.getTypeMapper().getTypeFromDbDataType(col), col.getCamelCaseName()+"Previous");
+			Attr attrPrev = new Attr(EntityCls.getTypeMapper().getTypeFromDbDataType(col), col.getCamelCaseName()+"Previous");
 			addAttr(attrPrev);
 			addMethod(new MethodAttrGetter(attrPrev, false));
 			pkType =typeMapper.columnToType(col);
@@ -244,7 +244,7 @@ public class BeanCls extends PhpCls {
 
 
 	public void addDeclarations() {
-		superclass = Types.BaseBean;
+		superclass = Types.BaseEntity;
 		
 		setConstructor(new BeanConstructor(tbl.getPrimaryKey().isAutoIncrement(),tbl.getColumnsWithoutPrimaryKey())); 
 
@@ -293,7 +293,7 @@ public class BeanCls extends PhpCls {
 
 	@Override
 	public boolean equals(Object obj) {
-		return obj instanceof BeanCls && getName().equals(((BeanCls)obj).getName());
+		return obj instanceof EntityCls && getName().equals(((EntityCls)obj).getName());
 	}
 
 	@Override
@@ -376,7 +376,7 @@ public class BeanCls extends PhpCls {
 	public static Expression accessAttrGetterByColumn(Expression beanExpression, Column col, boolean skipOneRelationEntity) {
 		if (col.hasOneRelation()) {
 			try{
-				Attr attr = ((BeanCls) beanExpression.getType()).getOneRelationAttr(col.getOneRelation());
+				Attr attr = ((EntityCls) beanExpression.getType()).getOneRelationAttr(col.getOneRelation());
 				if(skipOneRelationEntity) {
 					return beanExpression.callMethod("get"+StringUtil.ucfirst(col.getCamelCaseName()));
 				} else {
@@ -388,7 +388,7 @@ public class BeanCls extends PhpCls {
 				throw e;
 			}
 		} else {
-			return beanExpression.accessAttrGetter(((BeanCls) beanExpression.getType()).getAttrByName(col.getCamelCaseName()));
+			return beanExpression.accessAttrGetter(((EntityCls) beanExpression.getType()).getAttrByName(col.getCamelCaseName()));
 		}
 	}
 
@@ -401,7 +401,7 @@ public class BeanCls extends PhpCls {
 	public static Expression accessColumnAttrOrEntity(Expression beanExpression, Column col) {
 		if (col.hasOneRelation()) {
 			try{
-				Attr attr = ((BeanCls) beanExpression.getType()).getOneRelationAttr(col.getOneRelation());
+				Attr attr = ((EntityCls) beanExpression.getType()).getOneRelationAttr(col.getOneRelation());
 				return beanExpression.accessAttrGetter(attr);
 			} catch(Exception e) {
 				e.printStackTrace();
@@ -409,7 +409,7 @@ public class BeanCls extends PhpCls {
 				throw e;
 			}
 		} else {
-			return beanExpression.accessAttrGetter(((BeanCls) beanExpression.getType()).getAttrByName(col.getCamelCaseName()));
+			return beanExpression.accessAttrGetter(((EntityCls) beanExpression.getType()).getAttrByName(col.getCamelCaseName()));
 		}
 	}
 	
@@ -483,7 +483,7 @@ public class BeanCls extends PhpCls {
 
 	
 	public static Expression getPkExpression(Expression e, Column colPk) {
-		BeanCls cls= (BeanCls) e.getType();
+		EntityCls cls= (EntityCls) e.getType();
 		if (colPk.hasOneRelation()) {
 			try{
 
@@ -509,7 +509,7 @@ public class BeanCls extends PhpCls {
 				throw e;
 			}
 		} else {
-			return beanExpression.accessAttrGetter(((BeanCls) beanExpression.getType()).getAttrByName(col.getCamelCaseName()+"Previous"));
+			return beanExpression.accessAttrGetter(((EntityCls) beanExpression.getType()).getAttrByName(col.getCamelCaseName()+"Previous"));
 		}
 	}
 	

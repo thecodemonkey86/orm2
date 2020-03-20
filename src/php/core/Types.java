@@ -1,9 +1,9 @@
 package php.core;
 
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.beanrepository.ClsBeanRepository;
-import php.lib.ClsBaseBean;
-import php.lib.ClsBaseBeanQuery;
+import php.lib.ClsBaseEntity;
+import php.lib.ClsBaseEntityQuery;
 import php.lib.ClsException;
 import php.lib.ClsFirebirdSqlQuery;
 import php.lib.ClsMySqlQuery;
@@ -22,7 +22,7 @@ public class Types extends CoreTypes{
 	public static final ClsMysqli mysqli = new ClsMysqli();
 	public static final ClsMysqliResult mysqli_result = new ClsMysqliResult();
 	public static final ClsSql Sql = new ClsSql();
-	public static final ClsBaseBean BaseBean=new ClsBaseBean();
+	public static final ClsBaseEntity BaseEntity=new ClsBaseEntity();
 	public static final ClsSqlQuery SqlQuery = new ClsSqlQuery();
 	public static final ClsPgSqlQuery PgSqlQuery = new ClsPgSqlQuery();
 	public static final ClsMySqlQuery MysqlSqlQuery = new ClsMySqlQuery();
@@ -41,8 +41,8 @@ public class Types extends CoreTypes{
 	public static PhpArray array(Type keyType, Type valueType) {
 		return new PhpArray(keyType, valueType) ;
 	}
-	public static ClsBaseBeanQuery beanQuery(BeanCls bean) {
-		return new ClsBaseBeanQuery(bean);
+	public static ClsBaseEntityQuery beanQuery(EntityCls bean) {
+		return new ClsBaseEntityQuery(bean);
 	}
 
 

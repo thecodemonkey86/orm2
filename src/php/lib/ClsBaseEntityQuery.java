@@ -1,11 +1,11 @@
 package php.lib;
 
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.Attr;
 import php.core.PhpPseudoGenericClass;
 import php.core.Types;
 
-public class ClsBaseBeanQuery extends PhpPseudoGenericClass{
+public class ClsBaseEntityQuery extends PhpPseudoGenericClass{
 
 	public static final String sqlQuery = "sqlQuery";
 	public static final String mainBeanAlias = "mainBeanAlias";
@@ -14,7 +14,7 @@ public class ClsBaseBeanQuery extends PhpPseudoGenericClass{
 	public static final String addInsertRawExpression = "addInsertRawExpression";
 	public static final String select = "select";
 
-	public ClsBaseBeanQuery( BeanCls cls) {
+	public ClsBaseEntityQuery( EntityCls cls) {
 		super("EntityQuery",cls,"PhpLibs\\Orm\\Query");
 		addAttr(new Attr(Types.Int, "entityQueryLimit"));
 		addAttr(new Attr(Types.Int, "entityQueryOffset"));

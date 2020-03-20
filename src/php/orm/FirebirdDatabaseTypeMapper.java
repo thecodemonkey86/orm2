@@ -1,7 +1,7 @@
 package php.orm;
 
 import database.column.Column;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.beanrepository.method.FirebirdBeanRepositoryBeginTransactionMethod;
 import php.beanrepository.method.FirebirdBeanRepositoryCommitTransactionMethod;
 import php.beanrepository.method.FirebirdBeanRepositoryRollbackTransactionMethod;
@@ -115,11 +115,11 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 	}
 
 	@Override
-	public Type getBeanQueryClass(BeanCls beanCls) {
+	public Type getBeanQueryClass(EntityCls beanCls) {
 		throw new RuntimeException("not implemented");
 	}
 	@Override
-	public Type getLibBeanQueryClass(BeanCls beanCls) {
+	public Type getLibBeanQueryClass(EntityCls beanCls) {
 		throw new RuntimeException("not implemented");
 	}
 
@@ -171,14 +171,23 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 			case "37":
 				return e;
 			case "12":
-				return new NewOperator(Types.DateTime,e, new NewOperator(Types.DateTimeZone,new PhpStringLiteral("UTC"))) ;
+				if(!expr.getType().equals(Types.DateTime)) {
+					return new NewOperator(Types.DateTime,e, new NewOperator(Types.DateTimeZone,new PhpStringLiteral("UTC"))) ;
+				} else {
+					return expr;
+				}
+				
 			case "10":
 			case "27":
 				return e.cast(Types.Float);
 			case "261":
 				return e;
 			case "35":
-				return new NewOperator(Types.DateTime,e, new NewOperator(Types.DateTimeZone,new PhpStringLiteral("UTC"))) ;
+				if(!expr.getType().equals(Types.DateTime)) {
+					return new NewOperator(Types.DateTime,e, new NewOperator(Types.DateTimeZone,new PhpStringLiteral("UTC"))) ;
+				} else {
+					return expr;
+				}
 			case "13":
 				return e;
 			default:
@@ -199,7 +208,7 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 
 	@Override
 	public Expression getInsertUpdateValueGetterExpression(Expression obj, Column col) {
-		return obj.callAttrGetter(new Attr(BeanCls.getTypeMapper().columnToType(col), col.getCamelCaseName()));
+		return obj.callAttrGetter(new Attr(EntityCls.getTypeMapper().columnToType(col), col.getCamelCaseName()));
 	}
 
 	@Override

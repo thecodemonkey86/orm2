@@ -1,7 +1,7 @@
 package php.bean.method;
 
 import database.column.Column;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.Attr;
 import php.core.Types;
 import php.core.expression.BoolExpression;
@@ -14,7 +14,7 @@ public class MethodColumnAttrSetNull extends Method{
 	Attr a;
 	Column col;
 	
-	public MethodColumnAttrSetNull(BeanCls cls, Column col, Attr a) {
+	public MethodColumnAttrSetNull(EntityCls cls, Column col, Attr a) {
 		super(Public, Types.Void, "set"+StringUtil.ucfirst(a.getName()+"Null"));
 		this.a=a;
 		this.col=col;

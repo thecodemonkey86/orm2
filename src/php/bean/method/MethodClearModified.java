@@ -3,7 +3,7 @@ package php.bean.method;
 import database.column.Column;
 import database.relation.ManyRelation;
 import database.relation.OneToManyRelation;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.Attr;
 import php.core.Types;
 import php.core.expression.BoolExpression;
@@ -19,7 +19,7 @@ public class MethodClearModified extends Method {
 
 	@Override
 	public void addImplementation() {
-		BeanCls bean = (BeanCls) parent;
+		EntityCls bean = (EntityCls) parent;
 		for (ManyRelation r : bean.getManyRelations()) {
 			Attr attrAdded = bean.getAttrByName(OrmUtil.getManyRelationDestAttrName(r) + "Added");
 			addInstr(attrAdded.assign(Expressions.Null));

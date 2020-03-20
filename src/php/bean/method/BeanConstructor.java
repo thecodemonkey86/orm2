@@ -4,7 +4,7 @@ import java.util.List;
 
 import database.column.Column;
 import database.relation.OneRelation;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.Attr;
 import php.core.Constructor;
 import php.core.Param;
@@ -37,7 +37,7 @@ public class BeanConstructor extends Constructor{
 			if (!col.isPartOfPk() && !col.hasOneRelation()) {
 				_assign(parent.getAttrByName(col.getCamelCaseName()+ "Modified"), BoolExpression.FALSE);
 				
-				Expression defValExpr =  BeanCls.getTypeMapper().getColumnDefaultValueExpression(col);
+				Expression defValExpr =  EntityCls.getTypeMapper().getColumnDefaultValueExpression(col);
 				_assign(parent.getAttrByName(col.getCamelCaseName()),  defValExpr);
 			}
 			if(col.isRawValueEnabled()) {
@@ -46,7 +46,7 @@ public class BeanConstructor extends Constructor{
 					_assign(a, a.getInitValue());
 			}
 		}
-		BeanCls bean = (BeanCls) parent;
+		EntityCls bean = (EntityCls) parent;
 		for(OneRelation r:bean.getOneRelations()) {
 			if (!r.isPartOfPk()) {
 				_assign(parent.getAttrByName(bean.getOneRelationAttr(r).getName()+ "Modified"), BoolExpression.FALSE);

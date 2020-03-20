@@ -1,6 +1,6 @@
 package php.bean.method;
 
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.PhpCls;
 import php.core.expression.NewOperator;
 import php.core.method.Method;
@@ -8,8 +8,8 @@ import php.core.method.Method;
 
 public class MethodCreateQuery extends Method {
 
-	public MethodCreateQuery(BeanCls cls) {
-		super(Public, BeanCls.getTypeMapper().getBeanQueryClass(cls), "createQuery");
+	public MethodCreateQuery(EntityCls cls) {
+		super(Public, EntityCls.getTypeMapper().getBeanQueryClass(cls), "createQuery");
 		setStatic(true);
 	}
 

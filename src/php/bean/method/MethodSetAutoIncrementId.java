@@ -1,6 +1,6 @@
 package php.bean.method;
 
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.Attr;
 import php.core.Param;
 import php.core.Types;
@@ -16,7 +16,7 @@ public class MethodSetAutoIncrementId extends Method {
 
 	@Override
 	public void addImplementation() {
-		BeanCls bean = (BeanCls) parent;
+		EntityCls bean = (EntityCls) parent;
 		
 		Attr attrAutoIncrement = bean.getAttrByName( bean.getTbl().getPrimaryKey().getAutoIncrementColumn().getCamelCaseName());
 		addInstr( _this().accessAttr(attrAutoIncrement).assign( getParam("id")));

@@ -191,7 +191,7 @@ public class SqliteDatabaseMapper extends DatabaseTypeMapper {
 	
 	@Override
 	public ClsSqlQuery getSqlQueryType() {
-		throw new RuntimeException("not impl");
+		return Types.SqliteSqlQuery;
 	}
 
 	@Override

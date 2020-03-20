@@ -2,8 +2,8 @@ package php.bean.method;
 
 import database.column.Column;
 import database.relation.OneToManyRelation;
-import php.bean.BeanCls;
-import php.bean.Beans;
+import php.bean.EntityCls;
+import php.bean.Entities;
 import php.core.Attr;
 import php.core.PhpCls;
 import php.core.Type;
@@ -30,9 +30,9 @@ public class MethodRemoveAllOneToManyRelatedBeans extends Method {
 		PhpCls parent = (PhpCls) this.parent;
 		
 		Attr a = parent.getAttrByName(OrmUtil.getOneToManyRelationDestAttrName(rel));
-		Var vRelatedBean = new Var(Beans.get(rel.getDestTable()), "relatedBean");
+		Var vRelatedBean = new Var(Entities.get(rel.getDestTable()), "relatedBean");
 		 ForeachLoop foreach = _foreach(vRelatedBean, _this().accessAttr(a));
-		 BeanCls relationBean = Beans.get(rel.getDestTable());
+		 EntityCls relationBean = Entities.get(rel.getDestTable());
 				
 		Attr aRemoved = parent.getAttrByName(a.getName() + "Removed");
 		foreach._if(aRemoved.isNull()).addIfInstr(aRemoved.assign(new ArrayInitExpression()));

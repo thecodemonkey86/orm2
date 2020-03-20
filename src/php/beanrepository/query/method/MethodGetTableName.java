@@ -1,15 +1,15 @@
 package php.beanrepository.query.method;
 
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.Types;
 import php.core.expression.PhpStringLiteral;
 import php.core.method.Method;
 
 
 public class MethodGetTableName extends Method {
-	BeanCls cls;
+	EntityCls cls;
 	
-	public MethodGetTableName(BeanCls cls) {
+	public MethodGetTableName(EntityCls cls) {
 		super(Public, Types.String, "getTableName");
 		this.cls = cls;
 	}

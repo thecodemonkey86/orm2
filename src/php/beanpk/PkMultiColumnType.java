@@ -2,7 +2,7 @@ package php.beanpk;
 
 import database.column.Column;
 import database.table.Table;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.beanpk.method.MethodPkEquals;
 import php.core.Attr;
 import php.core.Constructor;
@@ -29,7 +29,7 @@ public class PkMultiColumnType extends PhpCls{
 		
 		setConstructor(constr);
 		for(Column col: tbl.getPrimaryKey().getColumns()) {
-			Param p = constr.addParam(new Param(BeanCls.getTypeMapper().columnToType( col), col.getCamelCaseName()));
+			Param p = constr.addParam(new Param(EntityCls.getTypeMapper().columnToType( col), col.getCamelCaseName()));
 			Attr attr = addAttr(new Attr(p.getType(), col.getCamelCaseName()));
 			addMethod(new MethodAttributeSetter(attr));
 			addMethod(new MethodAttributeGetter(attr));

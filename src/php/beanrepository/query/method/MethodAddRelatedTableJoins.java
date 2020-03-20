@@ -6,7 +6,7 @@ import codegen.CodeUtil;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.Types;
 import php.core.expression.Expression;
 import php.core.expression.PhpStringLiteral;
@@ -16,9 +16,9 @@ import util.CodeUtil2;
 
 public class MethodAddRelatedTableJoins extends Method {
 	
-	protected BeanCls bean;
+	protected EntityCls bean;
 	
-	public MethodAddRelatedTableJoins(BeanCls cls) {
+	public MethodAddRelatedTableJoins(EntityCls cls) {
 		super(Public, Types.Void, "addRelatedTableJoins");
 //		addParam(new Param(Types.beanQuery(cls), "query"));
 //		setStatic(true);

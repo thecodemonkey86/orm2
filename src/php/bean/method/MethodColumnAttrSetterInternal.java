@@ -1,7 +1,7 @@
 package php.bean.method;
 
 import database.column.Column;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.Attr;
 import php.core.Param;
 import php.core.Types;
@@ -14,7 +14,7 @@ public class MethodColumnAttrSetterInternal extends Method{
 	Attr a;
 	Column col;
 	
-	public MethodColumnAttrSetterInternal(BeanCls cls, Column col, Attr a) {
+	public MethodColumnAttrSetterInternal(EntityCls cls, Column col, Attr a) {
 		super(Public, Types.Void, "set"+StringUtil.ucfirst(a.getName())+"Internal");
 		this.a=a;
 		addParam(new Param( a.getType() , a.getName(), col.isNullable() ? Expressions.Null : null));

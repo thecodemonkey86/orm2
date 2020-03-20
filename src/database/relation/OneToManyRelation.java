@@ -40,4 +40,10 @@ public class OneToManyRelation extends AbstractRelation implements IManyRelation
 	public Column getDestMappingColumn(int i) {
 		return srcToDestColumns.get(i).getValue2();
 	}
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return sourceTable.getName()+"->"+destTable.getName();
+	}
 }

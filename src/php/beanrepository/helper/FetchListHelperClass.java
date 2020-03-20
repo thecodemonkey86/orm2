@@ -11,14 +11,14 @@ import php.core.Types;
 import php.core.method.MethodAttributeGetter;
 import php.core.method.MethodAttributeSetter;
 import php.orm.OrmUtil;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.bean.method.FetchListHelperConstructor;
 import php.beanrepository.helper.method.MethodAddRelationPk;
 import php.beanrepository.helper.method.MethodContainsRelationPk;
 
 public class FetchListHelperClass extends PhpCls{
 
-	public FetchListHelperClass(BeanCls bean, String repositoryNamespace) {
+	public FetchListHelperClass(EntityCls bean, String repositoryNamespace) {
 		super(bean.getName()+"FetchListHelper",repositoryNamespace+"\\Helper");
 		Attr e1 = new Attr(bean, "e1");
 		addAttr(e1);

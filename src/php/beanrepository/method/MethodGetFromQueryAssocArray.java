@@ -4,7 +4,7 @@ import java.util.List;
 
 import database.FirebirdDatabase;
 import database.column.Column;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.Param;
 import php.core.PhpFunctions;
 import php.core.Types;
@@ -19,13 +19,13 @@ import php.core.expression.IntExpression;
 
 public class MethodGetFromQueryAssocArray extends Method{
 	protected List<Column> columns;
-	protected BeanCls beanCls;
+	protected EntityCls beanCls;
 	
-	public static String getMethodName(BeanCls bean) {
+	public static String getMethodName(EntityCls bean) {
 		return "get"+bean.getName()+ "FromQueryAssocArray";
 	}
 	
-	public MethodGetFromQueryAssocArray(BeanCls bean) {
+	public MethodGetFromQueryAssocArray(EntityCls bean) {
 		super(Public, bean.toNullable(), getMethodName(bean));
 		setStatic(true);
 		addParam(new Param(Types.array(Types.String).toRef(), "array"));
@@ -44,9 +44,9 @@ public class MethodGetFromQueryAssocArray extends Method{
 
 		Param array = getParam("array");
 		Param alias = getParam("alias");
-		Expression pkExprArrayIndex = BeanCls.getTypeMapper().filterFetchAssocArrayKeyExpression(alias).concat(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey("__"+beanCls.getTbl().getPrimaryKey().getFirstColumn().getName())));
+		Expression pkExprArrayIndex = EntityCls.getTypeMapper().filterFetchAssocArrayKeyExpression(alias).concat(new PhpStringLiteral(EntityCls.getTypeMapper().filterFetchAssocArrayKey("__"+beanCls.getTbl().getPrimaryKey().getFirstColumn().getName())));
 		
-		if(BeanCls.getDatabase() instanceof FirebirdDatabase) {
+		if(EntityCls.getDatabase() instanceof FirebirdDatabase) {
 			pkExprArrayIndex = PhpFunctions.substr.call(pkExprArrayIndex,new IntExpression(0),new IntExpression(31));
 		}
 		_if(array.arrayIndex(pkExprArrayIndex).isNull()).thenBlock()._return(Expressions.Null); 
@@ -68,13 +68,13 @@ public class MethodGetFromQueryAssocArray extends Method{
 						
 					}*/
 					
-					Expression exprArrayIndex = BeanCls.getTypeMapper().filterFetchAssocArrayKeyExpression(alias).concat(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey("__"+col.getName())));
+					Expression exprArrayIndex = EntityCls.getTypeMapper().filterFetchAssocArrayKeyExpression(alias).concat(new PhpStringLiteral(EntityCls.getTypeMapper().filterFetchAssocArrayKey("__"+col.getName())));
 					
-					if(BeanCls.getDatabase() instanceof FirebirdDatabase) {
+					if(EntityCls.getDatabase() instanceof FirebirdDatabase) {
 						exprArrayIndex = PhpFunctions.substr.call(exprArrayIndex,new IntExpression(0),new IntExpression(31));
 					}
 					Var val = _declare(Types.Mixed, "_val"+col.getUc1stCamelCaseName(),array.arrayIndex(exprArrayIndex));
-					Expression convertTypeExpression = BeanCls.getTypeMapper().getConvertTypeExpression(val ,col);
+					Expression convertTypeExpression = EntityCls.getTypeMapper().getConvertTypeExpression(val ,col);
 					
 					addInstr(bean.getClassConcreteType().getMethod("set"+col.getUc1stCamelCaseName()+"Internal").call(bean, col.isNullable() ? new InlineIfExpression(val.isNull(), val, convertTypeExpression) : convertTypeExpression).asInstruction());
 				} catch (Exception e) {

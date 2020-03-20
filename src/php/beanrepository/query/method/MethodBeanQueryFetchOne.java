@@ -8,8 +8,8 @@ import database.relation.AbstractRelation;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
-import php.bean.BeanCls;
-import php.bean.Beans;
+import php.bean.EntityCls;
+import php.bean.Entities;
 import php.bean.method.MethodOneRelationAttrSetter;
 import php.bean.method.MethodOneRelationBeanIsNull;
 import php.beanrepository.method.MethodGetFromQueryAssocArray;
@@ -30,15 +30,15 @@ import util.StringUtil;
 import util.pg.PgCppUtil;
 
 public class MethodBeanQueryFetchOne extends Method{
-	BeanCls bean;
+	EntityCls bean;
 	
-	public MethodBeanQueryFetchOne(BeanCls bean) {
+	public MethodBeanQueryFetchOne(EntityCls bean) {
 		super(Public, bean.toNullable(), "fetchOne");
 		this.bean=bean;
 	}
 	
 	private Expression getFetchExpression(Var res) {
-		return BeanCls.getTypeMapper().getDefaultFetchExpression(res);
+		return EntityCls.getTypeMapper().getDefaultFetchExpression(res);
 		
 	}
 
@@ -50,7 +50,7 @@ public class MethodBeanQueryFetchOne extends Method{
 		List<ManyRelation> manyToManyRelations = bean.getManyToManyRelations();
 		
 		Var e1 = _declare(returnType, "e1", Expressions.Null);
-		Var res =_declare(BeanCls.getTypeMapper().getDatabaseResultType() , "res",_this().accessAttr("sqlQuery").callMethod(ClsSqlQuery.query) );
+		Var res =_declare(EntityCls.getTypeMapper().getDatabaseResultType() , "res",_this().accessAttr("sqlQuery").callMethod(ClsSqlQuery.query) );
 		
 		Var row = _declare(Types.array(Types.Mixed), "row", getFetchExpression(res) );
 		IfBlock ifRowNotNull =
@@ -75,24 +75,24 @@ public class MethodBeanQueryFetchOne extends Method{
 		
 		for(OneRelation r:oneRelations) {
 //			BeanCls foreignCls = Beans.get(r.getDestTable()); 
-			IfBlock ifBlock= doWhileQueryNext._if(Expressions.and( e1.callMethod(new MethodOneRelationBeanIsNull(r)),row.arrayIndex(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias() + "__" + r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull()) );
+			IfBlock ifBlock= doWhileQueryNext._if(Expressions.and( e1.callMethod(new MethodOneRelationBeanIsNull(r)),row.arrayIndex(new PhpStringLiteral(EntityCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias() + "__" + r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull()) );
 			ifBlock.thenBlock().
 			_callMethodInstr(e1, new MethodOneRelationAttrSetter( e1.getClassConcreteType().getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)), true), 
-					Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Beans.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
+					Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Entities.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
 		}
 		
 		for(AbstractRelation r:manyRelations) {
-			BeanCls foreignCls = Beans.get(r.getDestTable()); 
+			EntityCls foreignCls = Entities.get(r.getDestTable()); 
 			Type beanPk=OrmUtil.getRelationForeignPrimaryKeyType(r);
 			
 			
 			Expression pkArrayIndex = null;
-			IfBlock ifNotPkForeignIsNull= doWhileQueryNext._if( row.arrayIndex(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull());
+			IfBlock ifNotPkForeignIsNull= doWhileQueryNext._if( row.arrayIndex(new PhpStringLiteral(EntityCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull());
 			if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
 				Expression[] foreignPkArgs = new Expression[r.getDestTable().getPrimaryKey().getColumnCount()];
 				
 				for(int i=0; i < r.getDestTable().getPrimaryKey().getColumnCount(); i++) {
-					foreignPkArgs[i] = row.arrayIndex(new PhpStringLiteral( BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+r.getDestTable().getPrimaryKey().getColumn(i).getName())));
+					foreignPkArgs[i] = row.arrayIndex(new PhpStringLiteral( EntityCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+r.getDestTable().getPrimaryKey().getColumn(i).getName())));
 				}
 				
 				
@@ -106,12 +106,12 @@ public class MethodBeanQueryFetchOne extends Method{
 				Column colPk = r.getDestTable().getPrimaryKey().getColumns().get(0);
 				
 				Var pkSet = ifNotPkForeignIsNull.thenBlock()._declareNewArray(Types.array(Types.Mixed), "pkSet"+StringUtil.ucfirst(r.getAlias()));
-				pkArrayIndex = pkSet.arrayIndex(row.arrayIndex(new PhpStringLiteral( BeanCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+colPk.getName()))));
+				pkArrayIndex = pkSet.arrayIndex(row.arrayIndex(new PhpStringLiteral( EntityCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+colPk.getName()))));
 			}
 			IfBlock ifNotIssetPk = ifNotPkForeignIsNull.thenBlock()._if(_not(PhpFunctions.isset.call(pkArrayIndex)));
-			Var foreignBean = ifNotIssetPk.thenBlock()._declare(foreignCls, "b" + r.getAlias(),  Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Beans.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
+			Var foreignBean = ifNotIssetPk.thenBlock()._declare(foreignCls, "b" + r.getAlias(),  Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Entities.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
 			ifNotIssetPk.thenBlock()._assign(pkArrayIndex, foreignBean);
-			ifNotIssetPk.thenBlock()._callMethodInstr(e1, BeanCls.getAddRelatedBeanMethodName(r), foreignBean);
+			ifNotIssetPk.thenBlock()._callMethodInstr(e1, EntityCls.getAddRelatedBeanMethodName(r), foreignBean);
 			
 		}
 		
@@ -120,7 +120,7 @@ public class MethodBeanQueryFetchOne extends Method{
 		ArrayList<Expression> condExpressions = new ArrayList<>();
 		condExpressions.add(ifRowNotNull.getCondition());
 		for(Column colPk :  bean.getTbl().getPrimaryKey()) {
-			condExpressions.add(row.arrayIndex(new PhpStringLiteral(BeanCls.getTypeMapper().filterFetchAssocArrayKey("e1__" + colPk.getName()))).cast(BeanCls.getTypeMapper().columnToType(colPk))._equals(e1.callAttrGetter(colPk.getCamelCaseName())));
+			condExpressions.add(row.arrayIndex(new PhpStringLiteral(EntityCls.getTypeMapper().filterFetchAssocArrayKey("e1__" + colPk.getName()))).cast(EntityCls.getTypeMapper().columnToType(colPk))._equals(e1.callAttrGetter(colPk.getCamelCaseName())));
 		}
 		
 		doWhileQueryNext.setCondition(Expressions.and( condExpressions ));

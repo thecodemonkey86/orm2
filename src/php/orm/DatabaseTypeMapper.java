@@ -1,7 +1,7 @@
 package php.orm;
 
 import database.column.Column;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.Type;
 import php.core.Types;
 import php.core.expression.Expression;
@@ -19,8 +19,8 @@ public abstract class DatabaseTypeMapper {
 	public abstract Type columnToType(Column c);
 
 	public abstract Type getSqlQueryClass();
-	public abstract Type getBeanQueryClass(BeanCls beanCls);
-	public abstract Type getLibBeanQueryClass(BeanCls beanCls);
+	public abstract Type getBeanQueryClass(EntityCls beanCls);
+	public abstract Type getLibBeanQueryClass(EntityCls beanCls);
 
 	public abstract Type getDatabaseLinkType() ;
 	public abstract Type getDatabaseResultType() ;

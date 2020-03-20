@@ -296,7 +296,7 @@ public class ConfigReader implements ContentHandler {
 				
 			
 				switch (section) {
-				case MANY_TO_MANY_RELATIONS:
+				case MANY_TO_MANY_RELATIONS:{
 					String attrName = atts.getValue("name");
 					String substituteNameSingular;
 					String substituteNamePlural;
@@ -351,16 +351,10 @@ public class ConfigReader implements ContentHandler {
 						}
 					}
 					manyToManyAliasCounter++;
-					break;
+					break;}
 				case ONE_TO_MANY_RELATIONS:
-					if(atts.getValue("name") != null) {
-						//throw new IOException("name must be replaced by nameSingular and namePlural");
-					}
+				{
 					
-//					substituteNameSingular = atts.getValue("nameSingular");
-//					substituteNamePlural = atts.getValue("namePlural");
-					substituteNameSingular = atts.getValue("name");
-					substituteNamePlural = atts.getValue("name");
 					String relQueryNameOneToManyRelation = atts.getValue("queryName");
 					currentOneToManyRelation = new OneToManyRelation(
 							relQueryNameOneToManyRelation == null || relQueryNameOneToManyRelation.isEmpty()
@@ -370,10 +364,26 @@ public class ConfigReader implements ContentHandler {
 					cfg.addOneToManyRelation(currentOneToManyRelation, currentSrcTable);
 					currentOneToManyRelation.setSourceTable(currentSrcTable);
 					currentOneToManyRelation.setDestTable(currentDestTable);
+					
+					String attrName = atts.getValue("name");
+					String substituteNameSingular;
+					String substituteNamePlural;
+					if(attrName != null) {
+						if(attrName.endsWith("s")) {
+							substituteNameSingular = attrName.substring(0,attrName.length()-1);
+							substituteNamePlural = attrName;
+						} else {
+							throw new IOException(currentOneToManyRelation.toString()+ ": name must end with plural-s or be replaced by nameSingular and namePlural");
+						}
+					} else {
+						substituteNameSingular = atts.getValue("nameSingular");
+						substituteNamePlural = atts.getValue("namePlural");
+					}
 					currentOneToManyRelation.setSubstituteNameSingular(substituteNameSingular);
 					currentOneToManyRelation.setSubstituteNamePlural(substituteNamePlural);
 					oneToManyAliasCounter++;
 					break;
+				}
 				case ONE_RELATIONS:
 					String relQueryNameOneRelation = atts.getValue("queryName");
 					currentOneRelation = new OneRelation(

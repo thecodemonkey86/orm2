@@ -1,7 +1,7 @@
 package php.orm;
 
 import database.column.Column;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.beanrepository.method.PgBeanRepositoryBeginTransactionMethod;
 import php.beanrepository.method.PgBeanRepositoryCommitTransactionMethod;
 import php.beanrepository.method.PgBeanRepositoryRollbackTransactionMethod;
@@ -62,13 +62,13 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 	}
 
 	@Override
-	public Type getBeanQueryClass(BeanCls beanCls) {
+	public Type getBeanQueryClass(EntityCls beanCls) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Type getLibBeanQueryClass(BeanCls beanCls) {
+	public Type getLibBeanQueryClass(EntityCls beanCls) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -92,18 +92,18 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 
 	@Override
 	public Expression getInsertUpdateValueExpression(Expression obj, Column col) {
-		return Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(col)), obj);
+		return Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(EntityCls.getTypeMapper().columnToType(col)), obj);
 			
 	}
 
 	@Override
 	public Expression getNullInsertUpdateValueExpression(Column col) {
-		return Types.SqlParam.callStaticMethod(ClsSqlParam.getNullMethodName(BeanCls.getTypeMapper().columnToType(col)));
+		return Types.SqlParam.callStaticMethod(ClsSqlParam.getNullMethodName(EntityCls.getTypeMapper().columnToType(col)));
 	}
 
 	@Override
 	public Expression getInsertUpdateValueGetterExpression(Expression obj, Column col) {
-		return Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(col)), obj.callAttrGetter(new Attr(BeanCls.getTypeMapper().columnToType(col), col.getCamelCaseName())));
+		return Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(EntityCls.getTypeMapper().columnToType(col)), obj.callAttrGetter(new Attr(EntityCls.getTypeMapper().columnToType(col), col.getCamelCaseName())));
 	}
 
 	@Override

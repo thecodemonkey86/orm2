@@ -3,7 +3,7 @@ package php.beanrepository.method;
 import java.util.ArrayList;
 
 import database.column.Column;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.Param;
 import php.core.PhpFunctions;
 import php.core.Types;
@@ -12,9 +12,9 @@ import php.core.method.Method;
 
 public class MethodGetSelectFields extends Method  {
 
-	protected BeanCls bean;
+	protected EntityCls bean;
 	
-	public MethodGetSelectFields(BeanCls bean) {
+	public MethodGetSelectFields(EntityCls bean) {
 		super(Public, Types.String, getMethodName(bean));
 		setStatic(true);
 		addParam(new Param(Types.String, "alias", new PhpStringLiteral("e1")));
@@ -33,7 +33,7 @@ public class MethodGetSelectFields extends Method  {
 		_return (PhpFunctions.sprintf.call(new PhpStringLiteral(sprintfTmpl),getParam("alias")));
 	}
 
-	public static String getMethodName(BeanCls bean) {
+	public static String getMethodName(EntityCls bean) {
 		return "getSelectFields"+ bean.getName();
 	}
 }

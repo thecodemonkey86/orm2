@@ -1,6 +1,6 @@
 package php.bean.method;
 
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.Attr;
 import php.core.Param;
 import php.core.Types;
@@ -20,7 +20,7 @@ public class MethodAddInsertParamForRawExpression extends Method {
 
 	@Override
 	public void addImplementation() {
-		BeanCls bean = (BeanCls) parent;
+		EntityCls bean = (EntityCls) parent;
 		Attr a = bean.getAttrByName("insertParamsForRawExpression"+col.getUc1stCamelCaseName());
 		addInstr( a.arrayPush(param));
 	}

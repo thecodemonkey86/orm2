@@ -1,7 +1,7 @@
 package php.bean.method;
 
 import database.relation.OneRelation;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.Attr;
 import php.core.Param;
 import php.core.method.Method;
@@ -13,7 +13,7 @@ public class MethodAttrSetterInternal extends Method{
 
 	Attr a;
 	
-	public MethodAttrSetterInternal(BeanCls cls,  Attr a) {
+	public MethodAttrSetterInternal(EntityCls cls,  Attr a) {
 		super(Public, Types.Void, "set"+StringUtil.ucfirst(a.getName())+"Internal");
 		this.a=a;
 		addParam(new Param(a.getType() , a.getName()));

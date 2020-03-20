@@ -1,6 +1,6 @@
 package php.beanrepository.expression;
 
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.beanrepository.ClsBeanRepository;
 import php.core.expression.Expression;
 import php.core.expression.ThisExpression;
@@ -12,7 +12,7 @@ public class ThisBeanRepositoryExpression extends ThisExpression{
 		super(parent);
 	}
 
-	public Expression callGetByRecordMethod(BeanCls bean, Var record,  Expression alias) {
+	public Expression callGetByRecordMethod(EntityCls bean, Var record,  Expression alias) {
 		return bean.callStaticMethod("getByRecord", accessAttr("sqlCon"), record, alias);
 	}
 	

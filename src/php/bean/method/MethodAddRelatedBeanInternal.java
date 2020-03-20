@@ -3,7 +3,7 @@ package php.bean.method;
 import database.column.Column;
 import database.relation.OneToManyRelation;
 import database.relation.PrimaryKey;
-import php.bean.Beans;
+import php.bean.Entities;
 import php.core.Attr;
 import php.core.Param;
 import php.core.PhpCls;
@@ -47,7 +47,7 @@ public class MethodAddRelatedBeanInternal extends Method {
 				e1PkArgs[i++] = pBean.callAttrGetter(colPk.getCamelCaseName());
 			}
 			
-			Var relPk = _declareNew(Beans.get( rel.getDestTable()).getPkType(), "relPk", e1PkArgs);
+			Var relPk = _declareNew(Entities.get( rel.getDestTable()).getPkType(), "relPk", e1PkArgs);
 			addInstr(a.arrayIndexSet(PhpFunctions.md5.call(PhpFunctions.serialize.call(relPk)),pBean));
 		} else {
 			addInstr(a.arrayIndexSet(pBean.callAttrGetter(rel.getDestTable().getPrimaryKey().getFirstColumn().getCamelCaseName()),pBean));

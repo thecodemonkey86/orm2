@@ -1,7 +1,7 @@
 package php.bean.method;
 
 import database.column.Column;
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.Param;
 import php.core.Types;
 import php.core.expression.ArrayInitExpression;
@@ -32,12 +32,12 @@ public class MethodGetFieldsAsAssocStringArray extends Method {
 
 	@Override
 	public void addImplementation() {
-		BeanCls bean = (BeanCls) parent;
+		EntityCls bean = (EntityCls) parent;
 		IfBlock ifAllColumns = _if(pSpecificColumns.isNull());
 		AssocArrayInitExpression expr = new AssocArrayInitExpression();
 		for(Column col : bean.getTbl().getAllColumns()) {
 			if(!col.hasRelation())
-				expr.addElement(new Pair<String, Expression>(col.getName(), BeanCls.getTypeMapper().getConvertFieldToStringExpression(_this().callMethod("get"+col.getUc1stCamelCaseName()), col,pDateTimeFormat,pDateFormat)));
+				expr.addElement(new Pair<String, Expression>(col.getName(), EntityCls.getTypeMapper().getConvertFieldToStringExpression(_this().callMethod("get"+col.getUc1stCamelCaseName()), col,pDateTimeFormat,pDateFormat)));
 		}
 		ifAllColumns.thenBlock()._return(expr);
 		/*Var result = ifAllColumns.elseBlock()._declare(Types.array(Types.String), "result", new ArrayInitExpression());

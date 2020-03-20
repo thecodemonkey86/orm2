@@ -1,6 +1,6 @@
 package php.beanrepository.method;
 
-import php.bean.BeanCls;
+import php.bean.EntityCls;
 import php.core.Attr;
 import php.core.Param;
 import php.core.PhpCls;
@@ -12,7 +12,7 @@ public class MethodSetSqlCon extends Method {
 
 	public MethodSetSqlCon() {
 		super(Public, Types.Void, "setSqlConnection");
-		addParam(new Param(BeanCls.getTypeMapper().getDatabaseLinkType(), "sqlCon"));
+		addParam(new Param(EntityCls.getTypeMapper().getDatabaseLinkType(), "sqlCon"));
 		setStatic(true);
 	}
 
