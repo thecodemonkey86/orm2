@@ -328,7 +328,18 @@ public class ConfigReader implements ContentHandler {
 					
 					String mappingTableName = atts.getValue("mappingTable");
 					MappingTable mappingTable = new MappingTable(cfg.getDatabase(), mappingTableName, cfg.getDatabase().getDefaultSchema());
+					
+					String overrideMappingTblPk=atts.getValue("mappingTblOverridePK");
 					cfg.getDatabase().readColumns(mappingTable, conn);	
+					if(overrideMappingTblPk!=null) {
+						PrimaryKey mappingTblPk = new PrimaryKey();
+						String[] mappingTblPkParts = overrideMappingTblPk.split(",");
+						for(String mappingTblPkCol:mappingTblPkParts) {
+							mappingTblPk.add(mappingTable.getColumnByName(mappingTblPkCol));
+						}
+						
+						mappingTable.setPrimaryKey(mappingTblPk);
+					}
 					if(mappingTable.getColumnCount() == 0) {
 						throw new IOException("invalid table " + mappingTable.getName());
 					}

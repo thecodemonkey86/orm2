@@ -272,7 +272,7 @@ public class EntityCls extends PhpCls {
 		addMethod(new BeanEqualsMethod(this, tbl.getPrimaryKey()));
 		addMethod(new MethodHasUpdate());
 		addMethod(new MethodClearModified());
-		addMethod(new MethodGetFieldsAsAssocArray());
+		addMethod(new MethodGetFieldsAsAssocArray(this));
 		addMethod(new MethodSetValue());
 		
 		fetchListHelper = new FetchListHelperClass(this, beanRepoNamespace);

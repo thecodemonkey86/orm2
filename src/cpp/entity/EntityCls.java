@@ -61,6 +61,7 @@ import cpp.entity.method.MethodQHashEntity;
 import cpp.entity.method.MethodQHashEntitySharedPtr;
 import cpp.entity.method.MethodQHashPkStruct;
 import cpp.entity.method.MethodRemoveAllManyRelatedEntities;
+import cpp.entity.method.MethodRemoveAllOneToManyRelatedEntities;
 import cpp.entity.method.MethodRemoveManyToManyRelatedEntity;
 import cpp.entity.method.MethodSetAutoIncrementId;
 import cpp.entity.method.MethodUnload;
@@ -200,7 +201,7 @@ public class EntityCls extends Cls {
 			addMethod(new MethodAddRelatedEntityInternal(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
 			addMethod(new MethodGetManyRelatedAtIndex(attr, r));
 			addMethod(new MethodGetManyRelatedCount(attr, r));
-			//addMethod(new MethodRemoveAllManyRelatedEntities(r));
+			addMethod(new MethodRemoveAllOneToManyRelatedEntities(r));
 			//addMethod(new MethodReplaceAllManyRelatedEntities(r));
 			addMethod(new MethodGetLastItem(attr.getElementType(), r));
 		}

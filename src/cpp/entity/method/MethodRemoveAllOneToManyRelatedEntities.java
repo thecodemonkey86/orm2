@@ -17,17 +17,17 @@ import cpp.lib.ClsQVector;
 import cpp.lib.ClsSql;
 import cpp.orm.OrmUtil;
 import database.column.Column;
-import database.relation.ManyRelation;
+import database.relation.OneToManyRelation;
 
-public class MethodRemoveAllManyRelatedEntities extends Method {
+public class MethodRemoveAllOneToManyRelatedEntities extends Method {
 
-	protected ManyRelation rel;
+	protected OneToManyRelation rel;
 	
-	public static String getMethodName(ManyRelation r) {
+	public static String getMethodName(OneToManyRelation r) {
 		return "removeAll"+StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrName(r));
 	}
 	
-	public MethodRemoveAllManyRelatedEntities(ManyRelation r) {
+	public MethodRemoveAllOneToManyRelatedEntities(OneToManyRelation r) {
 		super(Public, Types.Void, getMethodName(r));
 		rel=r;
 	}
@@ -41,15 +41,15 @@ public class MethodRemoveAllManyRelatedEntities extends Method {
 		ArrayList<String> columns = new ArrayList<>();
 		Var varParams = _declare(Types.QVariantList, "params");
 		
-		for(int i=0;i<rel.getSourceColumnCount();i++) {
-			columns.add(rel.getSourceMappingColumn(i).getEscapedName()+"=?");
+		for(int i=0;i<rel.getDestColumnCount();i++) {
+			columns.add(rel.getDestMappingColumn(i).getEscapedName()+"=?");
 		}
 		
 		for(Column colPk : rel.getSourceTable().getPrimaryKey()) {
 			_callMethodInstr(varParams, ClsQVariantList.append,parent.accessThisAttrGetterByColumn(colPk));
 		}
 		
-		String sql = String.format("delete from %s where %s", rel.getMappingTable().getEscapedName(), CodeUtil.commaSep(columns));
+		String sql = String.format("delete from %s where %s", rel.getDestTable().getEscapedName(), CodeUtil.commaSep(columns));
 		
 		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, _this().accessAttr(EntityCls.repository).callAttrGetter(ClsEntityRepository.sqlCon),QString.fromStringConstant(sql),varParams).asInstruction());
 		

@@ -2,7 +2,6 @@ package php.orm;
 
 import database.relation.AbstractRelation;
 import database.relation.IManyRelation;
-import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
 import php.bean.EntityCls;
@@ -15,9 +14,10 @@ public class OrmUtil {
 	public static String getOneRelationDestAttrName(OneRelation relation) {
 		return relation.hasSubstituteName() 
 				?relation.getSubstituteNameSingular() 
-				:( (relation.getColumnCount() == 1 && relation.getColumns(0).getValue1().getName().endsWith("_id")
-				? CodeUtil2.camelCase(relation.getColumns(0).getValue1().getName().substring(0, relation.getColumns(0).getValue1().getName().length() - 3))
-				: relation.getDestTable().getCamelCaseName()));
+				:(  (relation.getColumnCount() == 1 && relation.getColumns(0).getValue1().getName().endsWith("_id")
+					? CodeUtil2.camelCase(relation.getColumns(0).getValue1().getName().substring(0, relation.getColumns(0).getValue1().getName().length() - 3))
+					: relation.getDestTable().getCamelCaseName())
+				);
 	}
 
 	public static String getOneToManyRelationDestAttrName(OneToManyRelation relation) {
@@ -33,19 +33,19 @@ public class OrmUtil {
 		return CodeUtil2.plural(relation.getDestTable().getCamelCaseName());
 	}
 
-	public static String getManyRelationDestAttrNameSingular(OneRelation relation) {
+//	public static String getManyRelationDestAttrNameSingular(OneRelation relation) {
+//		if (relation.getColumnCount() == 1 && relation.getColumns(0).getValue2().getName().endsWith(relation.getSourceTable() + "_id")) {
+//			String name = CodeUtil2.camelCase(relation.getColumns(0).getValue2().getName().substring(0,
+//					relation.getColumns(0).getValue2().getName().length() - (relation.getSourceTable().getName() + "_id").length()) + relation.getDestTable());
+//			return name;
+//		}
+//
+//		return relation.getDestTable().getCamelCaseName();
+//	}
+	public static String getOneToManyRelationDestAttrNameSingular(OneToManyRelation relation) {
 		if(relation.hasSubstituteName() 
 				)
-			return relation.getSubstituteNameSingular();
-		if (relation.getColumnCount() == 1 && relation.getColumns(0).getValue2().getName().endsWith(relation.getSourceTable() + "_id")) {
-			String name = CodeUtil2.camelCase(relation.getColumns(0).getValue2().getName().substring(0,
-					relation.getColumns(0).getValue2().getName().length() - (relation.getSourceTable().getName() + "_id").length()) + relation.getDestTable());
-			return name;
-		}
-
-		return relation.getDestTable().getCamelCaseName();
-	}
-	public static String getManyRelationDestAttrNameSingular(OneToManyRelation relation) {
+			return relation.getSubstituteNameSingular(); 
 		if (relation.getColumnCount() == 1 && relation.getColumns(0).getValue2().getName().endsWith(relation.getSourceTable() + "_id")) {
 			String name = CodeUtil2.camelCase(relation.getColumns(0).getValue2().getName().substring(0,
 					relation.getColumns(0).getValue2().getName().length() - (relation.getSourceTable().getName() + "_id").length()) + relation.getDestTable());
@@ -56,11 +56,13 @@ public class OrmUtil {
 	}
 
 	public static String getOneRelationDestAttrGetter(OneRelation oneRelation) {
-		// TODO Auto-generated method stub
 		return "get" + StringUtil.ucfirst(getOneRelationDestAttrName(oneRelation));
 	}
 
-	public static String getManyRelationDestAttrName(ManyRelation relation) {
+	public static String getManyRelationDestAttrName(IManyRelation relation) {
+		if(relation.hasSubstituteName() 
+				)
+			return relation.getSubstituteNamePlural(); 
 		if (relation.getDestColumnCount() == 1 && relation.getDestMappingColumn(0).getName().endsWith(relation.getSourceTable() + "_id")) {
 			String name = CodeUtil2.plural(CodeUtil2.camelCase(relation.getDestMappingColumn(0).getName().substring(0,
 					relation.getDestMappingColumn(0).getName().length() - (relation.getSourceTable().getName() + "_id").length()) + relation.getDestTable()));
@@ -72,6 +74,9 @@ public class OrmUtil {
 	}
 
 	public static String getManyRelationDestAttrNameSingular(IManyRelation relation) {
+		if(relation.hasSubstituteName() 
+				)
+			return relation.getSubstituteNameSingular(); 
 		if (relation.getDestColumnCount() == 1 && relation.getDestMappingColumn(0).getName().endsWith(relation.getSourceTable() + "_id")) {
 			String name = CodeUtil2.camelCase(relation.getDestMappingColumn(0).getName().substring(0,
 					relation.getDestMappingColumn(0).getName().length() - (relation.getSourceTable().getName() + "_id").length()) + relation.getDestTable());

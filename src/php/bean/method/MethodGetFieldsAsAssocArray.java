@@ -22,10 +22,18 @@ public class MethodGetFieldsAsAssocArray extends Method {
 	Param pDateTimeFormat;
 	Param pSpecificColumns;
 	
-	public MethodGetFieldsAsAssocArray() {
+	public MethodGetFieldsAsAssocArray(EntityCls bean) {
 		super(Public, Types.array(Types.String), METHOD_NAME);
-		pDateTimeFormat = addParam(new Param(Types.String, "dateTimeFormat",new PhpStringLiteral("Y-m-d H:i:s")));
-		pDateFormat = addParam(new Param(Types.String, "dateFormat",new PhpStringLiteral("Y-m-d")));
+		for(Column col : bean.getTbl().getAllColumns()) {
+			if(!col.isRelationDestColumn() || col.isPartOfPk()) {
+				if(EntityCls.getTypeMapper().columnToType(col).equals(Types.DateTime)) {
+					pDateTimeFormat = addParam(new Param(Types.String, "dateTimeFormat",new PhpStringLiteral("Y-m-d H:i:s")));
+					pDateFormat = addParam(new Param(Types.String, "dateFormat",new PhpStringLiteral("Y-m-d")));
+					break;
+				}
+			}
+		}
+		
 		pSpecificColumns = addParam(new Param(Types.array(Types.String), "columns",Expressions.Null));
 		
 	}
