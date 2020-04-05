@@ -2,6 +2,7 @@ package cpp.core.expression;
 
 import util.StringUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cpp.core.Attr;
@@ -10,6 +11,7 @@ import cpp.core.IAttributeContainer;
 import cpp.core.Method;
 import cpp.core.MethodCall;
 import cpp.core.Operator;
+import cpp.core.Param;
 import cpp.core.RawPtr;
 import cpp.core.SharedPtr;
 import cpp.core.Type;
@@ -102,6 +104,14 @@ public abstract class Expression {
 	public MethodCall callMethod(String m, List<Expression>args) {
 		Expression[] argsArray = new Expression[args.size()];
 		args.toArray(argsArray);
+		return callMethod( m,argsArray);
+	}
+	
+	public MethodCall callMethod(String m, ArrayList<Param>args) {
+		Expression[] argsArray = new Expression[args.size()];
+		for(int i=0;i<args.size();i++) {
+			argsArray[i] = args.get(i);
+		}
 		return callMethod( m,argsArray);
 	}
 	

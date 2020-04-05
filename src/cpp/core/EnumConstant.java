@@ -7,8 +7,7 @@ public class EnumConstant extends Expression {
 	Enum parent;
 	String name;
 	
-	public EnumConstant(Enum parent, String name) {
-		this.parent = parent;
+	public EnumConstant(String name) {
 		this.name = name;
 	}
 	
@@ -17,6 +16,9 @@ public class EnumConstant extends Expression {
 		return this.parent;
 	}
 
+	public void setParent(Enum parent) {
+		this.parent = parent;
+	}
 	
 	public String getName() {
 		return name;

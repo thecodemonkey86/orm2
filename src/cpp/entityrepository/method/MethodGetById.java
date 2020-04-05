@@ -48,13 +48,16 @@ public class MethodGetById extends Method {
 	}
 	public MethodGetById(EntityCls cls) {
 //		super(Public, cls.toRawPointer(), "getById");
-		super(Public, cls.toSharedPtr(), "get"+cls.getName()+"ById");
+		super(Public, cls.toSharedPtr(), getMethodName(cls));
 		for(Column col:cls.getTbl().getPrimaryKey().getColumns()) {
 			Type colType =  EntityCls.getDatabaseMapper().columnToType(col);
 			addParam(new Param(colType.isPrimitiveType() ? colType : colType.toConstRef(), col.getCamelCaseName()));
 		}
 //		setStatic(true);
 		this.bean=cls;
+	}
+	public static String getMethodName(EntityCls cls) {
+		return "get"+cls.getName()+"ById";
 	}
 
 	@Override

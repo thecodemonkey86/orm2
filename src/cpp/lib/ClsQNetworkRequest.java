@@ -8,7 +8,7 @@ public class ClsQNetworkRequest extends Cls{
 
 	public static final String setAttribute = "setAttribute";
 	public final EnumAttribute enumAttribute = new EnumAttribute(); 
-	public final EnumConstant FollowRedirectsAttribute = new EnumConstant(enumAttribute, "FollowRedirectsAttribute");
+	public final EnumConstant FollowRedirectsAttribute = new EnumConstant("FollowRedirectsAttribute");
 	
 	public ClsQNetworkRequest() {
 		super("QNetworkRequest");

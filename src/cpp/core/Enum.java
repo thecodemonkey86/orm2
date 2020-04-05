@@ -7,12 +7,15 @@ import util.CodeUtil2;
 
 public class Enum extends Type{
 	protected Cls parentCls;
-	protected EnumConstant[] enumConstants;
+	protected ArrayList<EnumConstant> enumConstants;
 	
-	public Enum(Cls parentCls, String name, EnumConstant ...enumConstants) {
+	public Enum(Cls parentCls, String name,EnumConstant...constants) {
 		super(name);
 		this.parentCls = parentCls;
-		this.enumConstants = enumConstants;
+		this.enumConstants = new ArrayList<>();
+		for(EnumConstant c:constants) {
+			addEnumConstant(c);
+		}
 	}
 	
 	@Override
@@ -21,7 +24,7 @@ public class Enum extends Type{
 	}
 	
 	public String toDefinitionString() {
-		StringBuilder sb = new StringBuilder(CodeUtil2.sp("enum",type,'{'));
+		StringBuilder sb = new StringBuilder( CodeUtil2.sp(Method.Public+":", "enum",type,'{'));
 		ArrayList<String> constants = new ArrayList<>();
 		for(EnumConstant c : enumConstants) {
 			constants.add(c.getName());
@@ -40,7 +43,12 @@ public class Enum extends Type{
 		return sb.toString();
 	}
 	
-	public EnumConstant[] getEnumConstants() {
+	public void addEnumConstant(EnumConstant c) {
+		c.setParent(this);
+		this.enumConstants.add(c);
+	}
+	
+	public ArrayList<EnumConstant> getEnumConstants() {
 		return enumConstants;
 	}
 	

@@ -78,6 +78,12 @@ public class InstructionBlock extends Instruction implements Iterable<Instructio
 		return var;
 	}
 	
+	public Var _declareInitConstructor(Type type, String varName, Expression[] init ) {
+		Var var = new Var(type, varName);
+		addInstr(new DeclareInitConstructMultiArgsInstruction(var, init));
+		return var;
+	}
+	
 	public Var _declare(Type type, String varName) {
 		Var var = new Var(type, varName);
 		addInstr(new DeclareInstruction(var, null));

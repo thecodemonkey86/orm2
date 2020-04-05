@@ -17,6 +17,7 @@ import cpp.entityrepository.method.MethodCreateQueryUpdate;
 import cpp.entityrepository.method.MethodFetchList;
 import cpp.entityrepository.method.MethodFetchOne;
 import cpp.entityrepository.method.MethodGetById;
+import cpp.entityrepository.method.MethodGetByIdOrCreateNew;
 import cpp.entityrepository.method.MethodGetFromRecord;
 import cpp.entityrepository.method.MethodLoadCollection;
 import cpp.entityrepository.method.MethodRemoveAllRelated;
@@ -62,6 +63,8 @@ public class ClsEntityRepository extends Cls{
 //			addAttr(new Attr(new ClsQHash(bean.getPkType(), bean.toRawPointer()), "loadedBeans"+bean.getName()));
 			addMethod(new MethodGetById(bean));
 			addMethod(new MethodGetById(bean,true));
+			addMethod(new MethodGetByIdOrCreateNew(bean));
+			addMethod(new MethodGetByIdOrCreateNew(bean,true));			
 //			addMethod(new MethodGetByRecord(bean.getTbl().getColumns(true), bean));
 			addMethod(new MethodFetchList(bean, bean.getTbl().getPrimaryKey(),false));
 			addMethod(new MethodFetchOne(bean.getOneRelations(),bean.getOneToManyRelations(), bean, null, false));

@@ -16,4 +16,16 @@ public class LibInclude extends Include {
 	public String toString() {
 		return "#include "+ CodeUtil.abr(this.name);
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+	 if(!(obj instanceof LibInclude))
+		 return false;
+		return name.equals(((LibInclude)obj).name);
+	}
+	
+	@Override
+	public int hashCode() {
+		return name.hashCode();
+	}
 }

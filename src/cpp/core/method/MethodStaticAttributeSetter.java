@@ -18,7 +18,7 @@ public class MethodStaticAttributeSetter extends MethodAttributeSetter {
 		Cls t = (Cls)parent;
 		
 		if(t instanceof RawPtr) {
-			addInstr(new AssignInstruction( ((Cls) ((RawPtr)t).getElementType()).accessStaticAttr(attr.getName()), getParam(attr.getName())));;
+			addInstr(new AssignInstruction( ((Cls) ((RawPtr)t).getElementType()).accessStaticAttr(attr.getName()), getParam(attr.getName())));
 		} else if(t instanceof SharedPtr) {
 			addInstr(new AssignInstruction( ((Cls) ((SharedPtr)t).getElementType()).accessStaticAttr(attr.getName()), getParam(attr.getName())));;
 		} else {
