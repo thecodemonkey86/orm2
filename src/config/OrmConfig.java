@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import database.Database;
 import database.DbCredentials;
 import database.relation.ManyRelation;
@@ -31,6 +32,7 @@ public class OrmConfig {
 	private DbCredentials credentials;
 	
 	private boolean enableStacktrace = true;
+	private boolean enableGetValueByName = false;
 	private JsonMode jsonMode;
 	
 	public void setJsonMode(JsonMode jsonMode) {
@@ -283,5 +285,13 @@ public class OrmConfig {
 		}
 		
 		
+	}
+	
+	public void setEnableGetValueByName(boolean enableGetValueByName) {
+		this.enableGetValueByName = enableGetValueByName;
+	}
+	
+	public boolean isEnableGetValueByName() {
+		return enableGetValueByName;
 	}
 }

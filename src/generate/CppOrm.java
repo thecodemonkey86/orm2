@@ -100,6 +100,7 @@ public class CppOrm extends OrmGenerator {
 	@Override
 	public void generate() throws IOException 	{
 		CppOrmConfig cfg = (CppOrmConfig) this.cfg;
+		EntityCls.setCfg(cfg);
 		Charset utf8 = Charset.forName("UTF-8");
 		Instruction.setStackTraceEnabled(cfg.isEnableStacktrace());
 		

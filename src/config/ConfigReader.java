@@ -137,6 +137,7 @@ public class ConfigReader implements ContentHandler {
 	public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
 		try {
 			this.tags.push(localName);
+			
 			switch (this.tags.peek()) {
 			case "orm":
 				createConfig();
@@ -270,9 +271,14 @@ public class ConfigReader implements ContentHandler {
 						}
 						
 					} 
+					String attEnableRawValue = atts.getValue("enableRawValue");
+					if(attEnableRawValue !=null) {
+						enableRawValueColumns = attEnableRawValue.split(",");
+					}
 					
-					if(atts.getValue("enableRawValue") !=null) {
-						enableRawValueColumns = atts.getValue("enableRawValue").split(",");
+					String attEnableGetValueByName = atts.getValue("enableGetValueByName");
+					if(attEnableGetValueByName != null) {
+						cfg.setEnableGetValueByName(attEnableGetValueByName.equals("1") ||attEnableGetValueByName.equals("true"));
 					}
 				} else {
 					throw new SAXException("Illegal state");

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import codegen.CodeUtil;
+import config.cpp.CppOrmConfig;
 import util.CodeUtil2;
 import util.StringUtil;
 import cpp.Types;
@@ -30,6 +31,7 @@ import cpp.entity.method.MethodAddManyToManyRelatedEntityInternal;
 import cpp.entity.method.MethodAddRelatedEntity;
 import cpp.entity.method.MethodAddRelatedEntityInternal;
 import cpp.entity.method.MethodAddRelatedTableJoins;
+import cpp.entity.method.MethodAllFieldNames;
 import cpp.entity.method.MethodAttrGetter;
 import cpp.entity.method.MethodColumnAttrSetNull;
 import cpp.entity.method.MethodColumnAttrSetter;
@@ -53,6 +55,7 @@ import cpp.entity.method.MethodGetTableNameInternal;
 import cpp.entity.method.MethodGetUpdateCondition;
 import cpp.entity.method.MethodGetUpdateConditionParams;
 import cpp.entity.method.MethodGetUpdateFields;
+import cpp.entity.method.MethodGetValueByName;
 import cpp.entity.method.MethodIsNullOrEmpty;
 import cpp.entity.method.MethodManyAttrGetter;
 import cpp.entity.method.MethodOneRelationAttrSetter;
@@ -89,7 +92,11 @@ public class EntityCls extends Cls {
 	static DatabaseTypeMapper mapper;
 	public static final String repository = "repository";
 	private static String modelPath, repositoryPath;
+	static CppOrmConfig cfg;
 	
+	public static void setCfg(CppOrmConfig cfg) {
+		EntityCls.cfg = cfg;
+	}
 	private ArrayList<String> customHeaderCode, customSourceCode, customPreprocessorCode;
 	
 	
@@ -363,6 +370,11 @@ public class EntityCls extends Cls {
 //		addMethod(new MethodGetById(oneRelations,manyRelations, tbl, this));
 		addMethod(new MethodGetSelectFields(allCols));
 		addMethod(new MethodGetAllSelectFields(allCols));
+		if(cfg.isEnableGetValueByName()) {
+			addMethod(new MethodGetValueByName());
+			addMethod(new MethodAllFieldNames());
+		}
+		
 //		addMethod(new MethodGetFromRecordStatic(allCols,this));
 //		addMethod(new MethodFetchList(oneRelations, manyRelations, this, tbl.getPrimaryKey()));
 //		addMethod(new MethodCreateQuery(this));
