@@ -86,7 +86,7 @@ public class EntityCls extends Cls {
 	public static final String END_CUSTOM_CLASS_MEMBERS = "/*END_CUSTOM_CLASS_MEMBERS*/";
 	public static final String BEGIN_CUSTOM_PREPROCESSOR = "/*BEGIN_CUSTOM_PREPROCESSOR*/";
 	public static final String END_CUSTOM_PREPROCESSOR = "/*END_CUSTOM_PREPROCESSOR*/";
-	public static final String APILEVEL = "3.4";
+	public static final String APILEVEL = "3.5";
 	
 	static Database database;
 	static DatabaseTypeMapper mapper;
@@ -278,15 +278,12 @@ public class EntityCls extends Cls {
 				addMethod(new MethodAttrGetter(attr,false));	
 			}
 			
-			if (col.isAutoIncrement()) {
-				addMethod(new MethodSetAutoIncrementId());
-			}
 //			if (col.isPartOfPk()) {
 //				
 //			}
 			
 		}
-		
+		addMethod(new MethodSetAutoIncrementId(getTbl().getPrimaryKey().isAutoIncrement()));
 		//for(OneToManyRelation r:oneToManyRelations) {
 		//	addMethod(new MethodToggleAddRemoveRelatedEntity(r));
 		//}

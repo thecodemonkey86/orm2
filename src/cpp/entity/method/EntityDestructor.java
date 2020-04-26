@@ -12,7 +12,7 @@ public class EntityDestructor extends Destructor {
 	
 	public EntityDestructor(EntityCls bean) {
 		this.bean = bean;
-		setVirtualQualifier(true);
+		//setVirtualQualifier(true);
 	}
 
 	@Override

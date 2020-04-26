@@ -35,8 +35,14 @@ public class PureVirtualMethod extends Method {
 	}
 	
 	@Override
-	public boolean isHeaderOnly() {
+	public boolean hasOutputSourceCode() {
 		return true;
 	}
+	
+		@Override
+	public boolean hasOutputHeaderCode() {
+		return false;
+	}
+	
 
 }

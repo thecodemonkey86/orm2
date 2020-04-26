@@ -7,7 +7,7 @@ import cpp.core.method.TplMethod;
 public class LibTplMethod extends TplMethod {
 
 	public LibTplMethod(MethodTemplate template,String visibility, Type returnType, String name, Type[] concreteTypes) {
-		super(template, visibility, returnType, name,concreteTypes);
+		super(template, concreteTypes);
 	}
 
 	@Override

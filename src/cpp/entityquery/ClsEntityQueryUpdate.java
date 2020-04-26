@@ -129,8 +129,8 @@ public class ClsEntityQueryUpdate extends Cls {
 		addMethod(new MethodWhere9(this));
 		addMethod(new MethodWhere10(this));
 		addMethod(new MethodWhere11(this));
-		addMethod(new MethodWhere12(this).getConcreteMethod(Types.Int64)); // QSet<int64_t>
-		addMethod(new MethodWhere13(this).getConcreteMethod(Types.Int64)); // QVector<int64_t>
+		addMethodTemplate(new MethodWhere12(this)); 
+		addMethodTemplate(new MethodWhere13(this)); 
 		addMethod(new MethodAndWhere1(this));
 		addMethod(new MethodAndWhere2(this));
 		addMethod(new MethodAndWhere3(this));

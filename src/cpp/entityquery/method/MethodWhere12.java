@@ -4,7 +4,6 @@ import cpp.Types;
 import cpp.core.Cls;
 import cpp.core.Method;
 import cpp.core.MethodTemplate;
-import cpp.core.Param;
 import cpp.core.TplSymbol;
 import cpp.core.Type;
 import cpp.core.instruction.Instruction;
@@ -12,21 +11,18 @@ import cpp.core.method.TplMethod;
 
 public class MethodWhere12 extends MethodTemplate{
 
-	Param pWhereCond;
-	Param pParams;
-	
 	public MethodWhere12(Cls parentType) {
 		super(Method.Public, parentType.toRef(), "where");
 		addTplType(new TplSymbol("T"));
-		pWhereCond = new Param(Types.QString.toConstRef(),"whereCond");
-		pParams = new Param(Types.qset(tplTypes.get(0)).toConstRef(),"params");
+		addParam(Types.QString.toConstRef(),"whereCond");
+		addParam(Types.qset(tplTypes.get(0)).toConstRef(),"params");
 		
 	}
 
 	@Override
 	public TplMethod getConcreteMethod(Type... types) {
 		// TODO Auto-generated method stub
-		TplMethod t= new TplMethod(this,visibility, returnType, name, types ) {
+		TplMethod t= new TplMethod(this,types ) {
 			
 			@Override
 			public void addImplementation() {
@@ -44,8 +40,6 @@ public class MethodWhere12 extends MethodTemplate{
 				
 			}
 		};
-		t.addParam(pWhereCond);
-		t.addParam(pParams);
 		return t;
 	}
 

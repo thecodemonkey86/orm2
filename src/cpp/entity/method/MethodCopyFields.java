@@ -31,7 +31,7 @@ public class MethodCopyFields extends Method{
 		if(bean.hasRelations() ) {
 			pRelations = addParam(new Param(CoreTypes.Bool, "copyRelations"));
 		}
-		pExclude = addParam(new Param(Types.qset(Types.QString).toConstRef(), "exclude",new CreateObjectExpression(Types.qset(Types.QString))));
+		
 	}
 
 	@Override
@@ -69,6 +69,9 @@ public class MethodCopyFields extends Method{
 		
 		
 			if(!hasRelation) {
+				if(pExclude == null) {
+					pExclude = addParam(new Param(Types.qset(Types.QString).toConstRef(), "exclude",new CreateObjectExpression(Types.qset(Types.QString))));
+				}
 				
 				IfBlock ifNotExclude = _if(Expressions.not(pExclude.callMethod(ClsQSet.contains, QString.fromStringConstant(col.getName()))));
 				if(col.isNullable()) {

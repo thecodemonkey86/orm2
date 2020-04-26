@@ -150,6 +150,13 @@ public class CppOrm extends OrmGenerator {
 					String existingSourceFile = new String(Files.readAllBytes(pathSrc),utf8);
 					
 					Path pBackup  =Paths.get("bak_custom_class_members");
+					if(!Files.exists(pBackup)) {
+						Files.createDirectory(pBackup);
+					}
+					
+					FileUtil2.writeFileIfContentChanged(pBackup.resolve(pathHeader.getFileName().toString()),existingHeaderFile.getBytes(utf8), writeOptions);
+					FileUtil2.writeFileIfContentChanged(pBackup.resolve(pathSrc.getFileName().toString()),existingSourceFile.getBytes(utf8), writeOptions);
+					
 					int startHdr = -1;
 					
 					while((startHdr = existingHeaderFile.indexOf(EntityCls.BEGIN_CUSTOM_CLASS_MEMBERS,startHdr+1))>-1) {
@@ -160,11 +167,6 @@ public class CppOrm extends OrmGenerator {
 						String customClassMember = existingHeaderFile.substring(startHdr+EntityCls.BEGIN_CUSTOM_CLASS_MEMBERS.length(), endHdr);
 						//c.addMethod(new CustomClassMemberCode(customClassMember, implCode) );
 						
-						if(!Files.exists(pBackup)) {
-							Files.createDirectory(pBackup);
-						}
-						
-						FileUtil2.writeFileIfContentChanged(pBackup.resolve(pathHeader.getFileName().toString()),customClassMember.getBytes(utf8), writeOptions);
 						c.addCustomHeaderCode(customClassMember);
 					}
 					int startSrc = -1;
@@ -307,8 +309,15 @@ public class CppOrm extends OrmGenerator {
 				if (Files.exists(pathHeader) && Files.exists(pathSrc)) {
 					String existingHeaderFile = new String(Files.readAllBytes(pathHeader),utf8);
 					String existingSourceFile = new String(Files.readAllBytes(pathSrc),utf8);
-					
 					Path pBackup  =Paths.get("bak_custom_class_members");
+					if(!Files.exists(pBackup)) {
+						Files.createDirectory(pBackup);
+					}
+					
+					FileUtil2.writeFileIfContentChanged(pBackup.resolve(pathHeader.getFileName().toString()),existingHeaderFile.getBytes(utf8), writeOptions);
+					FileUtil2.writeFileIfContentChanged(pBackup.resolve(pathSrc.getFileName().toString()),existingSourceFile.getBytes(utf8), writeOptions);
+					
+					
 					int startHdr = -1;
 					
 					while((startHdr = existingHeaderFile.indexOf(EntityCls.BEGIN_CUSTOM_CLASS_MEMBERS,startHdr+1))>-1) {
@@ -319,11 +328,7 @@ public class CppOrm extends OrmGenerator {
 						String customClassMember = existingHeaderFile.substring(startHdr+EntityCls.BEGIN_CUSTOM_CLASS_MEMBERS.length(), endHdr);
 						//c.addMethod(new CustomClassMemberCode(customClassMember, implCode) );
 						
-						if(!Files.exists(pBackup)) {
-							Files.createDirectory(pBackup);
-						}
 						
-						FileUtil2.writeFileIfContentChanged(pBackup.resolve(pathHeader.getFileName().toString()),customClassMember.getBytes(utf8), writeOptions);
 						c.addCustomHeaderCode(customClassMember);
 					}
 					int startSrc = -1;

@@ -1,8 +1,5 @@
 package cpp.core.method;
 
-import java.util.ArrayList;
-
-import codegen.CodeUtil;
 import cpp.core.Method;
 import cpp.core.MethodTemplate;
 import cpp.core.Param;
@@ -10,9 +7,6 @@ import cpp.core.TplMethodCall;
 import cpp.core.TplSymbol;
 import cpp.core.Type;
 import cpp.core.expression.Expression;
-import cpp.core.instruction.Comment;
-import cpp.core.instruction.Instruction;
-import util.CodeUtil2;
 
 public abstract class TplMethod extends Method{
 
@@ -21,10 +15,23 @@ public abstract class TplMethod extends Method{
 	protected Type[] concreteTypes;
 	
 	
-	public TplMethod(MethodTemplate template,String visibility, Type returnType, String name,Type[] concreteTypes) {
-		super(visibility, returnType, name);
+	public TplMethod(MethodTemplate template,Type[] concreteTypes) {
+		super(template.getVisibility(), template.getReturnType(), template.getName());
 		this.concreteTypes = concreteTypes;
 		this.template = template;
+		for(Param p:template.getParams()) {
+			if(p.getType() instanceof TplSymbol)
+			{
+				for(int i=0;i< template.getTplTypes().size();i++) {
+					if(((TplSymbol)p.getType()).equals(template.getTplTypes().get(i))) {
+						params.add(new Param(concreteTypes[i], p.getName()));
+						break;
+					}
+				}
+			} else {
+				params.add(p);
+			}
+		}
 	}
 
 	
@@ -34,7 +41,7 @@ public abstract class TplMethod extends Method{
 	}
 	
 	
-	@Override
+	/*@Override
 	public String toHeaderString() {
 		ArrayList<String> params=new ArrayList<>();
 		for(Param p:this.params) {
@@ -68,10 +75,14 @@ public abstract class TplMethod extends Method{
 		
 		return sb.toString();
 		
+	}*/
+	
+
+	public boolean hasOutputSourceCode() {
+		return false;
 	}
 	
-	@Override
-	public boolean isHeaderOnly() {
-		return true;
+	public boolean hasOutputHeaderCode() {
+		return false;
 	}
 }

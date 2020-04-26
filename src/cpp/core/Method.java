@@ -18,6 +18,7 @@ public abstract class Method extends InstructionBlock{
 	protected boolean inlineQualifier;
 	protected boolean virtualQualifier;
 	protected boolean overrideQualifier;
+	protected boolean noreturnQualifier;
 	
 	protected String visibility;
 	protected Type returnType;
@@ -114,7 +115,7 @@ public abstract class Method extends InstructionBlock{
 		for(Param p:this.params) {
 			params.add(p.toDeclarationString());
 		}
-		return CodeUtil.sp(getVisibility()+":",(inlineQualifier?"inline":null), (isStatic?"static":(virtualQualifier?"virtual":null)),retType() ,getName(),CodeUtil.parentheses(CodeUtil.commaSep(params)),(constQualifier?"const":null), (overrideQualifier ? "override":null), ";");
+		return CodeUtil.sp(getVisibility()+":",(inlineQualifier?"inline":null), (isStatic?"static":(virtualQualifier?"virtual":null)),(noreturnQualifier ? "[[noreturn]]":null),retType() , getName(),CodeUtil.parentheses(CodeUtil.commaSep(params)),(constQualifier?"const":null),(overrideQualifier ? "override":null), ";");
 	}
 	
 	public void setReturnType(Type returnType) {
@@ -206,9 +207,16 @@ public abstract class Method extends InstructionBlock{
 		return super._this();
 	}
 	
-	public boolean isHeaderOnly() {
-		return false;
+	public boolean hasOutputSourceCode() {
+		return true;
 	}
 	
+	public boolean hasOutputHeaderCode() {
+		return true;
+	}
+	
+	public void setNoreturnQualifier(boolean noreturnQualifier) {
+		this.noreturnQualifier = noreturnQualifier;
+	}
 	
 }

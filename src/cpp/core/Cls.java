@@ -68,7 +68,11 @@ public class Cls extends Type implements IAttributeContainer{
 		this.constructors=new ArrayList<>();
 		this.includes=new LinkedHashSet<>();
 		this.operators = new ArrayList<>(); 
-		this.forwardDeclaredTypes = new LinkedHashSet<>(); 
+		this.forwardDeclaredTypes = new LinkedHashSet<>();
+		if(name !=null) {
+			addConstructor(new CopyConstructor(this));
+			addOperator(new CopyAssignOperator(this));
+		}
 	}
 	
 	public void addInclude(String i) {
@@ -229,13 +233,22 @@ public class Cls extends Type implements IAttributeContainer{
 			CodeUtil.writeLine(sb, a.toDeclarationString());
 		}
 		for(Constructor c:constructors) {
-			CodeUtil.writeLine(sb, c.toHeaderString());
+			if(c.hasOutputHeaderCode()) {
+				CodeUtil.writeLine(sb, c.toHeaderString());
+			}
 		}
 		if (destructor !=null)
 			CodeUtil.writeLine(sb, destructor.toHeaderString());
 		for(Method m:methods) {
-			if (m.getInstructions().size()>0 || m.includeIfEmpty())
-				CodeUtil.writeLine(sb, m.toHeaderString());
+			if(m.hasOutputHeaderCode()) {
+				if (m.getInstructions().size()>0 || m.includeIfEmpty()) {
+					CodeUtil.writeLine(sb, m.toHeaderString());
+				}
+			}
+		}
+		if(methodTemplates!=null)
+		for(MethodTemplate m:methodTemplates) {
+			CodeUtil.writeLine(sb, m.toHeaderString());
 		}
 		for(Operator o:operators) {
 			CodeUtil.writeLine(sb, o.toHeaderString());
@@ -272,13 +285,15 @@ public class Cls extends Type implements IAttributeContainer{
 //		}
 		addBeforeSourceCode(sb);
 		for(Constructor c:constructors) {
-			CodeUtil.writeLine(sb, c);
+			if(c.hasOutputSourceCode()) {
+				CodeUtil.writeLine(sb, c);
+			}
 		}
 		if (destructor !=null)
 			CodeUtil.writeLine(sb, destructor);
 		
 		for(Method m:methods) {
-			if(!m.isHeaderOnly()) {
+			if(m.hasOutputSourceCode()) {
 				if (m.getInstructions().size()>0 || m.includeIfEmpty()) {
 					CodeUtil.writeLine(sb, m);
 					sb.append('\n');
@@ -287,7 +302,9 @@ public class Cls extends Type implements IAttributeContainer{
 		}
 		
 		for(Operator o:operators) {
-			CodeUtil.writeLine(sb, o);
+			if(o.hasOutputSourceCode()) {
+				CodeUtil.writeLine(sb, o);
+			}
 		}
 		
 		for(Attr a:attrs) {
@@ -524,11 +541,13 @@ public class Cls extends Type implements IAttributeContainer{
 		return CodeUtil.sp("class",getName());
 	}
 	
-	public void addMethodTemplate(MethodTemplate tpl) {
+	public MethodTemplate addMethodTemplate(MethodTemplate tpl) {
 		if(this.methodTemplates == null) {
 			this.methodTemplates = new ArrayList<>();
 		}
+		tpl.setParent(this);
 		this.methodTemplates.add(tpl);
+		return tpl;
 	}
 	
 	public Type toRValueRef() {
