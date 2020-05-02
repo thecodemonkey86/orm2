@@ -51,7 +51,6 @@ import cpp.entity.method.MethodGetPrimaryKeyColumns;
 import cpp.entity.method.MethodGetSelectFields;
 import cpp.entity.method.MethodGetTableName;
 import cpp.entity.method.MethodGetTableNameAlias;
-import cpp.entity.method.MethodGetTableNameInternal;
 import cpp.entity.method.MethodGetUpdateCondition;
 import cpp.entity.method.MethodGetUpdateConditionParams;
 import cpp.entity.method.MethodGetUpdateFields;
@@ -142,6 +141,7 @@ public class EntityCls extends Cls {
 	//protected Struct structPk;
 	protected Type pkType;
 	protected Struct fetchListHelper;
+	private static final char NEWLINE='\n';
 	
 	public Struct getFetchListHelperCls() {
 		return fetchListHelper;
@@ -349,9 +349,9 @@ public class EntityCls extends Cls {
 		
 		addMethod(new MethodGetTableName());
 		addMethod(new MethodGetTableNameAlias());
-		addMethod(new MethodGetTableNameInternal());
+//		addMethod(new MethodGetTableNameInternal());
 		//addIncludeHeader("entityquery");
-		addIncludeHeader(repositoryPath + "entityrepository");
+		addIncludeHeader(repositoryPath + Types.EntityRepository.getName().toLowerCase());
 		addForwardDeclaredClass(Types.EntityRepository);
 		addIncludeHeader(Types.orderedSet(null).getHeaderInclude());
 		addAttributes(tbl.getAllColumns());
@@ -612,13 +612,13 @@ public class EntityCls extends Cls {
 	@Override
 	protected void addClassHeaderCode(StringBuilder sb) {
 		super.addClassHeaderCode(sb);
-		sb.append('\n').append(BEGIN_CUSTOM_CLASS_MEMBERS).append('\n');
+		sb.append(NEWLINE).append(BEGIN_CUSTOM_CLASS_MEMBERS).append(NEWLINE);
 		if(customHeaderCode != null) {
 			for(String cc : customHeaderCode) {
-				sb.append(cc.trim());
+				sb.append(cc.trim()).append(NEWLINE);
 			}
 		}
-		sb.append('\n').append(END_CUSTOM_CLASS_MEMBERS).append('\n');
+		sb.append(NEWLINE).append(END_CUSTOM_CLASS_MEMBERS).append(NEWLINE);
 
 	}
 	

@@ -38,6 +38,7 @@ public class CppConfigReader extends ConfigReader{
 		switch (this.tags.peek()) {
 		case "cpp":
 			getCfg().setExportMacro(atts.getValue("exportMacro"),atts.getValue("exportMacroIncludeHeader"));
+//			getCfg().setNamespace(atts.getValue("namespace"));
 			break;
 		default:
 			break;

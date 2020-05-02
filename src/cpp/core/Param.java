@@ -28,14 +28,7 @@ public class Param extends Var{
 	
 	@Override
 	public String toDeclarationString() {
-		//return super.toDeclarationString();
-		if (name.equals("noLoading")) {
-			System.out.println();
-		}
 		return defaultValue == null? CodeUtil.sp(type.toDeclarationString(),name):CodeUtil.sp(type.toDeclarationString(),name,'=',defaultValue);
 	}
-	
-	
-
 	
 }

@@ -34,7 +34,7 @@ public class OrmConfig {
 	private boolean enableStacktrace = true;
 	private boolean enableGetValueByName = false;
 	private JsonMode jsonMode;
-	
+	private String overrideRepositoryClassName;
 	public void setJsonMode(JsonMode jsonMode) {
 		this.jsonMode = jsonMode;
 	}
@@ -293,5 +293,17 @@ public class OrmConfig {
 	
 	public boolean isEnableGetValueByName() {
 		return enableGetValueByName;
+	}
+
+	public void setOverrideRepositoryClassName(String overrideRepositoryClassName) {
+		this.overrideRepositoryClassName = overrideRepositoryClassName;
+	}
+	
+	public String getOverrideRepositoryClassName() {
+		return overrideRepositoryClassName;
+	}
+	
+	public boolean hasOverrideRepositoryClassName() {
+		return overrideRepositoryClassName!=null;
 	}
 }

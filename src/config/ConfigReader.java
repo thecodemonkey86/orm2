@@ -216,7 +216,7 @@ public class ConfigReader implements ContentHandler {
 				cfg.setBasePath(basePath);
 				cfg.setModelPath(atts.getValue("modelPath"));
 				cfg.setRepositoryPath(atts.getValue("repositoryPath"));
-				
+				cfg.setOverrideRepositoryClassName(atts.getValue("repositoryClassName"));
 				break;
 			case "entities":
 				section = Section.ENTITIES;
@@ -248,6 +248,8 @@ public class ConfigReader implements ContentHandler {
 					}
 					if(atts.getValue("overrideNoAutoIncrement")!=null) {
 						currentEntityTable.getPrimaryKey().getFirstColumn().setAutoIncrement(false);
+					} else if(atts.getValue("autoIncrement")!=null) {
+						currentEntityTable.getPrimaryKey().getFirstColumn().setAutoIncrement(atts.getValue("autoIncrement").equals("true"));
 					}
 					String strQueryTypes = atts.getValue("queryTypes");
 					if(strQueryTypes!=null) {

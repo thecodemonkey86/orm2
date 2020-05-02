@@ -7,11 +7,14 @@ import cpp.Types;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.Type;
+import cpp.core.expression.CreateObjectExpression;
 import cpp.core.expression.Expression;
 import cpp.core.expression.UIntExpression;
+import cpp.core.instruction.IfBlock;
 import cpp.core.instruction.SwitchBlock;
 import cpp.core.instruction.ThrowInstruction;
 import cpp.entity.EntityCls;
+import cpp.entity.Nullable;
 import cpp.lib.ClsQVariant;
 import cpp.lib.ClsQtException;
 import database.column.Column;
@@ -66,7 +69,14 @@ public class MethodGetValueByName extends Method {
 				} else {
 					 ifblock.addElseIf(cond, ret);
 				}*/
-				switchBlock._case(new UIntExpression(qhash(c.getName())))._return(Types.QVariant.callStaticMethod(ClsQVariant.fromValue, _this().callAttrGetter(c.getCamelCaseName())));;
+				if(c.isNullable())	{
+					IfBlock ifNull = switchBlock._case(new UIntExpression(qhash(c.getName())))._if(_this().callAttrGetter(c.getCamelCaseName()).callMethod(Nullable.isNull));
+					ifNull.thenBlock()._return(new CreateObjectExpression(Types.QVariant));
+					ifNull.elseBlock()._return(Types.QVariant.callStaticMethod(ClsQVariant.fromValue, _this().callAttrGetter(c.getCamelCaseName()).callMethod(Nullable.val)));
+				} else {
+					switchBlock._case(new UIntExpression(qhash(c.getName())))._return(Types.QVariant.callStaticMethod(ClsQVariant.fromValue, _this().callAttrGetter(c.getCamelCaseName())));
+				}
+				
 			}
 		}
 		//ifblock.elseBlock().addInstr(new ThrowInstruction(new ClsQtException()));
