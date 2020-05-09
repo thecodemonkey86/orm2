@@ -1,5 +1,9 @@
 package cpp.core;
 
+import java.util.ArrayList;
+
+import codegen.CodeUtil;
+
 public class CopyConstructor extends Constructor {
 
 	public CopyConstructor(Cls cls) {
@@ -18,7 +22,10 @@ public class CopyConstructor extends Constructor {
 	
 	@Override
 	public String toHeaderString() {
-		String s=super.toHeaderString();
-		return s.substring(0,s.length()-1)+"= default;";
+		ArrayList<String> params=new ArrayList<>();
+		for(Param p:this.params) {
+			params.add(CodeUtil.sp("const",p.getType().getName(),"&",name));
+		}
+		return CodeUtil.sp("public:", parent.getName(),CodeUtil.parentheses(CodeUtil.commaSep(params)),"= default;");
 	}
 }

@@ -139,6 +139,8 @@ public class SqliteDatabase extends Database {
 					expectToken(l, index++, "KEY");
 					col.setNullable(false);
 					pk.add(col);
+				} else if(isTokenAt(l, index, "UNIQUE")) {
+					index++;
 				}
 				if(isTokenAt(l, index, "AUTOINCREMENT")) {
 					index++;

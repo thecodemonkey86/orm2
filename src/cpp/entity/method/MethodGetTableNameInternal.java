@@ -4,7 +4,7 @@ import cpp.Types;
 import cpp.core.Method;
 import cpp.core.QString;
 import cpp.entity.EntityCls;
-
+@Deprecated
 public class MethodGetTableNameInternal extends Method{
 
 	

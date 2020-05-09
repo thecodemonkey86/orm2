@@ -65,7 +65,6 @@ import cpp.entityquery.method.MethodWhere6;
 import cpp.entityquery.method.MethodWhere7;
 import cpp.entityquery.method.MethodWhere8;
 import cpp.entityquery.method.MethodWhere9;
-import cpp.entityrepository.ClsEntityRepository;
 import cpp.lib.ClsQVector;
 import database.column.Column;
 
@@ -106,7 +105,7 @@ public class ClsEntityQuerySelect extends Cls {
 		
 		addIncludeLib(ClsQVector.CLSNAME);
 		addIncludeHeader(EntityCls.getModelPath() + "entities/"+cls.getIncludeHeader());
-		addIncludeHeader("../"+ ClsEntityRepository.CLSNAME.toLowerCase());
+		addIncludeHeader("../"+ Types.EntityRepository.getName().toLowerCase());
 		addIncludeHeader(Types.SqlUtil.getIncludeHeader());
 		addIncludeHeader(Types.SqlQuery.getIncludeHeader());
 //		addIncludeHeader(EnumQueryMode.INSTANCE.getName().toLowerCase());

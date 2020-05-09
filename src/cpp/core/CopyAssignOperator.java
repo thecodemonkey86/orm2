@@ -1,5 +1,9 @@
 package cpp.core;
 
+import java.util.ArrayList;
+
+import codegen.CodeUtil;
+
 public class CopyAssignOperator extends Operator {
 
 	public CopyAssignOperator(Cls cls) {
@@ -19,7 +23,16 @@ public class CopyAssignOperator extends Operator {
 	
 	@Override
 	public String toHeaderString() {
-		String s=super.toHeaderString();
-		return s.substring(0,s.length()-1)+"= default;";
+		ArrayList<String> params=new ArrayList<>();
+		for(Param p:this.params) {
+			params.add(CodeUtil.sp("const",p.getType().getName(),"&",name));
+		}
+		return CodeUtil.sp(
+				returnType,
+				"operator",
+				symbol,
+				CodeUtil.parentheses(CodeUtil.commaSep(params)),
+				(constQualifier?"const":""),
+				"= default;");
 	}
 }

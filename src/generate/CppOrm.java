@@ -124,10 +124,16 @@ public class CppOrm extends OrmGenerator {
 				
 				
 				EntityCls cls = new EntityCls(tbl,manyRelations, oneRelations,manyToManyRelations);
+//				if(cfg.hasNamespace()) {
+//					cls.setUseNamespace(cfg.getNamespace());
+//				}
 				Entities.add(cls);
 			}
 			
 			ClsEntityRepository repo=Types.EntityRepository;
+			if(cfg.hasOverrideRepositoryClassName()) {
+				repo.setName(cfg.getOverrideRepositoryClassName());
+			}
 			repo.addDeclarations(Entities.getAllBeans());
 			for (EntityCls c : Entities.getAllBeans()) {
 				c.setPrimaryKeyType();
@@ -180,7 +186,7 @@ public class CppOrm extends OrmGenerator {
 						if(!Files.exists(pBackup)) {
 							Files.createDirectory(pBackup);
 						}
-						FileUtil2.writeFileIfContentChanged(pBackup.resolve(pathSrc.getFileName().toString()),implCode.getBytes(utf8), writeOptions);
+						//FileUtil2.writeFileIfContentChanged(pBackup.resolve(pathSrc.getFileName().toString()),implCode.getBytes(utf8), writeOptions);
 						
 						//c.addMethod(new CustomClassMemberCode(customClassMember, implCode) );
 						c.addCustomSourceCode(implCode);
@@ -207,6 +213,9 @@ public class CppOrm extends OrmGenerator {
 			}
 			repo.setExportMacro(cfg.getExportMacro(),cfg.getExportMacroIncludeHeader());
 			repo.addMethodImplementations();
+//			if(cfg.hasNamespace()) {
+//				repo.setUseNamespace(cfg.getNamespace());
+//			}
 	//		List<ManyRelation> list = tableManyRelations.get(getTableByName("artist"));
 	//		System.out.println(list);
 			
@@ -246,12 +255,18 @@ public class CppOrm extends OrmGenerator {
 				ClsEntityQuerySelect clsQuery = Types.beanQuerySelect(c);
 				clsQuery.setExportMacro(cfg.getExportMacro(),cfg.getExportMacroIncludeHeader());
 				clsQuery.addMethodImplementations();
+//				if(cfg.hasNamespace()) {
+//					clsQuery.setUseNamespace(cfg.getNamespace());
+//				}
 				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+".h"), clsQuery.toHeaderString().getBytes(utf8), writeOptions);
 				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+".cpp"), clsQuery.toSourceString().getBytes(utf8), writeOptions);
 				
 				if(c.getTbl().hasQueryType(Table.QueryType.Delete)) {
 					ClsEntityQueryDelete clsDelete = new ClsEntityQueryDelete(c);
 					clsDelete.setExportMacro(cfg.getExportMacro(),cfg.getExportMacroIncludeHeader());
+//					if(cfg.hasNamespace()) {
+//						clsDelete.setUseNamespace(cfg.getNamespace());
+//					}
 					clsDelete.addMethodImplementations();
 					FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsDelete.getName().toLowerCase()+".h"), clsDelete.toHeaderString().getBytes(utf8), writeOptions);
 					FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsDelete.getName().toLowerCase()+".cpp"), clsDelete.toSourceString().getBytes(utf8), writeOptions);
@@ -259,14 +274,17 @@ public class CppOrm extends OrmGenerator {
 				if(c.getTbl().hasQueryType(Table.QueryType.Update)) {
 					ClsEntityQueryUpdate clsUpdate = new ClsEntityQueryUpdate(c);
 					clsUpdate.setExportMacro(cfg.getExportMacro(),cfg.getExportMacroIncludeHeader());
+//					if(cfg.hasNamespace()) {
+//						clsUpdate.setUseNamespace(cfg.getNamespace());
+//					}
 					clsUpdate.addMethodImplementations();
 					FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsUpdate.getName().toLowerCase()+".h"), clsUpdate.toHeaderString().getBytes(utf8), writeOptions);
 					FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsUpdate.getName().toLowerCase()+".cpp"), clsUpdate.toSourceString().getBytes(utf8), writeOptions);
 				}
 			}
 			
-			FileUtil2.writeFileIfContentChanged(pathRepository.resolve("entityrepository.h"), repo.toHeaderString().getBytes(utf8), writeOptions);
-			FileUtil2.writeFileIfContentChanged(pathRepository.resolve("entityrepository.cpp"), repo.toSourceString().getBytes(utf8), writeOptions);
+			FileUtil2.writeFileIfContentChanged(pathRepository.resolve(repo.getName().toLowerCase()+ ".h"), repo.toHeaderString().getBytes(utf8), writeOptions);
+			FileUtil2.writeFileIfContentChanged(pathRepository.resolve(repo.getName().toLowerCase()+".cpp"), repo.toSourceString().getBytes(utf8), writeOptions);
 		
 //		BeanHelper helper = new BeanHelper(Beans.getAllBeans());
 //		helper.addMethodImplementations();
@@ -342,7 +360,7 @@ public class CppOrm extends OrmGenerator {
 						if(!Files.exists(pBackup)) {
 							Files.createDirectory(pBackup);
 						}
-						FileUtil2.writeFileIfContentChanged(pBackup.resolve(pathSrc.getFileName().toString()),implCode.getBytes(utf8), writeOptions);
+					//	FileUtil2.writeFileIfContentChanged(pBackup.resolve(pathSrc.getFileName().toString()),implCode.getBytes(utf8), writeOptions);
 						
 						//c.addMethod(new CustomClassMemberCode(customClassMember, implCode) );
 						c.addCustomSourceCode(implCode);

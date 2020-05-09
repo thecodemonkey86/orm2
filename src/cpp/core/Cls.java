@@ -196,6 +196,9 @@ public class Cls extends Type implements IAttributeContainer{
 		addBeforeHeader(sb);
 		CodeUtil.writeLine(sb, "#ifndef "+type.toUpperCase()+"_H");
 		CodeUtil.writeLine(sb, "#define "+type.toUpperCase()+"_H");
+		if(useNamespace !=null) {
+			CodeUtil.writeLine(sb, CodeUtil.sp("namespace",useNamespace,"{"));
+		}
 		for(Type predef:forwardDeclaredTypes) {
 			CodeUtil.writeLine(sb, predef.getForwardDeclaration()+";");
 		}
@@ -211,6 +214,7 @@ public class Cls extends Type implements IAttributeContainer{
 		if(classDocumentation != null) {
 			CodeUtil.writeLine(sb,classDocumentation);
 		}
+		
 		sb.append(CodeUtil.sp("class",exportMacro,type));
 		if (superclasses!=null) {
 			ArrayList<String> superClassDecl = new ArrayList<>();
@@ -256,7 +260,9 @@ public class Cls extends Type implements IAttributeContainer{
 		
 		addClassHeaderCode(sb);
 		CodeUtil.writeLine(sb, "};");
-		
+		if(useNamespace !=null) {
+			CodeUtil.writeLine(sb, "}");
+		}
 		if (nonMemberMethods!=null) {
 			for(Method m:nonMemberMethods) {
 				CodeUtil.writeLine(sb, m.toHeaderString());
@@ -427,6 +433,10 @@ public class Cls extends Type implements IAttributeContainer{
 		return useNamespace !=null ? useNamespace+"::"+  super.toUsageString() :  super.toUsageString();
 	}
 
+	public String toUsageStringWithoutNamespace() {
+		 return super.toUsageString();
+	}
+	
 	//@Deprecated
 	public String getIncludeHeader() {
 		return type.toLowerCase();
@@ -585,6 +595,10 @@ public class Cls extends Type implements IAttributeContainer{
 		for(NonMemberOperator o:nonMemberOperators) {
 			o.setExportMacro(exportMacro);
 		}
+	}
+	
+	public String getUseNamespace() {
+		return useNamespace;
 	}
 	
 }
