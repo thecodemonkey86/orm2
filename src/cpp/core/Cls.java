@@ -391,9 +391,11 @@ public class Cls extends Type implements IAttributeContainer{
 	}
 	
 	public Method getTemplateMethod(String name, Type...tplTypes) {
-		for(MethodTemplate m:methodTemplates) {
-			if (m.getName().equals(name)) {
-				return m.getConcreteMethod(tplTypes);
+		if(methodTemplates!=null) {
+			for(MethodTemplate m:methodTemplates) {
+				if (m.getName().equals(name)) {
+					return m.getConcreteMethod(tplTypes);
+				}
 			}
 		}
 		if (superclasses !=null) {

@@ -9,7 +9,7 @@ public class ConstructorEntityRepository extends Constructor {
 	Param pSqlCon;
 	
 	public ConstructorEntityRepository() {
-		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(), "sqlCon");
+		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(), "sqlConnection");
 	}
 	
 	@Override

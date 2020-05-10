@@ -14,6 +14,7 @@ import cpp.core.expression.Int64Expression;
 import cpp.core.expression.IntExpression;
 import cpp.core.expression.LongLongExpression;
 import cpp.core.expression.ShortExpression;
+import cpp.lib.ClsBaseRepository;
 import cpp.lib.ClsSqlQuery;
 import database.column.Column;
 
@@ -204,6 +205,11 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 
 	@Override
 	public String getRepositoryInsertOrIgnoreMethod() {
-		return "insertOrIgnorePg";
+		return ClsBaseRepository.insertOrIgnorePg;
+	}
+
+	@Override
+	public String getRepositoryPrepareInsertOrIgnoreMethod() {
+		return ClsBaseRepository.prepareInsertOrIgnorePg;
 	}
 }

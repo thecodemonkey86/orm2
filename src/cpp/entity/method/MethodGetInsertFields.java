@@ -17,6 +17,7 @@ public class MethodGetInsertFields extends Method {
 	public MethodGetInsertFields(List<Column> columns) {
 		super(Method.Public, Types.QString, "getInsertFields");
 		this.columns = columns;
+		setStatic(true);
 	}
 
 	@Override

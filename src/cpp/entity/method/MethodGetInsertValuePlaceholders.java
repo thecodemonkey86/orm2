@@ -20,6 +20,7 @@ public class MethodGetInsertValuePlaceholders extends Method {
 	public MethodGetInsertValuePlaceholders(Table table) {
 		super(Method.Public,Types.QString, "getInsertValuePlaceholders");
 		this.table = table;
+		setStatic(true);
 	}
 
 	@Override

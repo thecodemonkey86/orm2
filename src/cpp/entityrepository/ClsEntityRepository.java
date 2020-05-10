@@ -20,6 +20,7 @@ import cpp.entityrepository.method.MethodGetById;
 import cpp.entityrepository.method.MethodGetByIdOrCreateNew;
 import cpp.entityrepository.method.MethodGetFromRecord;
 import cpp.entityrepository.method.MethodLoadCollection;
+import cpp.entityrepository.method.MethodPrepareUpsert;
 import cpp.entityrepository.method.MethodRemoveAllRelated;
 import cpp.entityrepository.method.MethodRepoCreateNew;
 import cpp.entityrepository.method.MethodRepoCreateNewNonNullableOnly;
@@ -98,8 +99,11 @@ public class ClsEntityRepository extends Cls{
 			
 			addMethod(new MethodEntityLoad(bean));
 			
-			if(EntityCls.getDatabase().supportsInsertOrIgnore())
+			if(EntityCls.getDatabase().supportsInsertOrIgnore()) {
 				addMethod(new MethodEntitySave(bean,true));
+				addMethod(new MethodPrepareUpsert(bean));
+				
+			}
 			addMethod(new MethodEntitySave(bean,false));
 			addMethod(new MethodEntitySaveBulk(bean,false));
 			addMethod(new MethodEntitySaveBulk(bean,true));

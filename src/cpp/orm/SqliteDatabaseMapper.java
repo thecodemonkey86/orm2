@@ -199,4 +199,10 @@ public class SqliteDatabaseMapper extends DatabaseTypeMapper {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public String getRepositoryPrepareInsertOrIgnoreMethod() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
