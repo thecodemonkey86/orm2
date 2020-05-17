@@ -9,8 +9,6 @@ import cpp.entity.EntityCls;
 import cpp.entityrepository.method.ConstructorEntityRepository;
 import cpp.entityrepository.method.MethodEntityLoad;
 import cpp.entityrepository.method.MethodEntityRemove;
-import cpp.entityrepository.method.MethodEntitySave;
-import cpp.entityrepository.method.MethodEntitySaveBulk;
 import cpp.entityrepository.method.MethodCreateQueryDelete;
 import cpp.entityrepository.method.MethodCreateQuerySelect;
 import cpp.entityrepository.method.MethodCreateQueryUpdate;
@@ -100,13 +98,13 @@ public class ClsEntityRepository extends Cls{
 			addMethod(new MethodEntityLoad(bean));
 			
 			if(EntityCls.getDatabase().supportsInsertOrIgnore()) {
-				addMethod(new MethodEntitySave(bean,true));
+//				addMethod(new MethodEntitySave(bean,true));
 				addMethod(new MethodPrepareUpsert(bean));
 				
 			}
-			addMethod(new MethodEntitySave(bean,false));
-			addMethod(new MethodEntitySaveBulk(bean,false));
-			addMethod(new MethodEntitySaveBulk(bean,true));
+//			addMethod(new MethodEntitySave(bean,false));
+//			addMethod(new MethodEntitySaveBulk(bean,false));
+//			addMethod(new MethodEntitySaveBulk(bean,true));
 			addMethod(new MethodGetFromRecord(bean,false));
 			addMethod(new MethodRepoCreateNew(bean));
 			int countNullable = 0;

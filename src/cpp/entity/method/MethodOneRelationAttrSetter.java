@@ -40,7 +40,7 @@ public class MethodOneRelationAttrSetter extends MethodAttributeSetter {
 		for(int i=0;i<r.getColumnCount();i++) {
 			Column destCol = r.getColumns(i).getValue2();
 			Column srcCol = r.getColumns(i).getValue1();
-			if(!destCol.isPartOfPk()) {
+			//if(!destCol.isPartOfPk()) {
 				if(destCol.isNullable() == srcCol.isNullable()) {
 					if(destCol.isNullable()) {
 						IfBlock ifParamOneRelationIsNull = _if(pRelationBean._equals(Expressions.Nullptr));
@@ -67,14 +67,14 @@ public class MethodOneRelationAttrSetter extends MethodAttributeSetter {
 						addInstr(_this().assignAttr(attr.getName()+"Modified",BoolExpression.TRUE));
 					}
 				}
-			} else if (!this.internal) {
-				if(!srcCol.isNullable()) {
-					addInstr(pRelationBean.callSetterMethodInstruction(destCol.getCamelCaseName(), _this().accessAttr(srcCol.getCamelCaseName())));
-				} else {
-					addInstr(pRelationBean.callSetterMethodInstruction(destCol.getCamelCaseName(), _this().accessAttr(srcCol.getCamelCaseName()).callMethod(Nullable.val)));
-				}
-			 
-			}
+//			} else if (!this.internal) {
+//				if(!srcCol.isNullable()) {
+//					addInstr(pRelationBean.callSetterMethodInstruction(destCol.getCamelCaseName(), _this().accessAttr(srcCol.getCamelCaseName())));
+//				} else {
+//					addInstr(pRelationBean.callSetterMethodInstruction(destCol.getCamelCaseName(), _this().accessAttr(srcCol.getCamelCaseName()).callMethod(Nullable.val)));
+//				}
+//			 
+//			}
 			
 		}
 		

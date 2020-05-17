@@ -85,7 +85,7 @@ public class EntityCls extends Cls {
 	public static final String END_CUSTOM_CLASS_MEMBERS = "/*END_CUSTOM_CLASS_MEMBERS*/";
 	public static final String BEGIN_CUSTOM_PREPROCESSOR = "/*BEGIN_CUSTOM_PREPROCESSOR*/";
 	public static final String END_CUSTOM_PREPROCESSOR = "/*END_CUSTOM_PREPROCESSOR*/";
-	public static final String APILEVEL = "3.6";
+	public static final String APILEVEL = "3.7";
 	
 	static Database database;
 	static DatabaseTypeMapper mapper;
