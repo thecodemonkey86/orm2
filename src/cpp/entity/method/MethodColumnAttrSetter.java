@@ -1,5 +1,6 @@
 package cpp.entity.method;
 
+import util.CodeUtil2;
 import util.StringUtil;
 import cpp.Types;
 import cpp.core.Attr;
@@ -7,12 +8,16 @@ import cpp.core.ConstRef;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.TplCls;
+import cpp.core.Type;
 import cpp.core.expression.BoolExpression;
 import cpp.core.expression.CreateObjectExpression;
 import cpp.core.expression.Expression;
 import cpp.core.expression.Operators;
 import cpp.core.instruction.IfBlock;
+import cpp.entity.EntityCls;
 import cpp.entity.Nullable;
+import cpp.entity.SetterValidator;
+import cpp.entity.SetterValidator.OnFailValidateMode;
 import database.column.Column;
 
 public class MethodColumnAttrSetter extends Method{
@@ -32,11 +37,32 @@ public class MethodColumnAttrSetter extends Method{
 		}
 		this.col=col;
 	}
-
+	
 	@Override
 	public void addImplementation() {
 		Param param = getParam(a.getName());
 		Expression cond = null;
+		EntityCls entityCls = (EntityCls) parent;
+		boolean returnBool = false;
+		if(entityCls.hasColumnValidator(col.getName())) {
+			SetterValidator columnValidator = entityCls.getColumnValidator(col.getName());
+			if(columnValidator.onFailMode() ==OnFailValidateMode.ReturnFalse) {
+				returnBool = true;
+				setReturnType(Types.Bool);
+			}
+			_ifNot(new Expression() {
+				
+				@Override
+				public String toString() {
+					return CodeUtil2.parentheses(columnValidator.getCondition());
+				}
+				
+				@Override
+				public Type getType() {
+					return Types.Bool;
+				}
+			}).thenBlock()._return(columnValidator.onFailMode() ==OnFailValidateMode.ReturnFalse ? BoolExpression.FALSE: null);
+		}
 		
 		if(col.isNullable()) {
 			cond = _this().accessAttr(a).callMethod(Nullable.isNull).binOp(Operators.OR, param._notEquals(_this().accessAttr(a).callMethod(Nullable.val)));
@@ -59,7 +85,9 @@ public class MethodColumnAttrSetter extends Method{
 		} else {
 			ifNotEquals.thenBlock()._assign(_accessThis(a), param);
 		}
-		//_return(_this());
+		if(returnBool) {
+		 _return(BoolExpression.TRUE);
+		}
 		
 	}
 

@@ -28,4 +28,7 @@ public class CppOrmConfig extends OrmConfig{
 //	public boolean hasNamespace() {
 //		return namespace!=null;
 //	}
+	
+	
+	
 }

@@ -13,12 +13,12 @@ public class ReturnInstruction extends Instruction{
 	
 	@Override
 	public String toString() {
-		Expression e=null;
+		//Expression e=null;
 //		if (!(returnExpression.getType() instanceof SharedPtr) || !((SharedPtr)returnExpression.getType() ).isWeak()) {
-			e = returnExpression ;
+			//e = returnExpression ;
 //		} else {
 //			e = new WeakPtrLock(returnExpression);
 //		}
-		return CodeUtil2.sp("return", e.getReadAccessString())+';';
+		return returnExpression!=null ? CodeUtil2.sp("return", returnExpression.getReadAccessString())+';' : "return;";
 	}
 }

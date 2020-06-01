@@ -237,4 +237,6 @@ public abstract class Column {
 	public void setDbTypeAttribute(TypeAttribute dbTypeAttribute) {
 		this.dbTypeAttribute = dbTypeAttribute;
 	}
+
+	
 }

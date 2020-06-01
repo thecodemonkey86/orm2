@@ -124,6 +124,9 @@ public class CppOrm extends OrmGenerator {
 				
 				
 				EntityCls cls = new EntityCls(tbl,manyRelations, oneRelations,manyToManyRelations);
+				if(cfg.hasValidators(tbl.getName())) {
+					cls.setColumnValidators(cfg.getValidators(tbl.getName()));
+				}
 //				if(cfg.hasNamespace()) {
 //					cls.setUseNamespace(cfg.getNamespace());
 //				}

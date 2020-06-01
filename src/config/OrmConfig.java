@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import cpp.entity.SetterValidator;
 import database.Database;
 import database.DbCredentials;
 import database.relation.ManyRelation;
@@ -28,6 +29,7 @@ public class OrmConfig {
 	protected Map<Table,List<OneRelation>> oneRelations;
 	protected Map<Table,List<ManyRelation>> manyToManyRelations;
 	protected Map<String,List<Pair<String, String>>> renameMethods;
+	protected Map<String, Map<String,SetterValidator>> columnValidators;
 	protected Database database;
 	private DbCredentials credentials;
 	
@@ -305,5 +307,27 @@ public class OrmConfig {
 	
 	public boolean hasOverrideRepositoryClassName() {
 		return overrideRepositoryClassName!=null;
+	}
+	
+	public void addValidators(String tableName,String column,SetterValidator validator) {
+		if(columnValidators==null) {
+			columnValidators = new HashMap<>();
+		}
+		
+		if(!columnValidators.containsKey(tableName)) {
+			columnValidators.put(tableName, new HashMap<>());
+		}
+		Map<String,SetterValidator> tblValidators = columnValidators.get(tableName);
+		if(!tblValidators.containsKey(column)) {
+			tblValidators.put(column, validator);
+		}
+	}
+	
+	public boolean hasValidators(String tableName) {
+		return columnValidators.containsKey(tableName);
+	}
+	
+	public Map<String, SetterValidator> getValidators(String tableName) {
+		return columnValidators.get(tableName);
 	}
 }

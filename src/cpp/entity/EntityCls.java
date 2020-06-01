@@ -2,6 +2,7 @@ package cpp.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import codegen.CodeUtil;
 import config.cpp.CppOrmConfig;
@@ -97,7 +98,7 @@ public class EntityCls extends Cls {
 		EntityCls.cfg = cfg;
 	}
 	private ArrayList<String> customHeaderCode, customSourceCode, customPreprocessorCode;
-	
+	private Map<String, SetterValidator> columnValidators;
 	
 	public static void setModelPath(String modelPath) {
 		EntityCls.modelPath = modelPath;
@@ -670,4 +671,17 @@ public class EntityCls extends Cls {
 		CodeUtil.writeLine(sb, "/*API Level " + APILEVEL + "*/\n");
 		
 	}
+	
+	public void setColumnValidators(Map<String, SetterValidator> columnValidators) {
+		this.columnValidators = columnValidators;
+	}
+	
+	public SetterValidator getColumnValidator(String col) {
+		return columnValidators.get(col);
+	}
+	
+	public boolean hasColumnValidator(String col) {
+		return columnValidators != null && columnValidators.containsKey(col);
+	}
+
 }

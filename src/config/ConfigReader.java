@@ -20,6 +20,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
+import cpp.entity.SetterValidator;
 import database.Database;
 import database.DbCredentials;
 import database.FirebirdCredentials;
@@ -513,6 +514,25 @@ public class ConfigReader implements ContentHandler {
 					cfg.addRenameMethod(atts.getValue("class"),atts.getValue("method"), atts.getValue("newName"));
 				}
 				break;
+			case "validate":
+				if (section == Section.ENTITIES) {
+					String column= atts.getValue("column");
+					String condition= atts.getValue("condition");
+					String exceptionMessage = atts.getValue("exceptionMessage");
+					String onFail = atts.getValue("onFail");
+					
+					if(column == null) {
+						throw new SAXException("validate column missing");
+					}
+					if(condition == null) {
+						throw new SAXException("validate condition missing");
+					}
+					
+					cfg.addValidators(currentEntityTable.getName(),column,new SetterValidator( condition, 
+							 SetterValidator.OnFailValidateMode.fromString(onFail) , exceptionMessage));
+					
+				}
+				break;
 			default:
 				break;
 			}
@@ -571,5 +591,6 @@ public class ConfigReader implements ContentHandler {
 		// TODO Auto-generated method stub
 
 	}
+	
 
 }
