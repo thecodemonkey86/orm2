@@ -324,7 +324,7 @@ public class OrmConfig {
 	}
 	
 	public boolean hasValidators(String tableName) {
-		return columnValidators.containsKey(tableName);
+		return columnValidators != null && columnValidators.containsKey(tableName);
 	}
 	
 	public Map<String, SetterValidator> getValidators(String tableName) {
