@@ -11,7 +11,7 @@ import database.relation.OneToManyRelation;
 
 public class ManyAttr extends Attr{
 	public ManyAttr(OneToManyRelation relation) {
-		super(Attr.Protected, new ClsQVector(Entities.get(relation.getDestTable().getUc1stCamelCaseName()).toSharedPtr()), 
+		super(Attr.Protected, new ClsQVector(Entities.get(relation.getDestTable().getUc1stCamelCaseName()).toUniquePointer()), 
 				OrmUtil.getOneToManyRelationDestAttrName(relation)
 				, Expressions.Nullptr, false);
 		setMutableModifier();
