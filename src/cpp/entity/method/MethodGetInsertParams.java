@@ -25,6 +25,7 @@ public class MethodGetInsertParams extends Method {
 	public MethodGetInsertParams(List<Column> cols) {
 		super(Method.Public,Types.QVariantList, "getInsertParams");
 		this.cols = cols;
+		setConstQualifier();
 	}
 
 	@Override

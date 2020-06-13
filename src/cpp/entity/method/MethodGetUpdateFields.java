@@ -30,6 +30,7 @@ public class MethodGetUpdateFields extends Method{
 		pParams = addParam(CoreTypes.QVariantList.toRawPointer(), "params");
 		this.cols = cols;
 		this.pk = pk;
+		setConstQualifier();
 	}
 
 	@Override
