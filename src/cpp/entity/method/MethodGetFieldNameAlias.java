@@ -26,7 +26,7 @@ public class MethodGetFieldNameAlias extends Method {
 	@Override
 	public void addImplementation() {
 		if(mainAlias) {
-			_return(QString.fromStringConstant("e1." + col.getEscapedName()));
+			_return(QString.fromLatin1StringConstant("e1." + col.getEscapedName()));
 		} else {
 			_return(  pAlias.binOp(PlusOperator.SYMBOL, QString.fromStringConstant("." + col.getEscapedName())));	
 		}

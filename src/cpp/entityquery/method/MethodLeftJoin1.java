@@ -21,7 +21,7 @@ public class MethodLeftJoin1 extends Method{
 		addInstr(new Instruction() {
 			@Override
 			public String toString() {
-				return "this->joinTables.append(QStringLiteral(\" LEFT JOIN %1 %2 ON %3\").arg( joinTable, alias, on));\r\n" + 
+				return "this->joinTables.append(QLatin1String(\" LEFT JOIN %1 %2 ON %3\").arg( joinTable, alias, on));\r\n" + 
 						"return *this;";
 			}
 		});

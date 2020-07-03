@@ -51,7 +51,7 @@ public class MethodGetLimitQueryString extends Method {
 						"            }\r\n" +*/
 		
 		
-		Var varSql  = _declareInitConstructor(returnType, "sql", QString.fromStringConstant(sql.toString()).callMethod("arg", new InlineIfExpression(getParam("condition").callMethod("isEmpty"), QString.fromStringConstant(EntityCls.getDatabase().getBooleanExpressionTrue()), getParam("condition")) ));
+		Var varSql  = _declareInitConstructor(returnType, "sql", QString.fromLatin1StringConstant(sql.toString()).callMethod("arg", new InlineIfExpression(getParam("condition").callMethod("isEmpty"), QString.fromStringConstant(EntityCls.getDatabase().getBooleanExpressionTrue()), getParam("condition")) ));
 		Param paramLimit = getParam("limit");
 		Param paramOffset = getParam("offset");
 		//IfBlock ifNotLimitOffsetOrderByIsEmpty = _ifNot(pLimitOffsetOrderBy.callMethod(ClsQString.isEmpty));

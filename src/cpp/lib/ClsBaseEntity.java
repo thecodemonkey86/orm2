@@ -21,5 +21,6 @@ public class ClsBaseEntity extends Cls{
 		Attr aLoaded = new Attr(Types.Bool, "loaded");
 		addAttr(aLoaded);
 		addMethod(new MethodAttributeSetter(aLoaded));
+		//addAttr(new Attr(Attr.Public, Types.QLatin1String, "_EMPTYSTRING",null, true));
 	}
 }

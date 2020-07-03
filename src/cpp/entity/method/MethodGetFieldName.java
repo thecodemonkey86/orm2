@@ -29,9 +29,9 @@ public class MethodGetFieldName extends Method {
 	@Override
 	public void addImplementation() {
 		if (prefix) {
-			_return(QString.fromStringConstant("%1_%2").callMethod("arg", getParam("prefix"), QString.fromStringConstant(col.getName())));
+			_return(QString.fromLatin1StringConstant("%1_%2").callMethod("arg", getParam("prefix"), QString.fromStringConstant(col.getName())));
 		} else {
-			_return(QString.fromStringConstant(col.getName()));
+			_return(QString.fromLatin1StringConstant(col.getName()));
 		}
 		
 		

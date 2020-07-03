@@ -86,7 +86,7 @@ public class EntityCls extends Cls {
 	public static final String END_CUSTOM_CLASS_MEMBERS = "/*END_CUSTOM_CLASS_MEMBERS*/";
 	public static final String BEGIN_CUSTOM_PREPROCESSOR = "/*BEGIN_CUSTOM_PREPROCESSOR*/";
 	public static final String END_CUSTOM_PREPROCESSOR = "/*END_CUSTOM_PREPROCESSOR*/";
-	public static final String APILEVEL = "3.7.2";
+	public static final String APILEVEL = "3.7.3";
 	
 	static Database database;
 	static DatabaseTypeMapper mapper;
@@ -99,6 +99,10 @@ public class EntityCls extends Cls {
 	}
 	private ArrayList<String> customHeaderCode, customSourceCode, customPreprocessorCode;
 	private Map<String, SetterValidator> columnValidators;
+	
+	public static CppOrmConfig getCfg() {
+		return cfg;
+	}
 	
 	public static void setModelPath(String modelPath) {
 		EntityCls.modelPath = modelPath;

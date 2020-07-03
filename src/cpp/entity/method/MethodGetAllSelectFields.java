@@ -6,7 +6,7 @@ import java.util.List;
 import cpp.Types;
 import cpp.core.Method;
 import cpp.core.Param;
-import cpp.core.QStringLiteral;
+import cpp.core.QString;
 import cpp.entity.EntityCls;
 import cpp.lib.ClsQString;
 import database.column.Column;
@@ -80,7 +80,7 @@ public class MethodGetAllSelectFields extends Method  {
 				sprintfTmpl = sprintfTmpl + "," + r.getAlias()+"." + col.getEscapedName() + " as "+r.getAlias()+"__" + col.getName();
 			}
 		}
-		_return (new QStringLiteral(sprintfTmpl).callMethod(ClsQString.arg,pAlias ));
+		_return (QString.fromLatin1StringConstant(sprintfTmpl).callMethod(ClsQString.arg,pAlias ));
 		
 		
 	}

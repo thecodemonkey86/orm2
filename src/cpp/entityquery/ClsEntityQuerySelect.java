@@ -185,6 +185,7 @@ public class ClsEntityQuerySelect extends Cls {
 		addMethod(new MethodLimitAndOffset(this,EntityQueryType.Select,null,true));
 		addMethod(new MethodLimitAndOffset(this,EntityQueryType.Select,new Param(Types.QString.toConstRef(), "param"),true));
 		addMethod(new MethodLimitAndOffset(this,EntityQueryType.Select,new Param(Types.Int, "param"),true));
+		addMethod(new MethodLimitAndOffset(this,EntityQueryType.Select,new Param(Types.Int64, "param"),true));
 		addMethod(new MethodLimitAndOffset(this,EntityQueryType.Select,new Param(Types.Bool, "param"),true));
 		addMethod(new MethodLimitAndOffset(this,EntityQueryType.Select,new Param(Types.Double, "param"),true));
 		addMethod(new MethodLimitAndOffset(this,EntityQueryType.Select,new Param(Types.QVariant.toConstRef(), "param"),true));
