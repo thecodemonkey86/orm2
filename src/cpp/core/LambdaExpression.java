@@ -11,9 +11,10 @@ import cpp.core.instruction.Instruction;
 import cpp.core.instruction.InstructionBlock;
 import util.CodeUtil2;
 
-public class LambdaExpression extends InstructionBlock{
+public class LambdaExpression extends Expression{
 	List<Expression> capture;
 	List<Expression> arguments;
+	InstructionBlock instructions;
 	
 	public LambdaExpression() {
 		capture = new ArrayList<>();
@@ -55,5 +56,16 @@ public class LambdaExpression extends InstructionBlock{
 		}
 		sb.append("}");
 		return sb.toString();
+	}
+
+	@Override
+	public Type getType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void addInstr(Instruction e) {
+		instructions.addInstr(e);
+		
 	}
 }
