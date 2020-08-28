@@ -24,6 +24,7 @@ import cpp.core.expression.Expression;
 import cpp.core.expression.StaticAccessExpression;
 import cpp.core.method.MethodAttributeGetter;
 import cpp.core.method.MethodAttributeSetter;
+import cpp.core.method.MethodStaticAttributeSetter;
 import cpp.entity.method.EntityConstructor;
 import cpp.entity.method.EntityDestructor;
 import cpp.entity.method.MethodAddInsertParamForRawExpression;
@@ -272,7 +273,8 @@ public class EntityCls extends Cls {
 				if(col.isRawValueEnabled()) {
 					Attr attrInsertExpression = new Attr(Attr.Protected, Types.QString,"insertExpression"+col.getUc1stCamelCaseName(), null,false);
 					addAttr(attrInsertExpression);
-					addMethod(new MethodAttributeSetter(attrInsertExpression));
+					attrInsertExpression.setStatic(true);
+					addMethod(new MethodStaticAttributeSetter(attrInsertExpression));
 					Attr attrInsertParams = new Attr(Attr.Protected, Types.QVariantList,"insertParamsForRawExpression"+col.getUc1stCamelCaseName(),null,false);
 					addAttr(attrInsertParams);
 					addMethod(new MethodAddInsertParamForRawExpression(col));
