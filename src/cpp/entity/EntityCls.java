@@ -22,8 +22,6 @@ import cpp.core.TplCls;
 import cpp.core.Type;
 import cpp.core.expression.Expression;
 import cpp.core.expression.StaticAccessExpression;
-import cpp.core.method.MethodAttributeGetter;
-import cpp.core.method.MethodAttributeSetter;
 import cpp.core.method.MethodStaticAttributeSetter;
 import cpp.entity.method.EntityConstructor;
 import cpp.entity.method.EntityDestructor;
@@ -87,7 +85,7 @@ public class EntityCls extends Cls {
 	public static final String END_CUSTOM_CLASS_MEMBERS = "/*END_CUSTOM_CLASS_MEMBERS*/";
 	public static final String BEGIN_CUSTOM_PREPROCESSOR = "/*BEGIN_CUSTOM_PREPROCESSOR*/";
 	public static final String END_CUSTOM_PREPROCESSOR = "/*END_CUSTOM_PREPROCESSOR*/";
-	public static final String APILEVEL = "3.7.3";
+	public static final String APILEVEL = "3.7.4";
 	
 	static Database database;
 	static DatabaseTypeMapper mapper;
@@ -225,9 +223,9 @@ public class EntityCls extends Cls {
 			addIncludeHeader(attr.getClassType().getIncludeHeader());
 			addForwardDeclaredClass( (Cls) ((TplCls) (Cls) attr.getElementType()).getElementType());
 			addMethod(new MethodManyAttrGetter(attr));
-			Attr attrManyToManyAdded = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Added");
-			addAttr(attrManyToManyAdded);
-			addMethod(new MethodAttributeGetter(attrManyToManyAdded));
+//			Attr attrManyToManyAdded = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Added");
+//			addAttr(attrManyToManyAdded);
+//			addMethod(new MethodAttributeGetter(attrManyToManyAdded));
 			
 			//Attr attrManyToManyRemoved = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Removed");
 			//addAttr(attrManyToManyRemoved);

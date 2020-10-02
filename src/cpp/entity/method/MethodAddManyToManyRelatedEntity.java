@@ -17,7 +17,6 @@ import cpp.lib.ClsQVariantList;
 import cpp.lib.ClsQVector;
 import cpp.lib.ClsSql;
 import cpp.orm.OrmUtil;
-import database.column.Column;
 import database.relation.ManyRelation;
 
 public class MethodAddManyToManyRelatedEntity extends Method {
@@ -46,18 +45,20 @@ public class MethodAddManyToManyRelatedEntity extends Method {
 		
 		for(int i=0;i<rel.getSourceColumnCount();i++) {
 			columns.add(rel.getSourceMappingColumn(i).getEscapedName());
+			_callMethodInstr(varParams, ClsQVariantList.append,parent.accessThisAttrGetterByColumn(rel.getSourceEntityColumn(i)));
 		}
 		for(int i=0;i<rel.getDestColumnCount();i++) {
 			columns.add(rel.getDestMappingColumn(i).getEscapedName());
+			_callMethodInstr(varParams, ClsQVariantList.append, pBean.callAttrGetter(rel.getDestEntityColumn(i).getCamelCaseName()));
 		}
 		
-		for(Column colPk : rel.getSourceTable().getPrimaryKey()) {
+		for(int i=0;i<rel.getSourceTable().getPrimaryKey().getColumnCount();i++) {
 			placeholders.add("?");
-			_callMethodInstr(varParams, ClsQVariantList.append,parent.accessThisAttrGetterByColumn(colPk));
+			
 		}
-		for(Column colPk : rel.getDestTable().getPrimaryKey()) {
+		for(int i=0;i< rel.getDestTable().getPrimaryKey().getColumnCount();i++) {
 			placeholders.add("?");
-			_callMethodInstr(varParams, ClsQVariantList.append, pBean.callAttrGetter(colPk.getCamelCaseName()));
+			
 		}
 		
 		String sql = String.format("insert into %s (%s) values (%s)",rel.getMappingTable().getEscapedName(), CodeUtil.commaSep(columns), CodeUtil.commaSep(placeholders));

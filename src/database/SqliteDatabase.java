@@ -315,4 +315,10 @@ public class SqliteDatabase extends Database {
 	public String sqlInsertMultiRow(AbstractTable tbl, List<Column> columnsInSpecificOrder, String placeholders) {
 		throw new RuntimeException("not implemented");
 	}
+	
+	@Override
+	public boolean supportsDeleteTableAlias() {
+		return false;
+		
+	}
 }

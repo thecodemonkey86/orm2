@@ -71,4 +71,10 @@ public abstract class Database {
 		}
 		return String.format("insert into %s (%s) values (%s)",tbl.getEscapedName(),CodeUtil.commaSep(colNames),CodeUtil2.strMultiply("?", ",", colNames.size()));
 	}
+	
+
+	public boolean supportsDeleteTableAlias() {
+		return true;
+		
+	}
 }
