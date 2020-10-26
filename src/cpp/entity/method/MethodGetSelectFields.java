@@ -1,5 +1,6 @@
 package cpp.entity.method;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cpp.Types;
@@ -8,6 +9,7 @@ import cpp.core.Param;
 import cpp.core.QString;
 import cpp.lib.ClsQString;
 import database.column.Column;
+import util.CodeUtil2;
 
 public class MethodGetSelectFields extends Method  {
 
@@ -34,13 +36,14 @@ public class MethodGetSelectFields extends Method  {
 		
 		_return(Expressions.concat(QChar.fromChar(','), l));*/
 		
-		String sprintfTmpl = "%1." + cols.get(0).getEscapedName() + " as %1__" + cols.get(0).getName();
+		ArrayList<String> sprintfTmpl = new ArrayList<>();// "%1." + cols.get(0).getEscapedName() + " as %1__" + cols.get(0).getName();
 
-		for(int i=1;i<cols.size();i++) {
-			sprintfTmpl = sprintfTmpl + "," + "%1." + cols.get(i).getEscapedName() + " as %1__" + cols.get(i).getName();
+		for(Column col:cols) {
+			if(!col.isFileImportEnabled())
+				sprintfTmpl.add("%1." + col.getEscapedName() + " as %1__" + col.getName());
 		}
 		
-		_return (QString.fromLatin1StringConstant(sprintfTmpl).callMethod(ClsQString.arg, getParam("alias")));
+		_return (QString.fromLatin1StringConstant(CodeUtil2.commaSep(sprintfTmpl)).callMethod(ClsQString.arg, getParam("alias")));
 	}
 
 }

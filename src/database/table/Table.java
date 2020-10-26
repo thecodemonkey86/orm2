@@ -130,5 +130,8 @@ public class Table extends AbstractTable{
 		}
 		return queryTypes.contains(queryType);
 	}
+
+
+
 	
 }

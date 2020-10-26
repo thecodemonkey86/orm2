@@ -65,7 +65,7 @@ public class MethodGetFromRecord extends Method {
 		for(Column col:columns) {
 			try{
 				
-				if (!col.hasOneRelation()) {
+				if (!col.hasOneRelation() && !col.isFileImportEnabled()) {
 					
 					Expression exprArrayIndex = new QStringPlusOperatorExpression(getParam("alias"), QString.fromStringConstant("__"+ col.getName()));
 					if(EntityCls.getDatabase() instanceof FirebirdDatabase) {
@@ -86,7 +86,6 @@ public class MethodGetFromRecord extends Method {
 //					_callMethodInstr(bean, "set"+col.getUc1stCamelCaseName(), getParam("record").callMethod("value", new QStringPlusOperatorExpression(getParam("alias"), QString.fromStringConstant("__"+ col.getName()))).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(col)));
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.out.println(parent);
 			}
 		}
 		addInstr(vBean.callMethodInstruction("setInsertNew",BoolExpression.FALSE));

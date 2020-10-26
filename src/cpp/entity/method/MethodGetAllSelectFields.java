@@ -12,6 +12,7 @@ import cpp.lib.ClsQString;
 import database.column.Column;
 import database.relation.AbstractRelation;
 import database.relation.OneRelation;
+import util.CodeUtil2;
 
 public class MethodGetAllSelectFields extends Method  {
 
@@ -64,23 +65,25 @@ public class MethodGetAllSelectFields extends Method  {
 			l.add(QString.fromStringConstant(CodeUtil.concat(l2, ",")));
 		_return(Expressions.concat(QChar.fromChar(','), l));		
 		*/
-		String sprintfTmpl = "%1." + cols.get(0).getEscapedName() + " as %1__" + cols.get(0).getName();
+		ArrayList<String> sprintfTmpl = new ArrayList<>();// "%1." + cols.get(0).getEscapedName() + " as %1__" + cols.get(0).getName();
 
 		
-		for(int i=1;i<cols.size();i++) {
-			sprintfTmpl = sprintfTmpl + "," + "%1." + cols.get(i).getEscapedName() + " as %1__" + cols.get(i).getName();
+		for(Column col:cols) {
+//			sprintfTmpl = sprintfTmpl + "," + "%1." + cols.get(i).getEscapedName() + " as %1__" + cols.get(i).getName();
+			if(!col.isFileImportEnabled())
+				sprintfTmpl.add( "%1." + col.getEscapedName() + " as %1__" + col.getName());
 		}
 		for(OneRelation r:oneRelations) {
 			for(Column col:r.getDestTable().getAllColumns()) {
-				sprintfTmpl = sprintfTmpl + "," + r.getAlias()+"." + col.getEscapedName() + " as "+r.getAlias()+"__" + col.getName();
+				sprintfTmpl.add( r.getAlias()+"." + col.getEscapedName() + " as "+r.getAlias()+"__" + col.getName());
 			}
 		}
 		for(AbstractRelation r:manyRelations) {
 			for(Column col:r.getDestTable().getAllColumns()) {
-				sprintfTmpl = sprintfTmpl + "," + r.getAlias()+"." + col.getEscapedName() + " as "+r.getAlias()+"__" + col.getName();
+				sprintfTmpl.add( r.getAlias()+"." + col.getEscapedName() + " as "+r.getAlias()+"__" + col.getName());
 			}
 		}
-		_return (QString.fromLatin1StringConstant(sprintfTmpl).callMethod(ClsQString.arg,pAlias ));
+		_return (QString.fromLatin1StringConstant(CodeUtil2.commaSep(sprintfTmpl) ).callMethod(ClsQString.arg,pAlias ));
 		
 		
 	}

@@ -161,7 +161,6 @@ public class Cls extends Type implements IAttributeContainer{
 				return a;
 			}
 		}
-		System.out.println(getName()+"::"+ name);
 		throw new IllegalArgumentException("no such attribute: " +name);
 	}
 	
@@ -268,9 +267,6 @@ public class Cls extends Type implements IAttributeContainer{
 				CodeUtil.writeLine(sb, m.toHeaderString());
 			}
 		} 
-//			else {
-//			System.out.println();
-//		}
 		if (nonMemberOperators!=null) {
 			for(Operator op:nonMemberOperators) {
 				CodeUtil.writeLine(sb, op.toHeaderString());
@@ -286,9 +282,6 @@ public class Cls extends Type implements IAttributeContainer{
 		StringBuilder sb=new StringBuilder();
 		
 		
-//		for(String incl:includes) {
-//			CodeUtil.writeLine(sb, "#include "+incl);
-//		}
 		addBeforeSourceCode(sb);
 		for(Constructor c:constructors) {
 			if(c.hasOutputSourceCode()) {
@@ -336,12 +329,6 @@ public class Cls extends Type implements IAttributeContainer{
 	}
 	
 	public void addForwardDeclaredClass(Cls cls) {
-//		if(cls instanceof TplCls) {
-//			throw new IllegalArgumentException();
-//		}
-		if(cls instanceof SharedPtr) {
-			System.out.println();
-		}
 		this.forwardDeclaredTypes.add(cls);
 	}
 	

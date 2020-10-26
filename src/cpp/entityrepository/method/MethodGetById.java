@@ -67,9 +67,6 @@ public class MethodGetById extends Method {
 	
 	@Override
 	public void addImplementation() {
-		if (bean.getName().equals("Order")) {
-			System.out.println();
-		}
 		List<OneRelation> oneRelations = bean.getOneRelations();
 		List<OneToManyRelation> oneToManyRelations = bean.getOneToManyRelations();
 		List<ManyRelation> manyToManyRelations = bean.getManyToManyRelations();

@@ -16,7 +16,7 @@ public class RepositoryAttr extends Attr{
 		try{
 			return new MethodCall(this, ((Cls)getType()).getMethod("get"+bean.getName()+"ByRecord"),args);
 		} catch (Exception e) {
-			System.out.println(e);
+			e.printStackTrace();
 			throw e;
 		}
 	} 

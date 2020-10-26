@@ -53,7 +53,7 @@ public class MethodRepoCreateNew extends Method {
 				}
 			}
 			for(Column col : cls.getTbl().getFieldColumns()) {
-				
+				if(!col.isFileImportEnabled()) {
 					Type t = EntityCls.getDatabaseMapper().columnToType(col);
 					if(initializeFieldsWithNullable) {
 						initializeFieldsParams.add(addParam(new Param((t.isPrimitiveType() 
@@ -69,7 +69,7 @@ public class MethodRepoCreateNew extends Method {
 										: t.toConstRef()), col.getCamelCaseName())));
 					}
 					
-					
+				}
 				
 			}
 		}
@@ -98,13 +98,15 @@ public class MethodRepoCreateNew extends Method {
 				}
 				}
 				for(Column col : cls.getTbl().getFieldColumns()) {
-					Param param = initializeFieldsParams.get(i++);
-					if(col.isNullable()) {
-						IfBlock ifIsNull= _if(param.callMethod(Nullable.isNull));
-						ifIsNull.thenBlock().addInstr(bean.callMethodInstruction(MethodColumnAttrSetNull.getMethodName(bean.getClassType().getAttrByName(param.getName()))));
-						ifIsNull.elseBlock().addInstr(bean.callSetterMethodInstruction(param.getName(),param.callMethod(Nullable.val)));
-					} else {
-						addInstr(bean.callSetterMethodInstruction(param.getName(),param));
+					if(!col.isFileImportEnabled()) {
+						Param param = initializeFieldsParams.get(i++);
+						if(col.isNullable()) {
+							IfBlock ifIsNull= _if(param.callMethod(Nullable.isNull));
+							ifIsNull.thenBlock().addInstr(bean.callMethodInstruction(MethodColumnAttrSetNull.getMethodName(bean.getClassType().getAttrByName(param.getName()))));
+							ifIsNull.elseBlock().addInstr(bean.callSetterMethodInstruction(param.getName(),param.callMethod(Nullable.val)));
+						} else {
+							addInstr(bean.callSetterMethodInstruction(param.getName(),param));
+						}
 					}
 				}
 			} else {

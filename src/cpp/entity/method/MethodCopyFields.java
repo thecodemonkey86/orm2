@@ -68,7 +68,7 @@ public class MethodCopyFields extends Method{
 			}
 		
 		
-			if(!hasRelation) {
+			if(!hasRelation && !col.isFileImportEnabled()) {
 				if(pExclude == null) {
 					pExclude = addParam(new Param(Types.qset(Types.QString).toConstRef(), "exclude",new CreateObjectExpression(Types.qset(Types.QString))));
 				}

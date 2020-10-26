@@ -56,13 +56,6 @@ public abstract class Expression {
 			IAttributeContainer c=(IAttributeContainer) type;
 			if (c.getAttr(prototype) == null) {
 				c.getAttr(prototype);
-				System.out.println();
-			}
-			if (type instanceof RawPtr) {
-				RawPtr ptr = (RawPtr) type;
-				if (ptr.getElementType().getName().equals("Order") ) {
-					System.out.println(c.getAttr(prototype));
-				}
 			}
 			return new AccessExpression(this, c.getAttr(prototype)) ;
 		} 
@@ -90,9 +83,6 @@ public abstract class Expression {
 	}
 	
 	public MethodCall callMethod(String m, Expression...args) {
-//		if (!(getType() instanceof Cls)) {
-//			System.out.println(getType());
-//		}
 		try{
 			return new MethodCall(this, ((Cls)getType()).getMethod(m),args);
 		} catch (Exception e) {

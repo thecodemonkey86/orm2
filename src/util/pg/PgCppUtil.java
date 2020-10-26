@@ -91,7 +91,6 @@ public class PgCppUtil {
 			return e.accessAttr(cls.getAttr(attr)).callMethod("get"+colPk.getOneRelationMappedColumn().getUc1stCamelCaseName());
 			} catch(Exception ex) {
 				ex.printStackTrace();
-				System.out.println(colPk);
 				throw ex;
 			}
 		} else {
@@ -119,7 +118,6 @@ public class PgCppUtil {
 			return e.callAttrGetter(cls.getAttr(attr)).callMethod("get"+colPk.getOneRelationMappedColumn().getUc1stCamelCaseName());
 			} catch(Exception ex) {
 				ex.printStackTrace();
-				System.out.println(colPk);
 				throw ex;
 			}
 		} else {

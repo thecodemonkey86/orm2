@@ -4,6 +4,7 @@ import java.util.List;
 
 import cpp.Types;
 import cpp.CoreTypes;
+import cpp.core.Attr;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.QString;
@@ -15,6 +16,7 @@ import cpp.core.instruction.IfBlock;
 import cpp.entity.EntityCls;
 import cpp.entity.Nullable;
 import cpp.lib.ClsQString;
+import cpp.lib.ClsQStringList;
 import cpp.lib.ClsQVariant;
 import database.column.Column;
 import database.relation.OneRelation;
@@ -47,26 +49,34 @@ public class MethodGetUpdateFields extends Method{
 			else if(colAttr.getType().equals(Types.QString))
 				colAttr = new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), QString.fromStringConstant(""), colAttr);
 			ifIdModified.setIfInstr(
-					fields.callMethodInstruction("append", QString.fromStringConstant(colPk.getEscapedName()+"=?"))
+					fields.callMethodInstruction(ClsQStringList.append, QString.fromStringConstant(colPk.getEscapedName()+"=?"))
 					,
-					pParams.callMethodInstruction("append", Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr) )
+					pParams.callMethodInstruction(ClsQStringList.append, Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr) )
 					
 					);
 		}
 		for(Column col: cols) {
+			if(col.isFileImportEnabled()) {
+				Attr attrFilePath = parent.getAttrByName(col.getCamelCaseName()+"FilePath");
+				 _ifNot(attrFilePath.callMethod(ClsQString.isNull)).setIfInstr(
+							fields.callMethodInstruction(ClsQStringList.append, QString.fromStringConstant(String.format("%s=%s(?)", col.getEscapedName(),EntityCls.getDatabase().getFileLoadFunction())))
+							,
+							pParams.callMethodInstruction(ClsQStringList.append,  Types.QVariant.callStaticMethod(ClsQVariant.fromValue, attrFilePath))
+							
+							);
+			} else	{
 				Expression colAttr = parent.accessThisAttrGetterByColumn(col);
-				if(colAttr.getType().equals(Types.QString))
-					colAttr = new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), QString.fromStringConstant(""), colAttr);
 				
 				if (!col.isRelationSourceColumn()) {
 				_if(parent.getAttrByName(col.getCamelCaseName()+"Modified"))
 					.setIfInstr(
-							fields.callMethodInstruction("append", QString.fromStringConstant(col.getEscapedName()+"=?"))
+							fields.callMethodInstruction(ClsQStringList.append, QString.fromStringConstant(col.getEscapedName()+"=?"))
 							,
-							pParams.callMethodInstruction("append", col.isNullable() ? new InlineIfExpression(colAttr.callMethod("isNull"), new CreateObjectExpression(CoreTypes.QVariant), colAttr.callMethod("val"))   : Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr))
+							pParams.callMethodInstruction(ClsQStringList.append, col.isNullable() ? new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), new CreateObjectExpression(CoreTypes.QVariant), colAttr.callMethod("val"))   : Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr.getType().equals(Types.QString) ? new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), QString.fromStringConstant(""), colAttr): colAttr))
 							
 							);
 				}
+			}
 		}
 		
 		for(OneRelation r:parent.getOneRelations()) {
@@ -79,8 +89,8 @@ public class MethodGetUpdateFields extends Method{
 					if(col.isNullable()) {
 						colAttr = colAttr.callMethod(Nullable.val);
 					}
-					ifBlock.setIfInstr(fields.callMethodInstruction("append", QString.fromStringConstant(col.getEscapedName()+"=?")),
-							pParams.callMethodInstruction("append", Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr)));
+					ifBlock.setIfInstr(fields.callMethodInstruction(ClsQStringList.append, QString.fromStringConstant(col.getEscapedName()+"=?")),
+							pParams.callMethodInstruction(ClsQStringList.append, Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr)));
 				}
 			}
 			
@@ -89,11 +99,4 @@ public class MethodGetUpdateFields extends Method{
 		
 	}
 
-	@Override
-	public String toString() {
-		if (parent.getName().equals("Track")) {
-			System.out.println("");
-		}
-		return super.toString();
-	}
 }

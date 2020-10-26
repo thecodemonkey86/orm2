@@ -102,9 +102,6 @@ public class MethodLoadCollection extends Method{
 		//int //bCount = 2;
 		
 		for(OneRelation r:relations) {
-			if (parent.getName().equals("OrmTest")) {
-				System.out.println();
-			}
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getColumnCount();i++) {
 				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
@@ -305,13 +302,12 @@ public class MethodLoadCollection extends Method{
 				
 		for(Column col:bean.getTbl().getAllColumns()) {
 			try{
-				if (!col.hasOneRelation() && !col.isPartOfPk()) {
+				if (!col.hasOneRelation() && !col.isPartOfPk() && !col.isFileImportEnabled()) {
 					ifForeachPkCompare.thenBlock().addInstr(varIfNotE1SetContainsForeachBean.callMethodInstruction("set"+ col.getUc1stCamelCaseName()+"Internal",recDoWhile.callMethod("value", QString.fromStringConstant("e1__"+ col.getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(col))));
 				}
 //					_callMethodInstr(bean, "set"+col.getUc1stCamelCaseName(), getParam("record").callMethod("value", new QStringPlusOperatorExpression(getParam("alias"), QString.fromStringConstant("__"+ col.getName()))).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(col)));
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.out.println(parent);
 			}
 		}
 		

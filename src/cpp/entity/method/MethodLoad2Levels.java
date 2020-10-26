@@ -225,10 +225,6 @@ public class MethodLoad2Levels extends Method {
 		for (AbstractRelation r : allRelations) {
 			EntityCls srcBean = Entities.get(r.getSourceTable());
 			
-			if (srcBean.getName().equals("OrderItem")) {
-				System.out.println();
-			}
-			
 			EntityCls destBean = Entities.get(r.getDestTable());
 			
 			for (OneRelation r2ndLevel : destBean.getOneRelations()) {

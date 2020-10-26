@@ -216,38 +216,12 @@ public class CppOrm extends OrmGenerator {
 			}
 			repo.setExportMacro(cfg.getExportMacro(),cfg.getExportMacroIncludeHeader());
 			repo.addMethodImplementations();
-//			if(cfg.hasNamespace()) {
-//				repo.setUseNamespace(cfg.getNamespace());
-//			}
-	//		List<ManyRelation> list = tableManyRelations.get(getTableByName("artist"));
-	//		System.out.println(list);
-			
 			
 			Path pathRepository = cfg.getRepositoryPath();
 			Path pathRepositoryQuery = pathRepository.resolve("query");
 			Files.createDirectories(pathBeans);
 			Files.createDirectories(pathRepositoryQuery);
 	
-			/*try(DirectoryStream<Path> dsPathBeans = Files.newDirectoryStream(pathBeans)) {
-				for(Path f : dsPathBeans) {
-					if(f.toString().endsWith(".h") || f.toString().endsWith(".cpp")) {
-						Files.delete(f);
-					}
-				}
-			} finally {
-				
-			}
-			
-			try(DirectoryStream<Path> dsPathQuery = Files.newDirectoryStream(pathRepositoryQuery)) {
-				for(Path f : dsPathQuery) {
-					if(f.toString().endsWith(".h") || f.toString().endsWith(".cpp")) {
-						Files.delete(f);
-					}
-				}
-			} finally {
-				
-			}*/
-//			FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(EnumQueryMode.INSTANCE.getName().toLowerCase()+".h"), EnumQueryMode.INSTANCE.toHeaderString().getBytes(utf8), writeOptions);
 			
 			for (EntityCls c : Entities.getAllBeans()) {
 				

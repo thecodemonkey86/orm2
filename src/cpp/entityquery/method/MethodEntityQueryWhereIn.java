@@ -33,10 +33,6 @@ public class MethodEntityQueryWhereIn extends Method {
 		this.bean=bean;
 		Type t = EntityCls.getDatabaseMapper().columnToType(c);
 		
-		if(t == null) {
-			System.out.println(EntityCls.getDatabaseMapper().columnToType(c));
-		}
-		
 		this.pValue = addParam(pValueType.toConstRef(), "value");
 		this.c = c;
 		this.beanQueryType = beanQueryType;

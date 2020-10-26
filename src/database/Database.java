@@ -56,7 +56,9 @@ public abstract class Database {
 	public abstract boolean supportsInsertOrIgnore();
 	public abstract boolean supportsMultiRowInsert();
 
-	
+	public boolean supportsLoadingFiles() {
+		return false;
+	}
 	
 	public Table makeTableInstance( String name) {
 		return new Table(this, name, null);
@@ -76,5 +78,9 @@ public abstract class Database {
 	public boolean supportsDeleteTableAlias() {
 		return true;
 		
+	}
+
+	public String getFileLoadFunction() {
+		throw new RuntimeException("not supported");
 	}
 }

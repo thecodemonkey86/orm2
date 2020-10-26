@@ -18,13 +18,5 @@ public class ThisEntityRepositoryExpression extends ThisExpression{
 		return parent._this().callMethod(MethodGetFromRecord.getMethodName(bean), record, alias);
 	}
 	
-//	public MethodCall callGetByRecordMethod(BeanCls bean, Expression...args) {
-//		try{
-//			return new MethodCall(this, ((Cls)getType()).getMethod("get"+bean.getName()+"ByRecord"),args);
-//		} catch (Exception e) {
-//			System.out.println(e);
-//			throw e;
-//		}
-//	} 
 
 }

@@ -283,6 +283,15 @@ public class ConfigReader implements ContentHandler {
 					if(attEnableGetValueByName != null) {
 						cfg.setEnableGetValueByName(attEnableGetValueByName.equals("1") ||attEnableGetValueByName.equals("true"));
 					}
+					
+					String attEnableFileImportColumns = atts.getValue("enableFileImportColumns");
+					if(attEnableFileImportColumns!=null) {
+						String[] fileImportCols =attEnableFileImportColumns.split(",");
+						for(String colName : fileImportCols) {
+							Column col = currentEntityTable.getColumnByName(colName);
+							col.setEnableFileImport(true);
+						}
+					}
 				} else {
 					throw new SAXException("Illegal state");
 				}

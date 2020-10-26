@@ -37,7 +37,7 @@ public class EntityConstructor extends Constructor{
 		
 		for(Column col:cols) {
 			 
-			if (!col.isPartOfPk() && !col.hasOneRelation()) {
+			if (!col.isPartOfPk() && !col.hasOneRelation() && !col.isFileImportEnabled()) {
 				_assign(parent.getAttrByName(col.getCamelCaseName()+ "Modified"), BoolExpression.FALSE);
 				
 				Expression defValExpr =  EntityCls.getDatabaseMapper().getColumnDefaultValueExpression(col);
