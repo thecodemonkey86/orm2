@@ -17,6 +17,7 @@ import cpp.entityrepository.method.MethodFetchOne;
 import cpp.entityrepository.method.MethodGetById;
 import cpp.entityrepository.method.MethodGetByIdOrCreateNew;
 import cpp.entityrepository.method.MethodGetFromRecord;
+import cpp.entityrepository.method.MethodInsertOrIgnore;
 import cpp.entityrepository.method.MethodLoadCollection;
 import cpp.entityrepository.method.MethodPrepareUpsert;
 import cpp.entityrepository.method.MethodRemoveAllRelated;
@@ -100,6 +101,7 @@ public class ClsEntityRepository extends Cls{
 			if(EntityCls.getDatabase().supportsInsertOrIgnore()) {
 //				addMethod(new MethodEntitySave(bean,true));
 				addMethod(new MethodPrepareUpsert(bean));
+				addMethod(new MethodInsertOrIgnore(bean));
 				
 			}
 //			addMethod(new MethodEntitySave(bean,false));

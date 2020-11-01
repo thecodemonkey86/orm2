@@ -247,6 +247,10 @@ public class EntityCls extends Cls {
 				Attr attr = new Attr(Types.QString, col.getCamelCaseName()+"FilePath");
 				addAttr(attr);
 				addMethod(new MethodFileImportColumnSetter(attr,col));
+				addMethod(new MethodGetFieldName(col));
+				addMethod(new MethodGetFieldNameAlias(col, true));
+				addMethod(new MethodGetFieldNameAlias(col, false));
+				addMethod(new MethodGetFieldName(col, true));
 			} else	if (!col.hasOneRelation()
 					
 					) {

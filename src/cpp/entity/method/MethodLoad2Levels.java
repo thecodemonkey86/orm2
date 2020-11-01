@@ -223,7 +223,6 @@ public class MethodLoad2Levels extends Method {
 		
 		// level 2 joins
 		for (AbstractRelation r : allRelations) {
-			EntityCls srcBean = Entities.get(r.getSourceTable());
 			
 			EntityCls destBean = Entities.get(r.getDestTable());
 			
