@@ -5,7 +5,6 @@ import java.util.List;
 
 import codegen.CodeUtil;
 import cpp.Types;
-import cpp.core.Attr;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.QString;
@@ -20,10 +19,9 @@ import cpp.entity.Entities;
 import cpp.entity.EntityCls;
 import cpp.entity.method.MethodOneRelationAttrSetter;
 import cpp.entity.method.MethodOneRelationEntityIsNull;
-import cpp.entityrepository.ClsEntityRepository;
-import cpp.entityrepository.expression.ThisEntityRepositoryExpression;
 import cpp.lib.ClsQVariant;
 import cpp.lib.ClsSqlQuery;
+import cpp.util.ClsDbPool;
 import database.column.Column;
 import database.relation.AbstractRelation;
 import database.relation.ManyRelation;
@@ -44,7 +42,7 @@ public class MethodGetById extends Method {
 		if(addSortingParams) {
 			pOrderBy = addParam(Types.QString.toConstRef(), "orderBy");
 		}
-		
+		setStatic(true);
 	}
 	public MethodGetById(EntityCls cls) {
 //		super(Public, cls.toRawPointer(), "getById");
@@ -53,17 +51,13 @@ public class MethodGetById extends Method {
 			Type colType =  EntityCls.getDatabaseMapper().columnToType(col);
 			addParam(new Param(colType.isPrimitiveType() ? colType : colType.toConstRef(), col.getCamelCaseName()));
 		}
-//		setStatic(true);
+		setStatic(true);
 		this.bean=cls;
 	}
 	public static String getMethodName(EntityCls cls) {
 		return "get"+cls.getName()+"ById";
 	}
 
-	@Override
-	public ThisEntityRepositoryExpression _this() {
-		return new ThisEntityRepositoryExpression((ClsEntityRepository) parent);
-	}
 	
 	@Override
 	public void addImplementation() {
@@ -71,8 +65,7 @@ public class MethodGetById extends Method {
 		List<OneToManyRelation> oneToManyRelations = bean.getOneToManyRelations();
 		List<ManyRelation> manyToManyRelations = bean.getManyToManyRelations();
 		
-		Attr aSqlCon = this.parent.getAttrByName(ClsEntityRepository.sqlCon);
-		Var sqlQuery = _declareInitConstructor( EntityCls.getDatabaseMapper().getSqlQueryType(),"query",aSqlCon);
+		Var sqlQuery = _declareInitConstructor( EntityCls.getDatabaseMapper().getSqlQueryType(),"query",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 		
 		
 		ArrayList<String> selectFields = new ArrayList<>();
@@ -145,7 +138,7 @@ public class MethodGetById extends Method {
 		IfBlock ifQSqlQueryNext =
 				_if(qSqlQuery.callMethod("next"))
 					.setIfInstr(
-							e1.assign(_this().callMethod(MethodGetFromRecord.getMethodName(bean),  qSqlQuery.callMethod("record"), QString.fromStringConstant("e1")))
+							e1.assign(parent.callStaticMethod(MethodGetFromRecord.getMethodName(bean),  qSqlQuery.callMethod("record"), QString.fromStringConstant("e1")))
 							,
 							e1.callSetterMethodInstruction("loaded", BoolExpression.TRUE)//_assignInstruction(e1.accessAttr("loaded"), BoolExpression.TRUE)
 							);
@@ -168,7 +161,7 @@ public class MethodGetById extends Method {
 					Expressions.not( rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getFirstColumn().getName())).callMethod(ClsQVariant.isNull))
 					));
 			ifBlock.thenBlock().
-			_callMethodInstr(e1, new MethodOneRelationAttrSetter( bean,r, true),  _this().callGetByRecordMethod(foreignCls, rec, QString.fromStringConstant(r.getAlias())));
+			_callMethodInstr(e1, new MethodOneRelationAttrSetter( bean,r, true),  parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls),  rec, QString.fromStringConstant(r.getAlias())));
 			//ifBlock.getIfInstr()._assign(acc, _this().callGetByRecordMethod(foreignCls, rec, QString.fromStringConstant(r.getAlias())));
 //			//bCount++;
 		}
@@ -189,7 +182,7 @@ public class MethodGetById extends Method {
 //				IfBlock ifNotContains = 
 				ifNotPkForeignIsNull.thenBlock()._if(Expressions.not(pkSet.callMethod("contains", pk)))
 						.addIfInstr(pkSet.callMethodInstruction("insert", pk))
-						.addIfInstr(e1.callMethodInstruction(EntityCls.getRelatedBeanMethodName(r),_this().callGetByRecordMethod(foreignCls, rec, QString.fromStringConstant(r.getAlias()))));
+						.addIfInstr(e1.callMethodInstruction(EntityCls.getRelatedBeanMethodName(r),parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias()))));
 //						.addIfInstr(e1.accessAttr(CodeUtil2.plural(r.getDestTable().getCamelCaseName())).callMethodInstruction("append",  _this().callGetByRecordMethod(foreignCls, rec, QString.fromStringConstant(r.getAlias()))));
 				
 			} else {
@@ -207,7 +200,7 @@ public class MethodGetById extends Method {
 						);
 				ifNotPkForeignIsNull.thenBlock()._if(Expressions.not(pkSet.callMethod("contains", pk)))
 					.addIfInstr(pkSet.callMethodInstruction("insert", pk))
-					.addIfInstr(e1.callMethodInstruction(EntityCls.getRelatedBeanMethodName(r),_this().callGetByRecordMethod(foreignCls, rec, QString.fromStringConstant(r.getAlias()))));
+					.addIfInstr(e1.callMethodInstruction(EntityCls.getRelatedBeanMethodName(r),parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls),  rec, QString.fromStringConstant(r.getAlias()))));
 //						.addIfInstr(e1.accessAttr(PgCppUtil.getManyRelationDestAttrName(r))
 //								.callMethodInstruction("append",  _this().callGetByRecordMethod(foreignCls,  rec, QString.fromStringConstant(r.getAlias()))));
 			}

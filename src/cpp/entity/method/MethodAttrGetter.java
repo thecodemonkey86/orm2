@@ -2,12 +2,14 @@ package cpp.entity.method;
 
 import util.StringUtil;
 import util.pg.PgCppUtil;
+import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.Method;
 import cpp.core.expression.BoolExpression;
 import cpp.core.expression.Expressions;
 import cpp.core.instruction.IfBlock;
-import cpp.entity.EntityCls;
+import cpp.entityrepository.ClsEntityRepository;
+import cpp.entityrepository.method.MethodEntityLoad;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
@@ -40,7 +42,7 @@ public class MethodAttrGetter extends Method{
 					
 					
 			);
-			ifNotLoaded.thenBlock()._callMethodInstr(_this().accessAttr(EntityCls.repository), "load", _this());
+			ifNotLoaded.thenBlock().addInstr(Types.EntityRepository.callStaticMethod(MethodEntityLoad.getMethodName(), _this()).asInstruction());
 			ifNotLoaded.thenBlock()._assign(parent.getAttrByName("loaded"), BoolExpression.TRUE);
 		}
 		_return(a);

@@ -10,6 +10,7 @@ import cpp.core.expression.QVectorInitList;
 import cpp.entity.EntityCls;
 import cpp.lib.ClsQVariant;
 import cpp.lib.ClsSql;
+import cpp.util.ClsDbPool;
 import database.column.Column;
 import util.CodeUtil2;
 
@@ -29,6 +30,7 @@ public class MethodEntityRemove extends Method {
 		this.overloadCascadeDeleteRelations = overloadCascadeDeleteRelations;
 		pBean = addParam(bean.toSharedPtr().toConstRef(), "entity");
 		this.bean = bean;
+		setStatic(true);
 	}
 
 	
@@ -57,7 +59,7 @@ public class MethodEntityRemove extends Method {
 						}
 					}
 					
-				 addInstr(Types.Sql.callStaticMethod(ClsSql.execute,  _this().accessAttr("sqlCon"), QStringLiteral.fromStringConstant(sql), varParams).asInstruction());
+				 addInstr(Types.Sql.callStaticMethod(ClsSql.execute, ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase), QStringLiteral.fromStringConstant(sql), varParams).asInstruction());
 				} else {
 					throw new RuntimeException("not implemented");
 				}

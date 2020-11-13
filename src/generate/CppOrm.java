@@ -29,6 +29,7 @@ import cpp.orm.FirebirdDatabaseTypeMapper;
 import cpp.orm.MySqlDatabaseMapper;
 import cpp.orm.PgDatabaseTypeMapper;
 import cpp.orm.SqliteDatabaseMapper;
+import cpp.util.ClsDbPool;
 import database.column.Column;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
@@ -101,6 +102,7 @@ public class CppOrm extends OrmGenerator {
 	public void generate() throws IOException 	{
 		CppOrmConfig cfg = (CppOrmConfig) this.cfg;
 		EntityCls.setCfg(cfg);
+		ClsDbPool.setInstance(new ClsDbPool(cfg.getDbPoolClass(), cfg.getDbPoolHeader()));
 		Charset utf8 = Charset.forName("UTF-8");
 		Instruction.setStackTraceEnabled(cfg.isEnableStacktrace());
 		

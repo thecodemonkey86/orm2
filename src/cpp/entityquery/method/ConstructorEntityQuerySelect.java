@@ -12,17 +12,12 @@ import cpp.entity.method.MethodAddRelatedTableJoins;
 import cpp.entityquery.ClsEntityQuerySelect;
 
 public class ConstructorEntityQuerySelect extends Constructor {
-	Param pSqlCon;
-	Param pRepository;
-//	Param pTable;
 	Param pLazy;
 	EntityCls bean;
 	
 	public ConstructorEntityQuerySelect(EntityCls bean) {
 		super();
 		this.bean = bean;
-		pSqlCon = addParam( new Param(Types.QSqlDatabase.toConstRef(), "sqlCon"));
-		pRepository = addParam(new Param(Types.EntityRepository.toSharedPtr(), "repository"));
 //		pTable = addParam(new Param(Types.QString.toConstRef(), "table"));
 		if(bean.hasRelations())
 			pLazy = addParam(new Param(Types.Bool, "loadLazy",BoolExpression.FALSE));
@@ -30,9 +25,7 @@ public class ConstructorEntityQuerySelect extends Constructor {
 
 	@Override
 	public void addImplementation() {
-		addInstr( _this().assignAttr(pRepository.getName(), pRepository));
 		//addInstr( _this().assignAttr(pTable.getName(), pTable));
-		addInstr( _this().assignAttr(pSqlCon.getName(), pSqlCon));
 		addInstr( _this().assignAttr("limitResults", new IntExpression(0)));
 		addInstr( _this().assignAttr("resultOffset", new IntExpression(-1)));
 //		addInstr( _this().assignAttr(ClsBeanQuery.queryMode, EnumQueryMode.INSTANCE.constant(EnumQueryMode.Select)));

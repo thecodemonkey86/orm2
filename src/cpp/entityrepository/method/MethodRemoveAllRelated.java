@@ -12,6 +12,7 @@ import cpp.lib.ClsQVariant;
 import cpp.lib.ClsQVariantList;
 import cpp.lib.ClsSql;
 import cpp.orm.OrmUtil;
+import cpp.util.ClsDbPool;
 import database.column.Column;
 import database.relation.IManyRelation;
 import util.StringUtil;
@@ -27,6 +28,7 @@ public class MethodRemoveAllRelated extends Method {
 		this.rel = r;
 		
 		this.entity = entity;
+		setStatic(true);
 	}
 
 	@Override
@@ -54,7 +56,7 @@ public class MethodRemoveAllRelated extends Method {
 		  _callMethodInstr(varParams, ClsQVariantList.append, Types.QVariant.callStaticMethod(ClsQVariant.fromValue,  p));
 		}
 		
-		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, _this().accessAttr("sqlCon"), varDeleteSql, varParams)
+		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase), varDeleteSql, varParams)
 				.asInstruction());
 	}
 

@@ -87,7 +87,6 @@ public class ClsEntityQueryDelete extends Cls {
 		addIncludeLib("QSqlError",true);
 		addIncludeLib("QSqlDriver");
 		addIncludeLib(Types.QVariant.getName());
-		addAttr(new Attr(Types.EntityRepository.toSharedPtr(), "repository"));
 		addAttr(new Attr(Types.QString,table));
 		addAttr(new Attr(Types.QStringList,"conditions"));
 		//addAttr(new Attr(Types.Int64,"limitResults"));

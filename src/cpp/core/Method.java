@@ -155,7 +155,11 @@ public abstract class Method extends InstructionBlock{
 	public ArrayList<Param> getParams() {
 		return params;
 	}
-
+	public Param[] getParamsAsArray() {
+		Param[] arr = new Param[params.size()];
+		params.toArray(arr);
+		return arr;
+	}
 	public void addParams(ArrayList<Param> p) {
 		params.addAll(p);
 	}

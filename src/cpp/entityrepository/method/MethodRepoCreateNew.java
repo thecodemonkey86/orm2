@@ -14,7 +14,6 @@ import cpp.core.instruction.IfBlock;
 import cpp.entity.EntityCls;
 import cpp.entity.Nullable;
 import cpp.entity.method.MethodColumnAttrSetNull;
-import cpp.lib.EnableSharedFromThis;
 import database.column.Column;
 
 public class MethodRepoCreateNew extends Method {
@@ -25,6 +24,7 @@ public class MethodRepoCreateNew extends Method {
 	
 	public MethodRepoCreateNew(EntityCls cls) {
 		this(cls,false,false);
+		setStatic(true);
 	}
 	
 	public MethodRepoCreateNew(EntityCls cls,boolean initializeFields,boolean initializeFieldsWithNullable) {
@@ -73,11 +73,12 @@ public class MethodRepoCreateNew extends Method {
 				
 			}
 		}
+		setStatic(true);
 	}
 
 	@Override
 	public void addImplementation() {
-		Var bean = _declare(returnType, "entity", new MakeSharedExpression((SharedPtr) returnType,_this().callMethod(EnableSharedFromThis.SHARED_FROM_THIS)));
+		Var bean = _declare(returnType, "entity", new MakeSharedExpression((SharedPtr) returnType));
 		_callMethodInstr(bean, "setInsertNew");
 		addInstr(bean.callMethodInstruction("setLoaded", BoolExpression.TRUE));
 		

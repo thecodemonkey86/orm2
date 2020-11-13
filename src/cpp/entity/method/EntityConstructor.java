@@ -20,7 +20,6 @@ public class EntityConstructor extends Constructor{
 		this.autoIncrement = autoIncrement;
 		this.cols = cols;
 		// Shared Pointer due to circular dependency / forward declaration issue 
-		addParam(new Param(Types.EntityRepository.toSharedPtr(), "repository"));
 		try{
 //		addParam(new Param(Types.BeanRepository.toRawPointer(), "repository"));
 //		addPassToSuperConstructor(params.get(0));
@@ -31,7 +30,6 @@ public class EntityConstructor extends Constructor{
 	
 	@Override
 	public void addImplementation() {
-		_assign(_this().accessAttr("repository"), getParam("repository"));
 		_assign(parent.getAttrByName("loaded"), BoolExpression.FALSE);		
 		_assign(parent.getAttrByName("autoIncrement"), autoIncrement ? BoolExpression.TRUE : BoolExpression.FALSE);
 		

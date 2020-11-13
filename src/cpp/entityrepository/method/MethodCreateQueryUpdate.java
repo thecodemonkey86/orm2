@@ -14,7 +14,7 @@ public class MethodCreateQueryUpdate extends Method {
 		//super(Public, new ClsBeanQuery(cls).toUniquePointer(), "createQuery"+cls.getName());
 		super(Public, Types.beanQueryUpdate(cls),getMethodName(cls)
 				);
-//		setStatic(true);
+		setStatic(true);
 		this.bean=cls;
 	}
 

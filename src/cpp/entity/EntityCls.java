@@ -173,7 +173,7 @@ public class EntityCls extends Cls {
 		this.customPreprocessorCode.add(code);
 	}
 	private void addAttributes(List<Column> allColumns) {
-		addAttr(new RepositoryAttr());
+//		addAttr(new RepositoryAttr());
 		for(OneRelation r:oneRelations) {
 			OneAttr attr = new OneAttr(r);
 				addAttr(attr);
@@ -561,9 +561,6 @@ public class EntityCls extends Cls {
 		return tbl;
 	}
 	
-	public RepositoryAttr getRepositoryAttr() {
-		return (RepositoryAttr) getAttrByName(repository);
-	}
 	
 	public List<ManyRelation> getManyToManyRelations() {
 		return manyRelations;

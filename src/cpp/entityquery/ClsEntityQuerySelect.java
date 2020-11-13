@@ -112,7 +112,6 @@ public class ClsEntityQuerySelect extends Cls {
 		addIncludeLib("QSqlError",true);
 		addIncludeLib("QSqlDriver");
 		addIncludeLib(Types.QVariant.getName());
-		addAttr(new Attr(Types.EntityRepository.toSharedPtr(), "repository"));
 //		addAttr(new Attr(Types.QString,mainBeanAlias));
 //		addAttr(new Attr(Types.QString,selectFields));
 //		addAttr(new Attr(Types.QString,table));
@@ -127,7 +126,6 @@ public class ClsEntityQuerySelect extends Cls {
 		if(cls.hasRelations())
 			addAttr(new Attr(Types.Bool,lazyLoading));
 		addAttr(new Attr(Types.QVariantList,params));
-		addAttr(new Attr(Types.QSqlDatabase,"sqlCon"));
 //		addAttr(new Attr(EnumQueryMode.INSTANCE,queryMode));
 		
 		addForwardDeclaredClass(Types.EntityRepository);
@@ -139,7 +137,7 @@ public class ClsEntityQuerySelect extends Cls {
 		addMethod(new MethodJoin4(this));
 		addMethod(new MethodJoin5(this));
 		addMethod(new MethodJoin6(this));
-		addMethod(new MethodJoin7(this).getConcreteMethod(Types.Int64)); // QSet<int64_t>
+		addMethod(new MethodJoin7(this).getConcreteMethodImpl(Types.Int64)); // QSet<int64_t>
 		/*boolean[] booleanValues = new boolean[] {true,false};
 		for(boolean qlatin1Literal1 : booleanValues) {
 			for(boolean qlatin1Literal2 : booleanValues) {

@@ -4,6 +4,7 @@ import cpp.Types;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.instruction.Instruction;
+import cpp.util.ClsDbPool;
 
 public class MethodExecQuery extends Method{
 	Param pRewriteSql;;
@@ -26,7 +27,8 @@ public class MethodExecQuery extends Method{
 		addInstr(new Instruction() {
 			@Override
 			public String toString() {
-				return String.format("QSqlQuery q(sqlCon);\r\n" + 
+				return String.format("auto sqlCon = %s;"
+						+ "\r\n QSqlQuery q(sqlCon);\r\n" + 
 						"        q.setForwardOnly(true);\r\n" + 
 						"        if (q.prepare(%s)) {\r\n" + 
 						"\r\n" + 
@@ -50,7 +52,7 @@ public class MethodExecQuery extends Method{
 						"            #ifdef QT_DEBUG\r\nqDebug()<<msg;\r\n"
 						+ "			 #endif\r\n" + 
 						"            throw SqlUtil3::SqlException(sqlCon.lastError().nativeErrorCode(), sqlCon.driver()->lastError().text(),toString());\r\n" + 
-						"        }",pRewriteSql==null?"toString()": pRewriteSql );
+						"        }", ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase).toString(), pRewriteSql==null?"toString()": pRewriteSql );
 			}
 		});
 	}

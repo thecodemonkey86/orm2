@@ -28,7 +28,7 @@ public class MethodGetManyRelatedCount extends Method{
 	public void addImplementation() {
 		IfBlock ifNotLoaded = _if(Expressions.not(parent.getAttrByName("loaded")));
 		
-		ifNotLoaded.thenBlock()._callMethodInstr(_this().accessAttr(EntityCls.repository), MethodEntityLoad.getMethodName(), _this());
+		ifNotLoaded.thenBlock().addInstr(Types.EntityRepository.callStaticMethod(MethodEntityLoad.getMethodName(), _this()).asInstruction());
 		ifNotLoaded.thenBlock()._assign(parent.getAttrByName("loaded"), BoolExpression.TRUE);
 		_return(a.callMethod(ClsQVector.size));
 		

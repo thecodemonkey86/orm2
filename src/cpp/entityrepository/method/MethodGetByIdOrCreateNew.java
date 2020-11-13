@@ -9,8 +9,6 @@ import cpp.core.expression.Var;
 import cpp.core.instruction.IfBlock;
 import cpp.core.method.MethodAttributeSetter;
 import cpp.entity.EntityCls;
-import cpp.entityrepository.ClsEntityRepository;
-import cpp.entityrepository.expression.ThisEntityRepositoryExpression;
 import database.column.Column;
 
 public class MethodGetByIdOrCreateNew extends Method {
@@ -26,7 +24,7 @@ public class MethodGetByIdOrCreateNew extends Method {
 		if(addSortingParams) {
 			pOrderBy = addParam(Types.QString.toConstRef(), "orderBy");
 		}
-		
+		setStatic(true);
 	}
 	public MethodGetByIdOrCreateNew(EntityCls cls) {
 		super(Public, cls.toSharedPtr(), "get"+cls.getName()+"ByIdOrCreateNew");
@@ -35,19 +33,16 @@ public class MethodGetByIdOrCreateNew extends Method {
 			addParam(new Param(colType.isPrimitiveType() ? colType : colType.toConstRef(), col.getCamelCaseName()));
 		}
 		this.bean=cls;
+		setStatic(true);
 	}
 
-	@Override
-	public ThisEntityRepositoryExpression _this() {
-		return new ThisEntityRepositoryExpression((ClsEntityRepository) parent);
-	}
 	
 	@Override
 	public void addImplementation() {
-		Var e1 = _declare(returnType, "e1", _this().callMethod(MethodGetById.getMethodName(bean),getParams()));
+		Var e1 = _declare(returnType, "e1", parent.callStaticMethod(MethodGetById.getMethodName(bean),getParamsAsArray()));
 		
 		IfBlock ifBlock = _if(e1.isNull()) ;
-		ifBlock.thenBlock()._assign(e1, _this().callMethod("createNew"+bean.getName()));
+		ifBlock.thenBlock()._assign(e1, Types.EntityRepository.callStaticMethod("createNew"+bean.getName()));
 		
 
 		if(!bean.getTbl().isAutoIncrement()) {

@@ -25,8 +25,7 @@ public class MethodEntityQueryFetch extends Method{
 //				return "qDebug()<<qu->toString();";
 //			}
 //		});
-		Expression aRepository = _this().accessAttr("repository");
-		_return(bean.hasRelations() ? new InlineIfExpression(_this().accessAttr(ClsEntityQuerySelect.lazyLoading), aRepository.callMethod(MethodFetchList.getMethodName(bean,true),  _this().callMethod(execQuery)),aRepository.callMethod(MethodFetchList.getMethodName(bean,false),  _this().callMethod(execQuery))):aRepository.callMethod(MethodFetchList.getMethodName(bean,false),  _this().callMethod(execQuery)));
+		_return(bean.hasRelations() ? new InlineIfExpression(_this().accessAttr(ClsEntityQuerySelect.lazyLoading), Types.EntityRepository.callStaticMethod(MethodFetchList.getMethodName(bean,true),  _this().callMethod(execQuery)),Types.EntityRepository.callStaticMethod(MethodFetchList.getMethodName(bean,false),  _this().callMethod(execQuery))):Types.EntityRepository.callStaticMethod(MethodFetchList.getMethodName(bean,false),  _this().callMethod(execQuery)));
 	}
 	@Override
 	public boolean includeIfEmpty() {

@@ -19,6 +19,7 @@ public abstract class MethodTemplate {
 	protected boolean constQualifier;
 	protected Cls parent;
 	protected ArrayList<Param> params;
+	protected boolean isStatic;
 	
 	public ArrayList<Param> getParams() {
 		return params;
@@ -45,19 +46,26 @@ public abstract class MethodTemplate {
 		tplTypes.add(e);
 	}
 
-	public MethodTemplate(String visibility, Type returnType, String name) {
+	public MethodTemplate(String visibility, Type returnType, String name,boolean isStatic) {
 		tplTypes = new ArrayList<>();
 		this.returnType = returnType;
 		this.name = name;
 		this.visibility = visibility;
 		params = new ArrayList<>();
+		this.isStatic = isStatic;
+	}
+	public TplMethod getConcreteMethod(Type...types) {
+		TplMethod m=getConcreteMethodImpl(types);
+		m.setParent(parent);
+		m.setStatic(isStatic);
+		return m;
 	}
 	
-	public abstract TplMethod getConcreteMethod(Type...types) ;
+	protected abstract TplMethod getConcreteMethodImpl(Type...types) ;
 	public <T> TplMethod getConcreteMethod(List<T> types) {
 		Type[] t = new Type[types.size()];
 		types.toArray(t);
-		return getConcreteMethod(t);
+		return getConcreteMethodImpl(t);
 	}
 
 	public String getName() {
@@ -92,7 +100,7 @@ public abstract class MethodTemplate {
 		
 		concreteMethod.setParent(parent);
 		concreteMethod.addImplementation();
-		StringBuilder sb=new StringBuilder(CodeUtil.sp(getVisibility()+":","template"+CodeUtil.abr(CodeUtil.commaSep(tplTypes, "typename ")))+ CodeUtil.sp((inlineQualifier?"inline":null), getReturnType().toDeclarationString(),getName(),CodeUtil.parentheses(CodeUtil.commaSep(params)),(constQualifier?"const":null)));
+		StringBuilder sb=new StringBuilder(CodeUtil.sp(getVisibility()+":","template"+CodeUtil.abr(CodeUtil.commaSep(tplTypes, "typename ")))+ CodeUtil.sp((inlineQualifier?"inline":null),(isStatic?"static":null), getReturnType().toDeclarationString(),getName(),CodeUtil.parentheses(CodeUtil.commaSep(params)),(constQualifier?"const":null)));
 		CodeUtil.writeLine(sb, "{");
 	
 		for(Instruction i:concreteMethod.getInstructions()) {

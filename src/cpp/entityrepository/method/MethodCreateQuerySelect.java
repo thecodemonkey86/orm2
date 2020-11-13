@@ -6,7 +6,6 @@ import cpp.core.Param;
 import cpp.core.expression.BoolExpression;
 import cpp.core.expression.CreateObjectExpression;
 import cpp.entity.EntityCls;
-import cpp.lib.EnableSharedFromThis;
 
 public class MethodCreateQuerySelect extends Method {
 	EntityCls bean;
@@ -21,7 +20,7 @@ public class MethodCreateQuerySelect extends Method {
 			pLazy = addParam(Types.Bool, "lazyLoading",BoolExpression.FALSE);
 		}
 		
-//		setStatic(true);
+		setStatic(true);
 		this.bean=cls;
 	}
 
@@ -30,9 +29,9 @@ public class MethodCreateQuerySelect extends Method {
 		//_return(new StdMoveExpression(new CreateObjectExpression(returnType, new NewOperator(new ClsBeanQuery(bean), parent.getAttrByName("sqlCon")) )));
 		//_return(new MakeSharedExpression((SharedPtr)returnType, parent.getStaticAttribute("sqlCon").callMethod("buildQuery")));
 		if(bean.hasRelations()) {
-			_return(new CreateObjectExpression(returnType,  parent.getAttrByName("sqlCon"), _this().callMethod(EnableSharedFromThis.SHARED_FROM_THIS),pLazy ));
+			_return(new CreateObjectExpression(returnType, pLazy ));
 		} else {
-			_return(new CreateObjectExpression(returnType,  parent.getAttrByName("sqlCon"), _this().callMethod(EnableSharedFromThis.SHARED_FROM_THIS) ));
+			_return(new CreateObjectExpression(returnType));
 		}
 	}
 

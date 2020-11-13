@@ -5,10 +5,11 @@ import java.util.Collection;
 import cpp.Types;
 import cpp.core.Cls;
 import cpp.core.Param;
+import cpp.core.SharedPtr;
 import cpp.entity.EntityCls;
-import cpp.entityrepository.method.ConstructorEntityRepository;
 import cpp.entityrepository.method.MethodEntityLoad;
 import cpp.entityrepository.method.MethodEntityRemove;
+import cpp.entityrepository.method.MethodEntitySave;
 import cpp.entityrepository.method.MethodCreateQueryDelete;
 import cpp.entityrepository.method.MethodCreateQuerySelect;
 import cpp.entityrepository.method.MethodCreateQueryUpdate;
@@ -24,7 +25,7 @@ import cpp.entityrepository.method.MethodRemoveAllRelated;
 import cpp.entityrepository.method.MethodRepoCreateNew;
 import cpp.entityrepository.method.MethodRepoCreateNewNonNullableOnly;
 import cpp.lib.ClsBaseRepository;
-import cpp.lib.EnableSharedFromThis;
+import cpp.util.ClsDbPool;
 import database.column.Column;
 import database.relation.IManyRelation;
 import database.table.Table;
@@ -32,25 +33,26 @@ import database.table.Table;
 public class ClsEntityRepository extends Cls{
 //	protected ArrayList<ClsBeanQuery> beanQueryClasses;
 	public static final String CLSNAME = "EntityRepository";
-	public static final String sqlCon = "sqlCon";
 	
 	public ClsEntityRepository() {
 		super(CLSNAME);
 		addSuperclass(new ClsBaseRepository());
-		addSuperclass(new EnableSharedFromThis(this));
 //		beanQueryClasses = new ArrayList<>(); 
 	}
 	
 
 	public void addDeclarations(Collection<EntityCls> beans) {
-		addConstructor(new ConstructorEntityRepository());
 		addIncludeLib("QHash");
 		addIncludeLib(Types.QSqlRecord);
 		addIncludeHeader(getSuperclass().getHeaderInclude());
 		addIncludeHeader(EntityCls.getDatabaseMapper().getSqlQueryType().getIncludeHeader());
+		addInclude(ClsDbPool.instance.getHeaderInclude());
 		if(beans.size()>0)
 			addIncludeHeader(Types.orderedSet(null).getHeaderInclude()
 					);
+		
+		
+		
 		for(EntityCls bean:beans) {
 			addIncludeHeader(EntityCls.getModelPath() + "entities/"+bean.getIncludeHeader());
 			addIncludeHeader("query/"+bean.getName().toLowerCase()+"entityqueryselect");
@@ -97,9 +99,8 @@ public class ClsEntityRepository extends Cls{
 				addMethod(new MethodCreateQueryUpdate(bean));
 			
 			addMethod(new MethodEntityLoad(bean));
-			
+			addMethod(new MethodEntitySave(bean));
 			if(EntityCls.getDatabase().supportsInsertOrIgnore()) {
-//				addMethod(new MethodEntitySave(bean,true));
 				addMethod(new MethodPrepareUpsert(bean));
 				addMethod(new MethodInsertOrIgnore(bean));
 				
@@ -157,5 +158,10 @@ public class ClsEntityRepository extends Cls{
 			// TODO Auto-generated method stub
 			return super.toSourceString();
 		}
+	
+	@Override
+	public SharedPtr toSharedPtr() {
+		throw new RuntimeException("deleted constructor");
+	}
 
 }

@@ -1,6 +1,7 @@
 package cpp.entity.method;
 
 import util.StringUtil;
+import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.Method;
 import cpp.core.TplCls;
@@ -29,7 +30,7 @@ public class MethodManyAttrGetter extends Method{
 //		_return(a.callMethod( orderedSet.getMethod("toList")));
 		IfBlock ifNotLoaded = _if(Expressions.not(parent.getAttrByName("loaded")));
 		
-		ifNotLoaded.thenBlock()._callMethodInstr(_this().accessAttr(EntityCls.repository), MethodEntityLoad.getMethodName(), _this());
+		ifNotLoaded.thenBlock().addInstr(Types.EntityRepository.callStaticMethod(MethodEntityLoad.getMethodName(), _this()).asInstruction());
 		ifNotLoaded.thenBlock()._assign(parent.getAttrByName("loaded"), BoolExpression.TRUE);
 		_return(a); 
 	}

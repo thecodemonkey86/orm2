@@ -11,11 +11,11 @@ import cpp.core.Method;
 import cpp.core.QString;
 import cpp.core.expression.Var;
 import cpp.entity.EntityCls;
-import cpp.entityrepository.ClsEntityRepository;
 import cpp.lib.ClsQVariantList;
 import cpp.lib.ClsQVector;
 import cpp.lib.ClsSql;
 import cpp.orm.OrmUtil;
+import cpp.util.ClsDbPool;
 import database.column.Column;
 import database.relation.ManyRelation;
 
@@ -51,7 +51,7 @@ public class MethodRemoveAllManyRelatedEntities extends Method {
 		
 		String sql = String.format("delete from %s where %s", rel.getMappingTable().getEscapedName(), CodeUtil.commaSep(columns));
 		
-		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, _this().accessAttr(EntityCls.repository).callAttrGetter(ClsEntityRepository.sqlCon),QString.fromStringConstant(sql),varParams).asInstruction());
+		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase),QString.fromStringConstant(sql),varParams).asInstruction());
 		
 		
 		

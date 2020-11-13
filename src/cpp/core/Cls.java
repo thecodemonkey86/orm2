@@ -408,7 +408,12 @@ public class Cls extends Type implements IAttributeContainer{
 	public Type toUniquePointer() {
 		return new UniquePtr(this);
 	}
-	
+	public Expression callStaticMethod(Method method,Expression...args) {
+		if (method.isStatic()) {
+			return new StaticMethodCall(this,method,args);
+		}
+		throw new RuntimeException("method "+method+" is not static");
+	}
 	public Expression callStaticMethod(String methodname,Expression...args) {
 		Method m= getMethod(methodname);
 		if (m.isStatic()) {
