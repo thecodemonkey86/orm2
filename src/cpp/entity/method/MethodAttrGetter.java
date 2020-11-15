@@ -8,7 +8,6 @@ import cpp.core.Method;
 import cpp.core.expression.BoolExpression;
 import cpp.core.expression.Expressions;
 import cpp.core.instruction.IfBlock;
-import cpp.entityrepository.ClsEntityRepository;
 import cpp.entityrepository.method.MethodEntityLoad;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
@@ -42,7 +41,7 @@ public class MethodAttrGetter extends Method{
 					
 					
 			);
-			ifNotLoaded.thenBlock().addInstr(Types.EntityRepository.callStaticMethod(MethodEntityLoad.getMethodName(), _this()).asInstruction());
+			ifNotLoaded.thenBlock().addInstr(Types.EntityRepository.callStaticMethod(MethodEntityLoad.getMethodName(), _this().dereference()).asInstruction());
 			ifNotLoaded.thenBlock()._assign(parent.getAttrByName("loaded"), BoolExpression.TRUE);
 		}
 		_return(a);

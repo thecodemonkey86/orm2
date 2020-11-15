@@ -4,6 +4,7 @@ import codegen.CodeUtil;
 import config.cpp.CppOrmConfig;
 import cpp.CoreTypes;
 import cpp.core.expression.Expression;
+import cpp.core.expression.MethodCall;
 import cpp.core.expression.QChar;
 import cpp.core.expression.QStringPlusOperatorExpression;
 import cpp.entity.EntityCls;

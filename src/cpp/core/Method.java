@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import codegen.CodeUtil;
 import cpp.core.expression.Expression;
+import cpp.core.expression.MethodCall;
 import cpp.core.instruction.Comment;
 import cpp.core.instruction.Instruction;
 import cpp.core.instruction.InstructionBlock;

@@ -2,7 +2,6 @@ package cpp.entityquery.method;
 
 import cpp.Types;
 import cpp.core.Method;
-import cpp.core.expression.Expression;
 import cpp.core.expression.InlineIfExpression;
 import cpp.entity.EntityCls;
 import cpp.entityquery.ClsEntityQuerySelect;

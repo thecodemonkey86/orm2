@@ -77,7 +77,7 @@ public class MethodLoadCollection extends Method{
 		
 //		query.callMethod("select");
 		
-		Var sqlQuery = _declareInitConstructor( EntityCls.getDatabaseMapper().getSqlQueryType(),"sqlQuery",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
+		Var sqlQuery = _declareInitConstructor( EntityCls.getDatabaseMapper().getSqlQueryType(),"sqlQuery");
 		
 		Type e1PkType = pk.isMultiColumn() ? bean.getStructPk() : EntityCls.getDatabaseMapper().columnToType(pk.getColumns().get(0));
 		
@@ -140,7 +140,7 @@ public class MethodLoadCollection extends Method{
 		exprQSqlQuery = exprQSqlQuery.callMethod("whereIn", varColumns, params);
 		
 		addInstr(exprQSqlQuery.asInstruction());
-		Var query = _declare(Types.QSqlQuery, "query", sqlQuery.callMethod("execQuery"));
+		Var query = _declare(Types.QSqlQuery, "query", sqlQuery.callMethod("execQuery",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase)));
 		
 		
 		IfBlock ifQueryNext = _if(query.callMethod("next"));

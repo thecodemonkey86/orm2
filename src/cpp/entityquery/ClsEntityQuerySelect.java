@@ -1,6 +1,8 @@
 package cpp.entityquery;
 
 import cpp.CoreTypes;
+import cpp.QtCoreTypes;
+import cpp.QtSqlTypes;
 import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.Cls;
@@ -66,6 +68,7 @@ import cpp.entityquery.method.MethodWhere7;
 import cpp.entityquery.method.MethodWhere8;
 import cpp.entityquery.method.MethodWhere9;
 import cpp.lib.ClsQVector;
+import cpp.util.ClsDbPool;
 import database.column.Column;
 
 public class ClsEntityQuerySelect extends Cls {
@@ -104,13 +107,13 @@ public class ClsEntityQuerySelect extends Cls {
 		}
 		
 		addIncludeLib(ClsQVector.CLSNAME);
-		addIncludeHeader(EntityCls.getModelPath() + "entities/"+cls.getIncludeHeader());
-		addIncludeHeader("../"+ Types.EntityRepository.getName().toLowerCase());
-		addIncludeHeader(Types.SqlUtil.getIncludeHeader());
-		addIncludeHeader(Types.SqlQuery.getIncludeHeader());
-//		addIncludeHeader(EnumQueryMode.INSTANCE.getName().toLowerCase());
-		addIncludeLib("QSqlError",true);
-		addIncludeLib("QSqlDriver");
+		addIncludeHeader(cls.getHeaderInclude());
+		addIncludeHeaderInSource("../"+ Types.EntityRepository.getName().toLowerCase());
+		addIncludeDefaultHeaderFileName(Types.SqlUtil);
+		addIncludeDefaultHeaderFileName(Types.SqlQuery);
+		addIncludeHeaderInSource(ClsDbPool.instance.getHeaderInclude());
+		addIncludeLibInSource(QtCoreTypes.QDebug,true);
+		addIncludeLibInSource(QtSqlTypes.QSqlError,true);
 		addIncludeLib(Types.QVariant.getName());
 //		addAttr(new Attr(Types.QString,mainBeanAlias));
 //		addAttr(new Attr(Types.QString,selectFields));
@@ -128,7 +131,7 @@ public class ClsEntityQuerySelect extends Cls {
 		addAttr(new Attr(Types.QVariantList,params));
 //		addAttr(new Attr(EnumQueryMode.INSTANCE,queryMode));
 		
-		addForwardDeclaredClass(Types.EntityRepository);
+		//addForwardDeclaredClass(Types.EntityRepository);
 		
 		addMethod(new MethodToStringSelect(cls));
 		addMethod(new MethodJoin1(this));

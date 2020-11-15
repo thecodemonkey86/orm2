@@ -65,7 +65,7 @@ public class MethodGetById extends Method {
 		List<OneToManyRelation> oneToManyRelations = bean.getOneToManyRelations();
 		List<ManyRelation> manyToManyRelations = bean.getManyToManyRelations();
 		
-		Var sqlQuery = _declareInitConstructor( EntityCls.getDatabaseMapper().getSqlQueryType(),"query",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
+		Var sqlQuery = _declareInitConstructor( EntityCls.getDatabaseMapper().getSqlQueryType(),"query");
 		
 		
 		ArrayList<String> selectFields = new ArrayList<>();
@@ -130,7 +130,7 @@ public class MethodGetById extends Method {
 			exprQSqlQuery = exprQSqlQuery.callMethod(ClsSqlQuery.orderBy,pOrderBy);
 		}
 		
-		exprQSqlQuery = exprQSqlQuery.callMethod("execQuery");
+		exprQSqlQuery = exprQSqlQuery.callMethod("execQuery",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 		Var qSqlQuery = _declare(exprQSqlQuery.getType(),
 				"qSqlQuery", exprQSqlQuery
 				);

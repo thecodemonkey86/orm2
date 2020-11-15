@@ -14,7 +14,7 @@ public class MethodPrepareUpsert extends Method {
 
 	@Override
 	public void addImplementation() {
-		_return(parent.callStaticMethod(parent.getTemplateMethod(EntityCls.getDatabaseMapper().getRepositoryPrepareInsertOrIgnoreMethod(), entity)  )) ;
+		_return(parent.callStaticMethod(parent.getTemplateMethod(EntityCls.getDatabaseMapper().getRepositoryPrepareInsertOrIgnoreMethod(), entity),entity  )) ;
 
 	}
 

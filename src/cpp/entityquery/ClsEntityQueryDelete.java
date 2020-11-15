@@ -1,6 +1,8 @@
 package cpp.entityquery;
 
 import cpp.CoreTypes;
+import cpp.QtCoreTypes;
+import cpp.QtSqlTypes;
 import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.Cls;
@@ -45,6 +47,7 @@ import cpp.entityquery.method.MethodWhere8;
 import cpp.entityquery.method.MethodWhere9;
 import cpp.entityrepository.ClsEntityRepository;
 import cpp.lib.ClsQVector;
+import cpp.util.ClsDbPool;
 import database.column.Column;
 
 public class ClsEntityQueryDelete extends Cls {
@@ -78,14 +81,13 @@ public class ClsEntityQueryDelete extends Cls {
 		}
 		
 		addIncludeLib(ClsQVector.CLSNAME);
-		addIncludeHeader(EntityCls.getModelPath() + "entities/"+cls.getIncludeHeader());
-		addIncludeHeader("../"+ ClsEntityRepository.CLSNAME.toLowerCase());
-		addIncludeHeader(Types.SqlUtil.getIncludeHeader());
-		addIncludeHeader(Types.SqlQuery.getIncludeHeader());
-//		addIncludeHeader(EnumQueryMode.INSTANCE.getName().toLowerCase());
-		addIncludeLib("QDebug");
-		addIncludeLib("QSqlError",true);
-		addIncludeLib("QSqlDriver");
+		addIncludeHeader(cls.getHeaderInclude());
+		addIncludeHeaderInSource("../"+ ClsEntityRepository.CLSNAME.toLowerCase());
+		addIncludeDefaultHeaderFileName(Types.SqlUtil);
+		addIncludeDefaultHeaderFileName(Types.SqlQuery);
+		addIncludeHeaderInSource(ClsDbPool.instance.getHeaderInclude());
+		addIncludeLibInSource(QtCoreTypes.QDebug,true);
+		addIncludeLibInSource(QtSqlTypes.QSqlError,true);
 		addIncludeLib(Types.QVariant.getName());
 		addAttr(new Attr(Types.QString,table));
 		addAttr(new Attr(Types.QStringList,"conditions"));
@@ -95,7 +97,7 @@ public class ClsEntityQueryDelete extends Cls {
 		addAttr(new Attr(Types.QSqlDatabase,"sqlCon"));
 //		addAttr(new Attr(EnumQueryMode.INSTANCE,queryMode));
 		
-		addForwardDeclaredClass(Types.EntityRepository);
+		//addForwardDeclaredClass(Types.EntityRepository);
 		
 		addMethod(new MethodToStringDelete(cls));
 //		addMethod(new MethodLimit(this,BeanQueryType.Delete));

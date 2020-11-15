@@ -2,10 +2,8 @@ package cpp.entity.method;
 
 import java.util.List;
 
-import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.Constructor;
-import cpp.core.Param;
 import cpp.core.expression.BoolExpression;
 import cpp.core.expression.Expression;
 import cpp.entity.EntityCls;

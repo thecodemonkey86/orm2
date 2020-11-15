@@ -8,7 +8,9 @@ import cpp.core.expression.Expression;
 import cpp.core.expression.NewOperator;
 import cpp.core.expression.StaticAccessExpression;
 import cpp.core.expression.StaticMethodCall;
+import cpp.core.expression.StaticTplMethodCall;
 import cpp.core.expression.ThisExpression;
+import cpp.core.method.TplMethod;
 import util.CodeUtil2;
 
 
@@ -20,6 +22,7 @@ public class Cls extends Type implements IAttributeContainer{
 	protected Destructor destructor;
 	protected ArrayList<Attr> attrs;
 	protected LinkedHashSet<Include> includes;
+	protected LinkedHashSet<Include> includesInSourceFile;
 	protected LinkedHashSet<Type> forwardDeclaredTypes;
 	protected ArrayList<String> preprocessorInstructions;
 	
@@ -29,7 +32,13 @@ public class Cls extends Type implements IAttributeContainer{
 	protected ArrayList<Enum> enums;
 	protected String useNamespace;
 	protected String headerInclude;
+	protected boolean headerIncludeLib;
 	protected String classDocumentation,exportMacro;
+	
+	protected void setHeaderIncludeLib(String include) {
+		headerInclude=include;
+		headerIncludeLib=true;
+	}
 	
 	public void setUseNamespace(String useNamespace) {
 		this.useNamespace = useNamespace;
@@ -60,8 +69,10 @@ public class Cls extends Type implements IAttributeContainer{
 	public Cls getSuperclass(int index) {
 		return superclasses.get(index);
 	}
-	
 	public Cls(String name) {
+		this(name,true);
+	}
+	public Cls(String name,boolean copyConstructor) {
 		super(name);
 		this.methods=new ArrayList<>();
 		this.attrs=new ArrayList<>();
@@ -69,7 +80,7 @@ public class Cls extends Type implements IAttributeContainer{
 		this.includes=new LinkedHashSet<>();
 		this.operators = new ArrayList<>(); 
 		this.forwardDeclaredTypes = new LinkedHashSet<>();
-		if(name !=null) {
+		if(name !=null && copyConstructor) {
 			addConstructor(new CopyConstructor(this));
 			addOperator(new CopyAssignOperator(this));
 		}
@@ -88,11 +99,29 @@ public class Cls extends Type implements IAttributeContainer{
 		
 	}
 	
+	public void addIncludeDefaultHeaderFileName(Type t) {
+		addIncludeHeader(t.getName().toLowerCase());
+	}
+	
 	public void addIncludeHeader(String i) {
 		if(i==null) {
 			throw new NullPointerException();
 		}
-		addInclude(i+".h");
+		addInclude(i);
+	}
+	
+	public void addIncludeInSourceDefaultHeaderFileName(Type t) {
+		addIncludeHeaderInSource(t.getName().toLowerCase());
+	}
+	
+	public void addIncludeHeaderInSource(String i) {
+		if(i==null) {
+			throw new NullPointerException();
+		}
+		if(includesInSourceFile==null) {
+			includesInSourceFile = new LinkedHashSet<>();
+		}
+		includesInSourceFile.add(new HeaderFileInclude(i));
 	}
 	
 	public void addInclude(Include i) {
@@ -115,6 +144,25 @@ public class Cls extends Type implements IAttributeContainer{
 		includes.add(new LibInclude(i.getName()));
 	}
 	
+	public void addIncludeLibInSource(String i) {
+		includesInSourceFile.add(new LibInclude(i));
+	}
+	
+	public void addIncludeLibInSource(Type i) {
+		addIncludeLibInSource(i,false);
+	}
+	
+	public void addIncludeLibInSource(Type i,boolean debugOnly) {	
+		if(includesInSourceFile==null) {
+			includesInSourceFile = new LinkedHashSet<>();
+		}
+		if(debugOnly) {
+			includesInSourceFile.add(new DebugOnlyInclude(new LibInclude(i.getName())));
+		} else {
+			includesInSourceFile.add(new LibInclude(i.getName()));
+		}
+		
+	}
 	public void addIncludeLib(Type i,boolean debugOnly) {
 		if(debugOnly) {
 			includes.add(new DebugOnlyInclude(new LibInclude(i)));
@@ -179,6 +227,11 @@ public class Cls extends Type implements IAttributeContainer{
 	
 	protected void addBeforeSourceCode(StringBuilder sb){
 		CodeUtil.writeLine(sb, "#include "+CodeUtil.quote(type.toLowerCase()+".h"));
+		if(includesInSourceFile!=null) {
+			for(Include i:includesInSourceFile) {
+				CodeUtil.writeLine(sb,i.toString());
+			}
+		}
 		sb.append('\n');
 	}
 	
@@ -193,8 +246,9 @@ public class Cls extends Type implements IAttributeContainer{
 	public String toHeaderString() {
 		StringBuilder sb=new StringBuilder();
 		addBeforeHeader(sb);
-		CodeUtil.writeLine(sb, "#ifndef "+type.toUpperCase()+"_H");
-		CodeUtil.writeLine(sb, "#define "+type.toUpperCase()+"_H");
+		//CodeUtil.writeLine(sb, "#ifndef "+type.toUpperCase()+"_H");
+		//CodeUtil.writeLine(sb, "#define "+type.toUpperCase()+"_H");
+		CodeUtil.writeLine(sb, "#pragma once");
 		if(useNamespace !=null) {
 			CodeUtil.writeLine(sb, CodeUtil.sp("namespace",useNamespace,"{"));
 		}
@@ -273,7 +327,7 @@ public class Cls extends Type implements IAttributeContainer{
 			}
 		}
 		
-		sb.append("#endif");
+		//sb.append("#endif");
 		return sb.toString();
 	}
 	
@@ -377,7 +431,7 @@ public class Cls extends Type implements IAttributeContainer{
 		throw new RuntimeException("no such method "+getClass().getName()+"|"+ getName()+"::"+name);
 	}
 	
-	public Method getTemplateMethod(String name, Type...tplTypes) {
+	public TplMethod getTemplateMethod(String name, Type...tplTypes) {
 		if(methodTemplates!=null) {
 			for(MethodTemplate m:methodTemplates) {
 				if (m.getName().equals(name)) {
@@ -408,9 +462,15 @@ public class Cls extends Type implements IAttributeContainer{
 	public Type toUniquePointer() {
 		return new UniquePtr(this);
 	}
-	public Expression callStaticMethod(Method method,Expression...args) {
+	public Expression callStaticMethod(TplMethod method,Type concreteType,Expression...args) {
 		if (method.isStatic()) {
-			return new StaticMethodCall(this,method,args);
+			return new StaticTplMethodCall(this,method,args,new Type[] {concreteType});
+		}
+		throw new RuntimeException("method "+method+" is not static");
+	}
+	public Expression callStaticMethod(TplMethod method,Type[] concreteTypes,Expression...args) {
+		if (method.isStatic()) {
+			return new StaticTplMethodCall(this,method,args,concreteTypes);
 		}
 		throw new RuntimeException("method "+method+" is not static");
 	}
@@ -429,11 +489,6 @@ public class Cls extends Type implements IAttributeContainer{
 
 	public String toUsageStringWithoutNamespace() {
 		 return super.toUsageString();
-	}
-	
-	//@Deprecated
-	public String getIncludeHeader() {
-		return type.toLowerCase();
 	}
 	
 	protected Attr getStaticAttributeInternal(String name) {
@@ -534,9 +589,23 @@ public class Cls extends Type implements IAttributeContainer{
 		return headerInclude != null;
 	}
 	
-	public void collectIncludes(Cls cls) {
+	@Override
+	public void collectIncludes(Cls cls,boolean inSourceFile) {
 		if(hasHeaderInclude() ) {
-			cls.addInclude(getHeaderInclude());
+			if(!inSourceFile) {
+				if(headerIncludeLib) {
+					cls.addIncludeLib(getHeaderInclude());
+				} else {
+					cls.addIncludeHeader(getHeaderInclude());
+				}
+			} else {
+				if(headerIncludeLib) {
+					cls.addIncludeLibInSource(getHeaderInclude());
+				} else {
+					cls.addIncludeHeaderInSource(getHeaderInclude());
+				}
+			}
+			
 		}
 	}
 	
@@ -595,4 +664,8 @@ public class Cls extends Type implements IAttributeContainer{
 		return useNamespace;
 	}
 	
+	@Override
+	public String getConstructorName() {
+		return useNamespace!=null? useNamespace+"::"+type : type;
+	}
 }

@@ -6,7 +6,6 @@ import cpp.core.Method;
 import cpp.core.expression.BoolExpression;
 import cpp.core.expression.Expressions;
 import cpp.core.instruction.IfBlock;
-import cpp.entity.EntityCls;
 import cpp.entity.ManyAttr;
 import cpp.entityrepository.method.MethodEntityLoad;
 import cpp.lib.ClsQVector;
@@ -28,7 +27,7 @@ public class MethodGetManyRelatedCount extends Method{
 	public void addImplementation() {
 		IfBlock ifNotLoaded = _if(Expressions.not(parent.getAttrByName("loaded")));
 		
-		ifNotLoaded.thenBlock().addInstr(Types.EntityRepository.callStaticMethod(MethodEntityLoad.getMethodName(), _this()).asInstruction());
+		ifNotLoaded.thenBlock().addInstr(Types.EntityRepository.callStaticMethod(MethodEntityLoad.getMethodName(), _this().dereference()).asInstruction());
 		ifNotLoaded.thenBlock()._assign(parent.getAttrByName("loaded"), BoolExpression.TRUE);
 		_return(a.callMethod(ClsQVector.size));
 		

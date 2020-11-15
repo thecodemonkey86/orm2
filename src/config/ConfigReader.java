@@ -283,6 +283,10 @@ public class ConfigReader implements ContentHandler {
 					if(attEnableGetValueByName != null) {
 						cfg.setEnableGetValueByName(attEnableGetValueByName.equals("1") ||attEnableGetValueByName.equals("true"));
 					}
+					String enableLoadCollectionMethod = atts.getValue("enableLoadCollectionMethod");
+					if(enableLoadCollectionMethod!=null) {
+						cfg.setEnableMethodLoadCollection(enableLoadCollectionMethod.equals("1") ||enableLoadCollectionMethod.equals("true") );
+					}
 					
 					String attEnableFileImportColumns = atts.getValue("enableFileImportColumns");
 					if(attEnableFileImportColumns!=null) {

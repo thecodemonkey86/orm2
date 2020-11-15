@@ -5,7 +5,6 @@ import cpp.core.Method;
 import cpp.core.QString;
 import cpp.core.expression.CreateObjectExpression;
 import cpp.entity.EntityCls;
-import cpp.util.ClsDbPool;
 
 public class MethodCreateQueryDelete extends Method {
 	EntityCls bean;
@@ -22,7 +21,7 @@ public class MethodCreateQueryDelete extends Method {
 	public void addImplementation() {
 		//_return(new StdMoveExpression(new CreateObjectExpression(returnType, new NewOperator(new ClsBeanQuery(bean), parent.getAttrByName("sqlCon")) )));
 		//_return(new MakeSharedExpression((SharedPtr)returnType, parent.getStaticAttribute("sqlCon").callMethod("buildQuery")));
-		_return(new CreateObjectExpression(returnType, ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase),
+		_return(new CreateObjectExpression(returnType,
 				EntityCls.getDatabase().supportsDeleteTableAlias() 
 				? QString.fromStringConstant(bean.getTbl().getEscapedName()+" e1") 
 				: QString.fromStringConstant(bean.getTbl().getEscapedName()) 

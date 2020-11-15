@@ -28,7 +28,7 @@ public class MethodEntityQueryWhereIn extends Method {
 	Column c;
 	EntityQueryType beanQueryType;
 	public MethodEntityQueryWhereIn(Cls query,EntityQueryType beanQueryType, EntityCls bean,Column c, TplCls pValueType) {
-		super(Public, query, "where"+c.getUc1stCamelCaseName()+"In");
+		super(Public, query.toRef(), "where"+c.getUc1stCamelCaseName()+"In");
 		this.bean=bean;
 		this.pValue = addParam(pValueType.toConstRef(), "value");
 		this.c = c;

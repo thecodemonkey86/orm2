@@ -9,7 +9,6 @@ import cpp.core.SharedPtr;
 import cpp.entity.EntityCls;
 import cpp.entityrepository.method.MethodEntityLoad;
 import cpp.entityrepository.method.MethodEntityRemove;
-import cpp.entityrepository.method.MethodEntitySave;
 import cpp.entityrepository.method.MethodCreateQueryDelete;
 import cpp.entityrepository.method.MethodCreateQuerySelect;
 import cpp.entityrepository.method.MethodCreateQueryUpdate;
@@ -35,26 +34,25 @@ public class ClsEntityRepository extends Cls{
 	public static final String CLSNAME = "EntityRepository";
 	
 	public ClsEntityRepository() {
-		super(CLSNAME);
-		addSuperclass(new ClsBaseRepository());
+		super(CLSNAME,false);
+		addSuperclass(new ClsBaseRepository(ClsDbPool.instance));
 //		beanQueryClasses = new ArrayList<>(); 
 	}
 	
 
 	public void addDeclarations(Collection<EntityCls> beans) {
-		addIncludeLib("QHash");
-		addIncludeLib(Types.QSqlRecord);
+		addIncludeLibInSource(Types.QSqlRecord);
 		addIncludeHeader(getSuperclass().getHeaderInclude());
-		addIncludeHeader(EntityCls.getDatabaseMapper().getSqlQueryType().getIncludeHeader());
+		addIncludeInSourceDefaultHeaderFileName(EntityCls.getDatabaseMapper().getSqlQueryType());
 		addInclude(ClsDbPool.instance.getHeaderInclude());
 		if(beans.size()>0)
-			addIncludeHeader(Types.orderedSet(null).getHeaderInclude()
+			addIncludeHeaderInSource(Types.orderedSet(null).getHeaderInclude()
 					);
 		
 		
 		
 		for(EntityCls bean:beans) {
-			addIncludeHeader(EntityCls.getModelPath() + "entities/"+bean.getIncludeHeader());
+			addIncludeHeader(bean.getHeaderInclude());
 			addIncludeHeader("query/"+bean.getName().toLowerCase()+"entityqueryselect");
 			
 			if(bean.getTbl().hasQueryType(Table.QueryType.Delete))
@@ -88,8 +86,9 @@ public class ClsEntityRepository extends Cls{
 			
 			if(bean.getTbl().hasQueryType(Table.QueryType.Delete))
 				addForwardDeclaredClass(Types.beanQueryDelete(bean));
-//			addMethod(new MethodLoadCollection(new Param(Types.qset(bean.toSharedPtr()).toRawPointer(), "collection")));
-			addMethod(new MethodLoadCollection(new Param(Types.orderedSet(bean.toSharedPtr()).toRawPointer(),  "collection"), bean));
+			
+			if(EntityCls.getCfg().isEnableMethodLoadCollection())
+				addMethod(new MethodLoadCollection(new Param(Types.orderedSet(bean.toSharedPtr()).toRawPointer(),  "collection"), bean));
 			addMethod(new MethodCreateQuerySelect(bean));
 			
 			if(bean.getTbl().hasQueryType(Table.QueryType.Delete))
@@ -99,7 +98,6 @@ public class ClsEntityRepository extends Cls{
 				addMethod(new MethodCreateQueryUpdate(bean));
 			
 			addMethod(new MethodEntityLoad(bean));
-			addMethod(new MethodEntitySave(bean));
 			if(EntityCls.getDatabase().supportsInsertOrIgnore()) {
 				addMethod(new MethodPrepareUpsert(bean));
 				addMethod(new MethodInsertOrIgnore(bean));
@@ -146,18 +144,6 @@ public class ClsEntityRepository extends Cls{
 		
 	}
 	
-	@Override
-	protected void addHeaderCodeBeforeClassDeclaration(StringBuilder sb) {
-		// TODO Auto-generated method stub
-		super.addHeaderCodeBeforeClassDeclaration(sb);
-		sb.append("using namespace QtCommon2;\n");
-	}
-
-	@Override
-		public String toSourceString() {
-			// TODO Auto-generated method stub
-			return super.toSourceString();
-		}
 	
 	@Override
 	public SharedPtr toSharedPtr() {

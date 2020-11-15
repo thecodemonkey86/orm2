@@ -35,6 +35,7 @@ public class OrmConfig {
 	
 	private boolean enableStacktrace = true;
 	private boolean enableGetValueByName = false;
+	private boolean enableMethodLoadCollection = false;
 	private JsonMode jsonMode;
 	private String overrideRepositoryClassName;
 	public void setJsonMode(JsonMode jsonMode) {
@@ -329,5 +330,13 @@ public class OrmConfig {
 	
 	public Map<String, SetterValidator> getValidators(String tableName) {
 		return columnValidators.get(tableName);
+	}
+	
+	public boolean isEnableMethodLoadCollection() {
+		return enableMethodLoadCollection;
+	}
+	
+	public void setEnableMethodLoadCollection(boolean enableMethodLoadCollection) {
+		this.enableMethodLoadCollection = enableMethodLoadCollection;
 	}
 }

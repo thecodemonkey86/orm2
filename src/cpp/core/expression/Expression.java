@@ -9,7 +9,6 @@ import cpp.core.Attr;
 import cpp.core.Cls;
 import cpp.core.IAttributeContainer;
 import cpp.core.Method;
-import cpp.core.MethodCall;
 import cpp.core.Operator;
 import cpp.core.Param;
 import cpp.core.RawPtr;

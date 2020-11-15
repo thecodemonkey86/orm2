@@ -1,5 +1,6 @@
 package cpp.entity;
 
+import cpp.Namespaces;
 import cpp.Types;
 import cpp.core.TplCls;
 import cpp.core.Type;
@@ -12,10 +13,11 @@ public class Nullable extends TplCls{
 	
 	public Nullable( Type element) {
 		super("Nullable", element);
-		setUseNamespace("ORM2");
+		setUseNamespace(Namespaces.ORM2);
 		addMethod(new LibMethod(Types.Void,setNull));
 		addMethod(new LibMethod(Types.Bool, isNull));
 		addMethod(new LibMethod(element.toConstRef(),val));
+		headerInclude="nullable";
 	}
 
 }

@@ -1,6 +1,7 @@
 package cpp.core;
 
 import codegen.CodeUtil;
+import cpp.Namespaces;
 import util.CodeUtil2;
 
 public class SharedPtr extends TplCls{
@@ -13,7 +14,7 @@ public class SharedPtr extends TplCls{
 	
 	public SharedPtr(Cls element) {
 		super("shared_ptr", element);
-		setUseNamespace("std");
+		setUseNamespace(Namespaces.std);
 		weak=false;
 	}
 

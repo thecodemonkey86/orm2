@@ -36,7 +36,7 @@ public class JsonEntityRepository extends Cls {
 
 	public JsonEntityRepository() {
 		super(CLSNAME);
-
+		headerInclude=JsonEntity.getRepositoryPath()+type.toLowerCase();
 	}
 
 	public void  addDeclarations(Collection<JsonEntity> entityClasses) {
@@ -59,7 +59,7 @@ public class JsonEntityRepository extends Cls {
 		
 		for(JsonEntity e : entityClasses) {
 			addForwardDeclaredClass(e);
-			addIncludeHeader(JsonEntity.getModelPath() + "entities/"+e.getIncludeHeader());
+			addIncludeHeader(e.getHeaderInclude());
 			addMethod(new MethodGetOneFromJson(e,true));
 			addMethod(new MethodGetOneFromJson(e,false));
 			addMethod(new MethodGetVectorFromJson(e));

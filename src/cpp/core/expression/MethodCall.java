@@ -1,8 +1,8 @@
-package cpp.core;
+package cpp.core.expression;
 
 import codegen.CodeUtil;
-import cpp.core.expression.Expression;
-import cpp.core.expression.ThisExpression;
+import cpp.core.Method;
+import cpp.core.Type;
 
 public class MethodCall extends Expression {
 

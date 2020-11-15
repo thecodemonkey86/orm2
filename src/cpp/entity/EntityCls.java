@@ -86,7 +86,7 @@ public class EntityCls extends Cls {
 	public static final String END_CUSTOM_CLASS_MEMBERS = "/*END_CUSTOM_CLASS_MEMBERS*/";
 	public static final String BEGIN_CUSTOM_PREPROCESSOR = "/*BEGIN_CUSTOM_PREPROCESSOR*/";
 	public static final String END_CUSTOM_PREPROCESSOR = "/*END_CUSTOM_PREPROCESSOR*/";
-	public static final String APILEVEL = "3.8.0";
+	public static final String APILEVEL = "3.9.0";
 	
 	static Database database;
 	static DatabaseTypeMapper mapper;
@@ -204,7 +204,7 @@ public class EntityCls extends Cls {
 			//Attr attrManyToManyRemoved = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Removed");
 			//addAttr(attrManyToManyRemoved);
 			//addMethod(new MethodAttributeGetter(attrManyToManyRemoved));
-			addIncludeHeader(attr.getClassType().getIncludeHeader());
+			addIncludeDefaultHeaderFileName(attr.getClassType());
 			addForwardDeclaredClass( (Cls) ((TplCls) (Cls) attr.getElementType()).getElementType());
 			addMethod(new MethodManyAttrGetter(attr));
 			addMethod(new MethodAddRelatedEntity(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
@@ -221,7 +221,7 @@ public class EntityCls extends Cls {
 		for(ManyRelation r:manyRelations) {
 			ManyAttr attr = new ManyAttr(r);
 			addAttr(attr);
-			addIncludeHeader(attr.getClassType().getIncludeHeader());
+			addIncludeDefaultHeaderFileName(attr.getClassType());
 			addForwardDeclaredClass( (Cls) ((TplCls) (Cls) attr.getElementType()).getElementType());
 			addMethod(new MethodManyAttrGetter(attr));
 //			Attr attrManyToManyAdded = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Added");
@@ -313,6 +313,7 @@ public class EntityCls extends Cls {
 		this.oneRelations = oneRelations;
 		this.manyRelations = manyToManyRelations;
 		classDocumentation = String.format("/**\n * @brief auto-generated entity class representing the %s database table\n*/", tbl.getName());
+		headerInclude=EntityCls.getModelPath() + "entities/"+type.toLowerCase();
 	}
 	
 	public Constructor getConstructor() {
@@ -327,7 +328,7 @@ public class EntityCls extends Cls {
 		setDestructor(d);
 		
 	//	addPreprocessorInstruction("#define " + getName()+ " "+CodeUtil2.uc1stCamelCase(tbl.getName()));
-		addIncludeHeader(Types.BaseEntity.getIncludeHeader());
+		addIncludeDefaultHeaderFileName(Types.BaseEntity);
 		addIncludeLib(Types.QString);
 		addIncludeLib(CoreTypes.QVariant);
 		addIncludeLib(Types.QDate);
@@ -341,8 +342,9 @@ public class EntityCls extends Cls {
 		addMethod(new MethodGetTableNameAlias());
 //		addMethod(new MethodGetTableNameInternal());
 		//addIncludeHeader("entityquery");
-		addIncludeHeader(repositoryPath + Types.EntityRepository.getName().toLowerCase());
-		addForwardDeclaredClass(Types.EntityRepository);
+		addIncludeHeaderInSource(repositoryPath + Types.EntityRepository.getName().toLowerCase());
+		addForwardDeclaredClass(Types.beanQuerySelect(this));
+		//addForwardDeclaredClass(Types.EntityRepository);
 		addIncludeHeader(Types.orderedSet(null).getHeaderInclude());
 		addAttributes(tbl.getAllColumns());
 		addForwardDeclaredClass(this);

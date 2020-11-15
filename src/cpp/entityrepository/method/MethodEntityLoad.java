@@ -53,7 +53,7 @@ public class MethodEntityLoad extends Method {
 		this.manyRelations = bean.getManyRelations();
 		this.primaryKey = bean.getTbl().getPrimaryKey();
 		this.bean = bean;
-		pBean = addParam(bean.toRawPointer(), "entity");
+		pBean = addParam(bean.toRef(), "entity");
 		setStatic(true);
 	}
 
@@ -66,7 +66,7 @@ public class MethodEntityLoad extends Method {
 	public void addImplementation() {
 		EntityCls bean = this.bean;
 		
-		Var sqlQuery = _declareInitConstructor( EntityCls.getDatabaseMapper().getSqlQueryType(),"query",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
+		Var sqlQuery = _declareInitConstructor( EntityCls.getDatabaseMapper().getSqlQueryType(),"query");
 		
 		ArrayList<Expression> selectFields = new ArrayList<>();
 		selectFields.add(bean.callStaticMethod("getSelectFields",QString.fromStringConstant("e1")));
@@ -134,7 +134,7 @@ public class MethodEntityLoad extends Method {
 			exprQSqlQuery = exprQSqlQuery.callMethod("where", QString.fromStringConstant("e1."+ col.getEscapedName()+"=?"),EntityCls.accessThisAttrGetterByColumn(pBean,col));
 					
 		}
-		exprQSqlQuery = exprQSqlQuery.callMethod("execQuery");
+		exprQSqlQuery = exprQSqlQuery.callMethod("execQuery",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 		Var qSqlQuery = _declare(exprQSqlQuery.getType(),
 				"qSqlQuery", exprQSqlQuery
 				);
@@ -187,7 +187,7 @@ public class MethodEntityLoad extends Method {
 //				IfBlock ifNotContains = 
 				ifNotPkForeignIsNull.thenBlock()._if(Expressions.not(pkSet.callMethod("contains", pk)))
 						.addIfInstr(pkSet.callMethodInstruction("insert", pk))
-						.addIfInstr(pBean.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r) , _this().callMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias()))));
+						.addIfInstr(pBean.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r) , parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias()))));
 				
 			} else {
 				
