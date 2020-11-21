@@ -41,7 +41,7 @@ public class MethodFetchOne extends Method {
 	
 	public MethodFetchOne(List<OneRelation> oneRelations,List<OneToManyRelation> manyRelations, EntityCls bean,PrimaryKey pk,boolean lazyLoading) {
 		super(Public, bean.toSharedPtr(),  getMethodName(bean,lazyLoading));
-		pQuery = addParam(Types.QSqlQuery.toRValueRef(), "query");	
+		pQuery = addParam(Types.QSqlQuery, "query");	
 		this.oneRelations = oneRelations;
 		this.manyRelations = manyRelations;
 		this.pk = pk;
@@ -81,7 +81,7 @@ protected Expression getExpressionQuery() {
 			
 			ifInstr._callMethodInstr(e1, "setLoaded", BoolExpression.FALSE);
 			ifInstr._return(e1);
-			_callMethodInstr(query, ClsQSqlQuery.clear); 
+//			_callMethodInstr(query, ClsQSqlQuery.clear); 
 			_return(Expressions.Nullptr);
 		} else {
 			List<OneRelation> oneRelations = bean.getOneRelations();
@@ -210,7 +210,7 @@ protected Expression getExpressionQuery() {
 			
 			ifInstr._callMethodInstr(e1, "setLoaded", BoolExpression.TRUE);
 			ifInstr._return(e1);
-			_callMethodInstr(query, ClsQSqlQuery.clear); 
+//			_callMethodInstr(query, ClsQSqlQuery.clear); 
 			_return(Expressions.Nullptr);
 		}
 		

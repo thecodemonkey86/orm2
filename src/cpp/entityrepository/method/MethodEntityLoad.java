@@ -21,7 +21,6 @@ import cpp.entity.EntityCls;
 import cpp.entity.method.MethodAddRelatedEntityInternal;
 import cpp.entity.method.MethodOneRelationAttrSetter;
 import cpp.entity.method.MethodOneRelationEntityIsNull;
-import cpp.lib.ClsQSqlQuery;
 import cpp.lib.ClsQVariant;
 import cpp.util.ClsDbPool;
 import database.column.Column;
@@ -270,7 +269,7 @@ public class MethodEntityLoad extends Method {
 			}
 			//bCount++;
 		}
-		_callMethodInstr(qSqlQuery, ClsQSqlQuery.clear); 
+//		_callMethodInstr(qSqlQuery, ClsQSqlQuery.clear); 
 	}
 
 }

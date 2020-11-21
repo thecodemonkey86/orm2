@@ -142,6 +142,11 @@ public class ClsEntityRepository extends Cls{
 				addMethod(new MethodRemoveAllRelated(bean, r));
 		}
 		
+		
+//		addUsingMethodInstruction(new UsingMethodInstruction(getMethod(ClsBaseRepository.beginTransaction)));
+//		addUsingMethodInstruction(new UsingMethodInstruction(getMethod(ClsBaseRepository.commitTransaction)));
+//		addUsingMethodInstruction(new UsingMethodInstruction(getMethod(ClsBaseRepository.rollbackTransaction)));
+//		addUsingMethodInstruction(new UsingMethodInstruction(getMethod(ClsBaseRepository.getSqlCon)));
 	}
 	
 	

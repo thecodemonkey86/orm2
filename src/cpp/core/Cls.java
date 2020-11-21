@@ -34,6 +34,7 @@ public class Cls extends Type implements IAttributeContainer{
 	protected String headerInclude;
 	protected boolean headerIncludeLib;
 	protected String classDocumentation,exportMacro;
+//	protected ArrayList<UsingMethodInstruction> usingMethodInstructions;
 	
 	protected void setHeaderIncludeLib(String include) {
 		headerInclude=include;
@@ -286,6 +287,11 @@ public class Cls extends Type implements IAttributeContainer{
 			}
 			sb.append(CodeUtil2.NL);
 		}
+//		if(usingMethodInstructions!=null) {
+//			for(UsingMethodInstruction i:usingMethodInstructions) {
+//				CodeUtil.writeLine(sb, i);
+//			}
+//		}
 		for(Attr a:attrs) {
 			CodeUtil.writeLine(sb, a.toDeclarationString());
 		}
@@ -668,4 +674,11 @@ public class Cls extends Type implements IAttributeContainer{
 	public String getConstructorName() {
 		return useNamespace!=null? useNamespace+"::"+type : type;
 	}
+	
+//	public void addUsingMethodInstruction(UsingMethodInstruction i) {
+//		if(usingMethodInstructions==null) {
+//			usingMethodInstructions=new ArrayList<>();
+//		}
+//		usingMethodInstructions.add(i);
+//	}
 }

@@ -94,7 +94,6 @@ public class ClsEntityQueryDelete extends Cls {
 		//addAttr(new Attr(Types.Int64,"limitResults"));
 		//addAttr(new Attr(Types.Int64,"resultOffset"));
 		addAttr(new Attr(Types.QVariantList,params));
-		addAttr(new Attr(Types.QSqlDatabase,"sqlCon"));
 //		addAttr(new Attr(EnumQueryMode.INSTANCE,queryMode));
 		
 		//addForwardDeclaredClass(Types.EntityRepository);

@@ -21,7 +21,6 @@ import cpp.entity.method.MethodAttrSetterInternal;
 import cpp.entity.method.MethodOneRelationEntityIsNull;
 import cpp.lib.ClsQHash;
 import cpp.lib.ClsQSet;
-import cpp.lib.ClsQSqlQuery;
 import cpp.lib.ClsQVariant;
 import cpp.orm.OrmUtil;
 import database.column.Column;
@@ -40,7 +39,7 @@ public class MethodFetchList extends Method {
 	
 	public MethodFetchList(EntityCls bean,PrimaryKey pk,boolean lazyLoading) {
 		super(Public, Types.qvector(bean.toSharedPtr()),getMethodName(bean,lazyLoading) );
-		pQuery = addParam(Types.QSqlQuery.toRValueRef(), "query");	
+		pQuery = addParam(Types.QSqlQuery, "query");	
 		//this.oneRelations = oneRelations;
 		//this.manyRelations = manyRelations;
 		this.pk = pk;
@@ -218,7 +217,7 @@ public class MethodFetchList extends Method {
 			ifNotE1SetContains.thenBlock()._callMethodInstr(e1DoWhile, "setLoaded", BoolExpression.TRUE);
 		}
 		ifNotE1SetContains.thenBlock()._callMethodInstr(result, "append", e1DoWhile);
-		_callMethodInstr(query, ClsQSqlQuery.clear); 
+//		_callMethodInstr(query, ClsQSqlQuery.clear); 
 		_return(result);
 		
 	}
