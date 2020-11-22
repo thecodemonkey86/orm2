@@ -8,6 +8,7 @@ import codegen.CodeUtil;
 import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.Method;
+import cpp.core.Param;
 import cpp.core.QString;
 import cpp.core.expression.Var;
 import cpp.entity.EntityCls;
@@ -22,6 +23,7 @@ import database.relation.ManyRelation;
 public class MethodRemoveAllManyRelatedEntities extends Method {
 
 	protected ManyRelation rel;
+	protected Param pSqlCon;
 	
 	public static String getMethodName(ManyRelation r) {
 		return "removeAll"+StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrName(r));
@@ -30,6 +32,7 @@ public class MethodRemoveAllManyRelatedEntities extends Method {
 	public MethodRemoveAllManyRelatedEntities(ManyRelation r) {
 		super(Public, Types.Void, getMethodName(r));
 		rel=r;
+		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 	}
 
 	@Override
@@ -51,7 +54,7 @@ public class MethodRemoveAllManyRelatedEntities extends Method {
 		
 		String sql = String.format("delete from %s where %s", rel.getMappingTable().getEscapedName(), CodeUtil.commaSep(columns));
 		
-		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase),QString.fromStringConstant(sql),varParams).asInstruction());
+		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, pSqlCon,QString.fromStringConstant(sql),varParams).asInstruction());
 		
 		
 		

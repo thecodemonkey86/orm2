@@ -96,7 +96,7 @@ public class ClsEntityQueryUpdate extends Cls {
 		addIncludeInSourceDefaultHeaderFileName(Types.SqlUtil);
 		addIncludeLibInSource(Types.qset(Types.Void));
 		addIncludeDefaultHeaderFileName(Types.SqlQuery);
-		addIncludeHeaderInSource(ClsDbPool.instance.getHeaderInclude());
+		addIncludeHeader(ClsDbPool.instance.getHeaderInclude());
 		addIncludeLibInSource(QtCoreTypes.QDebug,true);
 		addIncludeLibInSource(QtSqlTypes.QSqlError,true);
 		//addIncludeLib("QSqlDriver");

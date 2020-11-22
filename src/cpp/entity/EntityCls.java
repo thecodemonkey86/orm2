@@ -70,6 +70,7 @@ import cpp.entity.method.MethodSetAutoIncrementId;
 import cpp.entity.method.MethodUnload;
 import cpp.orm.DatabaseTypeMapper;
 import cpp.orm.OrmUtil;
+import cpp.util.ClsDbPool;
 import database.Database;
 import database.column.Column;
 import database.relation.AbstractRelation;
@@ -342,6 +343,7 @@ public class EntityCls extends Cls {
 		addMethod(new MethodGetTableNameAlias());
 //		addMethod(new MethodGetTableNameInternal());
 		//addIncludeHeader("entityquery");
+		addInclude(cfg.getDbPoolHeader());
 		addIncludeHeaderInSource(repositoryPath + Types.EntityRepository.getName().toLowerCase());
 		addForwardDeclaredClass(Types.beanQuerySelect(this));
 		//addForwardDeclaredClass(Types.EntityRepository);
@@ -410,9 +412,9 @@ public class EntityCls extends Cls {
 	@Override
 	public void addMethodImplementations() {
 		
-//		if (!manyRelations.isEmpty()) {
+		if(hasRelations()) {
 			fetchListHelper = new FetchListHelperClass(this);
-//		}
+		}
 		
 		super.addMethodImplementations();
 		if (nonMemberMethods !=null) {
@@ -462,6 +464,8 @@ public class EntityCls extends Cls {
 //		}
 		if (fetchListHelper!=null) {
 			sb.append(fetchListHelper.toSourceString()).append('\n').append('\n');
+		} else {
+			sb.append('\n');
 		}
 		
 		

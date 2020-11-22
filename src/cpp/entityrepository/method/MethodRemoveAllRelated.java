@@ -19,9 +19,10 @@ import util.StringUtil;
 
 public class MethodRemoveAllRelated extends Method {
 
-	IManyRelation rel;
-	EntityCls entity;
-
+	protected IManyRelation rel;
+	protected EntityCls entity;
+	protected Param pSqlCon;
+	
 	public MethodRemoveAllRelated(EntityCls entity, IManyRelation r) {
 		super(Public, Types.Void, "removeAllRelated"
 				+ StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrNameSingular(r)) + "From" + entity.getName());
@@ -39,9 +40,11 @@ public class MethodRemoveAllRelated extends Method {
 
 	@Override
 	public void addImplementation() {
+		ArrayList<Param> fieldParams = new ArrayList<>();
 		for(Column colPk : entity.getTbl().getPrimaryKey())		{
-			  addParam(entity.getAttrByName(colPk.getCamelCaseName()).getType(), colPk.getCamelCaseName());
+			fieldParams.add( addParam(entity.getAttrByName(colPk.getCamelCaseName()).getType(), colPk.getCamelCaseName()));
 			}
+		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 		ArrayList<String> placeholders = new ArrayList<>();
 		
 		for (int i = 0; i < rel.getDestColumnCount(); i++) {
@@ -52,11 +55,11 @@ public class MethodRemoveAllRelated extends Method {
 		Var varDeleteSql = _declareInitConstructor(Types.QString, "deleteSql", QString.fromStringConstant(sql));
 		Var varParams = _declare(Types.QVariantList, "params");
 		
-		for(Param p : params)		{
+		for(Param p : fieldParams)		{
 		  _callMethodInstr(varParams, ClsQVariantList.append, Types.QVariant.callStaticMethod(ClsQVariant.fromValue,  p));
 		}
 		
-		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase), varDeleteSql, varParams)
+		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, pSqlCon, varDeleteSql, varParams)
 				.asInstruction());
 	}
 

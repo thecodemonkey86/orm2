@@ -40,7 +40,8 @@ import database.relation.OneToManyRelation;
 import database.relation.PrimaryKey;
 
 public class MethodLoadCollection extends Method{
-	EntityCls bean;
+	protected EntityCls bean;
+	protected Param pSqlCon;
 	
 	public MethodLoadCollection(Param p,EntityCls bean) {
 		super(Public, Types.Void, "loadCollection");
@@ -48,6 +49,7 @@ public class MethodLoadCollection extends Method{
 		//addParam(new Param(Types.qset(cls.toSharedPtr()).toRawPointer(), "collection"));
 		addParam(p);
 		this.bean=bean;
+		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 		setStatic(true);
 	}
 
@@ -140,7 +142,7 @@ public class MethodLoadCollection extends Method{
 		exprQSqlQuery = exprQSqlQuery.callMethod("whereIn", varColumns, params);
 		
 		addInstr(exprQSqlQuery.asInstruction());
-		Var query = _declare(Types.QSqlQuery, "query", sqlQuery.callMethod("execQuery",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase)));
+		Var query = _declare(Types.QSqlQuery, "query", sqlQuery.callMethod("execQuery",pSqlCon));
 		
 		
 		IfBlock ifQueryNext = _if(query.callMethod("next"));

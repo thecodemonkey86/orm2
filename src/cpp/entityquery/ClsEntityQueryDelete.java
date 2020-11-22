@@ -85,7 +85,7 @@ public class ClsEntityQueryDelete extends Cls {
 		addIncludeHeaderInSource("../"+ ClsEntityRepository.CLSNAME.toLowerCase());
 		addIncludeDefaultHeaderFileName(Types.SqlUtil);
 		addIncludeDefaultHeaderFileName(Types.SqlQuery);
-		addIncludeHeaderInSource(ClsDbPool.instance.getHeaderInclude());
+		addIncludeHeader(ClsDbPool.instance.getHeaderInclude());
 		addIncludeLibInSource(QtCoreTypes.QDebug,true);
 		addIncludeLibInSource(QtSqlTypes.QSqlError,true);
 		addIncludeLib(Types.QVariant.getName());

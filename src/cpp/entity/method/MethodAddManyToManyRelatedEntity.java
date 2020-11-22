@@ -22,10 +22,13 @@ import database.relation.ManyRelation;
 public class MethodAddManyToManyRelatedEntity extends Method {
 
 	protected ManyRelation rel;
-	Param pBean;
+	protected Param pBean;
+	protected Param pSqlCon;
+	
 	public MethodAddManyToManyRelatedEntity(ManyRelation r, Param p) {
 		super(Public, Types.Void, getMethodName(r));
 		pBean = addParam(p);
+		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 		rel=r;
 	}
 	
@@ -63,7 +66,7 @@ public class MethodAddManyToManyRelatedEntity extends Method {
 		
 		String sql = String.format("insert into %s (%s) values (%s)",rel.getMappingTable().getEscapedName(), CodeUtil.commaSep(columns), CodeUtil.commaSep(placeholders));
 		
-		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase),QString.fromStringConstant(sql),varParams).asInstruction());
+		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, pSqlCon,QString.fromStringConstant(sql),varParams).asInstruction());
 		
 		/*if (relationBean.getTbl().getPrimaryKey().isMultiColumn()) {
 			Struct pkType=relationBean.getStructPk();

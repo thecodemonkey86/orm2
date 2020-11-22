@@ -25,6 +25,7 @@ public class MethodRemoveManyToManyRelatedEntity extends Method {
 
 	protected ManyRelation rel;
 	Param pBean;
+	Param pSqlCon;
 	
 	public static String getMethodName(ManyRelation r) {
 		return  "remove"+StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrNameSingular(r));
@@ -34,6 +35,7 @@ public class MethodRemoveManyToManyRelatedEntity extends Method {
 		super(Public, Types.Void,getMethodName(r));
 		pBean = addParam(new ManyAttr(r).getElementType().toConstRef(),"entity");
 		rel=r;
+		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 	}
 
 	@Override
@@ -61,7 +63,7 @@ public class MethodRemoveManyToManyRelatedEntity extends Method {
 		
 		String sql = String.format("delete from %s where %s", rel.getMappingTable().getEscapedName(), CodeUtil.commaSep(columns));
 		
-		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase),QString.fromStringConstant(sql),varParams).asInstruction());
+		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, pSqlCon,QString.fromStringConstant(sql),varParams).asInstruction());
 		
 		
 		/*EntityCls relationBean = Entities.get( rel.getDestTable());

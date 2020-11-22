@@ -39,6 +39,7 @@ public class MethodEntityLoad extends Method {
 	protected PrimaryKey primaryKey;
 	protected EntityCls bean;
 	protected Param pBean;
+	protected Param pSqlCon;
 	
 	public static String getMethodName() {
 		return "load";
@@ -53,6 +54,7 @@ public class MethodEntityLoad extends Method {
 		this.primaryKey = bean.getTbl().getPrimaryKey();
 		this.bean = bean;
 		pBean = addParam(bean.toRef(), "entity");
+		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 		setStatic(true);
 	}
 
@@ -133,7 +135,7 @@ public class MethodEntityLoad extends Method {
 			exprQSqlQuery = exprQSqlQuery.callMethod("where", QString.fromStringConstant("e1."+ col.getEscapedName()+"=?"),EntityCls.accessThisAttrGetterByColumn(pBean,col));
 					
 		}
-		exprQSqlQuery = exprQSqlQuery.callMethod("execQuery",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
+		exprQSqlQuery = exprQSqlQuery.callMethod("execQuery",pSqlCon);
 		Var qSqlQuery = _declare(exprQSqlQuery.getType(),
 				"qSqlQuery", exprQSqlQuery
 				);
@@ -194,7 +196,7 @@ public class MethodEntityLoad extends Method {
 				Expression recValueColPk = rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+colPk.getName()));
 				Var pk = doWhileQSqlQueryNext._declare(recValueColPk.getType(), "pk"+r.getAlias(),recValueColPk);
 				
-				IfBlock ifNotPkForeignIsNull= doWhileQSqlQueryNext._if(Expressions.not(recValueColPk.callMethod(ClsQVariant.isNull)));
+				//IfBlock ifNotPkForeignIsNull= doWhileQSqlQueryNext._if(Expressions.not(recValueColPk.callMethod(ClsQVariant.isNull)));
 //				Type type = BeanCls.getDatabaseMapper().columnToType(colPk);
 				
 //				Var pk = doWhileQSqlQueryNext._declare(
@@ -205,9 +207,9 @@ public class MethodEntityLoad extends Method {
 //						);
 				
 				
-				ifNotPkForeignIsNull.thenBlock()._if(
+				doWhileQSqlQueryNext._if(
 						Expressions.and(
-							Expressions.not(pk.callMethod("isNull")),
+								Expressions.not(pk.callMethod(ClsQVariant.isNull)),
 							Expressions.not(pkSet.callMethod("contains", pk.callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk))))
 						))
 							.addIfInstr(pkSet.callMethodInstruction("insert", pk.callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk))))

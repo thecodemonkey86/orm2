@@ -9,44 +9,47 @@ import cpp.core.expression.Var;
 import cpp.core.instruction.IfBlock;
 import cpp.core.method.MethodAttributeSetter;
 import cpp.entity.EntityCls;
+import cpp.util.ClsDbPool;
 import database.column.Column;
 
 public class MethodGetByIdOrCreateNew extends Method {
 
-	protected EntityCls bean;
+	protected EntityCls entity;
 	protected boolean addSortingParam;
 	protected Param pOrderBy;
+	protected Param pSqlCon;
 	
-	public MethodGetByIdOrCreateNew(EntityCls cls,boolean addSortingParams) {
-		this(cls);
+	public MethodGetByIdOrCreateNew(EntityCls entity,boolean addSortingParams) {
+		super(Public, entity.toSharedPtr(), "get"+entity.getName()+"ByIdOrCreateNew");
 		this.addSortingParam = addSortingParams;
-		
-		if(addSortingParams) {
-			pOrderBy = addParam(Types.QString.toConstRef(), "orderBy");
-		}
-		setStatic(true);
-	}
-	public MethodGetByIdOrCreateNew(EntityCls cls) {
-		super(Public, cls.toSharedPtr(), "get"+cls.getName()+"ByIdOrCreateNew");
-		for(Column col:cls.getTbl().getPrimaryKey().getColumns()) {
+
+		for(Column col:entity.getTbl().getPrimaryKey().getColumns()) {
 			Type colType =  EntityCls.getDatabaseMapper().columnToType(col);
 			addParam(new Param(colType.isPrimitiveType() ? colType : colType.toConstRef(), col.getCamelCaseName()));
 		}
-		this.bean=cls;
+
+		if(addSortingParams) {
+			pOrderBy = addParam(Types.QString.toConstRef(), "orderBy");
+		}
+		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
+		this.entity=entity;
 		setStatic(true);
+	}
+	public MethodGetByIdOrCreateNew(EntityCls entity) {
+		this(entity,false);
 	}
 
 	
 	@Override
 	public void addImplementation() {
-		Var e1 = _declare(returnType, "e1", parent.callStaticMethod(MethodGetById.getMethodName(bean),getParamsAsArray()));
+		Var e1 = _declare(returnType, "e1", parent.callStaticMethod(MethodGetById.getMethodName(entity),getParamsAsArray()));
 		
 		IfBlock ifBlock = _if(e1.isNull()) ;
-		ifBlock.thenBlock()._assign(e1, Types.EntityRepository.callStaticMethod("createNew"+bean.getName()));
+		ifBlock.thenBlock()._assign(e1, Types.EntityRepository.callStaticMethod("createNew"+entity.getName()));
 		
 
-		if(!bean.getTbl().isAutoIncrement()) {
-			for(Column colPk:bean.getTbl().getPrimaryKey()) {
+		if(!entity.getTbl().isAutoIncrement()) {
+			for(Column colPk:entity.getTbl().getPrimaryKey()) {
 				ifBlock.thenBlock()._callMethodInstr(e1, MethodAttributeSetter.getMethodName( ((IAttributeContainer)e1.getType()).getAttrByName(colPk.getCamelCaseName())),getParam(colPk.getCamelCaseName()));
 			}
 			

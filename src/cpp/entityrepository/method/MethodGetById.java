@@ -31,28 +31,29 @@ import util.CodeUtil2;
 
 public class MethodGetById extends Method {
 
-	protected EntityCls bean;
+	protected EntityCls entity;
 	protected boolean addSortingParam;
 	protected Param pOrderBy;
+	protected Param pSqlCon;
 	
-	public MethodGetById(EntityCls cls,boolean addSortingParams) {
-		this(cls);
+	
+	public MethodGetById(EntityCls entity,boolean addSortingParams) {
+		super(Public, entity.toSharedPtr(), getMethodName(entity));
+		this.entity=entity;
+		for(Column col:entity.getTbl().getPrimaryKey().getColumns()) {
+			Type colType =  EntityCls.getDatabaseMapper().columnToType(col);
+			addParam(new Param(colType.isPrimitiveType() ? colType : colType.toConstRef(), col.getCamelCaseName()));
+		}
 		this.addSortingParam = addSortingParams;
 		
 		if(addSortingParams) {
 			pOrderBy = addParam(Types.QString.toConstRef(), "orderBy");
 		}
+		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 		setStatic(true);
 	}
-	public MethodGetById(EntityCls cls) {
-//		super(Public, cls.toRawPointer(), "getById");
-		super(Public, cls.toSharedPtr(), getMethodName(cls));
-		for(Column col:cls.getTbl().getPrimaryKey().getColumns()) {
-			Type colType =  EntityCls.getDatabaseMapper().columnToType(col);
-			addParam(new Param(colType.isPrimitiveType() ? colType : colType.toConstRef(), col.getCamelCaseName()));
-		}
-		setStatic(true);
-		this.bean=cls;
+	public MethodGetById(EntityCls entity) {
+		this(entity,false);
 	}
 	public static String getMethodName(EntityCls cls) {
 		return "get"+cls.getName()+"ById";
@@ -61,15 +62,15 @@ public class MethodGetById extends Method {
 	
 	@Override
 	public void addImplementation() {
-		List<OneRelation> oneRelations = bean.getOneRelations();
-		List<OneToManyRelation> oneToManyRelations = bean.getOneToManyRelations();
-		List<ManyRelation> manyToManyRelations = bean.getManyToManyRelations();
+		List<OneRelation> oneRelations = entity.getOneRelations();
+		List<OneToManyRelation> oneToManyRelations = entity.getOneToManyRelations();
+		List<ManyRelation> manyToManyRelations = entity.getManyToManyRelations();
 		
 		Var sqlQuery = _declareInitConstructor( EntityCls.getDatabaseMapper().getSqlQueryType(),"query");
 		
 		
 		ArrayList<String> selectFields = new ArrayList<>();
-		for(Column col : bean.getTbl().getAllColumns()) {
+		for(Column col : entity.getTbl().getAllColumns()) {
 			selectFields.add("e1." + col.getEscapedName() + " as e1__" + col.getName());
 		}
 		List<AbstractRelation> allRelations = new ArrayList<>(oneRelations.size()+oneToManyRelations.size()+manyToManyRelations.size());
@@ -83,7 +84,7 @@ public class MethodGetById extends Method {
 			}
 		}
 		Expression exprQSqlQuery = sqlQuery.callMethod("select", QString.fromStringConstant(CodeUtil.commaSep( selectFields) ))
-									.callMethod("from", bean.callStaticMethod("getTableName",QString.fromStringConstant("e1")));
+									.callMethod("from", entity.callStaticMethod("getTableName",QString.fromStringConstant("e1")));
 		
 		for(OneRelation r:oneRelations) {
 			ArrayList<String> joinConditions=new ArrayList<>();
@@ -120,7 +121,7 @@ public class MethodGetById extends Method {
 		}
 
 		
-		for(Column col:bean.getTbl().getPrimaryKey().getColumns()) {
+		for(Column col:entity.getTbl().getPrimaryKey().getColumns()) {
 			exprQSqlQuery = exprQSqlQuery.callMethod("where", QString.fromStringConstant("e1."+ col.getEscapedName()+"=?"),getParam(col.getCamelCaseName()));
 					
 		}
@@ -130,7 +131,7 @@ public class MethodGetById extends Method {
 			exprQSqlQuery = exprQSqlQuery.callMethod(ClsSqlQuery.orderBy,pOrderBy);
 		}
 		
-		exprQSqlQuery = exprQSqlQuery.callMethod("execQuery",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
+		exprQSqlQuery = exprQSqlQuery.callMethod("execQuery",pSqlCon);
 		Var qSqlQuery = _declare(exprQSqlQuery.getType(),
 				"qSqlQuery", exprQSqlQuery
 				);
@@ -138,12 +139,12 @@ public class MethodGetById extends Method {
 		IfBlock ifQSqlQueryNext =
 				_if(qSqlQuery.callMethod("next"))
 					.setIfInstr(
-							e1.assign(parent.callStaticMethod(MethodGetFromRecord.getMethodName(bean),  qSqlQuery.callMethod("record"), QString.fromStringConstant("e1")))
+							e1.assign(parent.callStaticMethod(MethodGetFromRecord.getMethodName(entity),  qSqlQuery.callMethod("record"), QString.fromStringConstant("e1")))
 							,
 							e1.callSetterMethodInstruction("loaded", BoolExpression.TRUE)//_assignInstruction(e1.accessAttr("loaded"), BoolExpression.TRUE)
 							);
 		
-		if(bean.hasRelations()) {
+		if(entity.hasRelations()) {
 		DoWhile doWhileQSqlQueryNext = DoWhile.create();
 		Var rec = doWhileQSqlQueryNext._declare(Types.QSqlRecord, "rec",qSqlQuery.callMethod("record") );
 //		//bCount = 2;
@@ -161,7 +162,7 @@ public class MethodGetById extends Method {
 					Expressions.not( rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getFirstColumn().getName())).callMethod(ClsQVariant.isNull))
 					));
 			ifBlock.thenBlock().
-			_callMethodInstr(e1, new MethodOneRelationAttrSetter( bean,r, true),  parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls),  rec, QString.fromStringConstant(r.getAlias())));
+			_callMethodInstr(e1, new MethodOneRelationAttrSetter( entity,r, true),  parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls),  rec, QString.fromStringConstant(r.getAlias())));
 			//ifBlock.getIfInstr()._assign(acc, _this().callGetByRecordMethod(foreignCls, rec, QString.fromStringConstant(r.getAlias())));
 //			//bCount++;
 		}
