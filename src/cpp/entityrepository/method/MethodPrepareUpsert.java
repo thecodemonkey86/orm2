@@ -9,11 +9,12 @@ public class MethodPrepareUpsert extends Method {
 	public MethodPrepareUpsert(EntityCls entity) {
 		super(Public, Types.QSqlQuery, "prepareInsertOrIgnore"+entity.getName());
 		this.entity = entity;
+		setStatic(true);
 	}
 
 	@Override
 	public void addImplementation() {
-		_return(_this().callMethod(parent.getTemplateMethod(EntityCls.getDatabaseMapper().getRepositoryPrepareInsertOrIgnoreMethod(), entity)  )) ;
+		_return(parent.callStaticMethod(parent.getTemplateMethod(EntityCls.getDatabaseMapper().getRepositoryPrepareInsertOrIgnoreMethod(), entity),entity  )) ;
 
 	}
 

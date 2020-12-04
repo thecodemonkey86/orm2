@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import codegen.CodeUtil;
 import cpp.core.expression.Expression;
+import cpp.core.expression.MethodCall;
 import cpp.core.instruction.Comment;
 import cpp.core.instruction.Instruction;
 import cpp.core.instruction.InstructionBlock;
@@ -155,7 +156,11 @@ public abstract class Method extends InstructionBlock{
 	public ArrayList<Param> getParams() {
 		return params;
 	}
-
+	public Param[] getParamsAsArray() {
+		Param[] arr = new Param[params.size()];
+		params.toArray(arr);
+		return arr;
+	}
 	public void addParams(ArrayList<Param> p) {
 		params.addAll(p);
 	}

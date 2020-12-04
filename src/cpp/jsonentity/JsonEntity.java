@@ -148,7 +148,7 @@ public class JsonEntity extends Cls {
 		addAttr(new Attr(Types.Bool, "loaded"));
 		addAttr(new Attr(JsonTypes.JsonEntityRepository.toSharedPtr(), repository));
 		addForwardDeclaredClass(JsonTypes.JsonEntityRepository);
-		addIncludeHeader(getRepositoryPath()+ JsonTypes.JsonEntityRepository.getIncludeHeader());
+		addIncludeHeader( JsonTypes.JsonEntityRepository.getHeaderInclude());
 		for(OneRelation r:oneRelations) {
 			OneAttr attr = new OneAttr(r);
 				addAttr(attr);
@@ -180,7 +180,7 @@ public class JsonEntity extends Cls {
 			
 			Attr attrManyToManyRemoved = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyTypeJsonEntities(r)) ,attr.getName()+"Removed");
 			addAttr(attrManyToManyRemoved);
-			addIncludeHeader(attr.getClassType().getIncludeHeader());
+			addIncludeDefaultHeaderFileName(attr.getClassType());
 			addForwardDeclaredClass((Cls) attr.getElementType());
 			if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
 				addForwardDeclaredClass( ((Struct) Types.getRelationForeignPrimaryKeyTypeJsonEntities(r)));
@@ -201,7 +201,7 @@ public class JsonEntity extends Cls {
 		for(ManyRelation r:manyRelations) {
 			ManyAttr attr = new ManyAttr(r);
 			addAttr(attr);
-			addIncludeHeader(attr.getClassType().getIncludeHeader());
+			addIncludeDefaultHeaderFileName(attr.getClassType());
 			addForwardDeclaredClass((Cls) attr.getElementType());
 			if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
 				addForwardDeclaredClass( ((JsonEntity) Types.getRelationForeignPrimaryKeyTypeJsonEntities(r)).getStructPk());
@@ -272,30 +272,6 @@ public class JsonEntity extends Cls {
 	}
 	
 	
-	
-	/*public void breakPointerCircles() {
-		if (getName().equals("Track")) {
-			System.out.println();
-		}
-		for(Relation r:oneRelations) {
-			Attr a= getAttr( new OneAttr(r));
-			if (a!=null&& a.getType() instanceof SharedPtr) {
-				SharedPtr sp = (SharedPtr) a.getType();
-				for(Attr ra: ((BeanCls)sp.getElementType()).attrs) {
-					if (ra.getType() instanceof ClsQVector) {
-						ClsQVector v=(ClsQVector) ra.getType();
-						if (((SharedPtr) v.getElementType()).getElementType() == this) {
-							sp.setWeak();
-							break;
-						}
-					}
-					
-					
-				}
-			}
-		}
-	}*/
-	
 	public Constructor getConstructor() {
 		return super.getConstructors().get(0);
 	}
@@ -307,8 +283,8 @@ public class JsonEntity extends Cls {
 		addIncludeLib(CoreTypes.QVariant);
 		addIncludeLib(Types.QDate);
 		addIncludeLib("memory");
-		addIncludeHeader("nullable");
-		addIncludeHeader(JsonTypes.BaseJsonEntity.getIncludeHeader());
+		addIncludeDefaultHeaderFileName(Types.nullable(Types.Void));
+		addIncludeDefaultHeaderFileName(JsonTypes.BaseJsonEntity);
 
 		addIncludeHeader(Types.orderedSet(null).getHeaderInclude());
 		addAttributes(tbl.getAllColumns());
@@ -318,8 +294,6 @@ public class JsonEntity extends Cls {
 			
 			addNonMemberOperator(new StructPkEqOperator(getStructPk()));
 
-		} else {
-			System.out.println();
 		}
 	
 	}
@@ -398,7 +372,6 @@ public class JsonEntity extends Cls {
 			return getAttrByName(OrmUtil.getOneRelationDestAttrName(r));
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println(r);
 			throw e;
 			
 		}
@@ -423,7 +396,6 @@ public class JsonEntity extends Cls {
 			return _this().accessAttr(attr).callMethod("get"+col.getOneRelationMappedColumn().getUc1stCamelCaseName());
 			} catch(Exception e) {
 				e.printStackTrace();
-				System.out.println(col);
 				throw e;
 			}
 		} else {
@@ -438,7 +410,6 @@ public class JsonEntity extends Cls {
 			return attr.callMethod("get"+col.getOneRelationMappedColumn().getUc1stCamelCaseName());
 			} catch(Exception e) {
 				e.printStackTrace();
-				System.out.println(col);
 				throw e;
 			}
 		} else {
@@ -446,35 +417,10 @@ public class JsonEntity extends Cls {
 		}
 	}
 	
-	// TODO relation
-	//private static String getAttrGetterMethodNameByColumn(Column col) {
-//		if (colPk.hasOneRelation()) {
-//			try{
-//			return "get"+colPk.getOneRelationMappedColumn().getUc1stCamelCaseName();
-//			} catch(Exception e) {
-//				e.printStackTrace();
-//				System.out.println(colPk);
-//				throw e;
-//			}
-//		} else {
-		//	return "get"+col.getUc1stCamelCaseName();
-//		}
-	//}
+ 
 	
-	// TODO relation
 	public static String getAccessMethodNameByColumn(Column col) {
-		
-//		if (colPk.hasOneRelation()) {
-//			try{
-//			return "get"+colPk.getOneRelationMappedColumn().getUc1stCamelCaseName();
-//			} catch(Exception e) {
-//				e.printStackTrace();
-//				System.out.println(colPk);
-//				throw e;
-//			}
-//		} else {
-			return "get"+col.getUc1stCamelCaseName();
-//		}
+		return "get"+col.getUc1stCamelCaseName();
 	}
 	
 	public List<OneRelation> getOneRelations() {

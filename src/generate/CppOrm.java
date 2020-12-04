@@ -29,6 +29,7 @@ import cpp.orm.FirebirdDatabaseTypeMapper;
 import cpp.orm.MySqlDatabaseMapper;
 import cpp.orm.PgDatabaseTypeMapper;
 import cpp.orm.SqliteDatabaseMapper;
+import cpp.util.ClsDbPool;
 import database.column.Column;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
@@ -101,6 +102,7 @@ public class CppOrm extends OrmGenerator {
 	public void generate() throws IOException 	{
 		CppOrmConfig cfg = (CppOrmConfig) this.cfg;
 		EntityCls.setCfg(cfg);
+		ClsDbPool.setInstance(new ClsDbPool(cfg.getDbPoolClass(), cfg.getDbPoolHeader()));
 		Charset utf8 = Charset.forName("UTF-8");
 		Instruction.setStackTraceEnabled(cfg.isEnableStacktrace());
 		
@@ -216,38 +218,12 @@ public class CppOrm extends OrmGenerator {
 			}
 			repo.setExportMacro(cfg.getExportMacro(),cfg.getExportMacroIncludeHeader());
 			repo.addMethodImplementations();
-//			if(cfg.hasNamespace()) {
-//				repo.setUseNamespace(cfg.getNamespace());
-//			}
-	//		List<ManyRelation> list = tableManyRelations.get(getTableByName("artist"));
-	//		System.out.println(list);
-			
 			
 			Path pathRepository = cfg.getRepositoryPath();
 			Path pathRepositoryQuery = pathRepository.resolve("query");
 			Files.createDirectories(pathBeans);
 			Files.createDirectories(pathRepositoryQuery);
 	
-			/*try(DirectoryStream<Path> dsPathBeans = Files.newDirectoryStream(pathBeans)) {
-				for(Path f : dsPathBeans) {
-					if(f.toString().endsWith(".h") || f.toString().endsWith(".cpp")) {
-						Files.delete(f);
-					}
-				}
-			} finally {
-				
-			}
-			
-			try(DirectoryStream<Path> dsPathQuery = Files.newDirectoryStream(pathRepositoryQuery)) {
-				for(Path f : dsPathQuery) {
-					if(f.toString().endsWith(".h") || f.toString().endsWith(".cpp")) {
-						Files.delete(f);
-					}
-				}
-			} finally {
-				
-			}*/
-//			FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(EnumQueryMode.INSTANCE.getName().toLowerCase()+".h"), EnumQueryMode.INSTANCE.toHeaderString().getBytes(utf8), writeOptions);
 			
 			for (EntityCls c : Entities.getAllBeans()) {
 				

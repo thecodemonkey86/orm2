@@ -19,11 +19,8 @@ import cpp.entity.Entities;
 import cpp.entity.EntityCls;
 import cpp.entity.method.MethodAttrSetterInternal;
 import cpp.entity.method.MethodOneRelationEntityIsNull;
-import cpp.entityrepository.ClsEntityRepository;
-import cpp.entityrepository.expression.ThisEntityRepositoryExpression;
 import cpp.lib.ClsQHash;
 import cpp.lib.ClsQSet;
-import cpp.lib.ClsQSqlQuery;
 import cpp.lib.ClsQVariant;
 import cpp.orm.OrmUtil;
 import database.column.Column;
@@ -42,26 +39,17 @@ public class MethodFetchList extends Method {
 	
 	public MethodFetchList(EntityCls bean,PrimaryKey pk,boolean lazyLoading) {
 		super(Public, Types.qvector(bean.toSharedPtr()),getMethodName(bean,lazyLoading) );
-		pQuery = addParam(Types.QSqlQuery.toRValueRef(), "query");	
+		pQuery = addParam(Types.QSqlQuery, "query");	
 		//this.oneRelations = oneRelations;
 		//this.manyRelations = manyRelations;
 		this.pk = pk;
 		this.bean = bean;
 		this.lazyLoading = lazyLoading;
-	}
-	
-	@Override
-	public ThisEntityRepositoryExpression _this() {
-		return new ThisEntityRepositoryExpression((ClsEntityRepository) parent);
+		setStatic(true);
 	}
 	
 	protected Expression getExpressionQuery() {
 		return  pQuery;
-	}
-
-	protected Expression getByRecordExpression(EntityCls bean, Var record, QString alias) {
-		//return new ThisBeanRepositoryExpression((BeanRepository) parent);
-		return _this().callMethod(MethodGetFromRecord.getMethodName(bean),  record, alias);
 	}
 		
 	@Override
@@ -103,7 +91,7 @@ public class MethodFetchList extends Method {
 		
 		
 		Var e1DoWhile = ifNotE1SetContains.thenBlock()
-				._declare(bean.toSharedPtr(), "e1", getByRecordExpression(bean, recDoWhile, QString.fromStringConstant("e1")));
+				._declare(bean.toSharedPtr(), "e1", parent.callStaticMethod(MethodGetFromRecord.getMethodName(bean), recDoWhile, QString.fromStringConstant("e1")));
 		
 		if(!this.lazyLoading) {
 		
@@ -137,7 +125,7 @@ public class MethodFetchList extends Method {
 				for(AbstractRelation r:manyRelations) {
 					Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
 					EntityCls foreignCls = Entities.get(r.getDestTable()); 
-					Expression foreignBeanExpression = getByRecordExpression(foreignCls, recDoWhile, QString.fromStringConstant(r.getAlias()));
+					Expression foreignBeanExpression = parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), recDoWhile, QString.fromStringConstant(r.getAlias()));
 	//				IfBlock ifRecValueIsNotNull = null;
 					Var foreignBean = null;				
 					
@@ -199,7 +187,7 @@ public class MethodFetchList extends Method {
 			}
 			for(OneRelation r:oneRelations) {
 				EntityCls foreignCls = Entities.get(r.getDestTable());
-				Expression foreignBeanExpression = getByRecordExpression(foreignCls, recDoWhile, QString.fromStringConstant(r.getAlias()));
+				Expression foreignBeanExpression = parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), recDoWhile, QString.fromStringConstant(r.getAlias()));
 				
 				IfBlock ifRelatedBeanIsNull= ifNotE1SetContains.thenBlock().
 						_if(Expressions.and( e1DoWhile.callMethod(new MethodOneRelationEntityIsNull(r))
@@ -229,7 +217,7 @@ public class MethodFetchList extends Method {
 			ifNotE1SetContains.thenBlock()._callMethodInstr(e1DoWhile, "setLoaded", BoolExpression.TRUE);
 		}
 		ifNotE1SetContains.thenBlock()._callMethodInstr(result, "append", e1DoWhile);
-		_callMethodInstr(query, ClsQSqlQuery.clear); 
+//		_callMethodInstr(query, ClsQSqlQuery.clear); 
 		_return(result);
 		
 	}

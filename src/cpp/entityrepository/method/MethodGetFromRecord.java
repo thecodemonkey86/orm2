@@ -16,7 +16,6 @@ import cpp.core.instruction.IfBlock;
 import cpp.entity.EntityCls;
 import cpp.lib.ClsQString;
 import cpp.lib.ClsQVariant;
-import cpp.lib.EnableSharedFromThis;
 import database.FirebirdDatabase;
 import database.column.Column;
 import cpp.core.expression.ParenthesesExpression;
@@ -43,7 +42,7 @@ public class MethodGetFromRecord extends Method {
 		addParam(new Param(Types.QString.toConstRef(), "alias"));
 		this.columns = cls.getTbl().getColumns(true);
 		this.bean = cls;
-//		setConstQualifier(true);
+		setStatic(true);
 	}
 
 	@Override
@@ -54,18 +53,11 @@ public class MethodGetFromRecord extends Method {
 	@Override
 	public void addImplementation() {
 		//Var bean = _declareMakeShared(parent, "entity");
-		Var vBean = null;
-		
-		if(isStatic()) {
-			Param pRepository = getParam("repository");
-			vBean = _declareMakeShared(bean, "entity", pRepository);
-		} else {
-			vBean = _declareMakeShared(bean, "entity", _this().callMethod(EnableSharedFromThis.SHARED_FROM_THIS));
-		}
+		Var vBean = _declareMakeShared(bean, "entity");
 		for(Column col:columns) {
 			try{
 				
-				if (!col.hasOneRelation()) {
+				if (!col.hasOneRelation() && !col.isFileImportEnabled()) {
 					
 					Expression exprArrayIndex = new QStringPlusOperatorExpression(getParam("alias"), QString.fromStringConstant("__"+ col.getName()));
 					if(EntityCls.getDatabase() instanceof FirebirdDatabase) {
@@ -86,7 +78,6 @@ public class MethodGetFromRecord extends Method {
 //					_callMethodInstr(bean, "set"+col.getUc1stCamelCaseName(), getParam("record").callMethod("value", new QStringPlusOperatorExpression(getParam("alias"), QString.fromStringConstant("__"+ col.getName()))).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(col)));
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.out.println(parent);
 			}
 		}
 		addInstr(vBean.callMethodInstruction("setInsertNew",BoolExpression.FALSE));

@@ -107,4 +107,14 @@ public abstract class AbstractTable {
 		return false;
 	}
 	
+
+
+	public boolean hasColumnWithFileStreamEnabled() {
+		for(Column c : allColumns) {
+			if(c.isFileImportEnabled()) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

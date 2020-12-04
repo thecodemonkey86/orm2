@@ -5,8 +5,8 @@ import java.util.Collection;
 import cpp.Types;
 import cpp.core.Cls;
 import cpp.core.Param;
+import cpp.core.SharedPtr;
 import cpp.entity.EntityCls;
-import cpp.entityrepository.method.ConstructorEntityRepository;
 import cpp.entityrepository.method.MethodEntityLoad;
 import cpp.entityrepository.method.MethodEntityRemove;
 import cpp.entityrepository.method.MethodCreateQueryDelete;
@@ -17,13 +17,14 @@ import cpp.entityrepository.method.MethodFetchOne;
 import cpp.entityrepository.method.MethodGetById;
 import cpp.entityrepository.method.MethodGetByIdOrCreateNew;
 import cpp.entityrepository.method.MethodGetFromRecord;
+import cpp.entityrepository.method.MethodInsertOrIgnore;
 import cpp.entityrepository.method.MethodLoadCollection;
 import cpp.entityrepository.method.MethodPrepareUpsert;
 import cpp.entityrepository.method.MethodRemoveAllRelated;
 import cpp.entityrepository.method.MethodRepoCreateNew;
 import cpp.entityrepository.method.MethodRepoCreateNewNonNullableOnly;
 import cpp.lib.ClsBaseRepository;
-import cpp.lib.EnableSharedFromThis;
+import cpp.util.ClsDbPool;
 import database.column.Column;
 import database.relation.IManyRelation;
 import database.table.Table;
@@ -31,27 +32,27 @@ import database.table.Table;
 public class ClsEntityRepository extends Cls{
 //	protected ArrayList<ClsBeanQuery> beanQueryClasses;
 	public static final String CLSNAME = "EntityRepository";
-	public static final String sqlCon = "sqlCon";
 	
 	public ClsEntityRepository() {
-		super(CLSNAME);
-		addSuperclass(new ClsBaseRepository());
-		addSuperclass(new EnableSharedFromThis(this));
+		super(CLSNAME,false);
+		addSuperclass(new ClsBaseRepository(ClsDbPool.instance));
 //		beanQueryClasses = new ArrayList<>(); 
 	}
 	
 
 	public void addDeclarations(Collection<EntityCls> beans) {
-		addConstructor(new ConstructorEntityRepository());
-		addIncludeLib("QHash");
-		addIncludeLib(Types.QSqlRecord);
+		addIncludeLibInSource(Types.QSqlRecord);
 		addIncludeHeader(getSuperclass().getHeaderInclude());
-		addIncludeHeader(EntityCls.getDatabaseMapper().getSqlQueryType().getIncludeHeader());
+		addIncludeInSourceDefaultHeaderFileName(EntityCls.getDatabaseMapper().getSqlQueryType());
+		addInclude(ClsDbPool.instance.getHeaderInclude());
 		if(beans.size()>0)
-			addIncludeHeader(Types.orderedSet(null).getHeaderInclude()
+			addIncludeHeaderInSource(Types.orderedSet(null).getHeaderInclude()
 					);
+		
+		
+		
 		for(EntityCls bean:beans) {
-			addIncludeHeader(EntityCls.getModelPath() + "entities/"+bean.getIncludeHeader());
+			addIncludeHeader(bean.getHeaderInclude());
 			addIncludeHeader("query/"+bean.getName().toLowerCase()+"entityqueryselect");
 			
 			if(bean.getTbl().hasQueryType(Table.QueryType.Delete))
@@ -85,8 +86,9 @@ public class ClsEntityRepository extends Cls{
 			
 			if(bean.getTbl().hasQueryType(Table.QueryType.Delete))
 				addForwardDeclaredClass(Types.beanQueryDelete(bean));
-//			addMethod(new MethodLoadCollection(new Param(Types.qset(bean.toSharedPtr()).toRawPointer(), "collection")));
-			addMethod(new MethodLoadCollection(new Param(Types.orderedSet(bean.toSharedPtr()).toRawPointer(),  "collection"), bean));
+			
+			if(EntityCls.getCfg().isEnableMethodLoadCollection())
+				addMethod(new MethodLoadCollection(new Param(Types.orderedSet(bean.toSharedPtr()).toRawPointer(),  "collection"), bean));
 			addMethod(new MethodCreateQuerySelect(bean));
 			
 			if(bean.getTbl().hasQueryType(Table.QueryType.Delete))
@@ -96,10 +98,9 @@ public class ClsEntityRepository extends Cls{
 				addMethod(new MethodCreateQueryUpdate(bean));
 			
 			addMethod(new MethodEntityLoad(bean));
-			
 			if(EntityCls.getDatabase().supportsInsertOrIgnore()) {
-//				addMethod(new MethodEntitySave(bean,true));
 				addMethod(new MethodPrepareUpsert(bean));
+				addMethod(new MethodInsertOrIgnore(bean));
 				
 			}
 //			addMethod(new MethodEntitySave(bean,false));
@@ -141,19 +142,17 @@ public class ClsEntityRepository extends Cls{
 				addMethod(new MethodRemoveAllRelated(bean, r));
 		}
 		
+		
+//		addUsingMethodInstruction(new UsingMethodInstruction(getMethod(ClsBaseRepository.beginTransaction)));
+//		addUsingMethodInstruction(new UsingMethodInstruction(getMethod(ClsBaseRepository.commitTransaction)));
+//		addUsingMethodInstruction(new UsingMethodInstruction(getMethod(ClsBaseRepository.rollbackTransaction)));
+//		addUsingMethodInstruction(new UsingMethodInstruction(getMethod(ClsBaseRepository.getSqlCon)));
 	}
 	
+	
 	@Override
-	protected void addHeaderCodeBeforeClassDeclaration(StringBuilder sb) {
-		// TODO Auto-generated method stub
-		super.addHeaderCodeBeforeClassDeclaration(sb);
-		sb.append("using namespace QtCommon2;\n");
+	public SharedPtr toSharedPtr() {
+		throw new RuntimeException("deleted constructor");
 	}
-
-	@Override
-		public String toSourceString() {
-			// TODO Auto-generated method stub
-			return super.toSourceString();
-		}
 
 }

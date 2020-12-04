@@ -22,8 +22,7 @@ import cpp.core.TplCls;
 import cpp.core.Type;
 import cpp.core.expression.Expression;
 import cpp.core.expression.StaticAccessExpression;
-import cpp.core.method.MethodAttributeGetter;
-import cpp.core.method.MethodAttributeSetter;
+import cpp.core.method.MethodStaticAttributeSetter;
 import cpp.entity.method.EntityConstructor;
 import cpp.entity.method.EntityDestructor;
 import cpp.entity.method.MethodAddInsertParamForRawExpression;
@@ -38,6 +37,7 @@ import cpp.entity.method.MethodColumnAttrSetNull;
 import cpp.entity.method.MethodColumnAttrSetter;
 import cpp.entity.method.MethodColumnAttrSetterInternal;
 import cpp.entity.method.MethodCopyFields;
+import cpp.entity.method.MethodFileImportColumnSetter;
 import cpp.entity.method.MethodGetAllSelectFields;
 import cpp.entity.method.MethodGetFieldName;
 import cpp.entity.method.MethodGetFieldNameAlias;
@@ -70,6 +70,7 @@ import cpp.entity.method.MethodSetAutoIncrementId;
 import cpp.entity.method.MethodUnload;
 import cpp.orm.DatabaseTypeMapper;
 import cpp.orm.OrmUtil;
+import cpp.util.ClsDbPool;
 import database.Database;
 import database.column.Column;
 import database.relation.AbstractRelation;
@@ -86,7 +87,7 @@ public class EntityCls extends Cls {
 	public static final String END_CUSTOM_CLASS_MEMBERS = "/*END_CUSTOM_CLASS_MEMBERS*/";
 	public static final String BEGIN_CUSTOM_PREPROCESSOR = "/*BEGIN_CUSTOM_PREPROCESSOR*/";
 	public static final String END_CUSTOM_PREPROCESSOR = "/*END_CUSTOM_PREPROCESSOR*/";
-	public static final String APILEVEL = "3.7";
+	public static final String APILEVEL = "4.0.0";
 	
 	static Database database;
 	static DatabaseTypeMapper mapper;
@@ -99,6 +100,10 @@ public class EntityCls extends Cls {
 	}
 	private ArrayList<String> customHeaderCode, customSourceCode, customPreprocessorCode;
 	private Map<String, SetterValidator> columnValidators;
+	
+	public static CppOrmConfig getCfg() {
+		return cfg;
+	}
 	
 	public static void setModelPath(String modelPath) {
 		EntityCls.modelPath = modelPath;
@@ -169,7 +174,7 @@ public class EntityCls extends Cls {
 		this.customPreprocessorCode.add(code);
 	}
 	private void addAttributes(List<Column> allColumns) {
-		addAttr(new RepositoryAttr());
+//		addAttr(new RepositoryAttr());
 		for(OneRelation r:oneRelations) {
 			OneAttr attr = new OneAttr(r);
 				addAttr(attr);
@@ -200,7 +205,7 @@ public class EntityCls extends Cls {
 			//Attr attrManyToManyRemoved = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Removed");
 			//addAttr(attrManyToManyRemoved);
 			//addMethod(new MethodAttributeGetter(attrManyToManyRemoved));
-			addIncludeHeader(attr.getClassType().getIncludeHeader());
+			addIncludeDefaultHeaderFileName(attr.getClassType());
 			addForwardDeclaredClass( (Cls) ((TplCls) (Cls) attr.getElementType()).getElementType());
 			addMethod(new MethodManyAttrGetter(attr));
 			addMethod(new MethodAddRelatedEntity(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
@@ -217,12 +222,12 @@ public class EntityCls extends Cls {
 		for(ManyRelation r:manyRelations) {
 			ManyAttr attr = new ManyAttr(r);
 			addAttr(attr);
-			addIncludeHeader(attr.getClassType().getIncludeHeader());
+			addIncludeDefaultHeaderFileName(attr.getClassType());
 			addForwardDeclaredClass( (Cls) ((TplCls) (Cls) attr.getElementType()).getElementType());
 			addMethod(new MethodManyAttrGetter(attr));
-			Attr attrManyToManyAdded = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Added");
-			addAttr(attrManyToManyAdded);
-			addMethod(new MethodAttributeGetter(attrManyToManyAdded));
+//			Attr attrManyToManyAdded = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Added");
+//			addAttr(attrManyToManyAdded);
+//			addMethod(new MethodAttributeGetter(attrManyToManyAdded));
 			
 			//Attr attrManyToManyRemoved = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Removed");
 			//addAttr(attrManyToManyRemoved);
@@ -239,8 +244,15 @@ public class EntityCls extends Cls {
 		Type nullstring = Types.nullable(Types.QString);
 //		structPk.setScope(name);
 		for(Column col:allColumns) {
-						
-			if (!col.hasOneRelation()
+			if(col.isFileImportEnabled()) {
+				Attr attr = new Attr(Types.QString, col.getCamelCaseName()+"FilePath");
+				addAttr(attr);
+				addMethod(new MethodFileImportColumnSetter(attr,col));
+				addMethod(new MethodGetFieldName(col));
+				addMethod(new MethodGetFieldNameAlias(col, true));
+				addMethod(new MethodGetFieldNameAlias(col, false));
+				addMethod(new MethodGetFieldName(col, true));
+			} else	if (!col.hasOneRelation()
 					
 					) {
 				Attr attr = new Attr(EntityCls.getDatabaseMapper().getTypeFromDbDataType(col.getDbType(), col.isNullable()), col.getCamelCaseName());
@@ -268,7 +280,8 @@ public class EntityCls extends Cls {
 				if(col.isRawValueEnabled()) {
 					Attr attrInsertExpression = new Attr(Attr.Protected, Types.QString,"insertExpression"+col.getUc1stCamelCaseName(), null,false);
 					addAttr(attrInsertExpression);
-					addMethod(new MethodAttributeSetter(attrInsertExpression));
+					attrInsertExpression.setStatic(true);
+					addMethod(new MethodStaticAttributeSetter(attrInsertExpression));
 					Attr attrInsertParams = new Attr(Attr.Protected, Types.QVariantList,"insertParamsForRawExpression"+col.getUc1stCamelCaseName(),null,false);
 					addAttr(attrInsertParams);
 					addMethod(new MethodAddInsertParamForRawExpression(col));
@@ -301,30 +314,8 @@ public class EntityCls extends Cls {
 		this.oneRelations = oneRelations;
 		this.manyRelations = manyToManyRelations;
 		classDocumentation = String.format("/**\n * @brief auto-generated entity class representing the %s database table\n*/", tbl.getName());
+		headerInclude=EntityCls.getModelPath() + "entities/"+type.toLowerCase();
 	}
-	
-	/*public void breakPointerCircles() {
-		if (getName().equals("Track")) {
-			System.out.println();
-		}
-		for(Relation r:oneRelations) {
-			Attr a= getAttr( new OneAttr(r));
-			if (a!=null&& a.getType() instanceof SharedPtr) {
-				SharedPtr sp = (SharedPtr) a.getType();
-				for(Attr ra: ((BeanCls)sp.getElementType()).attrs) {
-					if (ra.getType() instanceof ClsQVector) {
-						ClsQVector v=(ClsQVector) ra.getType();
-						if (((SharedPtr) v.getElementType()).getElementType() == this) {
-							sp.setWeak();
-							break;
-						}
-					}
-					
-					
-				}
-			}
-		}
-	}*/
 	
 	public Constructor getConstructor() {
 		return super.getConstructors().get(0);
@@ -338,7 +329,7 @@ public class EntityCls extends Cls {
 		setDestructor(d);
 		
 	//	addPreprocessorInstruction("#define " + getName()+ " "+CodeUtil2.uc1stCamelCase(tbl.getName()));
-		addIncludeHeader(Types.BaseEntity.getIncludeHeader());
+		addIncludeDefaultHeaderFileName(Types.BaseEntity);
 		addIncludeLib(Types.QString);
 		addIncludeLib(CoreTypes.QVariant);
 		addIncludeLib(Types.QDate);
@@ -352,8 +343,10 @@ public class EntityCls extends Cls {
 		addMethod(new MethodGetTableNameAlias());
 //		addMethod(new MethodGetTableNameInternal());
 		//addIncludeHeader("entityquery");
-		addIncludeHeader(repositoryPath + Types.EntityRepository.getName().toLowerCase());
-		addForwardDeclaredClass(Types.EntityRepository);
+		addInclude(cfg.getDbPoolHeader());
+		addIncludeHeaderInSource(repositoryPath + Types.EntityRepository.getName().toLowerCase());
+		addForwardDeclaredClass(Types.beanQuerySelect(this));
+		//addForwardDeclaredClass(Types.EntityRepository);
 		addIncludeHeader(Types.orderedSet(null).getHeaderInclude());
 		addAttributes(tbl.getAllColumns());
 		addForwardDeclaredClass(this);
@@ -401,9 +394,7 @@ public class EntityCls extends Cls {
 //			BeanHashFunctions.instance.addIncludeHeader(getName().toLowerCase());
 //			BeanHashFunctions.instance.addOperator(new StructPkEqOperator(structPk));
 //			addIncludeHeader("entityhash");
-		} else {
-			System.out.println();
-		}
+		}  
 		addOperator(new EntityEqualsOperator(this, tbl.getPrimaryKey()));
 		addOperator(new EntitySharedPtrEqualsOperator(this, tbl.getPrimaryKey()));
 		addNonMemberMethod(new MethodQHashEntity(this, tbl.getPrimaryKey()));
@@ -421,9 +412,9 @@ public class EntityCls extends Cls {
 	@Override
 	public void addMethodImplementations() {
 		
-//		if (!manyRelations.isEmpty()) {
+		if(hasRelations()) {
 			fetchListHelper = new FetchListHelperClass(this);
-//		}
+		}
 		
 		super.addMethodImplementations();
 		if (nonMemberMethods !=null) {
@@ -473,6 +464,8 @@ public class EntityCls extends Cls {
 //		}
 		if (fetchListHelper!=null) {
 			sb.append(fetchListHelper.toSourceString()).append('\n').append('\n');
+		} else {
+			sb.append('\n');
 		}
 		
 		
@@ -501,7 +494,6 @@ public class EntityCls extends Cls {
 			return getAttrByName(OrmUtil.getOneRelationDestAttrName(r));
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println(r);
 			throw e;
 			
 		}
@@ -526,7 +518,6 @@ public class EntityCls extends Cls {
 			return _this().accessAttr(attr).callMethod("get"+col.getOneRelationMappedColumn().getUc1stCamelCaseName());
 			} catch(Exception e) {
 				e.printStackTrace();
-				System.out.println(col);
 				throw e;
 			}
 		} else {
@@ -541,7 +532,6 @@ public class EntityCls extends Cls {
 			return attr.callMethod("get"+col.getOneRelationMappedColumn().getUc1stCamelCaseName());
 			} catch(Exception e) {
 				e.printStackTrace();
-				System.out.println(col);
 				throw e;
 			}
 		} else {
@@ -549,35 +539,10 @@ public class EntityCls extends Cls {
 		}
 	}
 	
-	// TODO relation
-	//private static String getAttrGetterMethodNameByColumn(Column col) {
-//		if (colPk.hasOneRelation()) {
-//			try{
-//			return "get"+colPk.getOneRelationMappedColumn().getUc1stCamelCaseName();
-//			} catch(Exception e) {
-//				e.printStackTrace();
-//				System.out.println(colPk);
-//				throw e;
-//			}
-//		} else {
-		//	return "get"+col.getUc1stCamelCaseName();
-//		}
-	//}
+ 
 	
-	// TODO relation
 	public static String getAccessMethodNameByColumn(Column col) {
-		
-//		if (colPk.hasOneRelation()) {
-//			try{
-//			return "get"+colPk.getOneRelationMappedColumn().getUc1stCamelCaseName();
-//			} catch(Exception e) {
-//				e.printStackTrace();
-//				System.out.println(colPk);
-//				throw e;
-//			}
-//		} else {
-			return "get"+col.getUc1stCamelCaseName();
-//		}
+		return "get"+col.getUc1stCamelCaseName();
 	}
 	
 	public List<OneRelation> getOneRelations() {
@@ -602,9 +567,6 @@ public class EntityCls extends Cls {
 		return tbl;
 	}
 	
-	public RepositoryAttr getRepositoryAttr() {
-		return (RepositoryAttr) getAttrByName(repository);
-	}
 	
 	public List<ManyRelation> getManyToManyRelations() {
 		return manyRelations;

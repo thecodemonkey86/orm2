@@ -2,6 +2,7 @@ package cpp;
 
 import java.util.HashMap;
 
+import cpp.core.TplCls;
 import cpp.core.Type;
 import cpp.entity.Entities;
 import cpp.entity.EntityCls;
@@ -77,7 +78,7 @@ public class Types extends CoreTypes{
 		return u;
 	}
 	
-	public static Type nullable(Type element) {
+	public static TplCls nullable(Type element) {
 		return new Nullable( element);
 	}
 	

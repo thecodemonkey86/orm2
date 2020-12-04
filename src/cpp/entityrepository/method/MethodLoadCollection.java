@@ -8,7 +8,6 @@ import util.CodeUtil2;
 import util.pg.PgCppUtil;
 import cpp.Types;
 import cpp.CoreTypes;
-import cpp.core.Attr;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.QString;
@@ -27,12 +26,12 @@ import cpp.entity.Entities;
 import cpp.entity.EntityCls;
 import cpp.entity.method.MethodAttrSetterInternal;
 import cpp.entity.method.MethodOneRelationEntityIsNull;
-import cpp.entityrepository.ClsEntityRepository;
 import cpp.lib.ClsQHash;
 import cpp.lib.ClsQSet;
 import cpp.lib.ClsQVariant;
 import cpp.lib.LibEqualsOperator;
 import cpp.orm.OrmUtil;
+import cpp.util.ClsDbPool;
 import database.column.Column;
 import database.relation.AbstractRelation;
 import database.relation.ManyRelation;
@@ -41,7 +40,8 @@ import database.relation.OneToManyRelation;
 import database.relation.PrimaryKey;
 
 public class MethodLoadCollection extends Method{
-	EntityCls bean;
+	protected EntityCls bean;
+	protected Param pSqlCon;
 	
 	public MethodLoadCollection(Param p,EntityCls bean) {
 		super(Public, Types.Void, "loadCollection");
@@ -49,6 +49,8 @@ public class MethodLoadCollection extends Method{
 		//addParam(new Param(Types.qset(cls.toSharedPtr()).toRawPointer(), "collection"));
 		addParam(p);
 		this.bean=bean;
+		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
+		setStatic(true);
 	}
 
 	
@@ -58,7 +60,7 @@ public class MethodLoadCollection extends Method{
 	
 	protected Expression getByRecordExpression(EntityCls bean, Var record, QString alias) {
 		//return new ThisBeanRepositoryExpression((BeanRepository) parent);
-		return parent._this().callMethod(MethodGetFromRecord.getMethodName(bean),  record, alias);
+		return parent.callStaticMethod(MethodGetFromRecord.getMethodName(bean),  record, alias);
 	}
 	
 	@Override
@@ -77,8 +79,7 @@ public class MethodLoadCollection extends Method{
 		
 //		query.callMethod("select");
 		
-		Attr aSqlCon = this.parent.getAttrByName(ClsEntityRepository.sqlCon);
-		Var sqlQuery = _declareInitConstructor( EntityCls.getDatabaseMapper().getSqlQueryType(),"sqlQuery",aSqlCon);
+		Var sqlQuery = _declareInitConstructor( EntityCls.getDatabaseMapper().getSqlQueryType(),"sqlQuery");
 		
 		Type e1PkType = pk.isMultiColumn() ? bean.getStructPk() : EntityCls.getDatabaseMapper().columnToType(pk.getColumns().get(0));
 		
@@ -102,9 +103,6 @@ public class MethodLoadCollection extends Method{
 		//int //bCount = 2;
 		
 		for(OneRelation r:relations) {
-			if (parent.getName().equals("OrmTest")) {
-				System.out.println();
-			}
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getColumnCount();i++) {
 				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
@@ -144,7 +142,7 @@ public class MethodLoadCollection extends Method{
 		exprQSqlQuery = exprQSqlQuery.callMethod("whereIn", varColumns, params);
 		
 		addInstr(exprQSqlQuery.asInstruction());
-		Var query = _declare(Types.QSqlQuery, "query", sqlQuery.callMethod("execQuery"));
+		Var query = _declare(Types.QSqlQuery, "query", sqlQuery.callMethod("execQuery",pSqlCon));
 		
 		
 		IfBlock ifQueryNext = _if(query.callMethod("next"));
@@ -305,13 +303,12 @@ public class MethodLoadCollection extends Method{
 				
 		for(Column col:bean.getTbl().getAllColumns()) {
 			try{
-				if (!col.hasOneRelation() && !col.isPartOfPk()) {
+				if (!col.hasOneRelation() && !col.isPartOfPk() && !col.isFileImportEnabled()) {
 					ifForeachPkCompare.thenBlock().addInstr(varIfNotE1SetContainsForeachBean.callMethodInstruction("set"+ col.getUc1stCamelCaseName()+"Internal",recDoWhile.callMethod("value", QString.fromStringConstant("e1__"+ col.getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(col))));
 				}
 //					_callMethodInstr(bean, "set"+col.getUc1stCamelCaseName(), getParam("record").callMethod("value", new QStringPlusOperatorExpression(getParam("alias"), QString.fromStringConstant("__"+ col.getName()))).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(col)));
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.out.println(parent);
 			}
 		}
 		

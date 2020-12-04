@@ -2,10 +2,8 @@ package cpp.entity.method;
 
 import java.util.List;
 
-import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.Constructor;
-import cpp.core.Param;
 import cpp.core.expression.BoolExpression;
 import cpp.core.expression.Expression;
 import cpp.entity.EntityCls;
@@ -20,7 +18,6 @@ public class EntityConstructor extends Constructor{
 		this.autoIncrement = autoIncrement;
 		this.cols = cols;
 		// Shared Pointer due to circular dependency / forward declaration issue 
-		addParam(new Param(Types.EntityRepository.toSharedPtr(), "repository"));
 		try{
 //		addParam(new Param(Types.BeanRepository.toRawPointer(), "repository"));
 //		addPassToSuperConstructor(params.get(0));
@@ -31,13 +28,12 @@ public class EntityConstructor extends Constructor{
 	
 	@Override
 	public void addImplementation() {
-		_assign(_this().accessAttr("repository"), getParam("repository"));
 		_assign(parent.getAttrByName("loaded"), BoolExpression.FALSE);		
 		_assign(parent.getAttrByName("autoIncrement"), autoIncrement ? BoolExpression.TRUE : BoolExpression.FALSE);
 		
 		for(Column col:cols) {
 			 
-			if (!col.isPartOfPk() && !col.hasOneRelation()) {
+			if (!col.isPartOfPk() && !col.hasOneRelation() && !col.isFileImportEnabled()) {
 				_assign(parent.getAttrByName(col.getCamelCaseName()+ "Modified"), BoolExpression.FALSE);
 				
 				Expression defValExpr =  EntityCls.getDatabaseMapper().getColumnDefaultValueExpression(col);

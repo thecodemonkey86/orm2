@@ -4,10 +4,10 @@ import cpp.CoreTypes;
 import cpp.core.Attr;
 import cpp.core.ConstRef;
 import cpp.core.Method;
-import cpp.core.MethodCall;
 import cpp.core.Ref;
 import cpp.core.SharedPtr;
 import cpp.core.expression.Expression;
+import cpp.core.expression.MethodCall;
 import cpp.entity.EntityCls;
 import cpp.orm.OrmUtil;
 import database.column.Column;
@@ -91,7 +91,6 @@ public class PgCppUtil {
 			return e.accessAttr(cls.getAttr(attr)).callMethod("get"+colPk.getOneRelationMappedColumn().getUc1stCamelCaseName());
 			} catch(Exception ex) {
 				ex.printStackTrace();
-				System.out.println(colPk);
 				throw ex;
 			}
 		} else {
@@ -119,7 +118,6 @@ public class PgCppUtil {
 			return e.callAttrGetter(cls.getAttr(attr)).callMethod("get"+colPk.getOneRelationMappedColumn().getUc1stCamelCaseName());
 			} catch(Exception ex) {
 				ex.printStackTrace();
-				System.out.println(colPk);
 				throw ex;
 			}
 		} else {

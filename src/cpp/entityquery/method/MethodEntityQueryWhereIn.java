@@ -7,7 +7,6 @@ import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.QString;
 import cpp.core.TplCls;
-import cpp.core.Type;
 import cpp.core.expression.CreateObjectExpression;
 import cpp.core.expression.InlineIfExpression;
 import cpp.core.expression.Var;
@@ -29,14 +28,8 @@ public class MethodEntityQueryWhereIn extends Method {
 	Column c;
 	EntityQueryType beanQueryType;
 	public MethodEntityQueryWhereIn(Cls query,EntityQueryType beanQueryType, EntityCls bean,Column c, TplCls pValueType) {
-		super(Public, query, "where"+c.getUc1stCamelCaseName()+"In");
+		super(Public, query.toRef(), "where"+c.getUc1stCamelCaseName()+"In");
 		this.bean=bean;
-		Type t = EntityCls.getDatabaseMapper().columnToType(c);
-		
-		if(t == null) {
-			System.out.println(EntityCls.getDatabaseMapper().columnToType(c));
-		}
-		
 		this.pValue = addParam(pValueType.toConstRef(), "value");
 		this.c = c;
 		this.beanQueryType = beanQueryType;

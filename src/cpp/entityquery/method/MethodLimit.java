@@ -31,13 +31,13 @@ public class MethodLimit extends Method{
 			public String toString() {
 				if(beanQueryType == EntityQueryType.Select) {
 					return "this->limitResults = limit;\r\n" + 
-							"        this->resultOffset = -1;\r\n" + 
+							"        this->resultOffset = 0;\r\n" + 
 							"        this->limitOffsetCondition = condition;\r\n" + 
 							"        this->limitOffsetOrderBy = orderBy;\r\n" + 
 							"        return *this;";
 				} else {
 					return "this->limitResults = limit;\r\n" + 
-							"        this->resultOffset = -1;\r\n" + 
+							"        this->resultOffset = 0;\r\n" + 
 							"        return *this;";
 				}
 				

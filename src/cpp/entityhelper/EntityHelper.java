@@ -2,6 +2,7 @@ package cpp.entityhelper;
 
 import java.util.Collection;
 
+import cpp.Namespaces;
 import cpp.core.Cls;
 import cpp.entity.EntityCls;
 import cpp.entityhelper.method.MethodFillFromForm;
@@ -13,11 +14,11 @@ public class EntityHelper extends Cls{
 		for(EntityCls bean:beans) {
 			addMethod(new MethodFillFromForm(bean));
 			addMethod(new MethodFillFromForm(bean, true));
-			addIncludeHeader("model/beans/"+ bean.getIncludeHeader());
+			addIncludeHeader(bean.getHeaderInclude());
 		}
 		addIncludeHeader("form/form");
 		addIncludeLib("memory");
-		setUseNamespace("std");
+		setUseNamespace(Namespaces.std);
 	}
 
 }

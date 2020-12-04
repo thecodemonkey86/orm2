@@ -25,6 +25,7 @@ public class MethodGetInsertParams extends Method {
 	public MethodGetInsertParams(List<Column> cols) {
 		super(Method.Public,Types.QVariantList, "getInsertParams");
 		this.cols = cols;
+		setConstQualifier();
 	}
 
 	@Override
@@ -71,16 +72,16 @@ public class MethodGetInsertParams extends Method {
 				//colPk.getRelation().getDestTable().getCamelCaseName()
 				addInstr(params.callMethodInstruction(ClsQVector.append,parent.getAttrByName(PgCppUtil.getOneRelationDestAttrName(col.getOneRelation())).callMethod("get"+col.getOneRelationMappedColumn().getUc1stCamelCaseName()) )); 
 			}else{
-				if(!col.isRawValueEnabled()) {
-					Expression colAttr = parent.getAttrByName(col.getCamelCaseName());
-					if(colAttr.getType().equals(Types.QString))
-						colAttr = new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), QString.fromStringConstant(""), colAttr);
-					addInstr(params.callMethodInstruction(ClsQVector.append,col.isNullable() ? new InlineIfExpression(colAttr.callMethod("isNull"), new CreateObjectExpression(Types.QVariant), Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr.callMethod("val")))   : Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr)));
-				} else {
+				if(col.isRawValueEnabled()) {
 					Attr attrRawExpressionParams = parent.getAttrByName("insertParamsForRawExpression"+col.getUc1stCamelCaseName());
 					ForeachLoop foreachAttrRawExpressionParams = _foreach(new Var(Types.QVariant, name), attrRawExpressionParams);
 					foreachAttrRawExpressionParams.addInstr(params.callMethodInstruction(ClsQVector.append,foreachAttrRawExpressionParams.getVar()));
-					
+				} else if(col.isFileImportEnabled()) {
+					Expression colAttr = parent.getAttrByName(col.getCamelCaseName()+"FilePath");
+					addInstr(params.callMethodInstruction(ClsQVector.append, Types.QVariant.callStaticMethod(ClsQVariant.fromValue,colAttr)));
+				} else {
+					Expression colAttr = parent.getAttrByName(col.getCamelCaseName());
+					addInstr(params.callMethodInstruction(ClsQVector.append,col.isNullable() ? new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), new CreateObjectExpression(Types.QVariant), Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr.callMethod("val")))   : Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr.getType().equals(Types.QString) ? new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), QString.fromStringConstant(""), colAttr) : colAttr)));
 				}
 			}
 	}

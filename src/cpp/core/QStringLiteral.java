@@ -16,13 +16,14 @@ public class QStringLiteral extends QString {
 		if(s.equals("\"\"")) {
 			return "QLatin1String(\"\")";
 		} else if(s.matches("\\A\\p{ASCII}*\\z")) {
-			// TODO causes ambiguous method calls: disabled temporarily
 			
-			//  because .arg(...) is missing in QLatin1String
 			
-			if(s.contains("%1")) {
-				return "QStringLiteral"+CodeUtil.parentheses(s);
-			}
+//			if(EntityCls.getCfg().getQtVersion().ordinal()<CppOrmConfig.QtVersion.V5_14.ordinal()) {
+		//  because .arg(...) is missing in QLatin1String (before 5.14), or currently, 5.15, cannot handle integer args
+				if(s.contains("%1")) {
+					return "QStringLiteral"+CodeUtil.parentheses(s);
+				}
+//			}
 			
 			return "QLatin1String"+CodeUtil.parentheses(s);
 			

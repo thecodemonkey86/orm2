@@ -107,7 +107,6 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 				case "datetime":
 					return Types.QDateTime;
 				default:
-					System.out.println(dbType);
 					return CoreTypes.QVariant;
 				}
 			} else {

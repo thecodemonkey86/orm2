@@ -31,6 +31,20 @@ public class CppConfigReader extends ConfigReader{
 		super(xmlDirectory);
 		// TODO Auto-generated constructor stub
 	}
+	
+	@Override
+		public void endDocument() throws SAXException {
+			// TODO Auto-generated method stub
+			super.endDocument();
+			
+			if(getCfg().getDbPoolClass() == null) {
+				getCfg().setDbPoolClass("DbPool");
+			}
+			
+			if(getCfg().getDbPoolHeader() == null) {
+				getCfg().setDbPoolHeader("util/db/dbpool.h");
+			}
+		}
 
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
@@ -38,6 +52,13 @@ public class CppConfigReader extends ConfigReader{
 		switch (this.tags.peek()) {
 		case "cpp":
 			getCfg().setExportMacro(atts.getValue("exportMacro"),atts.getValue("exportMacroIncludeHeader"));
+			String dbPoolHdr = atts.getValue("dbPoolIncludeHeader");
+			String dbPoolClass = atts.getValue("dbPoolClass");
+			
+			if(dbPoolHdr!=null && dbPoolClass!=null) {
+				getCfg().setDbPoolClass(dbPoolClass);
+				getCfg().setDbPoolHeader(dbPoolHdr);
+			}
 //			getCfg().setNamespace(atts.getValue("namespace"));
 			break;
 		default:

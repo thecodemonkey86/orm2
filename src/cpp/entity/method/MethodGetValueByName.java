@@ -67,21 +67,21 @@ public class MethodGetValueByName extends Method {
 		});
 
 		for (Column c1 : columns) {
-			if (!c1.hasRelation()) {
+			//if (!c1.hasRelation()) {
 				for (Column c2 : columns) {
-					if (!c2.hasRelation()) {
+					//if (!c2.hasRelation()) {
 						long qhash = qhash(c1.getName());
 						if (!c1.getName().equals(c2.getName()) && qhash == qhash(c2.getName())) {
 							hashCollisions.add(qhash);
 						}
-					}
+					//}
 				}
-			}
+			//}
 		}
 
 		IfBlock ifblockFallback = null;
 		for (Column c : columns) {
-			if (!c.hasRelation()) {
+			//if (!c.hasRelation()) {
 				//
 				Expression ret = null;
 				
@@ -99,7 +99,7 @@ public class MethodGetValueByName extends Method {
 					hashCollisionColumns.add(c);
 				}
 
-			}
+			//}
 		}
 		DefaultCaseBlock defaultCaseBlock = switchBlock._default();
 		for (Column c : hashCollisionColumns) {

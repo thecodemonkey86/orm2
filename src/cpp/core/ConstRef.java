@@ -8,9 +8,6 @@ public class ConstRef extends Cls {
 	
 	public ConstRef(Type type) {
 		super(null);
-		if (type instanceof RawPtr) {
-			System.out.println();
-		}
 		this.base = type;
 		this.constness = true;
 	}

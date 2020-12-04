@@ -11,17 +11,17 @@ import database.relation.OneToManyRelation;
 
 public class ManyAttr extends Attr{
 	public ManyAttr(OneToManyRelation relation) {
-		super(Attr.Protected, new ClsQVector(Entities.get(relation.getDestTable().getUc1stCamelCaseName()).toUniquePointer()), 
+		super(Attr.Protected, new ClsQVector(Entities.get(relation.getDestTable().getUc1stCamelCaseName()).toSharedPtr()), 
 				OrmUtil.getOneToManyRelationDestAttrName(relation)
 				, Expressions.Nullptr, false);
-		setMutableModifier();
+		//setMutableModifier();
 	}
 	
 	public ManyAttr(ManyRelation relation) {
 		super(Attr.Protected, new ClsQVector(Entities.get(relation.getDestTable().getUc1stCamelCaseName()).toSharedPtr()), 
 				OrmUtil.getManyRelationDestAttrName(relation)
 				, Expressions.Nullptr, false);
-		setMutableModifier();
+		//setMutableModifier();
 	}
 	
 	public Type getElementType() {

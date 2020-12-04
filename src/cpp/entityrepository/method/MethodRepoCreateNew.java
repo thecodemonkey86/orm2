@@ -14,7 +14,6 @@ import cpp.core.instruction.IfBlock;
 import cpp.entity.EntityCls;
 import cpp.entity.Nullable;
 import cpp.entity.method.MethodColumnAttrSetNull;
-import cpp.lib.EnableSharedFromThis;
 import database.column.Column;
 
 public class MethodRepoCreateNew extends Method {
@@ -25,6 +24,7 @@ public class MethodRepoCreateNew extends Method {
 	
 	public MethodRepoCreateNew(EntityCls cls) {
 		this(cls,false,false);
+		setStatic(true);
 	}
 	
 	public MethodRepoCreateNew(EntityCls cls,boolean initializeFields,boolean initializeFieldsWithNullable) {
@@ -53,7 +53,7 @@ public class MethodRepoCreateNew extends Method {
 				}
 			}
 			for(Column col : cls.getTbl().getFieldColumns()) {
-				
+				if(!col.isFileImportEnabled()) {
 					Type t = EntityCls.getDatabaseMapper().columnToType(col);
 					if(initializeFieldsWithNullable) {
 						initializeFieldsParams.add(addParam(new Param((t.isPrimitiveType() 
@@ -69,15 +69,16 @@ public class MethodRepoCreateNew extends Method {
 										: t.toConstRef()), col.getCamelCaseName())));
 					}
 					
-					
+				}
 				
 			}
 		}
+		setStatic(true);
 	}
 
 	@Override
 	public void addImplementation() {
-		Var bean = _declare(returnType, "entity", new MakeSharedExpression((SharedPtr) returnType,_this().callMethod(EnableSharedFromThis.SHARED_FROM_THIS)));
+		Var bean = _declare(returnType, "entity", new MakeSharedExpression((SharedPtr) returnType));
 		_callMethodInstr(bean, "setInsertNew");
 		addInstr(bean.callMethodInstruction("setLoaded", BoolExpression.TRUE));
 		
@@ -98,13 +99,15 @@ public class MethodRepoCreateNew extends Method {
 				}
 				}
 				for(Column col : cls.getTbl().getFieldColumns()) {
-					Param param = initializeFieldsParams.get(i++);
-					if(col.isNullable()) {
-						IfBlock ifIsNull= _if(param.callMethod(Nullable.isNull));
-						ifIsNull.thenBlock().addInstr(bean.callMethodInstruction(MethodColumnAttrSetNull.getMethodName(bean.getClassType().getAttrByName(param.getName()))));
-						ifIsNull.elseBlock().addInstr(bean.callSetterMethodInstruction(param.getName(),param.callMethod(Nullable.val)));
-					} else {
-						addInstr(bean.callSetterMethodInstruction(param.getName(),param));
+					if(!col.isFileImportEnabled()) {
+						Param param = initializeFieldsParams.get(i++);
+						if(col.isNullable()) {
+							IfBlock ifIsNull= _if(param.callMethod(Nullable.isNull));
+							ifIsNull.thenBlock().addInstr(bean.callMethodInstruction(MethodColumnAttrSetNull.getMethodName(bean.getClassType().getAttrByName(param.getName()))));
+							ifIsNull.elseBlock().addInstr(bean.callSetterMethodInstruction(param.getName(),param.callMethod(Nullable.val)));
+						} else {
+							addInstr(bean.callSetterMethodInstruction(param.getName(),param));
+						}
 					}
 				}
 			} else {

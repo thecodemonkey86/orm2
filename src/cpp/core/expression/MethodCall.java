@@ -1,7 +1,8 @@
-package cpp.core;
+package cpp.core.expression;
 
 import codegen.CodeUtil;
-import cpp.core.expression.Expression;
+import cpp.core.Method;
+import cpp.core.Type;
 
 public class MethodCall extends Expression {
 
@@ -34,7 +35,11 @@ public class MethodCall extends Expression {
 		for(int i=0;i<args.length;i++) {
 			strArgs[i] = args[i].getReadAccessString();
 		}
-		
+		if(expression instanceof ThisExpression) {
+			if(method.isStatic()) {
+				throw new RuntimeException("this in static method");
+			}
+		}
 		return expression + (expression.getType().isPtr() ? "->" : ".") +method.getName()+CodeUtil.parentheses(CodeUtil.commaSep(strArgs));
 	}
 

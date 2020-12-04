@@ -2,13 +2,18 @@ package cpp.entityquery.method;
 
 import cpp.Types;
 import cpp.core.Method;
+import cpp.core.Param;
 import cpp.core.instruction.Instruction;
+import cpp.util.ClsDbPool;
 
 public class MethodExecute extends Method{
 
+	protected Param pSqlCon;
+	
 	public MethodExecute() {
 		super(Public, Types.Void, "execute");
 		setConstQualifier();
+		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 	}
 
 	@Override
@@ -16,7 +21,7 @@ public class MethodExecute extends Method{
 		addInstr(new Instruction() {
 			@Override
 			public String toString() {
-				return "SqlUtil3::Sql::execute(this->sqlCon,toString(),params);";
+				return String.format("SqlUtil3::Sql::execute(%s,toString(),params);",pSqlCon.toString());
 			}
 		});
 	}

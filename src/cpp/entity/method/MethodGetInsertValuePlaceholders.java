@@ -27,21 +27,33 @@ public class MethodGetInsertValuePlaceholders extends Method {
 	public void addImplementation() {
 		EntityCls bean = (EntityCls) this.parent;
 		List<Column> columns = this.table.getColumns(!this.table.getPrimaryKey().isAutoIncrement());
-		if(!table.hasColumnWithRawValueEnabled()) {
+		boolean hasColumnWithRawValueEnabled = table.hasColumnWithRawValueEnabled();
+		boolean hasColumnWithFileStreamEnabled = table.hasColumnWithFileStreamEnabled();
+		if(!hasColumnWithRawValueEnabled && !hasColumnWithFileStreamEnabled) {
 			_return(QString.fromStringConstant(CodeUtil2.strMultiply("?", ",", columns.size())));
 		} else {
+			if(hasColumnWithFileStreamEnabled && !EntityCls.getDatabase().supportsLoadingFiles()) {
+				throw new RuntimeException("not implemented file stream without database native import function"); 
+			}
 			ArrayList<String> placeholders = new ArrayList<>();
 			ArrayList<Expression> placeholderExpressions = new ArrayList<>();
+			
 			for(Column c : columns) {
 				if(c.isRawValueEnabled()) {
 					placeholderExpressions.add(bean.getAttrByName("insertExpression"+c.getUc1stCamelCaseName()));
 					placeholders.add("%"+placeholderExpressions.size());
+				} else if(c.isFileImportEnabled()){
+					placeholders.add(EntityCls.getDatabase().getFileLoadFunction()+CodeUtil2.parentheses("?") );
 				} else {
 					placeholders.add("?" );
 				}
 				
 			}
-			_return(QString.fromStringConstant(CodeUtil2.commaSep(placeholders)).callMethod(ClsQString.arg, placeholderExpressions));
+			if(hasColumnWithRawValueEnabled) {
+				_return(QString.fromStringConstant(CodeUtil2.commaSep(placeholders)).callMethod(ClsQString.arg, placeholderExpressions));
+			} else {
+				_return(QString.fromStringConstant(CodeUtil2.commaSep(placeholders)));
+			}
 		}
 		
 		

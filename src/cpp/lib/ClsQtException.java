@@ -1,12 +1,13 @@
 package cpp.lib;
 
+import cpp.Namespaces;
 import cpp.core.Cls;
 
 public class ClsQtException extends Cls{
 
 	public ClsQtException() {
 		super("QtException");
-		setUseNamespace("QtCommon2");
+		setUseNamespace(Namespaces.QtCommon2);
 	}
 
 }

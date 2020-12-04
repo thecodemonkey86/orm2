@@ -4,21 +4,27 @@ import cpp.Types;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.instruction.Instruction;
+import cpp.util.ClsDbPool;
 
 public class MethodExecQuery extends Method{
 	Param pRewriteSql;;
-	
+	Param pSqlCon;
 	public MethodExecQuery() {
 		this(false);
 	}
+	
+	public static String getMethodName() {
+		return "execQuery";
+	}
 
 	public MethodExecQuery(boolean withRewriteSql) {
-		super(Public, Types.QSqlQuery, "execQuery");
+		super(Public, Types.QSqlQuery, getMethodName());
 		setConstQualifier();
 		
 		if(withRewriteSql) {
 			pRewriteSql = addParam(Types.QString.toConstRef(), "rewriteSql") ;
 		}
+		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 	}
 
 	@Override

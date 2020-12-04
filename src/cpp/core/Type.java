@@ -128,9 +128,9 @@ public class Type {
 	}
 
 	public String getForwardDeclaration() {
-		System.out.println(this);
 		throw new UnsupportedOperationException();
 	}
 	
-	
+	public void collectIncludes(Cls cls,boolean inSourceFile) {
+	}
 }

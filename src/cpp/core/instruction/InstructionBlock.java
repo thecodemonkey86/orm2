@@ -6,7 +6,6 @@ import java.util.Iterator;
 import cpp.core.Attr;
 import cpp.core.Cls;
 import cpp.core.Method;
-import cpp.core.MethodCall;
 import cpp.core.SharedPtr;
 import cpp.core.Type;
 import cpp.core.expression.AccessExpression;
@@ -14,6 +13,7 @@ import cpp.core.expression.Expression;
 import cpp.core.expression.Expressions;
 import cpp.core.expression.InlineIfExpression;
 import cpp.core.expression.MakeSharedExpression;
+import cpp.core.expression.MethodCall;
 import cpp.core.expression.NewOperator;
 import cpp.core.expression.StdMoveExpression;
 import cpp.core.expression.ThisExpression;
@@ -77,7 +77,11 @@ public class InstructionBlock extends Instruction implements Iterable<Instructio
 		addInstr(new DeclareInitConstructInstruction(var, init));
 		return var;
 	}
-	
+	public Var _declareInitConstructor(Type type, String varName ) {
+		Var var = new Var(type, varName);
+		addInstr(new DeclareInitConstructInstruction(var, null));
+		return var;
+	}
 	public Var _declareInitConstructor(Type type, String varName, Expression[] init ) {
 		Var var = new Var(type, varName);
 		addInstr(new DeclareInitConstructMultiArgsInstruction(var, init));

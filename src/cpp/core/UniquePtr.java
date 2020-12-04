@@ -1,13 +1,14 @@
 package cpp.core;
 
 import codegen.CodeUtil;
+import cpp.Namespaces;
 import util.CodeUtil2;
 
 public class UniquePtr extends TplCls{
 
 	public UniquePtr(Cls element) {
 		super("unique_ptr", element);
-		setUseNamespace("std");
+		setUseNamespace(Namespaces.std);
 	}
 
 	@Override
