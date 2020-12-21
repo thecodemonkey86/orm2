@@ -25,7 +25,7 @@ public class MethodOrderBy extends Method{
         addInstr(new Instruction() {
 			@Override
 			public String toString() {
-				return "this->orderByExpressions.append(QLatin1String(\"%1 %2\").arg(order, (direction == SqlUtil3::SqlQuery::ORDER_ASC ? QLatin1String(\"asc\") : QLatin1String(\"desc\")) ));\r\n" + 
+				return "this->orderByExpressions.append(QLatin1String(\"%1 %2\").arg(order, (direction == SqlUtil4::SqlQuery::ORDER_ASC ? QLatin1String(\"asc\") : QLatin1String(\"desc\")) ));\r\n" + 
 						"return *this;";
 			}
 		});

@@ -133,4 +133,8 @@ public class Type {
 	
 	public void collectIncludes(Cls cls,boolean inSourceFile) {
 	}
+
+	public Type toPassParamType() {
+		return this;
+	}
 }

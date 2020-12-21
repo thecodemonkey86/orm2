@@ -16,6 +16,7 @@ public class ClsQVariant extends Cls{
 	public ClsQVariant() {
 		super("QVariant");
 		addMethod(new LibMethod(CoreTypes.QString, "toString"));
+		addMethod(new LibMethod(CoreTypes.QStringList, "toStringList"));
 		addMethod(new LibMethod(CoreTypes.QDate, "toDate"));
 		addMethod(new LibMethod(CoreTypes.QDate, "toTime"));
 		addMethod(new LibMethod(CoreTypes.QDateTime, "toDateTime"));

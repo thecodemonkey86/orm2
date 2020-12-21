@@ -172,7 +172,7 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 				return e;
 			case "12":
 				if(!expr.getType().equals(Types.DateTime)) {
-					return new NewOperator(Types.DateTime,e, new NewOperator(Types.DateTimeZone,new PhpStringLiteral("UTC"))) ;
+					return new NewOperator(Types.DateTime,e, new NewOperator(Types.DateTimeZone,new PhpStringLiteral("Europe/Berlin"))) ;
 				} else {
 					return expr;
 				}
@@ -184,7 +184,7 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 				return e;
 			case "35":
 				if(!expr.getType().equals(Types.DateTime)) {
-					return new NewOperator(Types.DateTime,e, new NewOperator(Types.DateTimeZone,new PhpStringLiteral("UTC"))) ;
+					return new NewOperator(Types.DateTime,e, new NewOperator(Types.DateTimeZone,new PhpStringLiteral("Europe/Berlin"))) ;
 				} else {
 					return expr;
 				}

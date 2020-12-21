@@ -5,14 +5,13 @@ import cpp.CoreTypes;
 import cpp.core.Attr;
 import cpp.core.Method;
 import cpp.core.Param;
-import cpp.core.SharedPtr;
 
 public class MethodAttributeSetter extends Method{
 	protected Attr attr;
 	public MethodAttributeSetter(Attr a) {
 		super(Public, CoreTypes.Void,getMethodName(a) );
 		this.attr=a;
-		addParam(new Param(a.getType().isPrimitiveType() || a.getType() instanceof SharedPtr ? a.getType() : a.getType().toConstRef() , a.getName()));
+		addParam(new Param(a.getType().toPassParamType() , a.getName()));
 	}
 
 	

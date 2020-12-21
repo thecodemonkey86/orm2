@@ -47,7 +47,7 @@ public class MethodExecQuery extends Method{
 						"                qDebug()<<msg;\r\n" + 
 						"                qDebug()<<q.driver()->lastError().text();\r\n"+ 
 						"				 #endif	\r\n" + 
-						"                throw SqlUtil3::SqlException(sqlCon.lastError().nativeErrorCode(), sqlCon.driver()->lastError().text(),toString());\r\n" + 
+						"                throw SqlUtil4::SqlException(sqlCon.lastError().nativeErrorCode(), sqlCon.driver()->lastError().text(),toString());\r\n" + 
 						"            }\r\n" + 
 						"            return q;\r\n" + 
 						"\r\n" + 
@@ -55,7 +55,7 @@ public class MethodExecQuery extends Method{
 						"            QString msg=q.lastError().text();\r\n" + 
 						"            #ifdef QT_DEBUG\r\nqDebug()<<msg;\r\n"
 						+ "			 #endif\r\n" + 
-						"            throw SqlUtil3::SqlException(sqlCon.lastError().nativeErrorCode(), sqlCon.driver()->lastError().text(),toString());\r\n" + 
+						"            throw SqlUtil4::SqlException(sqlCon.lastError().nativeErrorCode(), sqlCon.driver()->lastError().text(),toString());\r\n" + 
 						"        }",pRewriteSql==null?"toString()": pRewriteSql );
 			}
 		});

@@ -69,5 +69,6 @@ public class Attr extends Var {
 	public boolean isPublic() {
 		return visibility.equals(Public);
 	}
+
 	
 }

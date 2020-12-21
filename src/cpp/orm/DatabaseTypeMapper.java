@@ -17,7 +17,10 @@ public abstract class DatabaseTypeMapper {
 	public abstract Expression getGenericDefaultValueExpression(Column col);
 	
 	public abstract ClsSqlQuery getSqlQueryType();
-	public abstract Type columnToType(Column c);
+	public final Type columnToType(Column c) {
+		return columnToType(c,c.isNullable());
+	}
+	public abstract Type columnToType(Column c,boolean nullable);
 	public abstract String getRepositoryInsertOrIgnoreMethod();
 	public abstract String getRepositoryPrepareInsertOrIgnoreMethod();
 }

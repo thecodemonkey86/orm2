@@ -11,7 +11,7 @@ public class ClsSqlQuery extends Cls{
 
 	public ClsSqlQuery() {
 		super("SqlQuery");
-		setUseNamespace(Namespaces.SqlUtil3);
+		setUseNamespace(Namespaces.SqlUtil4);
 		addMethod(new LibMethod(this.toRef(), "select"));
 		addMethod(new LibMethod(this.toRef(), "from"));
 		addMethod(new LibMethod(this.toRef(), "leftJoin"));

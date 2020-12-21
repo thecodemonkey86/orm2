@@ -21,7 +21,7 @@ public class MethodExecute extends Method{
 		addInstr(new Instruction() {
 			@Override
 			public String toString() {
-				return String.format("SqlUtil3::Sql::execute(%s,toString(),params);",pSqlCon.toString());
+				return String.format("SqlUtil4::Sql::execute(%s,toString(),params);",pSqlCon.toString());
 			}
 		});
 	}

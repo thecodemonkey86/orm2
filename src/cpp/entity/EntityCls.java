@@ -70,7 +70,6 @@ import cpp.entity.method.MethodSetAutoIncrementId;
 import cpp.entity.method.MethodUnload;
 import cpp.orm.DatabaseTypeMapper;
 import cpp.orm.OrmUtil;
-import cpp.util.ClsDbPool;
 import database.Database;
 import database.column.Column;
 import database.relation.AbstractRelation;
@@ -629,7 +628,7 @@ public class EntityCls extends Cls {
 		CodeUtil.writeLine(sb, "/*DO NOT MODIFY OUTSIDE CUSTOM MEMBERS SECTIONS (DELIMITED BY COMMENTS BEGIN_CUSTOM_CLASS_MEMBERS AND END_CUSTOM_CLASS_MEMBERS + BEGIN_CUSTOM_PREPROCESSOR AND END_CUSTOM_PREPROCESSOR). ALL OTHER MODIFICATIONS WILL BE LOST ON REBUILDING ORM CLASSES*/");
 		CodeUtil.writeLine(sb, "/*Dies ist eine automatisch generierte Datei des C++ ORM Systems https://github.com/thecodemonkey86/orm2*/");
 		CodeUtil.writeLine(sb, "/*Generator (Java-basiert): https://github.com/thecodemonkey86/orm2*/");
-		CodeUtil.writeLine(sb, "/*Abhängigkeiten (C++ libraries): https://github.com/thecodemonkey86/libcpporm, https://github.com/thecodemonkey86/QtCommonLibs2, https://github.com/thecodemonkey86/SqlUtil3*/");
+		CodeUtil.writeLine(sb, "/*Abhängigkeiten (C++ libraries): https://github.com/thecodemonkey86/libcpporm, https://github.com/thecodemonkey86/QtCommonLibs2, https://github.com/thecodemonkey86/SqlUtil*/");
 		CodeUtil.writeLine(sb, "/*API Level " + APILEVEL + "*/\n");
 		
 	}

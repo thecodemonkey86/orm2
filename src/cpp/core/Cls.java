@@ -675,6 +675,12 @@ public class Cls extends Type implements IAttributeContainer{
 		return useNamespace!=null? useNamespace+"::"+type : type;
 	}
 	
+
+	@Override
+	public Type toPassParamType() {
+		return toConstRef();
+	}
+	
 //	public void addUsingMethodInstruction(UsingMethodInstruction i) {
 //		if(usingMethodInstructions==null) {
 //			usingMethodInstructions=new ArrayList<>();

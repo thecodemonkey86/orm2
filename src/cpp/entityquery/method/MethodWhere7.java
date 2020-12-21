@@ -26,7 +26,7 @@ public class MethodWhere7 extends Method{
 				return "for(const QString & s : params)\r\n" + 
 						"            this->params.append(s);\r\n" + 
 						"        if (!conditions.empty()) {\r\n" + 
-						"            this->conditions.append(SqlUtil3::SqlQuery::AND);\r\n" + 
+						"            this->conditions.append(SqlUtil4::SqlQuery::AND);\r\n" + 
 						"        }\r\n" + 
 						"        this->conditions.append(whereCond);\r\n" + 
 						"        return *this;";

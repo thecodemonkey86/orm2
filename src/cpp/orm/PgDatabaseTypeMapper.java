@@ -195,9 +195,10 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 	}
 
 	@Override
-	public Type columnToType(Column col) {
-		return getTypeFromDbDataType(col.getDbType(), col.isNullable());
+	public Type columnToType(Column col,boolean nullable) {
+		return getTypeFromDbDataType(col.getDbType(),nullable);
 	}
+	
 	@Override
 	public ClsSqlQuery getSqlQueryType() {
 		return Types.PgSqlQuery;

@@ -11,7 +11,7 @@ public class ClsSql extends Cls {
 	
 	public ClsSql() {
 		super("Sql");
-		setUseNamespace(Namespaces.SqlUtil3);
+		setUseNamespace(Namespaces.SqlUtil4);
 		addMethod(new LibMethod(Types.Bool,execute,true ));
 	}
 	
