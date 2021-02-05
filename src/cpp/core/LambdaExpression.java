@@ -11,13 +11,15 @@ import cpp.core.instruction.Instruction;
 import cpp.core.instruction.InstructionBlock;
 import util.CodeUtil2;
 
-public class LambdaExpression extends InstructionBlock{
+public class LambdaExpression extends Expression{
 	List<Expression> capture;
 	List<Expression> arguments;
+	InstructionBlock instructions;
 	
 	public LambdaExpression() {
 		capture = new ArrayList<>();
 		arguments = new ArrayList<>();
+		instructions = new InstructionBlock();
 	}
 	
 	public LambdaExpression setCapture(Expression... capture) {
@@ -46,6 +48,11 @@ public class LambdaExpression extends InstructionBlock{
 		for (Expression expression : this.capture) {
 			capture.add(expression.getReadAccessString());
 		}
+		String[] arguments = new String[this.arguments.size()];
+		for(int i=0;i<arguments.length;i++) {
+			arguments[i] = CodeUtil2.sp(this.arguments.get(i).getType().toDeclarationString(),this.arguments.get(i).getReadAccessString());
+		}
+		
 		StringBuilder sb = new StringBuilder( CodeUtil.sp(CodeUtil.brackets(CodeUtil.commaSep(capture)) ,CodeUtil.parentheses(CodeUtil.commaSep(arguments)),"{\n"));
 		
 		for(Instruction i : instructions) {
@@ -55,5 +62,23 @@ public class LambdaExpression extends InstructionBlock{
 		}
 		sb.append("}");
 		return sb.toString();
+	}
+	
+	public void addInstr(Instruction i) {
+		instructions.addInstr(i);
+	}
+
+	@Override
+	public Type getType() {
+		return null;
+	}
+
+	public void _assign(Expression expr, Expression value) {
+		instructions._assign(expr, value);
+		
+	}
+
+	public Expression getArgument(int i) {
+		return arguments.get(i);
 	}
 }

@@ -7,8 +7,9 @@ import cpp.core.EnumConstant;
 public class ClsQNetworkRequest extends Cls{
 
 	public static final String setAttribute = "setAttribute";
-	public final EnumAttribute enumAttribute = new EnumAttribute(); 
 	public final EnumConstant FollowRedirectsAttribute = new EnumConstant("FollowRedirectsAttribute");
+	public final EnumAttribute enumAttribute = new EnumAttribute(); 
+	
 	
 	public ClsQNetworkRequest() {
 		super("QNetworkRequest");

@@ -3,7 +3,6 @@ package cpp.jsonentityrepository.method;
 import cpp.CoreTypes;
 import cpp.JsonTypes;
 import cpp.NetworkTypes;
-import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.LambdaExpression;
 import cpp.core.Method;
@@ -19,15 +18,19 @@ import cpp.lib.ClsQNetworkRequest;
 import cpp.lib.ClsStdFunction;
 import cpp.lib.QObjectConnect;
 
-public class MethodLoadFromUrl extends Method {
+public class MethodLoadOneFromUrl extends Method {
 
 	Param pUrl,pCallback; 
 	JsonEntity entity;
 	
-	public MethodLoadFromUrl(JsonEntity entity) {
-		super(Public, CoreTypes.Void, "load"+ entity.getName()+"FromUrl");
+	public static String getMethodName(JsonEntity entity) {
+		return "loadOne"+entity.getName()+"FromUrl";
+	}
+	
+	public MethodLoadOneFromUrl(JsonEntity entity) {
+		super(Public, CoreTypes.Void, getMethodName(entity));
 		pUrl = addParam(new Param(NetworkTypes.QUrl.toConstRef(), "url"));
-		pCallback = addParam(new Param(new ClsStdFunction(CoreTypes.Void, Types.qvector(entity.toSharedPtr()).toConstRef()), "callback"));
+		pCallback = addParam(new Param(new ClsStdFunction(CoreTypes.Void, entity.toSharedPtr().toConstRef()), "callback"));
 		this.entity = entity;
 		setStatic(true); 
 	}
@@ -43,7 +46,7 @@ public class MethodLoadFromUrl extends Method {
 		addInstr(new QObjectConnect(reply,"&QNetworkReply::finished",aNetwork,
 				lambdaExpression.setCapture(reply, pCallback),true));
 	    		
-		lambdaExpression.addInstr(new StdFunctionInvocation(pCallback, JsonTypes.JsonEntityRepository.callStaticMethod(MethodGetVectorFromJson.getMethodName(entity),reply.callMethod(ClsQNetworkReply.readAll))));
+		lambdaExpression.addInstr(new StdFunctionInvocation(pCallback, JsonTypes.JsonEntityRepository.callStaticMethod(MethodGetOneFromJson.getMethodName(entity),reply.callMethod(ClsQNetworkReply.readAll))));
 		lambdaExpression.addInstr(reply.callMethodInstruction(ClsQNetworkReply.deleteLater));
 	}
 

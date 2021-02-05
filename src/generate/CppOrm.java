@@ -23,7 +23,7 @@ import cpp.entityquery.ClsEntityQueryUpdate;
 import cpp.entityrepository.ClsEntityRepository;
 import cpp.jsonentity.JsonEntities;
 import cpp.jsonentity.JsonEntity;
-import cpp.jsonentityrepository.JsonEntityRepository;
+import cpp.jsonentityrepository.ClsJsonEntityRepository;
 import cpp.orm.DatabaseTypeMapper;
 import cpp.orm.FirebirdDatabaseTypeMapper;
 import cpp.orm.MySqlDatabaseMapper;
@@ -294,7 +294,7 @@ public class CppOrm extends OrmGenerator {
 			for (JsonEntity c : JsonEntities.getAllEntities()) {
 				c.addDeclarations();
 			}
-			JsonEntityRepository repo = JsonTypes.JsonEntityRepository;
+			ClsJsonEntityRepository repo = JsonTypes.JsonEntityRepository;
 			repo.addDeclarations(JsonEntities.getAllEntities());
 			repo.setExportMacro(cfg.getExportMacro(),cfg.getExportMacroIncludeHeader());
 			repo.addMethodImplementations();

@@ -30,6 +30,7 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 		}
 		switch(dbType) {
 		case "int":
+		case "tinyint":
 		case "bigint":
 		case "int_unsigned":
 		case "bigint_unsigned":

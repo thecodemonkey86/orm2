@@ -4,47 +4,52 @@ import java.util.Collection;
 
 import cpp.JsonTypes;
 import cpp.NetworkTypes;
-import cpp.QtCoreTypes;
-import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.Cls;
-import cpp.core.Param;
-import cpp.core.QtSignal;
+import cpp.core.Constructor;
 import cpp.core.expression.Expressions;
+import cpp.core.method.MethodStaticAttributeGetter;
 import cpp.core.method.MethodStaticAttributeSetter;
 import cpp.jsonentity.JsonEntity;
 import cpp.jsonentityrepository.method.ConstructorJsonEntityRepository;
-import cpp.jsonentityrepository.method.MethodEntityLoad;
-import cpp.jsonentityrepository.method.MethodLoadByIdFromUrlAsynchronous;
-import cpp.jsonentityrepository.method.MethodLoadByIdFromUrlSynchronous;
 import cpp.jsonentityrepository.method.MethodGetOneFromJson;
 import cpp.jsonentityrepository.method.MethodGetVectorFromJson;
 import cpp.jsonentityrepository.method.MethodLoadFromUrl;
-import cpp.lib.QObjectMacro;
+import cpp.jsonentityrepository.method.MethodLoadOneFromUrl;
 
-public class JsonEntityRepository extends Cls {
+public class ClsJsonEntityRepository extends Cls {
 	public static final String CLSNAME = "JsonEntityRepository";
 	public static final String network = "network";
+	public static final String baseUrl = "baseUrl";
 
-	public static String getSignalNameOnLoadedOne(JsonEntity e) {
-		return "onLoadedOne" + e.getName();
-	}
+//	public static String getSignalNameOnLoadedOne(JsonEntity e) {
+//		return "onLoadedOne" + e.getName();
+//	}
+//
+//	public static String getSignalNameOnLoaded(JsonEntity e) {
+//		return "onLoaded" + e.getName();
+//	}
 
-	public static String getSignalNameOnLoaded(JsonEntity e) {
-		return "onLoaded" + e.getName();
-	}
-
-	public JsonEntityRepository() {
-		super(CLSNAME);
+	public ClsJsonEntityRepository() {
+		super(CLSNAME,false);
 		headerInclude=JsonEntity.getRepositoryPath()+type.toLowerCase();
 	}
 
 	public void  addDeclarations(Collection<JsonEntity> entityClasses) {
-		addConstructor(new QObjectMacro());
+		addConstructor(new Constructor() {
+			
+			@Override
+			public void addImplementation() {
+			}
+		});
 		addConstructor(new ConstructorJsonEntityRepository());
-		addSuperclass(QtCoreTypes.QObject);
-		Attr aNetwork = new Attr(Attr.Private, NetworkTypes.QNetworkAccessManager.toRawPointer(), network, Expressions.Nullptr, true);
-		addAttr(new Attr(NetworkTypes.QUrl, "url"));
+		Attr aNetwork = new Attr(Attr.Protected, NetworkTypes.QNetworkAccessManager.toRawPointer(), network, Expressions.Nullptr, true);
+		
+		Attr aBaseUrl = new Attr(Attr.Protected, NetworkTypes.QUrl, baseUrl,null,true);
+		addAttr(aBaseUrl);
+		addMethod(new MethodStaticAttributeGetter(aBaseUrl) );
+		addMethod(new MethodStaticAttributeSetter(aBaseUrl) );
+		
 		addAttr(aNetwork);
 		addMethod(new MethodStaticAttributeSetter(aNetwork));
 		
@@ -54,7 +59,6 @@ public class JsonEntityRepository extends Cls {
 		addIncludeLib(JsonTypes.QJsonDocument);
 		addIncludeLib(JsonTypes.QJsonObject);
 		addIncludeLib(JsonTypes.QJsonArray);
-		addIncludeLib(QtCoreTypes.QEventLoop);
 		addIncludeLib("memory");
 		
 		for(JsonEntity e : entityClasses) {
@@ -64,11 +68,9 @@ public class JsonEntityRepository extends Cls {
 			addMethod(new MethodGetOneFromJson(e,false));
 			addMethod(new MethodGetVectorFromJson(e));
 			addMethod(new MethodLoadFromUrl(e));
-			addMethod(new MethodLoadByIdFromUrlAsynchronous(e));
-			addMethod(new MethodLoadByIdFromUrlSynchronous(e));
-			addMethod(new MethodEntityLoad(e));
-			addMethod(new QtSignal(getSignalNameOnLoadedOne(e),new Param( e.toSharedPtr().toConstRef(),"entity")));
-			addMethod(new QtSignal(getSignalNameOnLoaded(e),new Param(Types.qvector(e.toSharedPtr()).toConstRef(),"entities")));
+			addMethod(new MethodLoadOneFromUrl(e));
+//			addMethod(new MethodLoadByIdFromUrlAsynchronous(e));
+//			addMethod(new MethodEntityLoad(e));
 		}
 		
 	}

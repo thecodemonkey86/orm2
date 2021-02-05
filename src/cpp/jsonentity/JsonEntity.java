@@ -15,6 +15,7 @@ import cpp.core.Operator;
 import cpp.core.Param;
 import cpp.core.Struct;
 import cpp.core.Type;
+import cpp.core.expression.BoolExpression;
 import cpp.core.expression.Expression;
 import cpp.core.expression.StaticAccessExpression;
 import cpp.core.method.MethodAttributeGetter;
@@ -22,7 +23,6 @@ import cpp.core.method.MethodAttributeSetter;
 import cpp.jsonentity.method.MethodAddInsertParamForRawExpression;
 import cpp.jsonentity.method.MethodAddRelatedBean;
 import cpp.jsonentity.method.MethodAddRelatedBeanInternal;
-import cpp.jsonentity.method.MethodAttrGetter;
 import cpp.jsonentity.method.MethodColumnAttrSetNull;
 import cpp.jsonentity.method.MethodColumnAttrSetter;
 import cpp.jsonentity.method.MethodColumnAttrSetterInternal;
@@ -32,6 +32,7 @@ import cpp.jsonentity.method.MethodGetLastItem;
 import cpp.jsonentity.method.MethodGetManyRelatedAtIndex;
 import cpp.jsonentity.method.MethodGetManyRelatedCount;
 import cpp.jsonentity.method.MethodIsNullOrEmpty;
+import cpp.jsonentity.method.MethodLoadOneRelation;
 import cpp.jsonentity.method.MethodManyAttrGetter;
 import cpp.jsonentity.method.MethodOneRelationAttrSetter;
 import cpp.jsonentity.method.MethodQHashPkStruct;
@@ -67,6 +68,7 @@ public class JsonEntity extends Cls {
 		this.oneToManyRelations= manyRelations;
 		this.oneRelations = oneRelations;
 		this.manyRelations = manyToManyRelations;
+		headerInclude=modelPath + "entities/"+type.toLowerCase();
 	}
 	
 	private static final String BEAN_PARAM_NAME = "entity";
@@ -78,7 +80,6 @@ public class JsonEntity extends Cls {
 	
 	static Database database;
 	static DatabaseTypeMapper mapper;
-	public static final String repository = "repository";
 	private static String modelPath, repositoryPath;
 	
 	private ArrayList<String> customHeaderCode, customSourceCode, customPreprocessorCode;
@@ -146,19 +147,19 @@ public class JsonEntity extends Cls {
 	}
 	private void addAttributes(List<Column> allColumns) {
 		addAttr(new Attr(Types.Bool, "loaded"));
-		addAttr(new Attr(JsonTypes.JsonEntityRepository.toSharedPtr(), repository));
-		addForwardDeclaredClass(JsonTypes.JsonEntityRepository);
-		addIncludeHeader( JsonTypes.JsonEntityRepository.getHeaderInclude());
 		for(OneRelation r:oneRelations) {
 			OneAttr attr = new OneAttr(r);
 				addAttr(attr);
+				if(!attr.getElementType().equals(this)) {
 				addIncludeHeader(attr.getElementType().getName().toLowerCase());
 				addForwardDeclaredClass(attr.getClassType());
+				}
+				addMethod(new MethodLoadOneRelation(r));
 				if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
 					addForwardDeclaredClass( ((Struct) Types.getRelationForeignPrimaryKeyTypeJsonEntities(r)));
 				}
 				
-				addMethod(new MethodAttrGetter(attr,true));	
+				addMethod(new MethodAttributeGetter(attr));	
 				addMethod(new MethodOneRelationAttrSetter( this,r, true)); // internal setter
 				addMethod(new MethodOneRelationAttrSetter( this,r, false)); // public setter
 				
@@ -180,8 +181,11 @@ public class JsonEntity extends Cls {
 			
 			Attr attrManyToManyRemoved = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyTypeJsonEntities(r)) ,attr.getName()+"Removed");
 			addAttr(attrManyToManyRemoved);
-			addIncludeDefaultHeaderFileName(attr.getClassType());
-			addForwardDeclaredClass((Cls) attr.getElementType());
+			
+			if(!this.equals((Cls) attr.getElementType())) {
+				addIncludeDefaultHeaderFileName((Cls) attr.getElementType());
+				addForwardDeclaredClass((Cls) attr.getElementType());
+			}
 			if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
 				addForwardDeclaredClass( ((Struct) Types.getRelationForeignPrimaryKeyTypeJsonEntities(r)));
 			}
@@ -220,7 +224,7 @@ public class JsonEntity extends Cls {
 				Attr attr = new Attr(JsonEntity.getDatabaseMapper().getTypeFromDbDataType(col.getDbType(), col.isNullable()), col.getCamelCaseName());
 				addAttr(attr);
 				
-				addMethod(new MethodAttrGetter(attr,false));	
+				addMethod(new MethodAttributeGetter(attr));	
 				addMethod(new MethodColumnAttrSetter(col,attr));
 				addMethod(new MethodColumnAttrSetterInternal(col,attr));
 				if (col.isNullable()) {
@@ -250,7 +254,7 @@ public class JsonEntity extends Cls {
 			} else {
 				Attr attr = new Attr(JsonEntity.getDatabaseMapper().getTypeFromDbDataType(col.getDbType(), col.isNullable()), col.getCamelCaseName());
 				addAttr(attr);
-				addMethod(new MethodAttrGetter(attr,false));	
+				addMethod(new MethodAttributeGetter(attr));	
 			}
 			
 			if (col.isAutoIncrement()) {
@@ -272,12 +276,19 @@ public class JsonEntity extends Cls {
 	}
 	
 	
-	public Constructor getConstructor() {
+	/*public Constructor getConstructor() {
 		return super.getConstructors().get(0);
-	}
+	}*/
 	
 	public void addDeclarations() {
 		addSuperclass(JsonTypes.BaseJsonEntity);
+		addConstructor(new Constructor() {
+			
+			@Override
+			public void addImplementation() {
+				addInstr(_accessThis(JsonEntity.this.getAttrByName("loaded")).assign(BoolExpression.FALSE));
+			}
+		});
 	//	addPreprocessorInstruction("#define " + getName()+ " "+CodeUtil2.uc1stCamelCase(tbl.getName()));
 		addIncludeLib(Types.QString);
 		addIncludeLib(CoreTypes.QVariant);
@@ -285,7 +296,7 @@ public class JsonEntity extends Cls {
 		addIncludeLib("memory");
 		addIncludeDefaultHeaderFileName(Types.nullable(Types.Void));
 		addIncludeDefaultHeaderFileName(JsonTypes.BaseJsonEntity);
-
+addIncludeHeaderInSource(JsonTypes.JsonEntityRepository.getHeaderInclude());
 		addIncludeHeader(Types.orderedSet(null).getHeaderInclude());
 		addAttributes(tbl.getAllColumns());
 		

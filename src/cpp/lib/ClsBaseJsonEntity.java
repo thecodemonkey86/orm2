@@ -1,5 +1,6 @@
 package cpp.lib;
 
+import cpp.Namespaces;
 import cpp.NetworkTypes;
 import cpp.Types;
 import cpp.core.Attr;
@@ -17,6 +18,7 @@ public class ClsBaseJsonEntity extends Cls {
 		addAttr(new Attr(Attr.Protected, NetworkTypes.QNetworkAccessManager.toRawPointer(), network, Expressions.Nullptr, true));
 		addAttr(new Attr(Types.Bool, insert));
 		addAttr(new Attr(Types.Bool, primaryKeyModified));
+		useNamespace = Namespaces.ORM2;
 	}
 
 }

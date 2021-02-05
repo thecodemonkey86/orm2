@@ -3,6 +3,7 @@ package cpp.jsonentityrepository.method;
 import cpp.NetworkTypes;
 import cpp.core.Constructor;
 import cpp.core.Param;
+import cpp.jsonentityrepository.ClsJsonEntityRepository;
 
 public class ConstructorJsonEntityRepository extends Constructor {
 
@@ -14,7 +15,7 @@ public class ConstructorJsonEntityRepository extends Constructor {
 	
 	@Override
 	public void addImplementation() {
-		_assign(_this().accessAttr(pUrl.getName()),pUrl);
+		_assign(_this().accessAttr(ClsJsonEntityRepository.baseUrl),pUrl);
 	}
 
 }

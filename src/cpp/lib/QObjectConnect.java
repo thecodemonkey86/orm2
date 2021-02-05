@@ -10,28 +10,31 @@ public class QObjectConnect extends Instruction {
 	Expression sender, receiver;
 	Object signal;
 	Object slot;
+	boolean isStatic;
 	
-	public QObjectConnect(Expression sender,Object signal,  Expression receiver, Object slot) {
+	public QObjectConnect(Expression sender,Object signal,  Expression receiver, Object slot,boolean isStatic) {
 		super();
 		this.sender = sender;
 		this.receiver = receiver;
 		this.signal = signal;
 		this.slot = slot;
+		this.isStatic=isStatic;
 	}
 	
-	public QObjectConnect(Expression sender, String signal,Expression receiver,  LambdaExpression slot) {
+	public QObjectConnect(Expression sender, String signal,Expression receiver,  LambdaExpression slot,boolean isStatic) {
 		super();
 		this.sender = sender;
 		this.receiver = receiver;
 		this.signal = signal;
 		this.slot = slot;
+		this.isStatic=isStatic;
 	}
 	
 
 	@Override
 	public String toString() {
 
-		return CodeUtil.sp("connect",CodeUtil.parentheses(CodeUtil.commaSep(sender, signal,receiver,slot)))+";";
+		return CodeUtil.sp(isStatic?"QObject::":null, "connect",CodeUtil.parentheses(CodeUtil.commaSep(sender, signal,receiver,slot)))+";";
 
 	}
 }
