@@ -61,7 +61,7 @@ public class MethodRemoveManyToManyRelatedEntity extends Method {
 			_callMethodInstr(varParams, ClsQVariantList.append, pBean.callAttrGetter(colPk.getCamelCaseName()));
 		}
 		
-		String sql = String.format("delete from %s where %s", rel.getMappingTable().getEscapedName(), CodeUtil.commaSep(columns));
+		String sql = String.format("delete from %s where %s", rel.getMappingTable().getEscapedName(), CodeUtil.concat(columns," AND "));
 		
 		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, pSqlCon,QString.fromStringConstant(sql),varParams).asInstruction());
 		

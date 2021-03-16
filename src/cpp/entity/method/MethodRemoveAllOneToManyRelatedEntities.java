@@ -52,7 +52,7 @@ public class MethodRemoveAllOneToManyRelatedEntities extends Method {
 			_callMethodInstr(varParams, ClsQVariantList.append,parent.accessThisAttrGetterByColumn(colPk));
 		}
 		
-		String sql = String.format("delete from %s where %s", rel.getDestTable().getEscapedName(), CodeUtil.commaSep(columns));
+		String sql = String.format("delete from %s where %s", rel.getDestTable().getEscapedName(), CodeUtil.concat(columns," AND "));
 		
 		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, pSqlCon,QString.fromStringConstant(sql),varParams).asInstruction());
 		
