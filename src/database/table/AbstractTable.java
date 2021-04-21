@@ -14,6 +14,7 @@ public abstract class AbstractTable {
 	protected PrimaryKey primaryKey;
 	protected Database db;
 	protected boolean overrideColumnsFromConfig;
+	protected boolean enableGetValueByName = false;
 	//protected ArrayList<String> overrideColumnNames;
 	
 	public void setOverrideColumnsFromConfig(boolean overrideColumnsFromConfig) {
@@ -116,5 +117,13 @@ public abstract class AbstractTable {
 			}
 		}
 		return false;
+	}
+
+	public void setEnableGetValueByName(boolean enableGetValueByName) {
+		this.enableGetValueByName = enableGetValueByName;
+	}
+	
+	public boolean isEnableGetValueByName() {
+		return enableGetValueByName;
 	}
 }

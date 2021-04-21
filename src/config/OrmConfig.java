@@ -34,7 +34,7 @@ public class OrmConfig {
 	private DbCredentials credentials;
 	
 	private boolean enableStacktrace = true;
-	private boolean enableGetValueByName = false;
+	
 	private boolean enableMethodLoadCollection = false;
 	private JsonMode jsonMode;
 	private String overrideRepositoryClassName;
@@ -290,13 +290,6 @@ public class OrmConfig {
 		
 	}
 	
-	public void setEnableGetValueByName(boolean enableGetValueByName) {
-		this.enableGetValueByName = enableGetValueByName;
-	}
-	
-	public boolean isEnableGetValueByName() {
-		return enableGetValueByName;
-	}
 
 	public void setOverrideRepositoryClassName(String overrideRepositoryClassName) {
 		this.overrideRepositoryClassName = overrideRepositoryClassName;

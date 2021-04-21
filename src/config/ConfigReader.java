@@ -281,7 +281,7 @@ public class ConfigReader implements ContentHandler {
 					
 					String attEnableGetValueByName = atts.getValue("enableGetValueByName");
 					if(attEnableGetValueByName != null) {
-						cfg.setEnableGetValueByName(attEnableGetValueByName.equals("1") ||attEnableGetValueByName.equals("true"));
+						currentEntityTable.setEnableGetValueByName(attEnableGetValueByName.equals("1") ||attEnableGetValueByName.equals("true"));
 					}
 					String enableLoadCollectionMethod = atts.getValue("enableLoadCollectionMethod");
 					if(enableLoadCollectionMethod!=null) {

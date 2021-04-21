@@ -360,7 +360,7 @@ public class EntityCls extends Cls {
 //		addMethod(new MethodGetById(oneRelations,manyRelations, tbl, this));
 		addMethod(new MethodGetSelectFields(allCols));
 		addMethod(new MethodGetAllSelectFields(allCols));
-		if(cfg.isEnableGetValueByName()) {
+		if(tbl.isEnableGetValueByName()) {
 			addMethod(new MethodGetValueByName());
 			addMethod(new MethodAllFieldNames());
 		}
