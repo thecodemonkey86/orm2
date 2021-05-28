@@ -28,7 +28,7 @@ public class PgDatabase extends Database {
 	
 	@Override
 	public String getEscapedTableName(AbstractTable tbl) {
-		return String.format("%s.\"%s\"", defaultSchema,tbl.getName());
+		return String.format("\"%s\".\"%s\"", defaultSchema,tbl.getName());
 	}
 
 	@Override
