@@ -89,14 +89,15 @@ public class ClsEntityQuerySelect extends Cls {
 			addMethod(new MethodEntityQueryWhereEquals(this,EntityQueryType.Select, cls, c));
 			addMethod(new MethodEntityQueryWhereNotEquals(this,EntityQueryType.Select, cls, c));
 			Type colType = EntityCls.getDatabaseMapper().columnToType(c);
-			addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Select, cls, c,CoreTypes.qvector(colType)));
-			addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Select, cls, c,CoreTypes.qset(colType)));
-			addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Select, cls, c,CoreTypes.qlist(colType)));
-			
+			if(!colType.equals(CoreTypes.Bool)) {
+				addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Select, cls, c,CoreTypes.qvector(colType)));
+				addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Select, cls, c,CoreTypes.qset(colType)));
+				addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Select, cls, c,CoreTypes.qlist(colType)));
+			}
 			if(c.isNullable()) {
 				addMethod(new MethodEntityQueryWhereIsNull(this,EntityQueryType.Select, cls, c));
 				addMethod(new MethodEntityQueryWhereIsNotNull(this,EntityQueryType.Select, cls, c));
-			} else {
+			} else if(!colType.equals(CoreTypes.Bool)) {
 				for(MethodEntityQueryWhereCompareOperator.Operator o : MethodEntityQueryWhereCompareOperator.Operator.values()) {
 					addMethod(new MethodEntityQueryWhereCompareOperator(this, EntityQueryType.Select, cls, c, o));
 				}		
