@@ -28,6 +28,7 @@ public class QString extends Expression {
 		return new QStringLiteral(str);
 	}
 	
+	@Deprecated
 	public static QString fromLatin1StringConstant(String str) {
 		if(EntityCls.getCfg().getQtVersion().ordinal() < CppOrmConfig.QtVersion.V5_14.ordinal()) {
 			return new QStringLiteral(str);

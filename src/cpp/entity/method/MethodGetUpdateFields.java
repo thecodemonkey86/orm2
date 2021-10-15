@@ -72,7 +72,7 @@ public class MethodGetUpdateFields extends Method{
 					.setIfInstr(
 							fields.callMethodInstruction(ClsQStringList.append, QString.fromStringConstant(col.getEscapedName()+"=?"))
 							,
-							pParams.callMethodInstruction(ClsQStringList.append, col.isNullable() ? new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), new CreateObjectExpression(CoreTypes.QVariant), colAttr.callMethod("val"))   : Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr.getType().equals(Types.QString) ? new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), QString.fromStringConstant(""), colAttr): colAttr))
+							pParams.callMethodInstruction(ClsQStringList.append, col.isNullable() ? new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), new CreateObjectExpression(CoreTypes.QVariant), colAttr.callMethod(Nullable.val))   : Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr.getType().equals(Types.QString) ? new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), QString.fromStringConstant(""), colAttr): colAttr))
 							
 							);
 				}
@@ -86,11 +86,9 @@ public class MethodGetUpdateFields extends Method{
 				for(int i=0;i<r.getColumnCount();i++) {
 					Column col = r.getColumns(i).getValue1();
 					Expression colAttr = parent.accessThisAttrGetterByColumn(col);
-					if(col.isNullable()) {
-						colAttr = colAttr.callMethod(Nullable.val);
-					}
+					 
 					ifBlock.setIfInstr(fields.callMethodInstruction(ClsQStringList.append, QString.fromStringConstant(col.getEscapedName()+"=?")),
-							pParams.callMethodInstruction(ClsQStringList.append, Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr)));
+							pParams.callMethodInstruction(ClsQStringList.append, col.isNullable() ? new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), new CreateObjectExpression(CoreTypes.QVariant), colAttr.callMethod(Nullable.val))   : Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr.getType().equals(Types.QString) ? new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), QString.fromStringConstant(""), colAttr): colAttr)));
 				}
 			}
 			
