@@ -1,11 +1,13 @@
 package config.cpp;
 
 import java.nio.file.Path;
+import java.sql.Connection;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import config.ConfigReader;
+import database.Database;
 
 
 public class CppConfigReader extends ConfigReader{
@@ -27,8 +29,8 @@ public class CppConfigReader extends ConfigReader{
 //		}
 //	}
 
-	public CppConfigReader(Path xmlDirectory) {
-		super(xmlDirectory);
+	public CppConfigReader(Path xmlDirectory,Connection conn,Database database) {
+		super(xmlDirectory,conn,database);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -46,6 +48,7 @@ public class CppConfigReader extends ConfigReader{
 		}
 	}
 	
+	@Override
 	protected void createConfig() {
 		cfg = new CppOrmConfig();
 	}

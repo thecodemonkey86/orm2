@@ -1,11 +1,13 @@
 package sunjava.config;
 
 import java.nio.file.Path;
+import java.sql.Connection;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import config.ConfigReader;
+import database.Database;
 
 
 public class JavaConfigReader extends ConfigReader{
@@ -27,8 +29,8 @@ public class JavaConfigReader extends ConfigReader{
 //		}
 //	}
 
-	public JavaConfigReader(Path xmlDirectory) {
-		super(xmlDirectory);
+	public JavaConfigReader(Path xmlDirectory,Connection conn,Database database) {
+		super(xmlDirectory,conn,database);
 	}
 
 	@Override

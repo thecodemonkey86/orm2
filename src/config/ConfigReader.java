@@ -2,19 +2,10 @@ package config;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Properties;
-
-import javax.swing.Box;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
@@ -22,15 +13,6 @@ import org.xml.sax.SAXException;
 
 import cpp.entity.SetterValidator;
 import database.Database;
-import database.DbCredentials;
-import database.FirebirdCredentials;
-import database.FirebirdDatabase;
-import database.MySqlCredentials;
-import database.MySqlDatabase;
-import database.PgDatabase;
-import database.SqliteCredentials;
-import database.SqliteDatabase;
-import database.PgCredentials;
 import database.column.Column;
 import database.relation.AbstractRelation;
 import database.relation.M2MColumns;
@@ -40,10 +22,9 @@ import database.relation.OneToManyRelation;
 import database.relation.PrimaryKey;
 import database.table.MappingTable;
 import database.table.Table;
-import io.PasswordManager;
 import util.Pair;
 
-public class ConfigReader implements ContentHandler {
+public abstract class ConfigReader implements ContentHandler {
 
 	protected Connection conn;
 	protected OrmConfig cfg;
@@ -75,15 +56,17 @@ public class ConfigReader implements ContentHandler {
 		return cfg;
 	}
 
-	public ConfigReader(Path xmlDirectory) {
+	public ConfigReader(Path xmlDirectory,Connection conn, Database database) {
 		relationQueryNames = new HashMap<>();
 		this.xmlDirectory = xmlDirectory;
 		this.tags = new LinkedList<>();
+		this.conn = conn;
+		createConfig();
+		cfg.setDatabase(database);
 	}
+	
+	protected abstract void createConfig() ;
 
-	protected void createConfig() {
-		cfg = new OrmConfig();
-	}
 
 	protected String checkRelationQueryNameUnique(String tableName, String name) throws IOException {
 		if(!this.relationQueryNames.containsKey(tableName)) {
@@ -141,72 +124,8 @@ public class ConfigReader implements ContentHandler {
 			
 			switch (this.tags.peek()) {
 			case "orm":
-				createConfig();
 				break;
 			case "database":
-				this.cfg.setDbEngine(atts.getValue("engine"));
-				Database database=null; 
-				DbCredentials credentials;
-				
-				if(atts.getValue("password") != null) {
-					throw new IOException("Remove password from XML");
-				}
-				
-				if (cfg.isEnginePostgres()) {
-					Class.forName("org.postgresql.Driver");
-					database = new PgDatabase(atts.getValue("name"), atts.getValue("schema"));
-					credentials = new PgCredentials(atts.getValue("user"), atts.getValue("host"),atts.getValue("port") != null ? Integer.parseInt(atts.getValue("port")) : 5432, database);
-					
-				} else if (cfg.isEngineMysql()) {
-					database = new MySqlDatabase(atts.getValue("name"));
-					credentials = new MySqlCredentials(atts.getValue("user"), atts.getValue("host"), atts.getValue("port") != null ? Integer.parseInt(atts.getValue("port")) : 3306, database);
-					
-				} else if (cfg.isEngineFirebird()) {
-					Class.forName("org.firebirdsql.jdbc.FBDriver");
-					database = new FirebirdDatabase(atts.getValue("name"));
-					credentials = new FirebirdCredentials(atts.getValue("user"), atts.getValue("host"), atts.getValue("file"),atts.getValue("port") != null ? Integer.parseInt(atts.getValue("port")) : 23053, atts.getValue("charSet")  != null ?  atts.getValue("charSet")  : "UTF-8", database);
-				} else if (cfg.isEngineSqlite()) {
-					Class.forName("org.sqlite.JDBC");
-					database = new SqliteDatabase();
-					credentials = new SqliteCredentials(Paths.get(atts.getValue("file")) , database);
-						
-				} else {
-					throw new IOException(
-							"Database engine \"" + atts.getValue("engine") + "\" is currently not supported");
-				}
-				
-			
-				String password = PasswordManager.loadFromFile(credentials);
-				if(password == null && !cfg.isEngineSqlite()) {
-					JPasswordField jpf = new JPasswordField(24);
-				    JLabel jl = new JLabel("Passwort: ");
-				    Box box = Box.createHorizontalBox();
-				    box.add(jl);
-				    box.add(jpf);
-				    int x = JOptionPane.showConfirmDialog(null, box, "DB Passwort", JOptionPane.OK_CANCEL_OPTION);
-
-				    if (x == JOptionPane.OK_OPTION) {
-				    	password = new String(jpf.getPassword());
-				    }
-					
-					if(password != null && !password.isEmpty()) {
-						PasswordManager.saveToFile(credentials, password);
-					} else {
-						throw new IOException("Password not set");
-					}
-				}
-				credentials.setPassword(password);
-				
-				Properties props = credentials.getProperties();
-				props.setProperty("charSet",atts.getValue("charset") == null ? "utf8" :atts.getValue("charset"));
-				
-				// props.setProperty("user", "postgres");
-				
-				conn = DriverManager.getConnection(credentials.getConnectionUrl(), credentials.getProperties());
-			
-				cfg.setDatabase(database);
-				cfg.setCredentials(credentials);
-			
 				
 				break;
 			case "output":

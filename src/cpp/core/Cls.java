@@ -62,6 +62,10 @@ public class Cls extends Type implements IAttributeContainer{
 	}
 	
 	public Cls(String name) {
+		this(name,false);
+	}
+	
+	public Cls(String name,boolean copyConstructor) {
 		super(name);
 		this.methods=new ArrayList<>();
 		this.attrs=new ArrayList<>();
@@ -69,7 +73,7 @@ public class Cls extends Type implements IAttributeContainer{
 		this.includes=new LinkedHashSet<>();
 		this.operators = new ArrayList<>(); 
 		this.forwardDeclaredTypes = new LinkedHashSet<>();
-		if(name !=null) {
+		if(copyConstructor) {
 			addConstructor(new CopyConstructor(this));
 			addOperator(new CopyAssignOperator(this));
 		}

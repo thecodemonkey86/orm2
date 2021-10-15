@@ -10,7 +10,6 @@ import java.util.Map;
 
 import cpp.entity.SetterValidator;
 import database.Database;
-import database.DbCredentials;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
@@ -31,7 +30,6 @@ public class OrmConfig {
 	protected Map<String,List<Pair<String, String>>> renameMethods;
 	protected Map<String, Map<String,SetterValidator>> columnValidators;
 	protected Database database;
-	private DbCredentials credentials;
 	
 	private boolean enableStacktrace = true;
 	private boolean enableGetValueByName = false;
@@ -198,14 +196,6 @@ public class OrmConfig {
 
 	boolean hasBasePath() {
 		return basePath != null;
-	}
-	
-	public DbCredentials getCredentials() {
-		return credentials;
-	}
-	
-	public void setCredentials(DbCredentials credentials) {
-		this.credentials = credentials;
 	}
 	
 	public void addRenameMethod(String cls, String oldname,String newname) {
