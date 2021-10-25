@@ -211,6 +211,10 @@ public abstract class ConfigReader implements ContentHandler {
 							col.setEnableFileImport(true);
 						}
 					}
+					String strOptionToManuallyOverrideRelatedTableJoins = atts.getValue("enableOverrideRelatedTableJoins");
+					if(strOptionToManuallyOverrideRelatedTableJoins != null) {
+						currentEntityTable.setOptionToManuallyOverrideRelatedTableJoins(strOptionToManuallyOverrideRelatedTableJoins.equals("true")||strOptionToManuallyOverrideRelatedTableJoins.equals("1"));
+					}
 				} else {
 					throw new SAXException("Illegal state");
 				}

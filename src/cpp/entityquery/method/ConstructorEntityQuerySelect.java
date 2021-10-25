@@ -4,6 +4,7 @@ import cpp.Types;
 import cpp.core.Constructor;
 import cpp.core.Param;
 import cpp.core.expression.BoolExpression;
+import cpp.core.expression.Expressions;
 import cpp.core.expression.IntExpression;
 import cpp.core.expression.StaticMethodCall;
 import cpp.core.instruction.IfBlock;
@@ -16,6 +17,7 @@ public class ConstructorEntityQuerySelect extends Constructor {
 	Param pRepository;
 //	Param pTable;
 	Param pLazy;
+	Param pOverrideRelatedTableJoins;
 	EntityCls bean;
 	
 	public ConstructorEntityQuerySelect(EntityCls bean) {
@@ -26,6 +28,10 @@ public class ConstructorEntityQuerySelect extends Constructor {
 //		pTable = addParam(new Param(Types.QString.toConstRef(), "table"));
 		if(bean.hasRelations())
 			pLazy = addParam(new Param(Types.Bool, "loadLazy",BoolExpression.FALSE));
+		
+		if(bean.getTbl().getOptionToManuallyOverrideRelatedTableJoins()) {
+			pOverrideRelatedTableJoins = addParam(new Param(Types.Bool, "overrideRelatedTableJoins",BoolExpression.FALSE));
+		}
 	}
 
 	@Override
@@ -41,7 +47,7 @@ public class ConstructorEntityQuerySelect extends Constructor {
 		
 		if(bean.hasRelations()) {
 			_assign(_this().accessAttr(ClsEntityQuerySelect.lazyLoading),pLazy);
-			IfBlock ifNotLazyLoading = _ifNot(pLazy);
+			IfBlock ifNotLazyLoading = pOverrideRelatedTableJoins!=null ? _ifNot(pLazy)._and(Expressions.not(pOverrideRelatedTableJoins)) : _ifNot(pLazy);
 			
 			//ifNotLazyLoading.thenBlock()._assign(_this().accessAttr(ClsBeanQuerySelect.selectFields),  this.bean.callStaticMethod(MethodGetAllSelectFields.getMethodName(), attrMainBeanAlias ));
 			//ifNotLazyLoading.elseBlock()._assign(_this().accessAttr(ClsBeanQuerySelect.selectFields),  this.bean.callStaticMethod(MethodGetSelectFields.getMethodName(), attrMainBeanAlias ));
