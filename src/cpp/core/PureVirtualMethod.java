@@ -36,12 +36,12 @@ public class PureVirtualMethod extends Method {
 	
 	@Override
 	public boolean hasOutputSourceCode() {
-		return true;
+		return false;
 	}
 	
 		@Override
 	public boolean hasOutputHeaderCode() {
-		return false;
+		return true;
 	}
 	
 
