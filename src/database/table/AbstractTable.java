@@ -126,4 +126,13 @@ public abstract class AbstractTable {
 	public boolean isEnableGetValueByName() {
 		return enableGetValueByName;
 	}
+
+	public boolean hasColumn(String colName) {
+		for(Column c:allColumns) {
+			if (c.getName().equals(colName)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

@@ -23,7 +23,7 @@ public class MySqlDatabase extends Database {
 
 
 	@Override
-	public void readColumns(AbstractTable tbl, Connection conn) throws SQLException {
+	public void readColumns(AbstractTable tbl, Connection conn,boolean columnsFromConfig) throws SQLException {
 		if (stColumndata == null)
 			stColumndata = conn.prepareStatement(
 					"select * from information_schema.columns where table_name = ? and TABLE_SCHEMA = ?");

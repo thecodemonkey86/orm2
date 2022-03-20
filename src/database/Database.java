@@ -36,7 +36,7 @@ public abstract class Database {
 
 	
 	public abstract String getEscapedTableName(AbstractTable tbl) ;
-	public abstract void readColumns(AbstractTable tbl,Connection conn) throws SQLException;
+	public abstract void readColumns(AbstractTable tbl,Connection conn,boolean columnsFromConfig) throws SQLException;
 	
 	public abstract String sqlInsertOrUpdate(AbstractTable tbl, List<String> matchingColumns);
 	public String sqlInsert(AbstractTable tbl) {

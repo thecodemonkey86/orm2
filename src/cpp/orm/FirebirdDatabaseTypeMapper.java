@@ -47,6 +47,10 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 
 	@Override
 	public Type getTypeFromDbDataType(String dbType, boolean nullable) {
+		if(dbType==null) {
+			System.out.println();
+			throw new NullPointerException();
+		}
 /*
 7 = SMALLINT
 8 = INTEGER

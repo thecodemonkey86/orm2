@@ -3,6 +3,7 @@ package config;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -149,7 +150,7 @@ public abstract class ConfigReader implements ContentHandler {
 					currentEntityTable.setOverrideColumnsFromConfig(atts.getValue("overrideColumns")!=null && atts.getValue("overrideColumns").equals("true"));
 					if(!currentEntityTable.isOverrideColumnsFromConfig()) {
 						overrideColsPrimaryKey = null;
-						cfg.getDatabase().readColumns(currentEntityTable, conn);
+						cfg.getDatabase().readColumns(currentEntityTable, conn,false);
 					
 						if(atts.getValue("overridePrimaryKey")!=null) {
 							String[] pkColNames = atts.getValue("overridePrimaryKey").split(",");
@@ -271,7 +272,7 @@ public abstract class ConfigReader implements ContentHandler {
 					MappingTable mappingTable = new MappingTable(cfg.getDatabase(), mappingTableName, cfg.getDatabase().getDefaultSchema());
 					
 					String overrideMappingTblPk=atts.getValue("mappingTblOverridePK");
-					cfg.getDatabase().readColumns(mappingTable, conn);	
+					cfg.getDatabase().readColumns(mappingTable, conn,false);	
 					if(overrideMappingTblPk!=null) {
 						PrimaryKey mappingTblPk = new PrimaryKey();
 						String[] mappingTblPkParts = overrideMappingTblPk.split(",");
@@ -484,6 +485,14 @@ public abstract class ConfigReader implements ContentHandler {
 				currentDestTable = null;	
 				break;
 			case "entity":
+				if(currentEntityTable.isOverrideColumnsFromConfig()) {
+					try {
+						cfg.getDatabase().readColumns(currentEntityTable, conn,true);
+					} catch (SQLException e) {
+						e.printStackTrace();
+						throw new SAXException(e);
+					}
+				}
 				if(overrideColsPrimaryKey != null) {
 					currentEntityTable.setPrimaryKey(overrideColsPrimaryKey);
 				}

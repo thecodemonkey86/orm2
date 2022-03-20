@@ -62,7 +62,7 @@ public class SqliteDatabase extends Database {
 	}
 
 	@Override
-	public void readColumns(AbstractTable tbl, Connection conn) throws SQLException {
+	public void readColumns(AbstractTable tbl, Connection conn,boolean columnsFromConfig) throws SQLException {
 		if (stColumndata==null)
 			stColumndata = conn.prepareStatement("select * from sqlite_master where tbl_name = ?");
 		stColumndata.setString(1, tbl.getName());

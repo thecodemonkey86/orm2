@@ -91,7 +91,7 @@ public class ClsEntityQueryUpdate extends Cls {
 		
 		addIncludeLib(ClsQVector.CLSNAME);
 		//addIncludeHeader(EntityCls.getModelPath() + "entities/"+cls.getIncludeHeader());
-		addIncludeHeaderInSource("../"+ ClsEntityRepository.CLSNAME.toLowerCase());
+		addIncludeHeaderInSource("../"+ Types.EntityRepository.getName().toLowerCase());
 		addIncludeHeader(Types.nullable(Types.Void).getHeaderInclude());
 		addIncludeInSourceDefaultHeaderFileName(Types.SqlUtil);
 		addIncludeLibInSource(Types.qset(Types.Void));
