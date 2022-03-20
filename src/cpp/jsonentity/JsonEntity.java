@@ -148,7 +148,7 @@ public class JsonEntity extends Cls {
 		addAttr(new Attr(Types.Bool, "loaded"));
 		addAttr(new Attr(JsonTypes.JsonEntityRepository.toSharedPtr(), repository));
 		addForwardDeclaredClass(JsonTypes.JsonEntityRepository);
-		addIncludeHeader( JsonTypes.JsonEntityRepository.getHeaderInclude());
+		addIncludeHeader(getRepositoryPath()+ JsonTypes.JsonEntityRepository.getIncludeHeader());
 		for(OneRelation r:oneRelations) {
 			OneAttr attr = new OneAttr(r);
 				addAttr(attr);
@@ -180,7 +180,7 @@ public class JsonEntity extends Cls {
 			
 			Attr attrManyToManyRemoved = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyTypeJsonEntities(r)) ,attr.getName()+"Removed");
 			addAttr(attrManyToManyRemoved);
-			addIncludeDefaultHeaderFileName(attr.getClassType());
+			addIncludeHeader(attr.getClassType().getIncludeHeader());
 			addForwardDeclaredClass((Cls) attr.getElementType());
 			if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
 				addForwardDeclaredClass( ((Struct) Types.getRelationForeignPrimaryKeyTypeJsonEntities(r)));
@@ -201,7 +201,7 @@ public class JsonEntity extends Cls {
 		for(ManyRelation r:manyRelations) {
 			ManyAttr attr = new ManyAttr(r);
 			addAttr(attr);
-			addIncludeDefaultHeaderFileName(attr.getClassType());
+			addIncludeHeader(attr.getClassType().getIncludeHeader());
 			addForwardDeclaredClass((Cls) attr.getElementType());
 			if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
 				addForwardDeclaredClass( ((JsonEntity) Types.getRelationForeignPrimaryKeyTypeJsonEntities(r)).getStructPk());
@@ -283,8 +283,8 @@ public class JsonEntity extends Cls {
 		addIncludeLib(CoreTypes.QVariant);
 		addIncludeLib(Types.QDate);
 		addIncludeLib("memory");
-		addIncludeDefaultHeaderFileName(Types.nullable(Types.Void));
-		addIncludeDefaultHeaderFileName(JsonTypes.BaseJsonEntity);
+		addIncludeHeader("nullable");
+		addIncludeHeader(JsonTypes.BaseJsonEntity.getIncludeHeader());
 
 		addIncludeHeader(Types.orderedSet(null).getHeaderInclude());
 		addAttributes(tbl.getAllColumns());

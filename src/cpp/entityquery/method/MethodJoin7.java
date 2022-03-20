@@ -12,7 +12,7 @@ import cpp.core.method.TplMethod;
 public class MethodJoin7 extends MethodTemplate{
 
 	public MethodJoin7(Cls parentType) {
-		super(Method.Public, parentType.toRef(), "join",false);
+		super(Method.Public, parentType.toRef(), "join");
 		addParam(Types.QString.toConstRef(),"joinTableAlias");
 		addParam(Types.QString.toConstRef(),"on");
 		addTplType(new TplSymbol("T"));
@@ -21,7 +21,7 @@ public class MethodJoin7 extends MethodTemplate{
 
 
 	@Override
-	public TplMethod getConcreteMethodImpl(Type... types) {
+	public TplMethod getConcreteMethod(Type... types) {
 		// TODO Auto-generated method stub
 				TplMethod t= new TplMethod(this,types ) {
 					

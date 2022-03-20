@@ -1,6 +1,5 @@
 package cpp.lib;
 
-import cpp.Namespaces;
 import cpp.Types;
 import cpp.core.Cls;
 import cpp.core.Type;
@@ -11,7 +10,7 @@ public class ClsSqlUtil extends Cls {
 	
 	public ClsSqlUtil() {
 		super("SqlUtil");
-		setUseNamespace(Namespaces.SqlUtil3);
+		setUseNamespace("SqlUtil3");
 		addMethod(new LibMethod(Types.QString,getPlaceholders,true ));
 	}
 	

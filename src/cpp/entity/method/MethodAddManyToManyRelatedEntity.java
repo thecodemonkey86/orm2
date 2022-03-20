@@ -12,23 +12,20 @@ import cpp.core.Param;
 import cpp.core.QString;
 import cpp.core.expression.Var;
 import cpp.entity.EntityCls;
+import cpp.entityrepository.ClsEntityRepository;
 import cpp.lib.ClsQVariantList;
 import cpp.lib.ClsQVector;
 import cpp.lib.ClsSql;
 import cpp.orm.OrmUtil;
-import cpp.util.ClsDbPool;
 import database.relation.ManyRelation;
 
 public class MethodAddManyToManyRelatedEntity extends Method {
 
 	protected ManyRelation rel;
-	protected Param pBean;
-	protected Param pSqlCon;
-	
+	Param pBean;
 	public MethodAddManyToManyRelatedEntity(ManyRelation r, Param p) {
 		super(Public, Types.Void, getMethodName(r));
 		pBean = addParam(p);
-		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 		rel=r;
 	}
 	
@@ -66,7 +63,7 @@ public class MethodAddManyToManyRelatedEntity extends Method {
 		
 		String sql = String.format("insert into %s (%s) values (%s)",rel.getMappingTable().getEscapedName(), CodeUtil.commaSep(columns), CodeUtil.commaSep(placeholders));
 		
-		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, pSqlCon,QString.fromStringConstant(sql),varParams).asInstruction());
+		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, _this().accessAttr(EntityCls.repository).callAttrGetter(ClsEntityRepository.sqlCon),QString.fromStringConstant(sql),varParams).asInstruction());
 		
 		/*if (relationBean.getTbl().getPrimaryKey().isMultiColumn()) {
 			Struct pkType=relationBean.getStructPk();

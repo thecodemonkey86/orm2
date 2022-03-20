@@ -16,6 +16,7 @@ import cpp.core.instruction.IfBlock;
 import cpp.entity.EntityCls;
 import cpp.lib.ClsQString;
 import cpp.lib.ClsQVariant;
+import cpp.lib.EnableSharedFromThis;
 import database.FirebirdDatabase;
 import database.column.Column;
 import cpp.core.expression.ParenthesesExpression;
@@ -42,7 +43,7 @@ public class MethodGetFromRecord extends Method {
 		addParam(new Param(Types.QString.toConstRef(), "alias"));
 		this.columns = cls.getTbl().getColumns(true);
 		this.bean = cls;
-		setStatic(true);
+//		setConstQualifier(true);
 	}
 
 	@Override
@@ -53,7 +54,14 @@ public class MethodGetFromRecord extends Method {
 	@Override
 	public void addImplementation() {
 		//Var bean = _declareMakeShared(parent, "entity");
-		Var vBean = _declareMakeShared(bean, "entity");
+		Var vBean = null;
+		
+		if(isStatic()) {
+			Param pRepository = getParam("repository");
+			vBean = _declareMakeShared(bean, "entity", pRepository);
+		} else {
+			vBean = _declareMakeShared(bean, "entity", _this().callMethod(EnableSharedFromThis.SHARED_FROM_THIS));
+		}
 		for(Column col:columns) {
 			try{
 				

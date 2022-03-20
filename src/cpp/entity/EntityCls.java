@@ -70,7 +70,6 @@ import cpp.entity.method.MethodSetAutoIncrementId;
 import cpp.entity.method.MethodUnload;
 import cpp.orm.DatabaseTypeMapper;
 import cpp.orm.OrmUtil;
-import cpp.util.ClsDbPool;
 import database.Database;
 import database.column.Column;
 import database.relation.AbstractRelation;
@@ -87,7 +86,7 @@ public class EntityCls extends Cls {
 	public static final String END_CUSTOM_CLASS_MEMBERS = "/*END_CUSTOM_CLASS_MEMBERS*/";
 	public static final String BEGIN_CUSTOM_PREPROCESSOR = "/*BEGIN_CUSTOM_PREPROCESSOR*/";
 	public static final String END_CUSTOM_PREPROCESSOR = "/*END_CUSTOM_PREPROCESSOR*/";
-	public static final String APILEVEL = "3.9.0";
+	public static final String APILEVEL = "3.8.5";
 	
 	static Database database;
 	static DatabaseTypeMapper mapper;
@@ -174,7 +173,7 @@ public class EntityCls extends Cls {
 		this.customPreprocessorCode.add(code);
 	}
 	private void addAttributes(List<Column> allColumns) {
-//		addAttr(new RepositoryAttr());
+		addAttr(new RepositoryAttr());
 		for(OneRelation r:oneRelations) {
 			OneAttr attr = new OneAttr(r);
 				addAttr(attr);
@@ -205,7 +204,7 @@ public class EntityCls extends Cls {
 			//Attr attrManyToManyRemoved = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Removed");
 			//addAttr(attrManyToManyRemoved);
 			//addMethod(new MethodAttributeGetter(attrManyToManyRemoved));
-			addIncludeDefaultHeaderFileName(attr.getClassType());
+			addIncludeHeader(attr.getClassType().getIncludeHeader());
 			addForwardDeclaredClass( (Cls) ((TplCls) (Cls) attr.getElementType()).getElementType());
 			addMethod(new MethodManyAttrGetter(attr));
 			addMethod(new MethodAddRelatedEntity(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
@@ -222,7 +221,7 @@ public class EntityCls extends Cls {
 		for(ManyRelation r:manyRelations) {
 			ManyAttr attr = new ManyAttr(r);
 			addAttr(attr);
-			addIncludeDefaultHeaderFileName(attr.getClassType());
+			addIncludeHeader(attr.getClassType().getIncludeHeader());
 			addForwardDeclaredClass( (Cls) ((TplCls) (Cls) attr.getElementType()).getElementType());
 			addMethod(new MethodManyAttrGetter(attr));
 //			Attr attrManyToManyAdded = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Added");
@@ -314,7 +313,6 @@ public class EntityCls extends Cls {
 		this.oneRelations = oneRelations;
 		this.manyRelations = manyToManyRelations;
 		classDocumentation = String.format("/**\n * @brief auto-generated entity class representing the %s database table\n*/", tbl.getName());
-		headerInclude=EntityCls.getModelPath() + "entities/"+type.toLowerCase();
 	}
 	
 	public Constructor getConstructor() {
@@ -329,7 +327,7 @@ public class EntityCls extends Cls {
 		setDestructor(d);
 		
 	//	addPreprocessorInstruction("#define " + getName()+ " "+CodeUtil2.uc1stCamelCase(tbl.getName()));
-		addIncludeDefaultHeaderFileName(Types.BaseEntity);
+		addIncludeHeader(Types.BaseEntity.getIncludeHeader());
 		addIncludeLib(Types.QString);
 		addIncludeLib(CoreTypes.QVariant);
 		addIncludeLib(Types.QDate);
@@ -343,10 +341,8 @@ public class EntityCls extends Cls {
 		addMethod(new MethodGetTableNameAlias());
 //		addMethod(new MethodGetTableNameInternal());
 		//addIncludeHeader("entityquery");
-		addInclude(cfg.getDbPoolHeader());
-		addIncludeHeaderInSource(repositoryPath + Types.EntityRepository.getName().toLowerCase());
-		addForwardDeclaredClass(Types.beanQuerySelect(this));
-		//addForwardDeclaredClass(Types.EntityRepository);
+		addIncludeHeader(repositoryPath + Types.EntityRepository.getName().toLowerCase());
+		addForwardDeclaredClass(Types.EntityRepository);
 		addIncludeHeader(Types.orderedSet(null).getHeaderInclude());
 		addAttributes(tbl.getAllColumns());
 		addForwardDeclaredClass(this);
@@ -412,9 +408,9 @@ public class EntityCls extends Cls {
 	@Override
 	public void addMethodImplementations() {
 		
-		if(hasRelations()) {
+//		if (!manyRelations.isEmpty()) {
 			fetchListHelper = new FetchListHelperClass(this);
-		}
+//		}
 		
 		super.addMethodImplementations();
 		if (nonMemberMethods !=null) {
@@ -464,8 +460,6 @@ public class EntityCls extends Cls {
 //		}
 		if (fetchListHelper!=null) {
 			sb.append(fetchListHelper.toSourceString()).append('\n').append('\n');
-		} else {
-			sb.append('\n');
 		}
 		
 		
@@ -567,6 +561,9 @@ public class EntityCls extends Cls {
 		return tbl;
 	}
 	
+	public RepositoryAttr getRepositoryAttr() {
+		return (RepositoryAttr) getAttrByName(repository);
+	}
 	
 	public List<ManyRelation> getManyToManyRelations() {
 		return manyRelations;

@@ -2,24 +2,20 @@ package cpp.entity.method;
 
 import util.StringUtil;
 import util.pg.PgCppUtil;
-import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.Method;
-import cpp.core.Param;
 import cpp.core.expression.BoolExpression;
 import cpp.core.expression.Expressions;
 import cpp.core.instruction.IfBlock;
-import cpp.entityrepository.method.MethodEntityLoad;
-import cpp.util.ClsDbPool;
+import cpp.entity.EntityCls;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
 
 public class MethodAttrGetter extends Method{
 
-	protected Attr a;
-	protected boolean loadIfNotLoaded;
-	protected Param pSqlCon;
+	Attr a;
+	boolean loadIfNotLoaded;
 	
 	public MethodAttrGetter(Attr a,boolean loadIfNotLoaded) {
 		super(Public, 
@@ -29,9 +25,6 @@ public class MethodAttrGetter extends Method{
 		this.a=a;
 		setConstQualifier(!loadIfNotLoaded);
 		this.loadIfNotLoaded= loadIfNotLoaded;
-		if ( loadIfNotLoaded) {
-			pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
-		}
 //		if (loadIfNotLoaded) {
 //			addParam(new Param(Types.Bool , "noLoading", BoolExpression.FALSE));
 //		}
@@ -47,7 +40,7 @@ public class MethodAttrGetter extends Method{
 					
 					
 			);
-			ifNotLoaded.thenBlock().addInstr(Types.EntityRepository.callStaticMethod(MethodEntityLoad.getMethodName(), _this().dereference(), pSqlCon).asInstruction());
+			ifNotLoaded.thenBlock()._callMethodInstr(_this().accessAttr(EntityCls.repository), "load", _this());
 			ifNotLoaded.thenBlock()._assign(parent.getAttrByName("loaded"), BoolExpression.TRUE);
 		}
 		_return(a);

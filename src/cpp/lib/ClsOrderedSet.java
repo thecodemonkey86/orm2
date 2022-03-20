@@ -1,6 +1,5 @@
 package cpp.lib;
 
-import cpp.Namespaces;
 import cpp.Types;
 import cpp.core.TplCls;
 import cpp.core.Type;
@@ -15,7 +14,6 @@ public class ClsOrderedSet extends TplCls {
 		addMethod(new LibMethod(Types.Bool, "append"));
 		addMethod(new LibMethod(Types.Bool, "size"));
 		headerInclude = "util/collection/orderedset";
-		setUseNamespace(Namespaces.QtCommon2);
 	}
 
 

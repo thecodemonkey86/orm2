@@ -10,6 +10,7 @@ import cpp.core.expression.BoolExpression;
 import cpp.core.expression.MakeSharedExpression;
 import cpp.core.expression.Var;
 import cpp.entity.EntityCls;
+import cpp.lib.EnableSharedFromThis;
 import database.column.Column;
 
 public class MethodRepoCreateNewNonNullableOnly extends Method {
@@ -33,7 +34,7 @@ public class MethodRepoCreateNewNonNullableOnly extends Method {
 			}
 		}
 		for(Column col : cls.getTbl().getFieldColumns()) {
-			
+			if(!col.isFileImportEnabled()) {
 				Type t = EntityCls.getDatabaseMapper().columnToType(col);
 				if(!col.isNullable()) {
 					initializeFieldsParams.add(addParam(new Param(t.isPrimitiveType() 
@@ -42,15 +43,14 @@ public class MethodRepoCreateNewNonNullableOnly extends Method {
 					
 				}
 				
-				
+			}
 			
 		}
-		setStatic(true);
 	}
 
 	@Override
 	public void addImplementation() {
-		Var bean = _declare(returnType, "entity", new MakeSharedExpression((SharedPtr) returnType));
+		Var bean = _declare(returnType, "entity", new MakeSharedExpression((SharedPtr) returnType,_this().callMethod(EnableSharedFromThis.SHARED_FROM_THIS)));
 		_callMethodInstr(bean, "setInsertNew");
 		addInstr(bean.callMethodInstruction("setLoaded", BoolExpression.TRUE));
 		

@@ -1,7 +1,6 @@
 package cpp.core;
 
 import codegen.CodeUtil;
-import cpp.Types;
 import cpp.core.expression.Expression;
 import cpp.core.expression.Var;
 
@@ -17,9 +16,6 @@ public class Attr extends Var {
 	
 	public Attr(Type type, String name) {
 		this(Protected, type, name, null, false);
-		if(type.equals(Types.QSqlDatabase)) {
-			throw new RuntimeException("QSqlDatabase as class member");
-		}
 	}
 	
 	public Attr(String visibility, Type type, String name, Expression initValue, boolean isStatic ) {

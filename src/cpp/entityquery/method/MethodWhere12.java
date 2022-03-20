@@ -12,7 +12,7 @@ import cpp.core.method.TplMethod;
 public class MethodWhere12 extends MethodTemplate{
 
 	public MethodWhere12(Cls parentType) {
-		super(Method.Public, parentType.toRef(), "where",false);
+		super(Method.Public, parentType.toRef(), "where");
 		addTplType(new TplSymbol("T"));
 		addParam(Types.QString.toConstRef(),"whereCond");
 		addParam(Types.qset(tplTypes.get(0)).toConstRef(),"params");
@@ -20,7 +20,7 @@ public class MethodWhere12 extends MethodTemplate{
 	}
 
 	@Override
-	public TplMethod getConcreteMethodImpl(Type... types) {
+	public TplMethod getConcreteMethod(Type... types) {
 		// TODO Auto-generated method stub
 		TplMethod t= new TplMethod(this,types ) {
 			

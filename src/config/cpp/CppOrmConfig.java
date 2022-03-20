@@ -4,7 +4,6 @@ import config.OrmConfig;
 
 public class CppOrmConfig extends OrmConfig{
 	protected String exportMacro,exportMacroIncludeHeader,namespace;
-	protected String dbPoolClass, dbPoolHeader;
 	public enum QtVersion{V5_12,V5_13, V5_14, V5_15}
 	
 	protected QtVersion qtVersion = QtVersion.V5_15;
@@ -37,20 +36,6 @@ public class CppOrmConfig extends OrmConfig{
 //		return namespace!=null;
 //	}
 	
-	public String getDbPoolClass() {
-		return dbPoolClass;
-	}
 	
-	public String getDbPoolHeader() {
-		return dbPoolHeader;
-	}
-	
-	public void setDbPoolClass(String dbPoolClass) {
-		this.dbPoolClass = dbPoolClass;
-	}
-	
-	public void setDbPoolHeader(String dbPoolHeader) {
-		this.dbPoolHeader = dbPoolHeader;
-	}
 	
 }

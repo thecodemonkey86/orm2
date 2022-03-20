@@ -27,10 +27,10 @@ public class ClsQVariant extends Cls{
 		addMethod(new LibMethod(CoreTypes.Bool, isNull));
 		addMethod(new LibMethod(this, fromValue,true));
 		addMethod(new LibMethod(CoreTypes.LongLong, "toLongLong"));
-		addMethodTemplate(new LibMethodTemplate(new TplSymbol("T"), value,false) {
+		addMethodTemplate(new LibMethodTemplate(new TplSymbol("T"), value) {
 
 			@Override
-			public TplMethod getConcreteMethodImpl(Type... types) {
+			public TplMethod getConcreteMethod(Type... types) {
 				return new LibTplMethod(this,LibTplMethod.Public, types[0], value,types);
 			}
 			

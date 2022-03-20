@@ -1,6 +1,6 @@
 package cpp.core.instruction;
 
-import cpp.core.expression.MethodCall;
+import cpp.core.MethodCall;
 
 public class MethodCallInstruction extends SemicolonTerminatedInstruction {
 

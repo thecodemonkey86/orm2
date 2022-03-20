@@ -131,6 +131,5 @@ public class Type {
 		throw new UnsupportedOperationException();
 	}
 	
-	public void collectIncludes(Cls cls,boolean inSourceFile) {
-	}
+	
 }

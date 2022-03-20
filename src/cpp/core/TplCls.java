@@ -24,13 +24,18 @@ public class TplCls extends Cls {
 	}
 	
 	@Override
+	public String getIncludeHeader() {
+		return element.getName().toLowerCase();
+	}
+	
+	@Override
 	public String toDeclarationString() {
 		return toUsageString();
 	}
 	
 	@Override
 	public String getConstructorName() {
-		return super.getConstructorName()+ CodeUtil.abr(element.toUsageString());
+		return type+ CodeUtil.abr(element.toUsageString());
 	}
 	
 	@Override
@@ -53,13 +58,5 @@ public class TplCls extends Cls {
 		if(obj instanceof TplCls)
 			return super.equals(obj) && element.equals( ((TplCls)obj).element);
 		return false;
-	}
-	
-	@Override
-	public void collectIncludes(Cls cls,boolean inSourceFile) {
-		super.collectIncludes(cls,inSourceFile);
-		if(element instanceof Cls) {
-			((Cls)element).collectIncludes(cls,inSourceFile);
-		}
 	}
 }

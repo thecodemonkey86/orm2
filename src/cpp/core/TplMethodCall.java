@@ -1,8 +1,7 @@
-package cpp.core.expression;
+package cpp.core;
 
 import codegen.CodeUtil;
-import cpp.core.Method;
-import cpp.core.Type;
+import cpp.core.expression.Expression;
 
 public class TplMethodCall extends MethodCall{
 	Type[] tplTypes;

@@ -7,14 +7,11 @@ public class HeaderFileInclude extends Include{
 	
 	public HeaderFileInclude(String i) {
 		file = i;
-		if(!i.endsWith(".h")) {
-			file+=".h";
-		}
 	}
 
 	@Override
 	public String toString() {
-		return "#include " + CodeUtil.quote(file);
+		return "#include " + CodeUtil.quote(file) + "";
 	}
 	
 	@Override

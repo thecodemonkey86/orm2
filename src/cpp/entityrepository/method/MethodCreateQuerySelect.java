@@ -6,10 +6,12 @@ import cpp.core.Param;
 import cpp.core.expression.BoolExpression;
 import cpp.core.expression.CreateObjectExpression;
 import cpp.entity.EntityCls;
+import cpp.lib.EnableSharedFromThis;
 
 public class MethodCreateQuerySelect extends Method {
 	EntityCls bean;
 	Param pLazy;
+	Param pOverrideRelatedTableJoins;
 	
 	public MethodCreateQuerySelect(EntityCls cls) {
 		//super(Public, new ClsBeanQuery(cls).toUniquePointer(), "createQuery"+cls.getName());
@@ -20,8 +22,11 @@ public class MethodCreateQuerySelect extends Method {
 			pLazy = addParam(Types.Bool, "lazyLoading",BoolExpression.FALSE);
 		}
 		
-		setStatic(true);
+//		setStatic(true);
 		this.bean=cls;
+		if(bean.getTbl().getOptionToManuallyOverrideRelatedTableJoins()) {
+			pOverrideRelatedTableJoins = addParam(new Param(Types.Bool, "overrideRelatedTableJoins",BoolExpression.FALSE));
+		}
 	}
 
 	@Override
@@ -29,9 +34,13 @@ public class MethodCreateQuerySelect extends Method {
 		//_return(new StdMoveExpression(new CreateObjectExpression(returnType, new NewOperator(new ClsBeanQuery(bean), parent.getAttrByName("sqlCon")) )));
 		//_return(new MakeSharedExpression((SharedPtr)returnType, parent.getStaticAttribute("sqlCon").callMethod("buildQuery")));
 		if(bean.hasRelations()) {
-			_return(new CreateObjectExpression(returnType, pLazy ));
+			if(pOverrideRelatedTableJoins==null) {
+				_return(new CreateObjectExpression(returnType,  parent.getAttrByName("sqlCon"), _this().callMethod(EnableSharedFromThis.SHARED_FROM_THIS),pLazy ));
+			} else {
+				_return(new CreateObjectExpression(returnType,  parent.getAttrByName("sqlCon"), _this().callMethod(EnableSharedFromThis.SHARED_FROM_THIS),pLazy,pOverrideRelatedTableJoins ));
+			}
 		} else {
-			_return(new CreateObjectExpression(returnType));
+			_return(new CreateObjectExpression(returnType,  parent.getAttrByName("sqlCon"), _this().callMethod(EnableSharedFromThis.SHARED_FROM_THIS) ));
 		}
 	}
 

@@ -12,24 +12,21 @@ import cpp.lib.ClsQVariant;
 import cpp.lib.ClsQVariantList;
 import cpp.lib.ClsSql;
 import cpp.orm.OrmUtil;
-import cpp.util.ClsDbPool;
 import database.column.Column;
 import database.relation.IManyRelation;
 import util.StringUtil;
 
 public class MethodRemoveAllRelated extends Method {
 
-	protected IManyRelation rel;
-	protected EntityCls entity;
-	protected Param pSqlCon;
-	
+	IManyRelation rel;
+	EntityCls entity;
+
 	public MethodRemoveAllRelated(EntityCls entity, IManyRelation r) {
 		super(Public, Types.Void, "removeAllRelated"
 				+ StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrNameSingular(r)) + "From" + entity.getName());
 		this.rel = r;
 		
 		this.entity = entity;
-		setStatic(true);
 	}
 
 	@Override
@@ -40,11 +37,9 @@ public class MethodRemoveAllRelated extends Method {
 
 	@Override
 	public void addImplementation() {
-		ArrayList<Param> fieldParams = new ArrayList<>();
 		for(Column colPk : entity.getTbl().getPrimaryKey())		{
-			fieldParams.add( addParam(entity.getAttrByName(colPk.getCamelCaseName()).getType(), colPk.getCamelCaseName()));
+			  addParam(entity.getAttrByName(colPk.getCamelCaseName()).getType(), colPk.getCamelCaseName());
 			}
-		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 		ArrayList<String> placeholders = new ArrayList<>();
 		
 		for (int i = 0; i < rel.getDestColumnCount(); i++) {
@@ -55,11 +50,11 @@ public class MethodRemoveAllRelated extends Method {
 		Var varDeleteSql = _declareInitConstructor(Types.QString, "deleteSql", QString.fromStringConstant(sql));
 		Var varParams = _declare(Types.QVariantList, "params");
 		
-		for(Param p : fieldParams)		{
+		for(Param p : params)		{
 		  _callMethodInstr(varParams, ClsQVariantList.append, Types.QVariant.callStaticMethod(ClsQVariant.fromValue,  p));
 		}
 		
-		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, pSqlCon, varDeleteSql, varParams)
+		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, _this().accessAttr("sqlCon"), varDeleteSql, varParams)
 				.asInstruction());
 	}
 

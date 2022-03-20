@@ -1,6 +1,5 @@
 package cpp.lib;
 
-import cpp.Namespaces;
 import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.Cls;
@@ -11,7 +10,7 @@ public class ClsSqlQuery extends Cls{
 
 	public ClsSqlQuery() {
 		super("SqlQuery");
-		setUseNamespace(Namespaces.SqlUtil3);
+		setUseNamespace("SqlUtil3");
 		addMethod(new LibMethod(this.toRef(), "select"));
 		addMethod(new LibMethod(this.toRef(), "from"));
 		addMethod(new LibMethod(this.toRef(), "leftJoin"));

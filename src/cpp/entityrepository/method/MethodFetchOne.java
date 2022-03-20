@@ -20,6 +20,8 @@ import cpp.entity.Entities;
 import cpp.entity.EntityCls;
 import cpp.entity.method.MethodAttrSetterInternal;
 import cpp.entity.method.MethodOneRelationEntityIsNull;
+import cpp.entityrepository.ClsEntityRepository;
+import cpp.entityrepository.expression.ThisEntityRepositoryExpression;
 import cpp.lib.ClsQSqlQuery;
 import cpp.lib.ClsQSqlRecord;
 import cpp.lib.ClsQVariant;
@@ -41,14 +43,23 @@ public class MethodFetchOne extends Method {
 	
 	public MethodFetchOne(List<OneRelation> oneRelations,List<OneToManyRelation> manyRelations, EntityCls bean,PrimaryKey pk,boolean lazyLoading) {
 		super(Public, bean.toSharedPtr(),  getMethodName(bean,lazyLoading));
-		pQuery = addParam(Types.QSqlQuery, "query");	
+		pQuery = addParam(Types.QSqlQuery.toRValueRef(), "query");	
 		this.oneRelations = oneRelations;
 		this.manyRelations = manyRelations;
 		this.pk = pk;
 		this.bean = bean;
 		this.lazyLoading = lazyLoading;
-		setStatic(true);
 	}
+	
+	@Override
+	public ThisEntityRepositoryExpression _this() {
+		return new ThisEntityRepositoryExpression((ClsEntityRepository) parent);
+	}
+	
+	protected Expression getByRecordExpression(EntityCls bean, Expression record, QString alias) {
+	//return new ThisBeanRepositoryExpression((BeanRepository) parent);
+		return _this().callMethod(MethodGetFromRecord.getMethodName(bean),  record, alias);
+}
 
 protected Expression getExpressionQuery() {
 	return pQuery;
@@ -65,7 +76,7 @@ protected Expression getExpressionQuery() {
 			InstructionBlock ifInstr = ifQueryNext.thenBlock();
 			
 			Var e1 = ifInstr
-					._declare(bean.toSharedPtr(), "e1", parent.callStaticMethod(MethodGetFromRecord.getMethodName(bean), query.callMethod(ClsQSqlQuery.record) , QString.fromStringConstant("e1")));
+					._declare(bean.toSharedPtr(), "e1", getByRecordExpression(bean, query.callMethod(ClsQSqlQuery.record) , QString.fromStringConstant("e1")));
 			
 			
 			DoWhile doWhileQueryNext = ifInstr._doWhile();
@@ -81,7 +92,7 @@ protected Expression getExpressionQuery() {
 			
 			ifInstr._callMethodInstr(e1, "setLoaded", BoolExpression.FALSE);
 			ifInstr._return(e1);
-//			_callMethodInstr(query, ClsQSqlQuery.clear); 
+			_callMethodInstr(query, ClsQSqlQuery.clear); 
 			_return(Expressions.Nullptr);
 		} else {
 			List<OneRelation> oneRelations = bean.getOneRelations();
@@ -97,7 +108,7 @@ protected Expression getExpressionQuery() {
 			InstructionBlock ifInstr = ifQueryNext.thenBlock();
 			
 			Var e1 = ifInstr
-					._declare(bean.toSharedPtr(), "e1", parent.callStaticMethod(MethodGetFromRecord.getMethodName(bean), query.callMethod(ClsQSqlQuery.record) , QString.fromStringConstant("e1")));
+					._declare(bean.toSharedPtr(), "e1", getByRecordExpression(bean, query.callMethod(ClsQSqlQuery.record) , QString.fromStringConstant("e1")));
 			
 			Var fkHelper = null;
 			if (!manyRelations.isEmpty()) {
@@ -129,7 +140,7 @@ protected Expression getExpressionQuery() {
 				for(AbstractRelation r:manyRelations) {
 					Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
 					EntityCls foreignCls = Entities.get(r.getDestTable()); 
-					Expression foreignBeanExpression = parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), recDoWhile, QString.fromStringConstant(r.getAlias()));
+					Expression foreignBeanExpression = getByRecordExpression(foreignCls, recDoWhile, QString.fromStringConstant(r.getAlias()));
 					
 					IfBlock ifNotPkForeignIsNull= doWhileQueryNext._if(Expressions.not( recDoWhile.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getFirstColumn().getName())).callMethod("isNull")));
 					
@@ -183,7 +194,7 @@ protected Expression getExpressionQuery() {
 		
 			for(OneRelation r:oneRelations) {
 				EntityCls foreignCls = Entities.get(r.getDestTable());
-				Expression foreignBeanExpression = parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), recDoWhile, QString.fromStringConstant(r.getAlias()));
+				Expression foreignBeanExpression = getByRecordExpression(foreignCls, recDoWhile, QString.fromStringConstant(r.getAlias()));
 				
 				IfBlock ifRelatedBeanIsNull= doWhileQueryNext.
 						_if(Expressions.and( e1.callMethod(new MethodOneRelationEntityIsNull(r))
@@ -210,7 +221,7 @@ protected Expression getExpressionQuery() {
 			
 			ifInstr._callMethodInstr(e1, "setLoaded", BoolExpression.TRUE);
 			ifInstr._return(e1);
-//			_callMethodInstr(query, ClsQSqlQuery.clear); 
+			_callMethodInstr(query, ClsQSqlQuery.clear); 
 			_return(Expressions.Nullptr);
 		}
 		

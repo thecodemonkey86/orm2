@@ -1,11 +1,13 @@
 package config.php;
 
 import java.nio.file.Path;
+import java.sql.Connection;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import config.ConfigReader;
+import database.Database;
 import php.Php5;
 import php.Php5NoTypeHints;
 import php.Php7_0;
@@ -31,8 +33,8 @@ public class PhpConfigReader extends ConfigReader{
 //		}
 //	}
 
-	public PhpConfigReader(Path xmlDirectory) {
-		super(xmlDirectory);
+	public PhpConfigReader(Path xmlDirectory,Connection conn,Database database) {
+		super(xmlDirectory,conn,database);
 		// TODO Auto-generated constructor stub
 	}
 

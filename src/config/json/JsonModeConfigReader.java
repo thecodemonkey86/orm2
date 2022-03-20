@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.Connection;
+
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -15,13 +17,14 @@ import config.OrmConfig;
 import config.OrmConfig.JsonMode;
 import config.cpp.CppConfigReader;
 import config.php.PhpConfigReader;
+import database.Database;
 import generate.CppOrm;
 import generate.OrmGenerator;
 import generate.PhpOrm;
 import util.Pair;
 
 public class JsonModeConfigReader {
-	public static Pair<OrmGenerator, OrmGenerator> read(Path xmlFile) throws IOException {
+	public static Pair<OrmGenerator, OrmGenerator> read(Path xmlFile,Connection connServer,Connection connClient,Database serverDb,Database clientDb) throws IOException {
 		
 
 		try(InputStream inputStream = new ByteArrayInputStream(Files.readAllBytes(xmlFile))) {
@@ -35,7 +38,7 @@ public class JsonModeConfigReader {
 			inputStream.reset();
 			
 			boolean serverIsCpp = serverType.equals("cpp");
-			ConfigReader serverCfgReader = serverIsCpp ? new ConfigReader(xmlFile) : new PhpConfigReader(xmlFile);
+			ConfigReader serverCfgReader = serverIsCpp ? new CppConfigReader(xmlFile,connServer,serverDb) : new PhpConfigReader(xmlFile,connServer,serverDb);
 			
 			xr = XMLReaderFactory.createXMLReader();
 			xr.setContentHandler(serverCfgReader);
@@ -49,7 +52,7 @@ public class JsonModeConfigReader {
 			
 			inputStream.reset();
 			boolean clientIsCpp = clientType.equals("cpp");
-			ConfigReader clientCfgReader = clientIsCpp ? new CppConfigReader(xmlFile) : new PhpConfigReader(xmlFile);
+			ConfigReader clientCfgReader = clientIsCpp ? new CppConfigReader(xmlFile,connClient,clientDb) : new PhpConfigReader(xmlFile,connClient,clientDb);
 			
 		
 			xr = XMLReaderFactory.createXMLReader();

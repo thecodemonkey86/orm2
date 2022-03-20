@@ -11,7 +11,6 @@ public class ClsQDateTime extends Cls{
 		addMethod(new LibMethod(this, "currentDateTime"));
 		addMethod(new LibMethod(this, toString));
 		addMethod(new LibMethod(this, fromString,true));
-		setHeaderIncludeLib(type);
 	}
 
 }

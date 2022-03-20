@@ -1,8 +1,6 @@
 package cpp.entityquery;
 
 import cpp.CoreTypes;
-import cpp.QtCoreTypes;
-import cpp.QtSqlTypes;
 import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.Cls;
@@ -49,7 +47,6 @@ import cpp.entityquery.method.MethodWhere8;
 import cpp.entityquery.method.MethodWhere9;
 import cpp.entityrepository.ClsEntityRepository;
 import cpp.lib.ClsQVector;
-import cpp.util.ClsDbPool;
 import database.column.Column;
 
 public class ClsEntityQueryUpdate extends Cls {
@@ -85,22 +82,18 @@ public class ClsEntityQueryUpdate extends Cls {
 			
 			addMethod(new MethodUpdateSet(cls,this,c));
 			addMethod(new MethodUpdateSetExpression(cls,this,c));
-			
-			colType.collectIncludes(this,false);
 		}
 		
 		addIncludeLib(ClsQVector.CLSNAME);
-		//addIncludeHeader(EntityCls.getModelPath() + "entities/"+cls.getIncludeHeader());
-		addIncludeHeaderInSource("../"+ ClsEntityRepository.CLSNAME.toLowerCase());
-		addIncludeHeader(Types.nullable(Types.Void).getHeaderInclude());
-		addIncludeInSourceDefaultHeaderFileName(Types.SqlUtil);
-		addIncludeLibInSource(Types.qset(Types.Void));
-		addIncludeDefaultHeaderFileName(Types.SqlQuery);
-		addIncludeHeader(ClsDbPool.instance.getHeaderInclude());
-		addIncludeLibInSource(QtCoreTypes.QDebug,true);
-		addIncludeLibInSource(QtSqlTypes.QSqlError,true);
-		//addIncludeLib("QSqlDriver");
+		addIncludeHeader(EntityCls.getModelPath() + "entities/"+cls.getIncludeHeader());
+		addIncludeHeader("../"+ ClsEntityRepository.CLSNAME.toLowerCase());
+		addIncludeHeader(Types.SqlUtil.getIncludeHeader());
+		addIncludeHeader(Types.SqlQuery.getIncludeHeader());
+//		addIncludeHeader(EnumQueryMode.INSTANCE.getName().toLowerCase());
+		addIncludeLib("QSqlError",true);
+		addIncludeLib("QSqlDriver");
 		addIncludeLib(Types.QVariant.getName());
+		addAttr(new Attr(Types.EntityRepository.toSharedPtr(), "repository"));
 		addAttr(new Attr(Types.QString,"mainBeanAlias"));
 		addAttr(new Attr(Types.QString,selectFields));
 		addAttr(new Attr(Types.QString,table));
@@ -110,9 +103,10 @@ public class ClsEntityQueryUpdate extends Cls {
 		addAttr(new Attr(Types.QStringList,updateFields));
 		addAttr(new Attr(Types.Bool,lazyLoading));
 		addAttr(new Attr(Types.QVariantList,params));
+		addAttr(new Attr(Types.QSqlDatabase,"sqlCon"));
 //		addAttr(new Attr(EnumQueryMode.INSTANCE,queryMode));
 		
-		//addForwardDeclaredClass(Types.EntityRepository);
+		addForwardDeclaredClass(Types.EntityRepository);
 		
 		addMethod(new MethodToStringUpdate(cls));
 		/*boolean[] booleanValues = new boolean[] {true,false};

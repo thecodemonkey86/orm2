@@ -5,6 +5,7 @@ import cpp.core.Method;
 import cpp.core.QString;
 import cpp.core.expression.CreateObjectExpression;
 import cpp.entity.EntityCls;
+import cpp.lib.EnableSharedFromThis;
 
 public class MethodCreateQueryDelete extends Method {
 	EntityCls bean;
@@ -13,7 +14,7 @@ public class MethodCreateQueryDelete extends Method {
 		//super(Public, new ClsBeanQuery(cls).toUniquePointer(), "createQuery"+cls.getName());
 		super(Public, Types.beanQueryDelete(cls),getMethodName(cls)
 				);
-		setStatic(true);
+//		setStatic(true);
 		this.bean=cls;
 	}
 
@@ -21,7 +22,7 @@ public class MethodCreateQueryDelete extends Method {
 	public void addImplementation() {
 		//_return(new StdMoveExpression(new CreateObjectExpression(returnType, new NewOperator(new ClsBeanQuery(bean), parent.getAttrByName("sqlCon")) )));
 		//_return(new MakeSharedExpression((SharedPtr)returnType, parent.getStaticAttribute("sqlCon").callMethod("buildQuery")));
-		_return(new CreateObjectExpression(returnType,
+		_return(new CreateObjectExpression(returnType,  parent.getAttrByName("sqlCon"), _this().callMethod(EnableSharedFromThis.SHARED_FROM_THIS),
 				EntityCls.getDatabase().supportsDeleteTableAlias() 
 				? QString.fromStringConstant(bean.getTbl().getEscapedName()+" e1") 
 				: QString.fromStringConstant(bean.getTbl().getEscapedName()) 

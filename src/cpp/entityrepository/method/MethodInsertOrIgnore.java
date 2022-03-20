@@ -10,12 +10,11 @@ public class MethodInsertOrIgnore extends Method {
 	public MethodInsertOrIgnore(EntityCls entity) {
 		super(Public, Types.Void, "insertOrIgnore");
 		pEntity = addParam(entity.toSharedPtr().toConstRef(),"entity");
-		setStatic(true);
 	}
 
 	@Override
 	public void addImplementation() {
-		addInstr(parent.callStaticMethod(EntityCls.getDatabaseMapper().getRepositoryInsertOrIgnoreMethod(), pEntity).asInstruction() ) ;
+		addInstr(_this().callMethodInstruction(EntityCls.getDatabaseMapper().getRepositoryInsertOrIgnoreMethod(), pEntity) ) ;
 
 	}
 

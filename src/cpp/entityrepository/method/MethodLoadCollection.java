@@ -8,6 +8,7 @@ import util.CodeUtil2;
 import util.pg.PgCppUtil;
 import cpp.Types;
 import cpp.CoreTypes;
+import cpp.core.Attr;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.QString;
@@ -26,12 +27,12 @@ import cpp.entity.Entities;
 import cpp.entity.EntityCls;
 import cpp.entity.method.MethodAttrSetterInternal;
 import cpp.entity.method.MethodOneRelationEntityIsNull;
+import cpp.entityrepository.ClsEntityRepository;
 import cpp.lib.ClsQHash;
 import cpp.lib.ClsQSet;
 import cpp.lib.ClsQVariant;
 import cpp.lib.LibEqualsOperator;
 import cpp.orm.OrmUtil;
-import cpp.util.ClsDbPool;
 import database.column.Column;
 import database.relation.AbstractRelation;
 import database.relation.ManyRelation;
@@ -40,8 +41,7 @@ import database.relation.OneToManyRelation;
 import database.relation.PrimaryKey;
 
 public class MethodLoadCollection extends Method{
-	protected EntityCls bean;
-	protected Param pSqlCon;
+	EntityCls bean;
 	
 	public MethodLoadCollection(Param p,EntityCls bean) {
 		super(Public, Types.Void, "loadCollection");
@@ -49,8 +49,6 @@ public class MethodLoadCollection extends Method{
 		//addParam(new Param(Types.qset(cls.toSharedPtr()).toRawPointer(), "collection"));
 		addParam(p);
 		this.bean=bean;
-		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
-		setStatic(true);
 	}
 
 	
@@ -60,7 +58,7 @@ public class MethodLoadCollection extends Method{
 	
 	protected Expression getByRecordExpression(EntityCls bean, Var record, QString alias) {
 		//return new ThisBeanRepositoryExpression((BeanRepository) parent);
-		return parent.callStaticMethod(MethodGetFromRecord.getMethodName(bean),  record, alias);
+		return parent._this().callMethod(MethodGetFromRecord.getMethodName(bean),  record, alias);
 	}
 	
 	@Override
@@ -79,7 +77,8 @@ public class MethodLoadCollection extends Method{
 		
 //		query.callMethod("select");
 		
-		Var sqlQuery = _declareInitConstructor( EntityCls.getDatabaseMapper().getSqlQueryType(),"sqlQuery");
+		Attr aSqlCon = this.parent.getAttrByName(ClsEntityRepository.sqlCon);
+		Var sqlQuery = _declareInitConstructor( EntityCls.getDatabaseMapper().getSqlQueryType(),"sqlQuery",aSqlCon);
 		
 		Type e1PkType = pk.isMultiColumn() ? bean.getStructPk() : EntityCls.getDatabaseMapper().columnToType(pk.getColumns().get(0));
 		
@@ -142,7 +141,7 @@ public class MethodLoadCollection extends Method{
 		exprQSqlQuery = exprQSqlQuery.callMethod("whereIn", varColumns, params);
 		
 		addInstr(exprQSqlQuery.asInstruction());
-		Var query = _declare(Types.QSqlQuery, "query", sqlQuery.callMethod("execQuery",pSqlCon));
+		Var query = _declare(Types.QSqlQuery, "query", sqlQuery.callMethod("execQuery"));
 		
 		
 		IfBlock ifQueryNext = _if(query.callMethod("next"));

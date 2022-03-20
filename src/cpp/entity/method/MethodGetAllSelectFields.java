@@ -83,7 +83,7 @@ public class MethodGetAllSelectFields extends Method  {
 				sprintfTmpl.add( r.getAlias()+"." + col.getEscapedName() + " as "+r.getAlias()+"__" + col.getName());
 			}
 		}
-		_return (QString.fromLatin1StringConstant(CodeUtil2.commaSep(sprintfTmpl) ).callMethod(ClsQString.arg,pAlias ));
+		_return (QString.fromStringConstant(CodeUtil2.commaSep(sprintfTmpl) ).callMethod(ClsQString.arg,pAlias ));
 		
 		
 	}

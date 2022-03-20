@@ -1,18 +1,9 @@
 package generate;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import config.SetPassConfigReader;
-import config.json.JsonModeConfigReader;
-import io.PasswordManager;
-import util.Pair;
-import xml.reader.DefaultXMLReader;
-
 public class JsonOrmGenerator {
 
 	public static void main(String[] args) throws Exception {
-		if(args.length == 0) {
+		/*if(args.length == 0) {
 			throw new Exception("Please provide xml config file");
 		}
 		PasswordManager.setSuperPassword(new byte[] {
@@ -38,7 +29,7 @@ public class JsonOrmGenerator {
 		}
 		Pair<OrmGenerator, OrmGenerator> ormGenerators = JsonModeConfigReader.read(xmlFile);
 		ormGenerators.getValue1().generate();
-		ormGenerators.getValue2().generate();
+		ormGenerators.getValue2().generate();*/
 	}
 
 }
