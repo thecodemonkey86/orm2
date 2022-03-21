@@ -18,7 +18,7 @@ public class MethodReplaceAllManyRelatedEntities extends Method {
 	Param beans;
 	public MethodReplaceAllManyRelatedEntities(IManyRelation r) {
 		super(Public, Types.Void, "replaceAll"+StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrName(r)));
-		beans = addParam(new Param(Types.qvector(JsonEntities.get(r.getDestTable()).toSharedPtr()).toConstRef(), OrmUtil.getManyRelationDestAttrName(r)));
+		beans = addParam(new Param(Types.qlist(JsonEntities.get(r.getDestTable()).toSharedPtr()).toConstRef(), OrmUtil.getManyRelationDestAttrName(r)));
 		rel=r;
 	}
 

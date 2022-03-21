@@ -4,7 +4,7 @@ import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.Method;
 import cpp.jsonentity.ManyAttr;
-import cpp.lib.ClsQVector;
+import cpp.lib.ClsQList;
 import cpp.orm.OrmUtil;
 import database.relation.IManyRelation;
 import util.StringUtil;
@@ -21,7 +21,7 @@ public class MethodGetManyRelatedCount extends Method{
 
 	@Override
 	public void addImplementation() {
-		_return(a.callMethod(ClsQVector.size));
+		_return(a.callMethod(ClsQList.size));
 		
 	}
 

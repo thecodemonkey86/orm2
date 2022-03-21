@@ -16,7 +16,7 @@ public class MethodWhere13 extends MethodTemplate{
 		super(Method.Public, parentType.toRef(), "where");
 		addTplType(new TplSymbol("T"));
 		addParam(Types.QString.toConstRef(),"whereCond");
-		addParam(Types.qvector(tplTypes.get(0)).toConstRef(),"params");
+		addParam(Types.qlist(tplTypes.get(0)).toConstRef(),"params");
 		
 	}
 

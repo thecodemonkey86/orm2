@@ -17,7 +17,7 @@ import cpp.entityquery.EntityQueryType;
 import cpp.lib.ClsAbstractBeanQuery;
 import cpp.lib.ClsQVariant;
 import cpp.lib.ClsQVariantList;
-import cpp.lib.ClsQVector;
+import cpp.lib.ClsQList;
 import cpp.lib.ClsSqlUtil;
 import database.column.Column;
 
@@ -48,9 +48,9 @@ public class MethodEntityQueryWhereIn extends Method {
 			
 		}
 		if(beanQueryType == EntityQueryType.Select) {
-			_return( _this().callMethod(ClsAbstractBeanQuery.where,QString.fromStringConstant("e1." + c.getEscapedName()+" in ").concat(Types.SqlUtil.callStaticMethod(ClsSqlUtil.getPlaceholders, pValue.callMethod(ClsQVector.size)))));
+			_return( _this().callMethod(ClsAbstractBeanQuery.where,QString.fromStringConstant("e1." + c.getEscapedName()+" in ").concat(Types.SqlUtil.callStaticMethod(ClsSqlUtil.getPlaceholders, pValue.callMethod(ClsQList.size)))));
 		} else {
-			_return( _this().callMethod(ClsAbstractBeanQuery.where,QString.fromStringConstant(c.getEscapedName()+" in ").concat(Types.SqlUtil.callStaticMethod(ClsSqlUtil.getPlaceholders, pValue.callMethod(ClsQVector.size)))));
+			_return( _this().callMethod(ClsAbstractBeanQuery.where,QString.fromStringConstant(c.getEscapedName()+" in ").concat(Types.SqlUtil.callStaticMethod(ClsSqlUtil.getPlaceholders, pValue.callMethod(ClsQList.size)))));
 		}
 		
 		

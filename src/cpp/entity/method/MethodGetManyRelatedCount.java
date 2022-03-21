@@ -9,7 +9,7 @@ import cpp.core.instruction.IfBlock;
 import cpp.entity.EntityCls;
 import cpp.entity.ManyAttr;
 import cpp.entityrepository.method.MethodEntityLoad;
-import cpp.lib.ClsQVector;
+import cpp.lib.ClsQList;
 import cpp.orm.OrmUtil;
 import database.relation.IManyRelation;
 import util.StringUtil;
@@ -30,7 +30,7 @@ public class MethodGetManyRelatedCount extends Method{
 		
 		ifNotLoaded.thenBlock()._callMethodInstr(_this().accessAttr(EntityCls.repository), MethodEntityLoad.getMethodName(), _this());
 		ifNotLoaded.thenBlock()._assign(parent.getAttrByName("loaded"), BoolExpression.TRUE);
-		_return(a.callMethod(ClsQVector.size));
+		_return(a.callMethod(ClsQList.size));
 		
 	}
 

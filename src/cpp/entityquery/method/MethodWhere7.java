@@ -14,7 +14,7 @@ public class MethodWhere7 extends Method{
 	public MethodWhere7(Cls parentType) {
 		super(Public, parentType.toRef(), "where");
 		pWhereCond = addParam(Types.QString.toConstRef(),"whereCond");
-		pParams = addParam(Types.qvector(Types.QString),"params");
+		pParams = addParam(Types.qlist(Types.QString),"params");
 		
 	}
 

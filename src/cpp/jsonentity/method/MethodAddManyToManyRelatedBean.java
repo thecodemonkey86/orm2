@@ -9,7 +9,7 @@ import cpp.core.Struct;
 import cpp.core.expression.Var;
 import cpp.entity.Entities;
 import cpp.entity.EntityCls;
-import cpp.lib.ClsQVector;
+import cpp.lib.ClsQList;
 import cpp.orm.OrmUtil;
 import database.column.Column;
 import database.relation.ManyRelation;
@@ -31,7 +31,7 @@ public class MethodAddManyToManyRelatedBean extends Method {
 	@Override
 	public void addImplementation() {
 		Attr a=parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
-		addInstr(a.callMethod(ClsQVector.append,pBean).asInstruction());
+		addInstr(a.callMethod(ClsQList.append,pBean).asInstruction());
 		EntityCls relationBean = Entities.get( rel.getDestTable());
 		
 		if (relationBean.getTbl().getPrimaryKey().isMultiColumn()) {
@@ -48,7 +48,7 @@ public class MethodAddManyToManyRelatedBean extends Method {
 			addInstr(
 					parent.getAttrByName(
 							a.getName()+"Added")
-							.callMethod(ClsQVector.append,
+							.callMethod(ClsQList.append,
 									idAdded
 								).asInstruction());	
 				
@@ -56,7 +56,7 @@ public class MethodAddManyToManyRelatedBean extends Method {
 			addInstr(
 					parent.getAttrByName(
 							a.getName()+"Added")
-							.callMethod(ClsQVector.append,
+							.callMethod(ClsQList.append,
 									pBean
 									.callAttrGetter(
 											relationBean.getTbl().getPrimaryKey().getFirstColumn()

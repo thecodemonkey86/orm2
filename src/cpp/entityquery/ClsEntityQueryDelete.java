@@ -44,7 +44,7 @@ import cpp.entityquery.method.MethodWhere7;
 import cpp.entityquery.method.MethodWhere8;
 import cpp.entityquery.method.MethodWhere9;
 import cpp.entityrepository.ClsEntityRepository;
-import cpp.lib.ClsQVector;
+import cpp.lib.ClsQList;
 import database.column.Column;
 
 public class ClsEntityQueryDelete extends Cls {
@@ -62,9 +62,8 @@ public class ClsEntityQueryDelete extends Cls {
 			addMethod(new MethodEntityQueryWhereEquals(this,EntityQueryType.Delete,  cls, c));
 			addMethod(new MethodEntityQueryWhereNotEquals(this,EntityQueryType.Delete, cls, c));
 			Type colType = EntityCls.getDatabaseMapper().columnToType(c);
-			addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Delete, cls, c,CoreTypes.qvector(colType)));
-			addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Delete, cls, c,CoreTypes.qset(colType)));
 			addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Delete, cls, c,CoreTypes.qlist(colType)));
+			addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Delete, cls, c,CoreTypes.qset(colType)));
 			
 			
 			if(c.isNullable()) {
@@ -77,7 +76,7 @@ public class ClsEntityQueryDelete extends Cls {
 			}
 		}
 		
-		addIncludeLib(ClsQVector.CLSNAME);
+		addIncludeLib(ClsQList.CLSNAME);
 		addIncludeHeader(EntityCls.getModelPath() + "entities/"+cls.getIncludeHeader());
 		addIncludeHeader("../"+ ClsEntityRepository.CLSNAME.toLowerCase());
 		addIncludeHeader(Types.SqlUtil.getIncludeHeader());

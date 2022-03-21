@@ -13,7 +13,7 @@ public class MethodEntityQueryFetch extends Method{
 	EntityCls bean;
 	
 	public MethodEntityQueryFetch(EntityCls bean) {
-		super(Public, Types.qvector(bean.toSharedPtr()), "query");
+		super(Public, Types.qlist(bean.toSharedPtr()), "query");
 		this.bean=bean;
 	}
 

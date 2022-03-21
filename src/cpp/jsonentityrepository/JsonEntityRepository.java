@@ -68,7 +68,7 @@ public class JsonEntityRepository extends Cls {
 			addMethod(new MethodLoadByIdFromUrlSynchronous(e));
 			addMethod(new MethodEntityLoad(e));
 			addMethod(new QtSignal(getSignalNameOnLoadedOne(e),new Param( e.toSharedPtr().toConstRef(),"entity")));
-			addMethod(new QtSignal(getSignalNameOnLoaded(e),new Param(Types.qvector(e.toSharedPtr()).toConstRef(),"entities")));
+			addMethod(new QtSignal(getSignalNameOnLoaded(e),new Param(Types.qlist(e.toSharedPtr()).toConstRef(),"entities")));
 		}
 		
 	}

@@ -49,7 +49,7 @@ public class ClsEntityRepository extends Cls{
 		addIncludeHeader(getSuperclass().getHeaderInclude());
 		addIncludeHeader(EntityCls.getDatabaseMapper().getSqlQueryType().getIncludeHeader());
 		if(beans.size()>0)
-			addIncludeHeader(Types.orderedSet(null).getHeaderInclude()
+			addIncludeHeader(Types.orderedSet(beans.iterator().next()).getHeaderInclude()
 					);
 		for(EntityCls bean:beans) {
 			addIncludeHeader(EntityCls.getModelPath() + "entities/"+bean.getIncludeHeader());

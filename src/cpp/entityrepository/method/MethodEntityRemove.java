@@ -6,7 +6,7 @@ import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.QStringLiteral;
 import cpp.core.expression.Expression;
-import cpp.core.expression.QVectorInitList;
+import cpp.core.expression.QListInitList;
 import cpp.entity.EntityCls;
 import cpp.lib.ClsQVariant;
 import cpp.lib.ClsSql;
@@ -49,11 +49,11 @@ public class MethodEntityRemove extends Method {
 					if(pkCondition.size() == 1) {
 						varParams = pBean.callAttrGetter(bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName());
 					} else {
-						varParams = new QVectorInitList(Types.QVariant);
+						varParams = new QListInitList(Types.QVariant);
 						for(Column colPk : bean.getTbl().getPrimaryKey().getColumns()) {
 							Expression e = pBean.callAttrGetter(colPk.getCamelCaseName());
 							
-							((QVectorInitList)varParams).addExpression(e.getType().equals(Types.QVariant) ?e : Types.QVariant.callStaticMethod(ClsQVariant.fromValue,e));
+							((QListInitList)varParams).addExpression(e.getType().equals(Types.QVariant) ?e : Types.QVariant.callStaticMethod(ClsQVariant.fromValue,e));
 						}
 					}
 					

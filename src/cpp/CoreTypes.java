@@ -18,7 +18,6 @@ import cpp.lib.ClsQStringList;
 import cpp.lib.ClsQTime;
 import cpp.lib.ClsQVariant;
 import cpp.lib.ClsQVariantList;
-import cpp.lib.ClsQVector;
 
 public class CoreTypes {
 	public static final PrimitiveType Int32=new PrimitiveType("int32_t");
@@ -54,9 +53,6 @@ public class CoreTypes {
 	public static final ClsQSqlDatabase QSqlDatabase = new ClsQSqlDatabase();
 	public static final PrimitiveType Uint = new PrimitiveType("uint");
 	
-	public static ClsQVector qvector(Type element) {
-		return new ClsQVector(element);
-	}
 	public static TplCls qset(Type element) {
 		return new ClsQSet(element);
 	}

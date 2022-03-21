@@ -9,7 +9,7 @@ import cpp.core.expression.Expressions;
 import cpp.core.instruction.IfBlock;
 import cpp.entity.EntityCls;
 import cpp.entityrepository.method.MethodEntityLoad;
-import cpp.lib.ClsQVector;
+import cpp.lib.ClsQList;
 
 public class MethodManyAttrGetter extends Method{
 	protected Attr a;
@@ -17,7 +17,7 @@ public class MethodManyAttrGetter extends Method{
 	public MethodManyAttrGetter(Attr a) {
 		super(Public,null, "get"+StringUtil.ucfirst(a.getName()));
 //		
-		setReturnType(new ClsQVector(((TplCls)a.getType()).getElementType()));
+		setReturnType(new ClsQList(((TplCls)a.getType()).getElementType()));
 		this.a = a;
 //		setConstQualifier(true);
 	}

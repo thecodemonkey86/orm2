@@ -5,7 +5,7 @@ import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.Method;
 import cpp.core.Param;
-import cpp.lib.ClsQVector;
+import cpp.lib.ClsQList;
 import cpp.orm.OrmUtil;
 import database.relation.ManyRelation;
 import database.relation.OneToManyRelation;
@@ -44,7 +44,7 @@ public class MethodAddRelatedEntityInternal extends Method {
 	@Override
 	public void addImplementation() {
 		Attr a=parent.getAttrByName(OrmUtil.getOneToManyRelationDestAttrName(rel));
-		addInstr(a.callMethod(ClsQVector.append,pBean).asInstruction());
+		addInstr(a.callMethod(ClsQList.append,pBean).asInstruction());
 //		addInstr(parent.getAttrByName("_added"+StringUtil.ucfirst(a.getName())).callMethod("append",getParam("entity")).asInstruction());
 	}
 	

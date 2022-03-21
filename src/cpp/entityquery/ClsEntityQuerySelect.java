@@ -65,7 +65,7 @@ import cpp.entityquery.method.MethodWhere6;
 import cpp.entityquery.method.MethodWhere7;
 import cpp.entityquery.method.MethodWhere8;
 import cpp.entityquery.method.MethodWhere9;
-import cpp.lib.ClsQVector;
+import cpp.lib.ClsQList;
 import database.column.Column;
 
 public class ClsEntityQuerySelect extends Cls {
@@ -90,9 +90,8 @@ public class ClsEntityQuerySelect extends Cls {
 			addMethod(new MethodEntityQueryWhereNotEquals(this,EntityQueryType.Select, cls, c));
 			Type colType = EntityCls.getDatabaseMapper().columnToType(c);
 			if(!colType.equals(CoreTypes.Bool)) {
-				addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Select, cls, c,CoreTypes.qvector(colType)));
-				addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Select, cls, c,CoreTypes.qset(colType)));
 				addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Select, cls, c,CoreTypes.qlist(colType)));
+				addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Select, cls, c,CoreTypes.qset(colType)));
 			}
 			if(c.isNullable()) {
 				addMethod(new MethodEntityQueryWhereIsNull(this,EntityQueryType.Select, cls, c));
@@ -104,7 +103,7 @@ public class ClsEntityQuerySelect extends Cls {
 			}
 		}
 		
-		addIncludeLib(ClsQVector.CLSNAME);
+		addIncludeLib(ClsQList.CLSNAME);
 		addIncludeHeader(EntityCls.getModelPath() + "entities/"+cls.getIncludeHeader());
 		addIncludeHeader("../"+ Types.EntityRepository.getName().toLowerCase());
 		addIncludeHeader(Types.SqlUtil.getIncludeHeader());

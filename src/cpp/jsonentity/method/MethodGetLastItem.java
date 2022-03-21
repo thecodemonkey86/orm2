@@ -2,7 +2,7 @@ package cpp.jsonentity.method;
 
 import cpp.core.Method;
 import cpp.core.Type;
-import cpp.lib.ClsQVector;
+import cpp.lib.ClsQList;
 import cpp.orm.OrmUtil;
 import database.relation.IManyRelation;
 import util.StringUtil;
@@ -18,7 +18,7 @@ public class MethodGetLastItem extends Method{
 
 	@Override
 	public void addImplementation() {
-		_return(_this().accessAttr(OrmUtil.getManyRelationDestAttrName(relation)).callMethod(ClsQVector.last));		
+		_return(_this().accessAttr(OrmUtil.getManyRelationDestAttrName(relation)).callMethod(ClsQList.last));		
 	}
 
 }

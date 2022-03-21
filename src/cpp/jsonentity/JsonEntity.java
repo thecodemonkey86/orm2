@@ -174,11 +174,11 @@ public class JsonEntity extends Cls {
 		for(OneToManyRelation r:oneToManyRelations) {
 			ManyAttr attr = new ManyAttr(r);
 			addAttr(attr);
-			Attr attrManyToManyAdded = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyTypeJsonEntities(r)) ,attr.getName()+"Added");
+			Attr attrManyToManyAdded = new Attr(Types.qlist(Types.getRelationForeignPrimaryKeyTypeJsonEntities(r)) ,attr.getName()+"Added");
 			addAttr(attrManyToManyAdded);
 			addMethod(new MethodAttributeGetter(attrManyToManyAdded));
 			
-			Attr attrManyToManyRemoved = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyTypeJsonEntities(r)) ,attr.getName()+"Removed");
+			Attr attrManyToManyRemoved = new Attr(Types.qlist(Types.getRelationForeignPrimaryKeyTypeJsonEntities(r)) ,attr.getName()+"Removed");
 			addAttr(attrManyToManyRemoved);
 			addIncludeHeader(attr.getClassType().getIncludeHeader());
 			addForwardDeclaredClass((Cls) attr.getElementType());
@@ -188,9 +188,9 @@ public class JsonEntity extends Cls {
 			
 			addMethod(new MethodManyAttrGetter(attr));
 			addMethod(new MethodAddRelatedBean(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
-			//addMethod(new MethodAddRelatedBean(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
+			//addMethod(new MethodAddRelatedBean(r, new Param(Types.qlist(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
 			addMethod(new MethodAddRelatedBeanInternal(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
-			addMethod(new MethodAddRelatedBeanInternal(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
+			addMethod(new MethodAddRelatedBeanInternal(r, new Param(Types.qlist(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
 			addMethod(new MethodGetManyRelatedAtIndex(attr, r));
 			addMethod(new MethodGetManyRelatedCount(attr, r));
 			addMethod(new MethodRemoveAllManyRelatedEntities(r));
