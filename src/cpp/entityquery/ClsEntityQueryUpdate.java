@@ -47,7 +47,6 @@ import cpp.entityquery.method.MethodWhere6;
 import cpp.entityquery.method.MethodWhere7;
 import cpp.entityquery.method.MethodWhere8;
 import cpp.entityquery.method.MethodWhere9;
-import cpp.entityrepository.ClsEntityRepository;
 import cpp.lib.ClsQVector;
 import cpp.util.ClsDbPool;
 import database.column.Column;
