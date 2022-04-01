@@ -308,6 +308,16 @@ public class CppOrm extends OrmGenerator {
 						//c.addMethod(new CustomClassMemberCode(customClassMember, implCode) );
 						c.addCustomSourceCode(implCode);
 					}
+					startSrc = -1;
+					while((startSrc = existingSourceFile.indexOf(EntityCls.BEGIN_CUSTOM_PREPROCESSOR,startSrc+1))>-1) {
+						int endSrc = existingSourceFile.indexOf(EntityCls.END_CUSTOM_PREPROCESSOR,startSrc);
+						if(endSrc == -1) {
+							throw new RuntimeException("Missing custom preprocessor instructions end marker: " + pathHeader);
+						}
+						String customPp = existingSourceFile.substring(startSrc+EntityCls.BEGIN_CUSTOM_PREPROCESSOR.length(), endSrc);
+						c.addCustomPreprocessorCodeInSource(customPp );
+					}
+					
 					startHdr = -1;
 					while((startHdr = existingHeaderFile.indexOf(EntityCls.BEGIN_CUSTOM_PREPROCESSOR,startHdr+1))>-1) {
 						int endHdr = existingHeaderFile.indexOf(EntityCls.END_CUSTOM_PREPROCESSOR,startHdr);

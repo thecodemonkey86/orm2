@@ -15,14 +15,14 @@ public class MethodQHashPkStruct extends NonMemberMethod {
 	PrimaryKey pk;
 	
 	public MethodQHashPkStruct(Type singleColumnPkType, PrimaryKey pk) {
-		super(Types.Uint, "qHash");
+		super(Types.SizeT, "qHash");
 		this.pk = pk;
 		addParam(new Param(singleColumnPkType, "pk"));
 //		setInlineQualifier(true);
 	}
 	
 	public MethodQHashPkStruct(Struct structPk, PrimaryKey pk) {
-		super(Types.Uint, "qHash");
+		super(Types.SizeT, "qHash");
 		this.pk = pk;
 		addParam(new Param(structPk.toConstRef(), "pk"));
 //		setInlineQualifier(true);

@@ -97,7 +97,7 @@ public class EntityCls extends Cls {
 	public static void setCfg(CppOrmConfig cfg) {
 		EntityCls.cfg = cfg;
 	}
-	private ArrayList<String> customHeaderCode, customSourceCode, customPreprocessorCode;
+	private ArrayList<String> customHeaderCode, customSourceCode, customPreprocessorCode,customPreprocessorCodeInSource;
 	private Map<String, SetterValidator> columnValidators;
 	
 	public static CppOrmConfig getCfg() {
@@ -172,12 +172,33 @@ public class EntityCls extends Cls {
 		}
 		this.customPreprocessorCode.add(code);
 	}
+	public void addCustomPreprocessorCodeInSource(String code) {
+		if(this.customPreprocessorCodeInSource == null) {
+			this.customPreprocessorCodeInSource = new ArrayList<>();
+		}
+		this.customPreprocessorCodeInSource.add(code);
+	}
+	
+	@Override
+	protected void addBeforeSourceCode(StringBuilder sb) {
+		super.addBeforeSourceCode(sb);
+		sb.append(BEGIN_CUSTOM_PREPROCESSOR).append('\n');
+		if(customPreprocessorCodeInSource != null) {
+			
+			for(String cc : customPreprocessorCodeInSource) {
+				sb.append(cc.trim());
+			}
+			
+		}
+		sb.append('\n').append(END_CUSTOM_PREPROCESSOR).append('\n').append('\n');
+	}
+	
 	private void addAttributes(List<Column> allColumns) {
 		addAttr(new RepositoryAttr());
 		for(OneRelation r:oneRelations) {
 			OneAttr attr = new OneAttr(r);
 				addAttr(attr);
-				addIncludeHeader(attr.getElementType().getName().toLowerCase());
+				addIncludeHeaderInSource(attr.getElementType().getName().toLowerCase());
 				addForwardDeclaredClass( (Cls) ((TplCls)attr.getClassType()).getElementType());
 				addMethod(new MethodAttrGetter(attr,true));	
 				addMethod(new MethodOneRelationEntityIsNull(r,true));
@@ -204,7 +225,7 @@ public class EntityCls extends Cls {
 			//Attr attrManyToManyRemoved = new Attr(Types.qlist(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Removed");
 			//addAttr(attrManyToManyRemoved);
 			//addMethod(new MethodAttributeGetter(attrManyToManyRemoved));
-			addIncludeHeader(attr.getClassType().getIncludeHeader());
+			addIncludeHeaderInSource(attr.getClassType().getIncludeHeader());
 			addForwardDeclaredClass( (Cls) ((TplCls) (Cls) attr.getElementType()).getElementType());
 			addMethod(new MethodManyAttrGetter(attr));
 			addMethod(new MethodAddRelatedEntity(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));

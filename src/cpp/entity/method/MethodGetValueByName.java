@@ -62,7 +62,7 @@ public class MethodGetValueByName extends Method {
 
 			@Override
 			public Type getType() {
-				return Types.Uint;
+				return Types.SizeT;
 			}
 		});
 

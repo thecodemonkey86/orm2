@@ -15,7 +15,7 @@ public class MethodQHashEntitySharedPtr extends NonMemberMethod {
 	EntityCls cls;
 	
 	public MethodQHashEntitySharedPtr(EntityCls cls, PrimaryKey pk) {
-		super(Types.Uint, "qHash");
+		super(Types.SizeT, "qHash");
 		this.pk = pk;
 		addParam(new Param(cls.toSharedPtr().toConstRef(), "entity"));
 		this.cls = cls;

@@ -51,7 +51,9 @@ public class CoreTypes {
 	public static final ClsQSqlRecord QSqlRecord = new ClsQSqlRecord();
 	public static final ClsQSqlQuery QSqlQuery = new ClsQSqlQuery();
 	public static final ClsQSqlDatabase QSqlDatabase = new ClsQSqlDatabase();
+	public static final ClsQRegularExpression QRegularExpression = new ClsQRegularExpression();
 	public static final PrimitiveType Uint = new PrimitiveType("uint");
+	public static final PrimitiveType SizeT = new PrimitiveType("size_t");
 	
 	public static TplCls qset(Type element) {
 		return new ClsQSet(element);

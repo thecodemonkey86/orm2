@@ -20,6 +20,7 @@ public class Cls extends Type implements IAttributeContainer{
 	protected Destructor destructor;
 	protected ArrayList<Attr> attrs;
 	protected LinkedHashSet<Include> includes;
+	protected LinkedHashSet<Include> includesInSourceFile;
 	protected LinkedHashSet<Type> forwardDeclaredTypes;
 	protected ArrayList<String> preprocessorInstructions;
 	
@@ -99,6 +100,20 @@ public class Cls extends Type implements IAttributeContainer{
 		addInclude(i+".h");
 	}
 	
+	public void addIncludeInSourceDefaultHeaderFileName(Type t) {
+		addIncludeHeaderInSource(t.getName().toLowerCase());
+	}
+	
+	public void addIncludeHeaderInSource(String i) {
+		if(i==null) {
+			throw new NullPointerException();
+		}
+		if(includesInSourceFile==null) {
+			includesInSourceFile = new LinkedHashSet<>();
+		}
+		includesInSourceFile.add(new HeaderFileInclude(i));
+	}
+	
 	public void addInclude(Include i) {
 		this.includes.add(i);
 	}
@@ -106,7 +121,25 @@ public class Cls extends Type implements IAttributeContainer{
 	public void addIncludeLib(String i) {
 		includes.add(new LibInclude(i));
 	}
+	public void addIncludeLibInSource(String i) {
+		includesInSourceFile.add(new LibInclude(i));
+	}
 	
+	public void addIncludeLibInSource(Type i) {
+		addIncludeLibInSource(i,false);
+	}
+	
+	public void addIncludeLibInSource(Type i,boolean debugOnly) {	
+		if(includesInSourceFile==null) {
+			includesInSourceFile = new LinkedHashSet<>();
+		}
+		if(debugOnly) {
+			includesInSourceFile.add(new DebugOnlyInclude(new LibInclude(i.getName())));
+		} else {
+			includesInSourceFile.add(new LibInclude(i.getName()));
+		}
+		
+	}
 	public void addIncludeLib(String i,boolean debugOnly) {
 		if(debugOnly) {
 			includes.add(new DebugOnlyInclude(new LibInclude(i)));
@@ -183,6 +216,11 @@ public class Cls extends Type implements IAttributeContainer{
 	
 	protected void addBeforeSourceCode(StringBuilder sb){
 		CodeUtil.writeLine(sb, "#include "+CodeUtil.quote(type.toLowerCase()+".h"));
+		if(includesInSourceFile!=null) {
+			for(Include i:includesInSourceFile) {
+				CodeUtil.writeLine(sb,i.toString());
+			}
+		}
 		sb.append('\n');
 	}
 	
@@ -197,8 +235,7 @@ public class Cls extends Type implements IAttributeContainer{
 	public String toHeaderString() {
 		StringBuilder sb=new StringBuilder();
 		addBeforeHeader(sb);
-		CodeUtil.writeLine(sb, "#ifndef "+type.toUpperCase()+"_H");
-		CodeUtil.writeLine(sb, "#define "+type.toUpperCase()+"_H");
+		CodeUtil.writeLine(sb, "#pragma once");
 		if(useNamespace !=null) {
 			CodeUtil.writeLine(sb, CodeUtil.sp("namespace",useNamespace,"{"));
 		}
@@ -277,7 +314,6 @@ public class Cls extends Type implements IAttributeContainer{
 			}
 		}
 		
-		sb.append("#endif");
 		return sb.toString();
 	}
 	
