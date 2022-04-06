@@ -114,7 +114,7 @@ public class MethodGetById extends Method {
 				joinConditions.add(CodeUtil.sp("e1."+r.getSourceEntityColumn(i).getEscapedName(),'=',r.getAlias("mapping")+"."+ r.getSourceMappingColumn(i).getEscapedName()));
 			}
 			
-			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", QString.fromStringConstant(r.getMappingTable().getName()),QString.fromStringConstant(r.getAlias("mapping")), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
+			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", QString.fromStringConstant(r.getMappingTable().getEscapedName()),QString.fromStringConstant(r.getAlias("mapping")), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
 			
 			joinConditions.clear();
 			for(int i=0;i<r.getDestColumnCount();i++) {

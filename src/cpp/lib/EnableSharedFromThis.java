@@ -11,6 +11,7 @@ public class EnableSharedFromThis extends TplCls{
 	public EnableSharedFromThis( Type element) {
 		super("enable_shared_from_this", element);
 		addMethod(new LibMethod(((Cls)element).toSharedPtr(), SHARED_FROM_THIS));
+		setUseNamespace("std");
 	}
 
 }

@@ -259,7 +259,12 @@ public class Cls extends Type implements IAttributeContainer{
 		if (superclasses!=null) {
 			ArrayList<String> superClassDecl = new ArrayList<>();
 			for (Cls superclass : superclasses) {
-				superClassDecl.add("public "+superclass.getConstructorName());
+				if(superclass.getUseNamespace()!=null&& !superclass.getUseNamespace().isEmpty()) {
+					superClassDecl.add("public "+  superclass.getUseNamespace()+"::"+superclass.getConstructorName() );
+				} else {
+					superClassDecl.add("public "+  superclass.getConstructorName());
+				}
+				
 			}
 			
 			

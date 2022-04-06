@@ -25,7 +25,7 @@ public class EnumConstant extends Expression {
 	}
 	@Override
 	public String toString() {
-		return  this.parent.getParentCls() == null ? name : this.parent.getParentCls().getName()+"::"+name;
+		return  this.parent.getParentCls() == null ? name : this.parent.getParentCls().toDeclarationString()+"::"+name;
 	}
 
 }
