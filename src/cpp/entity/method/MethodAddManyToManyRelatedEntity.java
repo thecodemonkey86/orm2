@@ -13,7 +13,7 @@ import cpp.core.QString;
 import cpp.core.expression.Var;
 import cpp.entity.EntityCls;
 import cpp.lib.ClsQVariantList;
-import cpp.lib.ClsQVector;
+import cpp.lib.ClsQList;
 import cpp.lib.ClsSql;
 import cpp.orm.OrmUtil;
 import cpp.util.ClsDbPool;
@@ -40,7 +40,7 @@ public class MethodAddManyToManyRelatedEntity extends Method {
 	public void addImplementation() {
 		EntityCls parent = (EntityCls) this.parent;
 		Attr a=parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
-		addInstr(a.callMethod(ClsQVector.append,pBean).asInstruction());
+		addInstr(a.callMethod(ClsQList.append,pBean).asInstruction());
 		//EntityCls relationBean = Entities.get( rel.getDestTable());
 		ArrayList<String> placeholders = new ArrayList<>();
 		ArrayList<String> columns = new ArrayList<>();

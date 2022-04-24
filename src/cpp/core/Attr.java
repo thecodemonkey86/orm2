@@ -9,7 +9,7 @@ public class Attr extends Var {
 	Expression initValue;
 	boolean isStatic;
 	String visibility;
-	boolean mutableModifier;
+//	boolean mutableModifier;
 	
 	public static final String Protected = "protected";
 	public static final String Private = "private";
@@ -29,13 +29,13 @@ public class Attr extends Var {
 		this.visibility = visibility;
 	}
 	
-	public void setMutableModifier() {
-		this.mutableModifier = true;
-	}
-	
-	public void setMutableModifier(boolean mutableModifier) {
-		this.mutableModifier = mutableModifier;
-	}
+//	public void setMutableModifier() {
+//		this.mutableModifier = true;
+//	}
+//	
+//	public void setMutableModifier(boolean mutableModifier) {
+//		this.mutableModifier = mutableModifier;
+//	}
 	
 	public boolean isStatic() {
 		return isStatic;
@@ -43,7 +43,8 @@ public class Attr extends Var {
 	
 	@Override
 	public String toDeclarationString() {
-		return CodeUtil.sp(visibility+ ":",isStatic?"static":(mutableModifier?"mutable": ""),type.toDeclarationString(),getName())+";";
+		//return CodeUtil.sp(visibility+ ":",isStatic?"static":(mutableModifier?"mutable": ""),type.toDeclarationString(),getName())+";";
+		return CodeUtil.sp(visibility+ ":",isStatic?"static":null,type.toDeclarationString(),getName())+";";
 	}
 	
 	public void setStatic(boolean isStatic) {

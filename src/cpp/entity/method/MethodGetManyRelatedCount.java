@@ -9,7 +9,7 @@ import cpp.core.expression.Expressions;
 import cpp.core.instruction.IfBlock;
 import cpp.entity.ManyAttr;
 import cpp.entityrepository.method.MethodEntityLoad;
-import cpp.lib.ClsQVector;
+import cpp.lib.ClsQList;
 import cpp.orm.OrmUtil;
 import cpp.util.ClsDbPool;
 import database.relation.IManyRelation;
@@ -21,7 +21,7 @@ public class MethodGetManyRelatedCount extends Method{
 	protected Param pSqlCon;
 	
 	public MethodGetManyRelatedCount(ManyAttr a, IManyRelation r) {
-		super(Public, Types.Int ,"get"+ StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrName(r)+"Count" ));
+		super(Public, Types.SizeT ,"get"+ StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrName(r)+"Count" ));
 		this.a = a;
 		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 		//setConstQualifier(true);
@@ -33,7 +33,7 @@ public class MethodGetManyRelatedCount extends Method{
 		
 		ifNotLoaded.thenBlock().addInstr(Types.EntityRepository.callStaticMethod(MethodEntityLoad.getMethodName(), _this().dereference(),pSqlCon).asInstruction());
 		ifNotLoaded.thenBlock()._assign(parent.getAttrByName("loaded"), BoolExpression.TRUE);
-		_return(a.callMethod(ClsQVector.size));
+		_return(a.callMethod(ClsQList.size));
 		
 	}
 

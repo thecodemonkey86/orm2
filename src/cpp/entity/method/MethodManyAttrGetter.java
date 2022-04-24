@@ -10,7 +10,7 @@ import cpp.core.expression.BoolExpression;
 import cpp.core.expression.Expressions;
 import cpp.core.instruction.IfBlock;
 import cpp.entityrepository.method.MethodEntityLoad;
-import cpp.lib.ClsQVector;
+import cpp.lib.ClsQList;
 import cpp.util.ClsDbPool;
 
 public class MethodManyAttrGetter extends Method{
@@ -20,7 +20,7 @@ public class MethodManyAttrGetter extends Method{
 	public MethodManyAttrGetter(Attr a) {
 		super(Public,null, "get"+StringUtil.ucfirst(a.getName()));
 //		
-		setReturnType(new ClsQVector(((TplCls)a.getType()).getElementType()));
+		setReturnType(new ClsQList(((TplCls)a.getType()).getElementType()).toConstRef());
 		this.a = a;
 		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 	//	setConstQualifier(true);

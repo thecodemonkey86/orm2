@@ -11,6 +11,7 @@ import cpp.core.expression.StaticMethodCall;
 import cpp.core.expression.StaticTplMethodCall;
 import cpp.core.expression.ThisExpression;
 import cpp.core.method.TplMethod;
+import cpp.entity.EntityCls;
 import util.CodeUtil2;
 
 

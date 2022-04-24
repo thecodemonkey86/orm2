@@ -6,7 +6,7 @@ import cpp.CoreTypes;
 import cpp.core.Method;
 import cpp.core.expression.BoolExpression;
 import cpp.core.expression.Expressions;
-import cpp.lib.ClsQVector;
+import cpp.lib.ClsQList;
 import cpp.orm.OrmUtil;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
@@ -33,9 +33,9 @@ public class MethodUnload extends Method {
 	@Override
 	public void addImplementation() {
 		for(ManyRelation relation : manyRelations)
-			addInstr(parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(relation)).callMethod(ClsQVector.clear).asInstruction());
+			addInstr(parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(relation)).callMethod(ClsQList.clear).asInstruction());
 		for(OneToManyRelation relation : oneToManyRelations)
-			addInstr( parent.getAttrByName(OrmUtil.getOneToManyRelationDestAttrName(relation)).callMethod(ClsQVector.clear).asInstruction());
+			addInstr( parent.getAttrByName(OrmUtil.getOneToManyRelationDestAttrName(relation)).callMethod(ClsQList.clear).asInstruction());
 		for(OneRelation relation : oneRelations)
 			addInstr(parent.getAttrByName(OrmUtil.getOneRelationDestAttrName(relation)).assign(Expressions.Nullptr));
 		addInstr( parent.getAttrByName("loaded").assign(BoolExpression.FALSE));

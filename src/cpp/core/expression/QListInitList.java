@@ -6,12 +6,12 @@ import codegen.CodeUtil;
 import cpp.Types;
 import cpp.core.Type;
 
-public class QVectorInitList extends Expression {
+public class QListInitList extends Expression {
 
 	Type elemType;
 	ArrayList<Expression> expressions;
 	
-	public QVectorInitList(Type elemType) {
+	public QListInitList(Type elemType) {
 		this.elemType = elemType;
 		this.expressions = new ArrayList<>();
 	}
@@ -22,7 +22,7 @@ public class QVectorInitList extends Expression {
 	
 	@Override
 	public Type getType() {
-		return Types.qvector(elemType);
+		return Types.qlist(elemType);
 	}
 
 	@Override

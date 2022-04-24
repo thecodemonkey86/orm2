@@ -14,7 +14,7 @@ public class MethodEntityQueryFetch extends Method{
 	protected Param pSqlCon;
 	
 	public MethodEntityQueryFetch(EntityCls bean) {
-		super(Public, Types.qvector(bean.toSharedPtr()), "query");
+		super(Public, Types.qlist(bean.toSharedPtr()), "query");
 		this.bean=bean;
 		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 	}

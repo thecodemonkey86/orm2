@@ -172,6 +172,11 @@ public abstract class Expression {
 			throw new RuntimeException("type is not a raw pointer");
 		}
 	}
+
+
+	public String toConstructorInitializeString() {
+		return getReadAccessString(); 
+	}
 	
 //	public Expression callMethod(Cls cls, String m) {
 //		return new MethodCall(this, cls.getMethod(m));

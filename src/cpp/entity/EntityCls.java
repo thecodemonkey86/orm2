@@ -86,7 +86,7 @@ public class EntityCls extends Cls {
 	public static final String END_CUSTOM_CLASS_MEMBERS = "/*END_CUSTOM_CLASS_MEMBERS*/";
 	public static final String BEGIN_CUSTOM_PREPROCESSOR = "/*BEGIN_CUSTOM_PREPROCESSOR*/";
 	public static final String END_CUSTOM_PREPROCESSOR = "/*END_CUSTOM_PREPROCESSOR*/";
-	public static final String APILEVEL = "4.0.1";
+	public static final String APILEVEL = "4.1.0";
 	
 	static Database database;
 	static DatabaseTypeMapper mapper;
@@ -97,7 +97,7 @@ public class EntityCls extends Cls {
 	public static void setCfg(CppOrmConfig cfg) {
 		EntityCls.cfg = cfg;
 	}
-	private ArrayList<String> customHeaderCode, customSourceCode, customPreprocessorCode;
+	private ArrayList<String> customHeaderCode, customSourceCode, customPreprocessorCode,customPreprocessorCodeInSource;;
 	private Map<String, SetterValidator> columnValidators;
 	
 	public static CppOrmConfig getCfg() {
@@ -172,12 +172,34 @@ public class EntityCls extends Cls {
 		}
 		this.customPreprocessorCode.add(code);
 	}
+	
+	public void addCustomPreprocessorCodeInSource(String code) {
+		if(this.customPreprocessorCodeInSource == null) {
+			this.customPreprocessorCodeInSource = new ArrayList<>();
+		}
+		this.customPreprocessorCodeInSource.add(code);
+	}
+	
+	@Override
+	protected void addBeforeSourceCode(StringBuilder sb) {
+		super.addBeforeSourceCode(sb);
+		sb.append(BEGIN_CUSTOM_PREPROCESSOR).append('\n');
+		if(customPreprocessorCodeInSource != null) {
+			
+			for(String cc : customPreprocessorCodeInSource) {
+				sb.append(cc.trim());
+			}
+			
+		}
+		sb.append('\n').append(END_CUSTOM_PREPROCESSOR).append('\n').append('\n');
+	}
+	
 	private void addAttributes(List<Column> allColumns) {
 //		addAttr(new RepositoryAttr());
 		for(OneRelation r:oneRelations) {
 			OneAttr attr = new OneAttr(r);
 				addAttr(attr);
-				addIncludeHeader(attr.getElementType().getName().toLowerCase());
+				addIncludeHeaderInSource(attr.getElementType().getName().toLowerCase());
 				addForwardDeclaredClass( (Cls) ((TplCls)attr.getClassType()).getElementType());
 				addMethod(new MethodAttrGetter(attr,true));	
 				addMethod(new MethodOneRelationEntityIsNull(r,true));
@@ -204,13 +226,14 @@ public class EntityCls extends Cls {
 			//Attr attrManyToManyRemoved = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Removed");
 			//addAttr(attrManyToManyRemoved);
 			//addMethod(new MethodAttributeGetter(attrManyToManyRemoved));
-			addIncludeDefaultHeaderFileName(attr.getClassType());
-			addForwardDeclaredClass( (Cls) ((TplCls) (Cls) attr.getElementType()).getElementType());
+			Cls relationEntity =  (Cls) ((TplCls) (Cls) attr.getElementType()).getElementType();
+			addIncludeInSourceDefaultHeaderFileName(relationEntity);
+			addForwardDeclaredClass(relationEntity);
 			addMethod(new MethodManyAttrGetter(attr));
 			addMethod(new MethodAddRelatedEntity(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
 			//addMethod(new MethodAddRelatedBean(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
 			addMethod(new MethodAddRelatedEntityInternal(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
-			addMethod(new MethodAddRelatedEntityInternal(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
+			addMethod(new MethodAddRelatedEntityInternal(r, new Param(Types.qlist(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
 			addMethod(new MethodGetManyRelatedAtIndex(attr, r));
 			addMethod(new MethodGetManyRelatedCount(attr, r));
 			addMethod(new MethodRemoveAllOneToManyRelatedEntities(r));
@@ -221,8 +244,9 @@ public class EntityCls extends Cls {
 		for(ManyRelation r:manyRelations) {
 			ManyAttr attr = new ManyAttr(r);
 			addAttr(attr);
-			addIncludeDefaultHeaderFileName(attr.getClassType());
-			addForwardDeclaredClass( (Cls) ((TplCls) (Cls) attr.getElementType()).getElementType());
+			Cls relationEntity =  (Cls) ((TplCls) (Cls) attr.getElementType()).getElementType();
+			addIncludeInSourceDefaultHeaderFileName(relationEntity);
+			addForwardDeclaredClass(relationEntity);
 			addMethod(new MethodManyAttrGetter(attr));
 //			Attr attrManyToManyAdded = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Added");
 //			addAttr(attrManyToManyAdded);
@@ -234,7 +258,7 @@ public class EntityCls extends Cls {
 			addMethod(new MethodAddManyToManyRelatedEntity(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
 			//addMethod(new MethodAddManyToManyRelatedBean(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
 			addMethod(new MethodAddManyToManyRelatedEntityInternal(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
-			addMethod(new MethodAddManyToManyRelatedEntityInternal(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
+			addMethod(new MethodAddManyToManyRelatedEntityInternal(r, new Param(Types.qlist(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
 			
 			addMethod(new MethodRemoveManyToManyRelatedEntity(r));
 			addMethod(new MethodRemoveAllManyRelatedEntities(r));
@@ -332,6 +356,7 @@ public class EntityCls extends Cls {
 		addIncludeLib(Types.QString);
 		addIncludeLib(CoreTypes.QVariant);
 		addIncludeLib(Types.QDate);
+		addIncludeLib(Types.qset(null));
 		addIncludeLib("memory");
 		addIncludeHeader("nullable");
 				
@@ -346,7 +371,7 @@ public class EntityCls extends Cls {
 		addIncludeHeaderInSource(repositoryPath + Types.EntityRepository.getName().toLowerCase());
 		addForwardDeclaredClass(Types.beanQuerySelect(this));
 		//addForwardDeclaredClass(Types.EntityRepository);
-		addIncludeHeader(Types.orderedSet(null).getHeaderInclude());
+//		addIncludeHeader(Types.orderedSet(this).getHeaderInclude());
 		addAttributes(tbl.getAllColumns());
 		addForwardDeclaredClass(this);
 		List<Column> cols = tbl.getColumns(!tbl.getPrimaryKey().isAutoIncrement());
@@ -644,5 +669,4 @@ public class EntityCls extends Cls {
 	public boolean hasColumnValidator(String col) {
 		return columnValidators != null && columnValidators.containsKey(col);
 	}
-
 }

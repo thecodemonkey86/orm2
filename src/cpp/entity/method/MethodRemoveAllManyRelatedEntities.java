@@ -13,7 +13,7 @@ import cpp.core.QString;
 import cpp.core.expression.Var;
 import cpp.entity.EntityCls;
 import cpp.lib.ClsQVariantList;
-import cpp.lib.ClsQVector;
+import cpp.lib.ClsQList;
 import cpp.lib.ClsSql;
 import cpp.orm.OrmUtil;
 import cpp.util.ClsDbPool;
@@ -39,7 +39,7 @@ public class MethodRemoveAllManyRelatedEntities extends Method {
 	public void addImplementation() {
 		EntityCls parent = (EntityCls) this.parent;
 		Attr a=parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
-		addInstr(a.callMethod(ClsQVector.clear).asInstruction());
+		addInstr(a.callMethod(ClsQList.clear).asInstruction());
 		
 		ArrayList<String> columns = new ArrayList<>();
 		Var varParams = _declare(Types.QVariantList, "params");

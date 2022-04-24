@@ -38,7 +38,7 @@ public class MethodFetchList extends Method {
 	protected boolean lazyLoading;
 	
 	public MethodFetchList(EntityCls bean,PrimaryKey pk,boolean lazyLoading) {
-		super(Public, Types.qvector(bean.toSharedPtr()),getMethodName(bean,lazyLoading) );
+		super(Public, Types.qlist(bean.toSharedPtr()),getMethodName(bean,lazyLoading) );
 		pQuery = addParam(Types.QSqlQuery, "query");	
 		//this.oneRelations = oneRelations;
 		//this.manyRelations = manyRelations;

@@ -46,6 +46,13 @@ public class AccessExpression extends Expression{
 		return new AssignInstruction(this, value);
 	}
 
+	public Expression getAccess() {
+		return access;
+	}
 	
+	@Override
+	public String toConstructorInitializeString() {
+		return attr.getReadAccessString();
+	}
 
 }

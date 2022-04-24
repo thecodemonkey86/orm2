@@ -13,7 +13,7 @@ public class ClsOrderedSet extends TplCls {
 		addMethod(new LibMethod(Types.qlist(elementType), "toList"));
 		addMethod(new LibMethod(Types.Bool, "insert"));
 		addMethod(new LibMethod(Types.Bool, "append"));
-		addMethod(new LibMethod(Types.Bool, "size"));
+		addMethod(new LibMethod(Types.SizeT, "size"));
 		headerInclude = "util/collection/orderedset";
 		setUseNamespace(Namespaces.QtCommon2);
 	}

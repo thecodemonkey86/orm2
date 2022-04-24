@@ -16,7 +16,7 @@ import cpp.jsonentity.method.MethodColumnAttrSetterInternal;
 import cpp.lib.ClsQJsonDocument;
 import cpp.lib.ClsQJsonObject;
 import cpp.lib.ClsQJsonValue;
-import cpp.lib.ClsQVector;
+import cpp.lib.ClsQList;
 import cpp.orm.JsonOrmUtil;
 import cpp.orm.OrmUtil;
 import database.column.Column;
@@ -32,7 +32,7 @@ public class MethodGetVectorFromJson extends Method{
 	JsonEntity entity;
 	
 	public MethodGetVectorFromJson(JsonEntity entity) {
-		super(Public, Types.qvector(entity.toSharedPtr()), getMethodName(entity));
+		super(Public, Types.qlist(entity.toSharedPtr()), getMethodName(entity));
 		pJson = addParam(Types.QByteArray.toConstRef(), "jsondata");
 		this.entity = entity;
 		setStatic(true);
@@ -96,7 +96,7 @@ public class MethodGetVectorFromJson extends Method{
 			beanData.arrayIndexSet(new PhpStringLiteral(OrmUtil.getManyRelationDestAttrNameSingular(r)), relationBeanData);
 		}*/
 		
-		foreachJsonValue.addInstr(result.callMethodInstruction(ClsQVector.append, e1));
+		foreachJsonValue.addInstr(result.callMethodInstruction(ClsQList.append, e1));
 		_return(result);
 	}
 

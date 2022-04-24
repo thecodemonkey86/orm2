@@ -27,7 +27,7 @@ public class MethodLoadFromUrl extends Method {
 	public MethodLoadFromUrl(JsonEntity entity) {
 		super(Public, CoreTypes.Void, "load"+ entity.getName()+"FromUrl");
 		pUrl = addParam(new Param(NetworkTypes.QUrl.toConstRef(), "url"));
-		pCallback = addParam(new Param(new ClsStdFunction(CoreTypes.Void, Types.qvector(entity.toSharedPtr()).toConstRef()), "callback"));
+		pCallback = addParam(new Param(new ClsStdFunction(CoreTypes.Void, Types.qlist(entity.toSharedPtr()).toConstRef()), "callback"));
 		this.entity = entity;
 		setStatic(true); 
 	}

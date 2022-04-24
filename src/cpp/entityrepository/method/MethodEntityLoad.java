@@ -119,7 +119,7 @@ public class MethodEntityLoad extends Method {
 								r.getAlias()+"."+ r.getDestEntityColumn(i).getEscapedName()));
 			}
 			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", 
-					QString.fromStringConstant(r.getMappingTable().getName()),
+					QString.fromStringConstant(r.getMappingTable().getEscapedName()),
 					QString.fromStringConstant(r.getMappingAlias()), 
 					QString.fromStringConstant(CodeUtil2.concat(joinConditionsE1Mapping," AND ")));
 			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", 

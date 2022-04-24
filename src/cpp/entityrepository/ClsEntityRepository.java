@@ -46,13 +46,13 @@ public class ClsEntityRepository extends Cls{
 		addIncludeInSourceDefaultHeaderFileName(EntityCls.getDatabaseMapper().getSqlQueryType());
 		addInclude(ClsDbPool.instance.getHeaderInclude());
 		if(beans.size()>0)
-			addIncludeHeaderInSource(Types.orderedSet(null).getHeaderInclude()
+			addIncludeHeader(Types.orderedSet(beans.iterator().next()).getHeaderInclude()
 					);
 		
 		
 		
 		for(EntityCls bean:beans) {
-			addIncludeHeader(bean.getHeaderInclude());
+			addIncludeHeaderInSource(bean.getHeaderInclude());
 			addIncludeHeader("query/"+bean.getName().toLowerCase()+"entityqueryselect");
 			
 			if(bean.getTbl().hasQueryType(Table.QueryType.Delete))
@@ -79,7 +79,7 @@ public class ClsEntityRepository extends Cls{
 //			addMethod(new MethodFetchOneStatic(bean));
 //			beanQueryClasses.add(new ClsBeanQuery(bean));
 			addForwardDeclaredClass(bean);
-			addForwardDeclaredClass(Types.beanQuerySelect(bean));
+//			addForwardDeclaredClass(Types.beanQuerySelect(bean));
 			
 			if(bean.getTbl().hasQueryType(Table.QueryType.Update))
 				addForwardDeclaredClass(Types.beanQueryUpdate(bean));
@@ -88,7 +88,7 @@ public class ClsEntityRepository extends Cls{
 				addForwardDeclaredClass(Types.beanQueryDelete(bean));
 			
 			if(EntityCls.getCfg().isEnableMethodLoadCollection())
-				addMethod(new MethodLoadCollection(new Param(Types.orderedSet(bean.toSharedPtr()).toRawPointer(),  "collection"), bean));
+				addMethod(new MethodLoadCollection(new Param(Types.qlist(bean.toSharedPtr()).toConstRef(),  "collection"), bean));
 			addMethod(new MethodCreateQuerySelect(bean));
 			
 			if(bean.getTbl().hasQueryType(Table.QueryType.Delete))
