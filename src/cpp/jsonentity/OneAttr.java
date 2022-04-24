@@ -15,7 +15,7 @@ public class OneAttr extends Attr {
 				PgCppUtil.getOneRelationDestAttrName(relation)
 				, Expressions.Nullptr, false);
 		
-		setMutableModifier();
+//		setMutableModifier();
 		this.relation = relation;
 	}
 	

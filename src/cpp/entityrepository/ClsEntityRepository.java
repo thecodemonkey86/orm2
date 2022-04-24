@@ -87,7 +87,9 @@ public class ClsEntityRepository extends Cls{
 			if(bean.getTbl().hasQueryType(Table.QueryType.Delete))
 				addForwardDeclaredClass(Types.beanQueryDelete(bean));
 //			addMethod(new MethodLoadCollection(new Param(Types.qset(bean.toSharedPtr()).toRawPointer(), "collection")));
-			addMethod(new MethodLoadCollection(new Param(Types.orderedSet(bean.toSharedPtr()).toRawPointer(),  "collection"), bean));
+			
+			if(bean.getTbl().isEnableLoadCollection())
+				addMethod(new MethodLoadCollection(new Param(Types.qlist(bean.toSharedPtr()).toRef(),  "collection"), bean));
 			addMethod(new MethodCreateQuerySelect(bean));
 			
 			if(bean.getTbl().hasQueryType(Table.QueryType.Delete))

@@ -22,7 +22,7 @@ public class ClsQList extends TplCls implements IArrayAccessible{
 		addMethod(new LibMethod(CoreTypes.Void, "remove"));
 		addMethod(new LibMethod(CoreTypes.Void, removeOne));
 		addMethod(new LibMethod(CoreTypes.Bool, "empty"));
-		addMethod(new LibMethod(CoreTypes.Int, size));
+		addMethod(new LibMethod(CoreTypes.SizeT, size));
 		addMethod(new LibMethod(CoreTypes.Void, clear));
 		addMethod(new LibMethod(CoreTypes.Bool, contains));
 		addMethod(new LibMethod(element.toRef(), last));

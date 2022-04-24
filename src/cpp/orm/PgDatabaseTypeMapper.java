@@ -7,6 +7,7 @@ import cpp.core.Method;
 import cpp.core.QString;
 import cpp.core.Type;
 import cpp.core.expression.BoolExpression;
+import cpp.core.expression.CStringLiteral;
 import cpp.core.expression.CreateObjectExpression;
 import cpp.core.expression.DoubleExpression;
 import cpp.core.expression.Expression;
@@ -105,7 +106,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 				case "character varying":
 				case "character":	
 				case "text":
-					return QString.fromStringConstant("");
+					return new CStringLiteral("");
 				case "date":
 					return new CreateObjectExpression(Types.QDate) ;
 				case "double precision":

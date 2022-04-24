@@ -14,14 +14,12 @@ public class ManyAttr extends Attr{
 		super(Attr.Protected, new ClsQList(JsonEntities.get(relation.getDestTable().getUc1stCamelCaseName()).toSharedPtr()), 
 				OrmUtil.getOneToManyRelationDestAttrName(relation)
 				, Expressions.Nullptr, false);
-		setMutableModifier();
 	}
 	
 	public ManyAttr(ManyRelation relation) {
 		super(Attr.Protected, new ClsQList(JsonEntities.get(relation.getDestTable().getUc1stCamelCaseName()).toSharedPtr()), 
 				OrmUtil.getManyRelationDestAttrName(relation)
 				, Expressions.Nullptr, false);
-		setMutableModifier();
 	}
 	
 	public Type getElementType() {

@@ -18,6 +18,17 @@ public class AssignInstruction extends Instruction {
 		return CodeUtil2.sp(assign.getWriteAccessString(),'=',value)+';';
 	}
 	
+	public Expression getAssign() {
+		return assign;
+	}
+	
+	public Expression getValue() {
+		return value;
+	}
+
+	public String toConstructorInitializeString() {
+		return assign.toConstructorInitializeString();
+	}
 	
 	
 }

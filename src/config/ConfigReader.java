@@ -147,6 +147,7 @@ public abstract class ConfigReader implements ContentHandler {
 					currentEntityTable = cfg.getDatabase().makeTableInstance( atts.getValue("table"));
 					cfg.addEntityTable(currentEntityTable);
 					currentEntityTable.setOverrideColumnsFromConfig(atts.getValue("overrideColumns")!=null && atts.getValue("overrideColumns").equals("true"));
+					currentEntityTable.setEnableLoadCollection(atts.getValue("enableLoadCollectionMethod")!=null && atts.getValue("enableLoadCollectionMethod").equals("true"));
 					if(!currentEntityTable.isOverrideColumnsFromConfig()) {
 						overrideColsPrimaryKey = null;
 						cfg.getDatabase().readColumns(currentEntityTable, conn);

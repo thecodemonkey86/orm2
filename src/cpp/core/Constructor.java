@@ -3,17 +3,34 @@ package cpp.core;
 import java.util.ArrayList;
 
 import codegen.CodeUtil;
+import cpp.core.expression.AccessExpression;
 import cpp.core.expression.Expression;
+import cpp.core.expression.ThisExpression;
+import cpp.core.instruction.AssignInstruction;
 
 public abstract class Constructor extends Method {
 	
 	protected ArrayList<Expression> passToSuperConstructor;
-	
+	protected ArrayList<AssignInstruction> initializeInstructions;
 	public Constructor() {
 		super(Public,null,null);
 		params = new ArrayList<>();
 		instructions = new ArrayList<>();
+		initializeInstructions = new ArrayList<>();
 		
+	}
+	
+	public void addInstr(AssignInstruction i) {
+		if((i.getAssign() instanceof AccessExpression && ((AccessExpression)i.getAssign()).getAccess() instanceof ThisExpression ) || i.getAssign() instanceof Attr) {
+			initializeInstructions.add(i);
+		} else {
+			instructions.add(i);
+		}
+	}
+	
+	@Override
+	public void _assign(Expression var, Expression value) {
+		addInstr(new AssignInstruction(var, value));
 	}
 	
 	public void addPassToSuperConstructor(Expression p) {
@@ -31,13 +48,19 @@ public abstract class Constructor extends Method {
 		
 		StringBuilder sb=new StringBuilder(CodeUtil.sp(parent.getName()+"::"+parent.getName(),CodeUtil.parentheses(CodeUtil.commaSep(params))
 				));
-		
+		ArrayList<String> initExpr=new ArrayList<>();
 		if (passToSuperConstructor!=null) {
-			
-			sb.append(CodeUtil.sp(':',parent.getSuperclass().getName()+CodeUtil.parentheses(CodeUtil.commaSep(passToSuperConstructor))));
+			initExpr.add(parent.getSuperclass().getName()+CodeUtil.parentheses(CodeUtil.commaSep( passToSuperConstructor)));
 		}
+		for(AssignInstruction e:initializeInstructions) {
 			
-			sb.append("{\n");
+			initExpr.add(e.toConstructorInitializeString()+CodeUtil.parentheses(e.getValue().getReadAccessString()));
+		
+		}
+		if(!initExpr.isEmpty()) {
+		sb.append(CodeUtil.sp(':',CodeUtil.commaSep(initExpr)));
+		}
+		sb.append("{\n");
 		for(Object i:instructions) {
 			CodeUtil.writeLine(sb,i);
 		}

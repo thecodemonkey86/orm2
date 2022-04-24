@@ -32,8 +32,8 @@ public class EntityConstructor extends Constructor{
 	@Override
 	public void addImplementation() {
 		_assign(_this().accessAttr("repository"), getParam("repository"));
-		_assign(parent.getAttrByName("loaded"), BoolExpression.FALSE);		
-		_assign(parent.getAttrByName("autoIncrement"), autoIncrement ? BoolExpression.TRUE : BoolExpression.FALSE);
+//		_assign(parent.getAttrByName("loaded"), BoolExpression.FALSE);
+		addPassToSuperConstructor( autoIncrement ? BoolExpression.TRUE : BoolExpression.FALSE);
 		
 		for(Column col:cols) {
 			 

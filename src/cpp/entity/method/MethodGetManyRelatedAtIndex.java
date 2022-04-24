@@ -17,7 +17,7 @@ public class MethodGetManyRelatedAtIndex extends Method{
 	
 	public MethodGetManyRelatedAtIndex(ManyAttr a, IManyRelation r) {
 		super(Public, ((ClsQList) a.getClassType()).getElementType().toConstRef() ,"get"+ StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrNameSingular(r) ));
-		pIndex = addParam(new Param(Types.Int, "index"));
+		pIndex = addParam(new Param(Types.SizeT, "index"));
 		this.a = a;
 		setConstQualifier(true);
 	}

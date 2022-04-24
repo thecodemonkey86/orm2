@@ -85,7 +85,7 @@ public class MethodLoadCollection extends Method{
 		//ArrayList<Expression> selectFields = new ArrayList<>();
 		//selectFields.add(bean.callStaticMethod("getSelectFields",QString.fromStringConstant("e1")));
 		
-		List<OneRelation> relations = new ArrayList<>(oneRelations);
+		List<OneRelation> relations = new ArrayList<>();
 		relations.addAll(oneRelations);
 //		
 //		//int //bCount = 2;
@@ -101,7 +101,7 @@ public class MethodLoadCollection extends Method{
 		
 		//int //bCount = 2;
 		
-		for(OneRelation r:relations) {
+		for(OneRelation r:oneRelations) {
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getColumnCount();i++) {
 				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
@@ -110,7 +110,31 @@ public class MethodLoadCollection extends Method{
 			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", QString.fromExpression(Entities.get(r.getDestTable()).callStaticMethod("getTableName")),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
 			//bCount++;
 		}
-		
+		for(OneToManyRelation r:oneToManyRelations) {
+			ArrayList<String> joinConditions=new ArrayList<>();
+			for(int i=0;i<r.getColumnCount();i++) {
+				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',(r.getAlias())+"."+ r.getColumns(i).getValue2().getEscapedName()));
+			}
+			
+			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", QString.fromExpression(Entities.get(r.getDestTable()).callStaticMethod("getTableName")),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
+		}
+		for(ManyRelation r:manyToManyRelations) {
+			ArrayList<String> joinConditions=new ArrayList<>();
+			for(int i=0;i<r.getSourceColumnCount();i++) {
+				joinConditions.add(CodeUtil.sp("e1."+r.getSourceEntityColumn(i).getEscapedName(),'=',r.getAlias("mapping")+"."+ r.getSourceMappingColumn(i).getEscapedName()));
+			}
+			
+			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", QString.fromStringConstant(r.getMappingTable().getEscapedName()),QString.fromStringConstant(r.getAlias("mapping")), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
+			
+			joinConditions.clear();
+			for(int i=0;i<r.getDestColumnCount();i++) {
+				joinConditions.add(CodeUtil.sp(r.getAlias("mapping")+"."+r.getDestMappingColumn(i).getEscapedName(),'=',r.getAlias()+"."+r.getDestEntityColumn(i).getEscapedName() ));
+			}
+			
+			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", Entities.get(r.getDestTable()).callStaticMethod("getTableName"),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
+			
+			//bCount++;
+		}
 		
 		QStringInitList init=new QStringInitList();
 		
@@ -125,7 +149,7 @@ public class MethodLoadCollection extends Method{
 		Var params= _declare(CoreTypes.QVariantList, "params");
 		_callMethodInstr(params, "reserve", collection.callMethod("size"));
 		Var varForeachBean = new Var(bean.toSharedPtr().toConstRef(), "entity");
-		ForeachLoop foreach= _foreach(varForeachBean, collection.deref());
+		ForeachLoop foreach= _foreach(varForeachBean, collection);
 		for (Column pkCol : pk.getColumns()) {
 			
 			if(pkCol.hasOneRelation()){
@@ -193,7 +217,7 @@ public class MethodLoadCollection extends Method{
 		IfBlock ifNotE1SetContains = doWhileQueryNext._if(Expressions.not(e1Map.callMethod("contains", e1pk)));
 		
 
-		ForeachLoop foreachIfNotE1SetContains= ifNotE1SetContains.thenBlock()._foreach(varIfNotE1SetContainsForeachBean, collection.deref());
+		ForeachLoop foreachIfNotE1SetContains= ifNotE1SetContains.thenBlock()._foreach(varIfNotE1SetContainsForeachBean, collection);
 		IfBlock ifForeachPkCompare = foreachIfNotE1SetContains._if(Expressions.and(listForeachPkCompare));
 
 		doWhileQueryNext._assignInstruction(recDoWhile, query.callMethod("record"));

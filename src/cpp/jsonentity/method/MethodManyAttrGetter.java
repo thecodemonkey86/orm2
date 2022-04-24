@@ -17,7 +17,7 @@ public class MethodManyAttrGetter extends Method{
 	public MethodManyAttrGetter(Attr a) {
 		super(Public,null, "get"+StringUtil.ucfirst(a.getName()));
 //		
-		setReturnType(new ClsQList(((TplCls)a.getType()).getElementType()));
+		setReturnType(new ClsQList(((TplCls)a.getType()).getElementType()).toConstRef());
 		this.a = a;
 //		setConstQualifier(true);
 	}

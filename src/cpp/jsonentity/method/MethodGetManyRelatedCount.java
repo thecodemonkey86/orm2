@@ -14,7 +14,7 @@ public class MethodGetManyRelatedCount extends Method{
 	Attr a;
 	
 	public MethodGetManyRelatedCount(ManyAttr a, IManyRelation r) {
-		super(Public, Types.Int ,"get"+ StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrName(r)+"Count" ));
+		super(Public, Types.SizeT ,"get"+ StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrName(r)+"Count" ));
 		this.a = a;
 		setConstQualifier(true);
 	}
