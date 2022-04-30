@@ -38,6 +38,7 @@ public class PgCppUtil {
 		case "timestamp without time zone":
 			return CoreTypes.QVariant.getMethod("toDateTime");
 		case "time with time zone":
+		case "time without time zone":
 			return CoreTypes.QVariant.getMethod("toTime");
 		case "double precision":
 		case "numeric":

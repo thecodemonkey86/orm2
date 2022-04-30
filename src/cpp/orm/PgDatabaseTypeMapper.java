@@ -54,6 +54,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 			case "timestamp without time zone":
 				return Types.QDateTime;
 			case "time with time zone":
+			case "time without time zone":
 				return Types.QTime;
 			default:
 				return CoreTypes.QVariant;
@@ -76,6 +77,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 			case "timestamp without time zone":
 				return Types.nullable(Types.QDateTime);
 			case "time with time zone":
+			case "time without time zone":
 				return Types.nullable(Types.QTime);
 			case "double precision":
 			case "numeric":
@@ -120,6 +122,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 				case "timestamp without time zone":
 					return new CreateObjectExpression(Types.QDateTime) ;
 				case "time with time zone":
+				case "time without time zone":
 					return new CreateObjectExpression(Types.QTime) ;
 				default:
 					return new CreateObjectExpression(CoreTypes.QVariant) ;
@@ -140,6 +143,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 				case "timestamp without time zone":
 					return new CreateObjectExpression(Types.nullable(Types.QDateTime)) ;
 				case "time with time zone":
+				case "time without time zone":
 					return new CreateObjectExpression(Types.nullable(Types.QTime) );
 				case "double precision":
 				case "numeric":
