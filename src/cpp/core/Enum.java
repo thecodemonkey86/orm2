@@ -17,6 +17,11 @@ public class Enum extends Type{
 			addEnumConstant(c);
 		}
 	}
+
+	@Override
+	public String toUsageString() {
+		return super.toDeclarationString();
+	}
 	
 	@Override
 	public String toDeclarationString() {
