@@ -158,6 +158,10 @@ public class CppOrm extends OrmGenerator {
 			database = new FirebirdDatabase(dbName);
 			credentials = new FirebirdCredentials(dbUser, dbHost, dbFile,dbPort != null ? Integer.parseInt(dbPort) : 23053, charset  != null ?  charset  : "UTF-8", database);
 		} else if (engine.equals("sqlite")) {
+			if(dbFile == null) {
+				System.out.println("argument --dbFile missing");
+				return;
+			}
 			Class.forName("org.sqlite.JDBC");
 			database = new SqliteDatabase();
 			credentials = new SqliteCredentials(Paths.get(dbFile) , database);
