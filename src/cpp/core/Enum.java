@@ -19,6 +19,11 @@ public class Enum extends Type{
 	}
 	
 	@Override
+	public String toUsageString() {
+		return toDeclarationString();
+	}
+	
+	@Override
 	public String toDeclarationString() {
 		return (parentCls  != null ? parentCls.toDeclarationString()+"::": null)+type ;
 	}
