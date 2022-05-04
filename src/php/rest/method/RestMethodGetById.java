@@ -8,9 +8,6 @@ import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
 import database.relation.PrimaryKey;
-import php.bean.EntityCls;
-import php.bean.Entities;
-import php.bean.method.MethodGetFieldsAsAssocArray;
 import php.core.PhpConstants;
 import php.core.PhpFunctions;
 import php.core.PhpGlobals;
@@ -24,6 +21,9 @@ import php.core.instruction.ForeachLoop;
 import php.core.instruction.IfBlock;
 import php.core.instruction.SwitchBlock;
 import php.core.method.Method;
+import php.entity.Entities;
+import php.entity.EntityCls;
+import php.entity.method.MethodGetFieldsAsAssocArray;
 import php.lib.ClsBaseEntityQuery;
 
 public class RestMethodGetById extends Method {

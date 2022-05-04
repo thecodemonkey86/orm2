@@ -1,15 +1,15 @@
 package php.orm;
 
 import database.column.Column;
-import php.bean.EntityCls;
-import php.beanrepository.method.PgBeanRepositoryBeginTransactionMethod;
-import php.beanrepository.method.PgBeanRepositoryCommitTransactionMethod;
-import php.beanrepository.method.PgBeanRepositoryRollbackTransactionMethod;
 import php.core.Attr;
 import php.core.Type;
 import php.core.Types;
 import php.core.expression.Expression;
 import php.core.method.Method;
+import php.entity.EntityCls;
+import php.entityrepository.method.PgBeanRepositoryBeginTransactionMethod;
+import php.entityrepository.method.PgBeanRepositoryCommitTransactionMethod;
+import php.entityrepository.method.PgBeanRepositoryRollbackTransactionMethod;
 import php.lib.ClsSqlParam;
 
 public class PgDatabaseTypeMapper extends DatabaseTypeMapper{

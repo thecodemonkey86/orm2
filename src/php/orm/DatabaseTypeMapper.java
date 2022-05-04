@@ -1,12 +1,12 @@
 package php.orm;
 
 import database.column.Column;
-import php.bean.EntityCls;
 import php.core.Type;
 import php.core.Types;
 import php.core.expression.Expression;
 import php.core.expression.PhpStringLiteral;
 import php.core.method.Method;
+import php.entity.EntityCls;
 import php.lib.ClsSqlParam;
 
 public abstract class DatabaseTypeMapper {

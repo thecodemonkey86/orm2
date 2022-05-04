@@ -2,9 +2,9 @@ package php.rest;
 
 import java.util.Collection;
 
-import php.bean.EntityCls;
 import php.core.Constructor;
 import php.core.PhpCls;
+import php.entity.EntityCls;
 import php.rest.method.RestMethodGet;
 import php.rest.method.RestMethodGetById;
 import php.rest.method.RestMethodGetOne;

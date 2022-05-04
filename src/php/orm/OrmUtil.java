@@ -4,9 +4,9 @@ import database.relation.AbstractRelation;
 import database.relation.IManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
-import php.bean.EntityCls;
-import php.bean.Entities;
 import php.core.Type;
+import php.entity.Entities;
+import php.entity.EntityCls;
 import util.CodeUtil2;
 import util.StringUtil;
 

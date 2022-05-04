@@ -1,10 +1,6 @@
 package php.orm;
 
 import database.column.Column;
-import php.bean.EntityCls;
-import php.beanrepository.method.MysqliBeanRepositoryBeginTransactionMethod;
-import php.beanrepository.method.MysqliBeanRepositoryCommitTransactionMethod;
-import php.beanrepository.method.MysqliBeanRepositoryRollbackTransactionMethod;
 import php.core.Attr;
 import php.core.Type;
 import php.core.Types;
@@ -17,6 +13,10 @@ import php.core.expression.IntExpression;
 import php.core.expression.NewOperator;
 import php.core.expression.PhpStringLiteral;
 import php.core.method.Method;
+import php.entity.EntityCls;
+import php.entityrepository.method.MysqliBeanRepositoryBeginTransactionMethod;
+import php.entityrepository.method.MysqliBeanRepositoryCommitTransactionMethod;
+import php.entityrepository.method.MysqliBeanRepositoryRollbackTransactionMethod;
 import php.lib.ClsDateTime;
 import php.lib.ClsMysqliResult;
 import php.lib.ClsSqlParam;

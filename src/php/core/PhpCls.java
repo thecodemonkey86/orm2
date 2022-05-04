@@ -81,18 +81,14 @@ public class PhpCls extends AbstractPhpCls implements IAttributeContainer{
 	}
 	
 	
-	protected void addHeaderCodeBeforeClassDefinition(StringBuilder sb){
-		
-	}
-	
-	protected void addClassHeaderCode(StringBuilder sb){
+	protected void addCodeBeforeClassDefinition(StringBuilder sb){
 		
 	}
 	
 	
 	public String toSourceString() {
 		StringBuilder sb=new StringBuilder("<?php\n");
-		
+		addCodeBeforeClassDefinition(sb);
 		if (namespace != null && namespace.length() > 0) {
 			CodeUtil.writeLine(sb , CodeUtil.sp("namespace",namespace.substring(1))+";");
 		}

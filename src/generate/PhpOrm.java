@@ -37,14 +37,14 @@ import database.relation.OneToManyRelation;
 import database.table.Table;
 import io.PasswordManager;
 import php.Php;
-import php.bean.EntityCls;
-import php.bean.Entities;
-import php.bean.CustomClassMemberCode;
-import php.beanrepository.ClsBeanRepository;
-import php.beanrepository.query.ClsBeanQuery;
 import php.core.PhpCls;
 import php.core.Types;
 import php.core.instruction.InstructionBlock;
+import php.entity.CustomClassMemberCode;
+import php.entity.Entities;
+import php.entity.EntityCls;
+import php.entityrepository.ClsEntityRepository;
+import php.entityrepository.query.ClsEntityQuery;
 import php.orm.DatabaseTypeMapper;
 import php.orm.FirebirdDatabaseTypeMapper;
 import php.orm.MySqlDatabaseTypeMapper;
@@ -130,6 +130,8 @@ public class PhpOrm extends OrmGenerator {
 				engine = args[i+1];
 			} else if(args[i].equals("--name")) {
 				dbName = args[i+1];
+			} else if(args[i].equals("--user")) {
+				dbUser = args[i+1];
 			} else if(args[i].equals("--schema")) {
 				dbSchema = args[i+1];
 			} else if(args[i].equals("--host")) {
@@ -147,7 +149,10 @@ public class PhpOrm extends OrmGenerator {
 		
 		Database database=null; 
 		DbCredentials credentials;
-		
+		if(engine == null) {
+			System.out.println("Database engine \"" + engine + "\" is not provided in command-line");
+			return;
+		}
 		if (engine.equals("postgres")) {
 			Class.forName("org.postgresql.Driver");
 			database = new PgDatabase(dbName, dbSchema);
@@ -220,10 +225,10 @@ public class PhpOrm extends OrmGenerator {
 		Php.phpVersion = ((PhpOrmConfig) cfg).getPhpversion();
 		EntityCls.setTypeMapper(getTypeMapper(cfg));
 		Charset utf8 = Charset.forName("UTF-8");
-		ClsBeanRepository.setBeanRepositoryNamespace(cfg.getBasePath().relativize(cfg.getRepositoryPath()).toString().replace("/", "\\"));
+		ClsEntityRepository.setBeanRepositoryNamespace(cfg.getBasePath().relativize(cfg.getRepositoryPath()).toString().replace("/", "\\"));
 		EntityCls.setBeanNamespace(cfg.getBasePath().relativize(cfg.getModelPath()).toString().replace("/", "\\")+"\\Entities");
 		EntityCls.setBeanRepoNamespace(cfg.getBasePath().relativize(cfg.getRepositoryPath()).toString().replace("/", "\\"));
-		ClsBeanQuery.setBeanQueryNamespace(ClsBeanRepository.getBeanRepositoryNamespace()+"\\Query");
+		ClsEntityQuery.setBeanQueryNamespace(ClsEntityRepository.getBeanRepositoryNamespace()+"\\Query");
 		
 		EntityCls.setSqlQueryCls(getSqlQueryCls(cfg));
 		EntityCls.setDatabase(cfg.getDatabase());
@@ -244,7 +249,7 @@ public class PhpOrm extends OrmGenerator {
 			Entities.add(cls);
 		}
 
-		ClsBeanRepository repo = Types.BeanRepository;
+		ClsEntityRepository repo = Types.BeanRepository;
 		repo.addDeclarations(Entities.getAllEntities());
 
 		for (EntityCls c : Entities.getAllEntities()) {
@@ -314,7 +319,7 @@ public class PhpOrm extends OrmGenerator {
 			Files.write(pathBeans.resolve(c.getName() + ".php"), c.toSourceString().getBytes(utf8), writeOptions);
 			
 			Files.write(helperPath.resolve(c.getFetchListHelperCls().getName() + ".php"), c.getFetchListHelperCls().toSourceString().getBytes(utf8), writeOptions);
-			ClsBeanQuery clsQuery = new ClsBeanQuery(c);
+			ClsEntityQuery clsQuery = new ClsEntityQuery(c);
 			clsQuery.addMethodImplementations();
 			Files.write(pathRepositoryQuery.resolve(clsQuery.getName() + ".php"),
 					clsQuery.toSourceString().getBytes(utf8), writeOptions);

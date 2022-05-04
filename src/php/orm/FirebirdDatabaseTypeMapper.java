@@ -1,10 +1,6 @@
 package php.orm;
 
 import database.column.Column;
-import php.bean.EntityCls;
-import php.beanrepository.method.FirebirdBeanRepositoryBeginTransactionMethod;
-import php.beanrepository.method.FirebirdBeanRepositoryCommitTransactionMethod;
-import php.beanrepository.method.FirebirdBeanRepositoryRollbackTransactionMethod;
 import php.core.Attr;
 import php.core.PhpConstants;
 import php.core.PhpFunctions;
@@ -18,6 +14,10 @@ import php.core.expression.IntExpression;
 import php.core.expression.NewOperator;
 import php.core.expression.PhpStringLiteral;
 import php.core.method.Method;
+import php.entity.EntityCls;
+import php.entityrepository.method.FirebirdBeanRepositoryBeginTransactionMethod;
+import php.entityrepository.method.FirebirdBeanRepositoryCommitTransactionMethod;
+import php.entityrepository.method.FirebirdBeanRepositoryRollbackTransactionMethod;
 import php.lib.ClsDateTime;
 
 public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{

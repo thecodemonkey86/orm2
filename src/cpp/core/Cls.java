@@ -682,6 +682,10 @@ public class Cls extends Type implements IAttributeContainer{
 		return toConstRef();
 	}
 	
+	public boolean isHeaderIncludeLib() {
+		return headerIncludeLib;
+	}
+	
 //	public void addUsingMethodInstruction(UsingMethodInstruction i) {
 //		if(usingMethodInstructions==null) {
 //			usingMethodInstructions=new ArrayList<>();
