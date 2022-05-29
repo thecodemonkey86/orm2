@@ -156,7 +156,7 @@ public abstract class Expression {
 
 
 	public Expression _equals(Expression other) {
-		if (other.getType().isPrimitiveType() || other.getType().equals(Types.String)) {
+		if (other.getType().isPrimitiveType() || other.getType().equals(Types.String)|| other.getType().equals(Types.DateTime)) {
 			return equalsOp(other);
 		} else {
 			return callMethod("equals", other);

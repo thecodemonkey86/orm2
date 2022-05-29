@@ -24,12 +24,12 @@ public class MethodEntityRemove extends Method {
 	public MethodEntityRemove(EntityCls bean,
 			 boolean overloadCascadeDeleteRelations
 			) {
-		super(Public, Types.Void, "remove");
+		super(Public, Types.Void, getMethodName());
 		if (overloadCascadeDeleteRelations)
 			this.addParam(new Param(Types.Bool, "overloadCascadeDeleteRelations"));
 //		this.setVirtualQualifier(true);
 		this.overloadCascadeDeleteRelations = overloadCascadeDeleteRelations;
-		pBean = addParam(bean.toSharedPtr().toConstRef(), "entity");
+		pBean = addParam(bean.toConstRef(), "entity");
 		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 		this.bean = bean;
 		setStatic(true);
@@ -68,6 +68,12 @@ public class MethodEntityRemove extends Method {
 				
 //		}
 
+	}
+
+
+
+	public static String getMethodName() {
+		return "remove";
 	}
 
 }
