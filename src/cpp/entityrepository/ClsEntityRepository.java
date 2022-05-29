@@ -9,6 +9,7 @@ import cpp.entity.EntityCls;
 import cpp.entityrepository.method.ConstructorEntityRepository;
 import cpp.entityrepository.method.MethodEntityLoad;
 import cpp.entityrepository.method.MethodEntityRemove;
+import cpp.entityrepository.method.MethodEntitySharedPtrRemove;
 import cpp.entityrepository.method.MethodCreateQueryDelete;
 import cpp.entityrepository.method.MethodCreateQuerySelect;
 import cpp.entityrepository.method.MethodCreateQueryUpdate;
@@ -140,6 +141,7 @@ public class ClsEntityRepository extends Cls{
 				}
 			}
 			addMethod(new MethodEntityRemove(bean,false));
+			addMethod(new MethodEntitySharedPtrRemove(bean,false));
 			
 			for(IManyRelation r:bean.getAllManyRelations())
 				addMethod(new MethodRemoveAllRelated(bean, r));
