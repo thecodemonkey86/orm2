@@ -133,6 +133,8 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 					return new CreateObjectExpression( Types.nullable(Types.Int));
 				case "bigint":
 					return new CreateObjectExpression(Types.nullable(Types.LongLong));
+				case "smallint":
+					return new CreateObjectExpression(Types.nullable(Types.Int16));
 				case "character varying":
 				case "character":	
 				case "text":
@@ -216,5 +218,11 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 	@Override
 	public String getRepositoryPrepareInsertOrIgnoreMethod() {
 		return ClsBaseRepository.prepareInsertOrIgnorePg;
+	}
+
+	@Override
+	public String getRepositoryInsertOrUpdateMethod() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -216,6 +216,11 @@ public abstract class ConfigReader implements ContentHandler {
 					if(strOptionToManuallyOverrideRelatedTableJoins != null) {
 						currentEntityTable.setOptionToManuallyOverrideRelatedTableJoins(strOptionToManuallyOverrideRelatedTableJoins.equals("true")||strOptionToManuallyOverrideRelatedTableJoins.equals("1"));
 					}
+					
+					String attEnableMethodHasUpdate= atts.getValue("enableMethodHasUpdate");
+					if(attEnableMethodHasUpdate !=null) {
+						cfg.enableHasUpdateMethod(currentEntityTable.getUc1stCamelCaseName());
+					}
 				} else {
 					throw new SAXException("Illegal state");
 				}

@@ -41,6 +41,7 @@ import cpp.entity.method.MethodFileImportColumnSetter;
 import cpp.entity.method.MethodGetAllSelectFields;
 import cpp.entity.method.MethodGetFieldName;
 import cpp.entity.method.MethodGetFieldNameAlias;
+import cpp.entity.method.MethodGetHasUpdate;
 import cpp.entity.method.MethodGetInsertFields;
 import cpp.entity.method.MethodGetInsertParams;
 import cpp.entity.method.MethodGetInsertValuePlaceholders;
@@ -318,6 +319,9 @@ public class EntityCls extends Cls {
 			
 		}
 		addMethod(new MethodSetAutoIncrementId(getTbl().getPrimaryKey().isAutoIncrement()));
+		if(cfg.isHasUpdateMethodEnabled(this.getName())) {
+			addMethod(new MethodGetHasUpdate(getTbl()));
+		}
 		//for(OneToManyRelation r:oneToManyRelations) {
 		//	addMethod(new MethodToggleAddRemoveRelatedEntity(r));
 		//}

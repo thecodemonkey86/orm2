@@ -212,4 +212,10 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 		return null;
 	}
 
+	@Override
+	public String getRepositoryInsertOrUpdateMethod() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

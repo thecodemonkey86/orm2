@@ -4,9 +4,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import cpp.entity.SetterValidator;
 import database.Database;
@@ -29,6 +31,7 @@ public class OrmConfig {
 	protected Map<Table,List<ManyRelation>> manyToManyRelations;
 	protected Map<String,List<Pair<String, String>>> renameMethods;
 	protected Map<String, Map<String,SetterValidator>> columnValidators;
+	protected Set<String> enableHasUpdateMethods; // class names
 	protected Database database;
 	
 	private boolean enableStacktrace = true;
@@ -319,5 +322,16 @@ public class OrmConfig {
 	
 	public Map<String, SetterValidator> getValidators(String tableName) {
 		return columnValidators.get(tableName);
+	}
+	
+	public void enableHasUpdateMethod(String classname)	{
+		if(enableHasUpdateMethods==null) {
+			enableHasUpdateMethods = new HashSet<>();
+		}
+		enableHasUpdateMethods.add(classname);
+	}
+	
+	public boolean isHasUpdateMethodEnabled(String classname) {
+		return enableHasUpdateMethods!=null && enableHasUpdateMethods.contains(classname);
 	}
 }

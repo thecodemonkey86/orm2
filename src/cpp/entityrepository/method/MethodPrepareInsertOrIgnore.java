@@ -4,9 +4,9 @@ import cpp.Types;
 import cpp.core.Method;
 import cpp.entity.EntityCls;
 
-public class MethodPrepareUpsert extends Method {
+public class MethodPrepareInsertOrIgnore extends Method {
 	EntityCls entity;
-	public MethodPrepareUpsert(EntityCls entity) {
+	public MethodPrepareInsertOrIgnore(EntityCls entity) {
 		super(Public, Types.QSqlQuery, "prepareInsertOrIgnore"+entity.getName());
 		this.entity = entity;
 	}
