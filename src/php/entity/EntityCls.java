@@ -32,6 +32,7 @@ import php.entity.method.MethodColumnAttrSetterInternal;
 import php.entity.method.MethodCreateNew;
 import php.entity.method.MethodGetFieldName;
 import php.entity.method.MethodGetFieldsAsAssocArray;
+import php.entity.method.MethodGetFieldsAsAssocStringArray;
 import php.entity.method.MethodGetPrimaryKeyFields;
 import php.entity.method.MethodHasAddedManyToMany;
 import php.entity.method.MethodHasRemovedManyToMany;
@@ -274,6 +275,7 @@ public class EntityCls extends PhpCls {
 		addMethod(new MethodHasUpdate());
 		addMethod(new MethodClearModified());
 		addMethod(new MethodGetFieldsAsAssocArray(this));
+		addMethod(new MethodGetFieldsAsAssocStringArray());
 		addMethod(new MethodSetValue());
 		
 		fetchListHelper = new FetchListHelperClass(this, beanRepoNamespace);
