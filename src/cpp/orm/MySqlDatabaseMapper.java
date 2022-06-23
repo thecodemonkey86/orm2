@@ -2,6 +2,7 @@ package cpp.orm;
 
 import cpp.Types;
 import cpp.core.Method;
+import cpp.core.MethodTemplate;
 import cpp.core.QString;
 import cpp.core.Type;
 import cpp.CoreTypes;
@@ -185,14 +186,9 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 	}
 
 	@Override
-	public String getRepositoryInsertOrIgnoreMethod() {
-		// TODO Auto-generated method stub
-		return null;
+	public MethodTemplate getInsertOrIgnoreMethod(boolean byref) {
+		throw new RuntimeException("not impl");
 	}
 
-	@Override
-	public String getRepositoryPrepareInsertOrIgnoreMethod() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	 
 }

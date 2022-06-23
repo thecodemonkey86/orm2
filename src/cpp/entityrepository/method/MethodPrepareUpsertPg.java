@@ -4,9 +4,9 @@ import cpp.Types;
 import cpp.core.Method;
 import cpp.entity.EntityCls;
 
-public class MethodPrepareUpsert extends Method {
+public class MethodPrepareUpsertPg extends Method {
 	EntityCls entity;
-	public MethodPrepareUpsert(EntityCls entity) {
+	public MethodPrepareUpsertPg(EntityCls entity) {
 		super(Public, Types.QSqlQuery, "prepareInsertOrIgnore"+entity.getName());
 		this.entity = entity;
 		setStatic(true);
@@ -14,8 +14,8 @@ public class MethodPrepareUpsert extends Method {
 
 	@Override
 	public void addImplementation() {
-		_return(parent.callStaticMethod(parent.getTemplateMethod(EntityCls.getDatabaseMapper().getRepositoryPrepareInsertOrIgnoreMethod(), entity),entity  )) ;
-
+		//_return(parent.callStaticMethod(parent.getTemplateMethod(EntityCls.getDatabaseMapper().getRepositoryPrepareInsertOrIgnoreMethod(), entity),entity  )) ;
+//		_return(new Ins
 	}
 
 }

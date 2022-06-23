@@ -9,6 +9,7 @@ import cpp.core.SharedPtr;
 import cpp.entity.EntityCls;
 import cpp.entityrepository.method.MethodEntityLoad;
 import cpp.entityrepository.method.MethodEntityRemove;
+import cpp.entityrepository.method.MethodEntitySharedPtrRemove;
 import cpp.entityrepository.method.MethodCreateQueryDelete;
 import cpp.entityrepository.method.MethodCreateQuerySelect;
 import cpp.entityrepository.method.MethodCreateQueryUpdate;
@@ -17,9 +18,7 @@ import cpp.entityrepository.method.MethodFetchOne;
 import cpp.entityrepository.method.MethodGetById;
 import cpp.entityrepository.method.MethodGetByIdOrCreateNew;
 import cpp.entityrepository.method.MethodGetFromRecord;
-import cpp.entityrepository.method.MethodInsertOrIgnore;
 import cpp.entityrepository.method.MethodLoadCollection;
-import cpp.entityrepository.method.MethodPrepareUpsert;
 import cpp.entityrepository.method.MethodRemoveAllRelated;
 import cpp.entityrepository.method.MethodRepoCreateNew;
 import cpp.entityrepository.method.MethodRepoCreateNewNonNullableOnly;
@@ -49,7 +48,10 @@ public class ClsEntityRepository extends Cls{
 			addIncludeHeader(Types.orderedSet(beans.iterator().next()).getHeaderInclude()
 					);
 		
-		
+		if(EntityCls.getDatabase().supportsInsertOrIgnore()) {
+			addMethodTemplate(EntityCls.getDatabaseMapper().getInsertOrIgnoreMethod(true));
+			addMethodTemplate(EntityCls.getDatabaseMapper().getInsertOrIgnoreMethod(false));
+		}
 		
 		for(EntityCls bean:beans) {
 			addIncludeHeaderInSource(bean.getHeaderInclude());
@@ -98,11 +100,11 @@ public class ClsEntityRepository extends Cls{
 				addMethod(new MethodCreateQueryUpdate(bean));
 			
 			addMethod(new MethodEntityLoad(bean));
-			if(EntityCls.getDatabase().supportsInsertOrIgnore()) {
-				addMethod(new MethodPrepareUpsert(bean));
-				addMethod(new MethodInsertOrIgnore(bean));
-				
-			}
+//			if(EntityCls.getDatabase().supportsInsertOrIgnore()) {
+//				addMethod(new MethodPrepareUpsertPg(bean));
+//				addMethod(new MethodInsertOrIgnorePg(bean));
+//				
+//			}
 //			addMethod(new MethodEntitySave(bean,false));
 //			addMethod(new MethodEntitySaveBulk(bean,false));
 //			addMethod(new MethodEntitySaveBulk(bean,true));
@@ -137,6 +139,7 @@ public class ClsEntityRepository extends Cls{
 				}
 			}
 			addMethod(new MethodEntityRemove(bean,false));
+			addMethod(new MethodEntitySharedPtrRemove(bean,false));
 			
 			for(IManyRelation r:bean.getAllManyRelations())
 				addMethod(new MethodRemoveAllRelated(bean, r));

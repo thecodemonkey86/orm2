@@ -12,7 +12,7 @@ public class SharedPtr extends TplCls{
 		return weak;
 	}
 	
-	public SharedPtr(Cls element) {
+	public SharedPtr(Type element) {
 		super("shared_ptr", element);
 		setUseNamespace(Namespaces.std);
 		weak=false;

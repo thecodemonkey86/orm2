@@ -2,7 +2,9 @@ package cpp.orm;
 
 import cpp.Types;
 import cpp.core.Method;
+import cpp.core.MethodTemplate;
 import cpp.core.QString;
+import cpp.core.TplSymbol;
 import cpp.core.Type;
 import cpp.core.expression.BoolExpression;
 import cpp.core.expression.CreateObjectExpression;
@@ -11,10 +13,28 @@ import cpp.core.expression.Expression;
 import cpp.core.expression.IntExpression;
 import cpp.core.expression.LongLongExpression;
 import cpp.core.expression.ShortExpression;
+import cpp.core.method.TplMethod;
+import cpp.entityrepository.method.MethodInsertOrIgnoreSqlite;
 import cpp.lib.ClsSqlQuery;
 import database.column.Column;
 
 public class SqliteDatabaseMapper extends DatabaseTypeMapper {
+	private final class MethodTemplateInsertOrIgnoreSqlite extends MethodTemplate {
+		boolean byRef;
+
+		private MethodTemplateInsertOrIgnoreSqlite(String visibility, Type returnType, String name, boolean isStatic,
+				boolean byRef) {
+			super(visibility, returnType, name, isStatic);
+			this.byRef = byRef;
+			addTplType(new TplSymbol("T"));
+		}
+
+		@Override
+		protected TplMethod getConcreteMethodImpl(Type... types) {
+			return new MethodInsertOrIgnoreSqlite(this,byRef, types);
+		}
+	}
+
 	@Override
 	public Method getQVariantConvertMethod(String dbType) {
 		switch (dbType.toUpperCase()) {
@@ -195,14 +215,9 @@ public class SqliteDatabaseMapper extends DatabaseTypeMapper {
 	}
 
 	@Override
-	public String getRepositoryInsertOrIgnoreMethod() {
-		// TODO Auto-generated method stub
-		return null;
+	public MethodTemplate getInsertOrIgnoreMethod(boolean byRef) {
+return new MethodTemplateInsertOrIgnoreSqlite(Method.Public, Types.Void, "insertOrIgnore", true, byRef); 
 	}
 
-	@Override
-	public String getRepositoryPrepareInsertOrIgnoreMethod() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	 
 }

@@ -15,4 +15,8 @@ public class TplSymbol extends Type{
 	public String toUsageString() {
 		return getName();
 	}
+
+	public SharedPtr toSharedPtr() {
+		return new SharedPtr(this);
+	}
 }

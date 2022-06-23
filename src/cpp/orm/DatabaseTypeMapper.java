@@ -1,6 +1,7 @@
 package cpp.orm;
 
 import cpp.core.Method;
+import cpp.core.MethodTemplate;
 import cpp.core.Type;
 import cpp.core.expression.Expression;
 import cpp.lib.ClsSqlQuery;
@@ -21,6 +22,7 @@ public abstract class DatabaseTypeMapper {
 		return columnToType(c,c.isNullable());
 	}
 	public abstract Type columnToType(Column c,boolean nullable);
-	public abstract String getRepositoryInsertOrIgnoreMethod();
-	public abstract String getRepositoryPrepareInsertOrIgnoreMethod();
+	public abstract MethodTemplate getInsertOrIgnoreMethod(boolean byref);
+//	public abstract String getRepositoryInsertOrIgnoreMethod();
+//	public abstract String getRepositoryPrepareInsertOrIgnoreMethod();
 }

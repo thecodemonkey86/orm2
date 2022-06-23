@@ -3,6 +3,7 @@ package cpp.orm;
 import cpp.Types;
 import cpp.CoreTypes;
 import cpp.core.Method;
+import cpp.core.MethodTemplate;
 import cpp.core.QString;
 import cpp.core.Type;
 import cpp.core.expression.CreateObjectExpression;
@@ -205,15 +206,9 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 	}
 
 	@Override
-	public String getRepositoryInsertOrIgnoreMethod() {
-		// TODO Auto-generated method stub
-		return null;
+	public MethodTemplate getInsertOrIgnoreMethod(boolean byRef) {
+		throw new RuntimeException("not impl");
 	}
 
-	@Override
-	public String getRepositoryPrepareInsertOrIgnoreMethod() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

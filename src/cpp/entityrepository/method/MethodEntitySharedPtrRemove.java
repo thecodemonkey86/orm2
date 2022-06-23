@@ -22,7 +22,7 @@ public class MethodEntitySharedPtrRemove extends Method {
 			this.addParam(new Param(Types.Bool, "overloadCascadeDeleteRelations"));
 //		this.setVirtualQualifier(true);
 		this.overloadCascadeDeleteRelations = overloadCascadeDeleteRelations;
-		pBean = addParam(bean.toSharedPtr().toConstRef(), "entity");
+		pBean = addParam(bean.toSharedPtr(), "entity");
 		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 		this.bean = bean;
 		setStatic(true);
