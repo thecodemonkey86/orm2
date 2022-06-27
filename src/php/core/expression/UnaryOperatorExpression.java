@@ -2,7 +2,6 @@ package php.core.expression;
 
 import php.core.Operator;
 import php.core.Type;
-import php.core.expression.Expression;
 
 public class UnaryOperatorExpression extends Expression {
 

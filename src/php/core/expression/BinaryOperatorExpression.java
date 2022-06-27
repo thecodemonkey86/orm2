@@ -3,7 +3,6 @@ package php.core.expression;
 import codegen.CodeUtil;
 import php.core.Operator;
 import php.core.Type;
-import php.core.expression.Expression;
 
 public class BinaryOperatorExpression extends Expression {
 

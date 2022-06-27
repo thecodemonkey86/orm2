@@ -3,7 +3,6 @@ package sunjava.core.expression;
 import sunjava.core.AbstractJavaCls;
 import sunjava.core.Operator;
 import sunjava.core.Type;
-import sunjava.core.expression.Expression;
 
 public class UnaryOperatorExpression extends Expression {
 
