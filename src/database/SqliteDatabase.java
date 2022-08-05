@@ -68,7 +68,9 @@ public class SqliteDatabase extends Database {
 		stColumndata.setString(1, tbl.getName());
 		ResultSet rsColumndata = stColumndata.executeQuery();
 		PrimaryKey pk = new PrimaryKey();
-		
+		if(tbl.getName().equals("item_category")) {
+			System.out.println();
+		}
 		if(rsColumndata.next()) {
 			String sql = rsColumndata.getString("sql");
 			List<String> l = getTokenList(sql);
@@ -87,6 +89,7 @@ public class SqliteDatabase extends Database {
 				col.setName(filterColName(l.get(index++)));
 				
 				String type = l.get(index++);
+				
 				switch(type.toUpperCase()) {
 				case "VARYING":
 					expectToken(l, index++, "CHARACTER");
@@ -117,12 +120,18 @@ public class SqliteDatabase extends Database {
 					expectToken(l, index++, ")");
 					break;	
 				case "VARCHAR":
+				case "INT":
+				case "TINYINT":
 					expectToken(l, index++, "(");
 					expectInteger(l, index++);
 					expectToken(l, index++, ")");
 					break;
+				
 				default:
 						break;
+				}
+				if(!type.toUpperCase().matches("[A-Z]+")) {
+					throw new RuntimeException("syntax error");
 				}
 				col.setDbType(type);
 				col.setNullable(!(isTokenAt(l, index, "NOT") && isTokenAt(l, index+1, "NULL")));
@@ -206,10 +215,26 @@ public class SqliteDatabase extends Database {
 					} else {
 						expectToken(l, index++, ",");
 					}
+				} else if(isTokenAt(l, index, "UNIQUE")) {
+					expectToken(l, ++index, "(");
+					do {
+						++index;
+						if(isTokenAt(l, ++index, ")")) {
+							break;
+						}
+					}while(l.get(index++).equals(","));
+					if(isTokenAt(l, index, ")")) {
+						break;
+					} else {
+						expectToken(l, index++, ",");
+					}
 				} else {
 					throw new RuntimeException("unexpected token " + l.get(index));
 				}
 			}
+		} else {
+			System.out.println(stColumndata.getWarnings());
+			throw new SQLException(stColumndata.getWarnings());
 		}
 		
 		

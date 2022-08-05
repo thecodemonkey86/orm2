@@ -140,7 +140,10 @@ public class CppOrm extends OrmGenerator {
 				charset = args[i+1];
 			}
 		}
-		
+		if(engine == null) {
+			System.out.println("Set DB engine");
+			return;
+		}
 		Database database=null; 
 		DbCredentials credentials;
 		
