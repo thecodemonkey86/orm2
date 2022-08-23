@@ -308,6 +308,14 @@ public abstract class ConfigReader implements ContentHandler {
 							
 						}
 					}
+					String attrAdditionalJoin=atts.getValue("additionalJoin");
+					if(attrAdditionalJoin!=null) {
+						currentManyToManyRelation.setAdditionalJoin(attrAdditionalJoin);
+					}
+					String attrAdditionalOrderBy=atts.getValue("additionalOrderBy");
+					if(attrAdditionalOrderBy!=null) {
+						currentManyToManyRelation.setAdditionalOrderBy(attrAdditionalOrderBy);
+					}
 					manyToManyAliasCounter++;
 					break;}
 				case ONE_TO_MANY_RELATIONS:
@@ -339,6 +347,14 @@ public abstract class ConfigReader implements ContentHandler {
 					}
 					currentOneToManyRelation.setSubstituteNameSingular(substituteNameSingular);
 					currentOneToManyRelation.setSubstituteNamePlural(substituteNamePlural);
+					String attrAdditionalJoin=atts.getValue("additionalJoin");
+					if(attrAdditionalJoin!=null) {
+						currentManyToManyRelation.setAdditionalJoin(attrAdditionalJoin);
+					}
+					String attrAdditionalOrderBy=atts.getValue("additionalOrderBy");
+					if(attrAdditionalOrderBy!=null) {
+						currentManyToManyRelation.setAdditionalOrderBy(attrAdditionalOrderBy);
+					}
 					oneToManyAliasCounter++;
 					break;
 				}
@@ -354,6 +370,14 @@ public abstract class ConfigReader implements ContentHandler {
 					currentOneRelation.setDestTable(currentDestTable);
 					String substituteName = atts.getValue("name");
 					currentOneRelation.setSubstituteNameSingular(substituteName);
+					String attrAdditionalJoin=atts.getValue("additionalJoin");
+					if(attrAdditionalJoin!=null) {
+						currentManyToManyRelation.setAdditionalJoin(attrAdditionalJoin);
+					}
+					String attrAdditionalOrderBy=atts.getValue("additionalOrderBy");
+					if(attrAdditionalOrderBy!=null) {
+						currentManyToManyRelation.setAdditionalOrderBy(attrAdditionalOrderBy);
+					}
 					oneAliasCounter++;
 					break;
 				default:

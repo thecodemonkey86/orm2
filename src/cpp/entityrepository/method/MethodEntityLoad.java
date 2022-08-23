@@ -25,6 +25,7 @@ import cpp.entity.method.MethodOneRelationEntityIsNull;
 import cpp.entityrepository.ClsEntityRepository;
 import cpp.lib.ClsQSqlQuery;
 import cpp.lib.ClsQVariant;
+import cpp.lib.ClsSqlQuery;
 import database.column.Column;
 import database.relation.AbstractRelation;
 import database.relation.ManyRelation;
@@ -94,6 +95,10 @@ public class MethodEntityLoad extends Method {
 			}
 			
 			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", QString.fromExpression(Entities.get(r.getDestTable()).callStaticMethod("getTableName")),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
+			
+			if(r.hasAdditionalJoin()) {
+				exprQSqlQuery = exprQSqlQuery.callMethod(ClsSqlQuery.join,QString.fromStringConstant(r.getAdditionalJoin()));
+			}
 		}
 		for(OneToManyRelation r:oneToManyRelations) {
 			ArrayList<String> joinConditions=new ArrayList<>();
@@ -102,6 +107,9 @@ public class MethodEntityLoad extends Method {
 			}
 			
 			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", QString.fromExpression(Entities.get(r.getDestTable()).callStaticMethod("getTableName")),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
+			if(r.hasAdditionalJoin()) {
+				exprQSqlQuery = exprQSqlQuery.callMethod(ClsSqlQuery.join,QString.fromStringConstant(r.getAdditionalJoin()));
+			}
 		}
 		for(ManyRelation r:manyRelations) {
 			ArrayList<String> joinConditionsMappingDest=new ArrayList<>();
@@ -128,13 +136,20 @@ public class MethodEntityLoad extends Method {
 					QString.fromStringConstant(r.getAlias()), 
 					QString.fromStringConstant(CodeUtil2.concat(joinConditionsMappingDest," AND ")));
 			
-			
+			if(r.hasAdditionalJoin()) {
+				exprQSqlQuery = exprQSqlQuery.callMethod(ClsSqlQuery.join,QString.fromStringConstant(r.getAdditionalJoin()));
+			}
 		}
 		
 		for(Column col:primaryKey.getColumns()) {
 			
 			exprQSqlQuery = exprQSqlQuery.callMethod("where", QString.fromStringConstant("e1."+ col.getEscapedName()+"=?"),EntityCls.accessThisAttrGetterByColumn(pBean,col));
 					
+		}
+		for(AbstractRelation r:allRelations) {
+			if(r.hasAdditionalOrderBy()) {
+				exprQSqlQuery = exprQSqlQuery.callMethod(ClsSqlQuery.orderBy,QString.fromStringConstant(r.getAdditionalOrderBy()));
+			}
 		}
 		exprQSqlQuery = exprQSqlQuery.callMethod("execQuery");
 		Var qSqlQuery = _declare(exprQSqlQuery.getType(),
