@@ -38,7 +38,6 @@ public class EntityConstructor extends Constructor{
 		for(Column col:cols) {
 			 
 			if (!col.isPartOfPk() && !col.hasOneRelation() && !col.isFileImportEnabled()) {
-				_assign(parent.getAttrByName(col.getCamelCaseName()+ "Modified"), BoolExpression.FALSE);
 				
 				Expression defValExpr =  EntityCls.getDatabaseMapper().getColumnDefaultValueExpression(col);
 				if (defValExpr != null) {
@@ -46,6 +45,8 @@ public class EntityConstructor extends Constructor{
 				} else {
 					_assign(parent.getAttrByName(col.getCamelCaseName()), EntityCls.getDatabaseMapper().getGenericDefaultValueExpression(col)); 
 				}
+				
+				_assign(parent.getAttrByName(col.getCamelCaseName()+ "Modified"), BoolExpression.FALSE);
 			}
 			if(col.isRawValueEnabled()) {
 				Attr a = parent.getAttrByName("insertExpression"+col.getUc1stCamelCaseName());

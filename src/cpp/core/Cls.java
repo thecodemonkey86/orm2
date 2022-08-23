@@ -115,13 +115,22 @@ public class Cls extends Type implements IAttributeContainer{
 	}
 	
 	public void addInclude(Include i) {
+		if(includes==null) {
+			includes = new LinkedHashSet<>();
+		}
 		this.includes.add(i);
 	}
 	
 	public void addIncludeLib(String i) {
+		if(includes==null) {
+			includes = new LinkedHashSet<>();
+		}
 		includes.add(new LibInclude(i));
 	}
 	public void addIncludeLibInSource(String i) {
+		if(includesInSourceFile==null) {
+			includesInSourceFile = new LinkedHashSet<>();
+		}
 		includesInSourceFile.add(new LibInclude(i));
 	}
 	
@@ -145,6 +154,13 @@ public class Cls extends Type implements IAttributeContainer{
 			includes.add(new DebugOnlyInclude(new LibInclude(i)));
 		} else {
 			includes.add(new LibInclude(i));
+		}
+	}
+	public void addIncludeLibInSource(String i,boolean debugOnly) {
+		if(debugOnly) {
+			includesInSourceFile.add(new DebugOnlyInclude(new LibInclude(i)));
+		} else {
+			includesInSourceFile.add(new LibInclude(i));
 		}
 	}
 	
@@ -240,7 +256,7 @@ public class Cls extends Type implements IAttributeContainer{
 			CodeUtil.writeLine(sb, CodeUtil.sp("namespace",useNamespace,"{"));
 		}
 		for(Type predef:forwardDeclaredTypes) {
-			CodeUtil.writeLine(sb, predef.getForwardDeclaration()+";");
+			CodeUtil.writeLine(sb, predef.getForwardDeclaration());
 		}
 		for(Include incl:includes) {
 			CodeUtil.writeLine(sb, incl);
@@ -373,8 +389,8 @@ public class Cls extends Type implements IAttributeContainer{
 		return constructors;
 	}
 	
-	public void addForwardDeclaredClass(Cls cls) {
-		this.forwardDeclaredTypes.add(cls);
+	public void addForwardDeclaredClass(Type t) {
+		this.forwardDeclaredTypes.add(t);
 	}
 	
 	public void addForwardDeclaredClass(Struct struct) {
@@ -582,7 +598,11 @@ public class Cls extends Type implements IAttributeContainer{
 	
 	@Override
 	public String getForwardDeclaration() {
-		return CodeUtil.sp("class",getName());
+		if(useNamespace!=null) {
+			return CodeUtil.sp("namespace",useNamespace,"{", "class",type,"}")+";";
+		} else {
+			return CodeUtil.sp("class",getName())+";";
+		}
 	}
 	
 	public MethodTemplate addMethodTemplate(MethodTemplate tpl) {

@@ -15,7 +15,8 @@ public class Nullable extends TplCls{
 		setUseNamespace("ORM2");
 		addMethod(new LibMethod(Types.Void,setNull));
 		addMethod(new LibMethod(Types.Bool, isNull));
-		addMethod(new LibMethod(element.toConstRef(),val));
+		if(element != null)
+			addMethod(new LibMethod(element.toConstRef(),val));
 	}
 
 }

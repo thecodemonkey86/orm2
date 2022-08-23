@@ -45,15 +45,15 @@ public class ClsEntityRepository extends Cls{
 
 	public void addDeclarations(Collection<EntityCls> beans) {
 		addConstructor(new ConstructorEntityRepository());
-		addIncludeLib("QHash");
-		addIncludeLib(Types.QSqlRecord);
+		addIncludeLibInSource("QHash");
+		addIncludeLibInSource(Types.QSqlRecord);
 		addIncludeHeader(getSuperclass().getHeaderInclude());
-		addIncludeHeader(EntityCls.getDatabaseMapper().getSqlQueryType().getIncludeHeader());
+		addIncludeHeaderInSource(EntityCls.getDatabaseMapper().getSqlQueryType().getIncludeHeader());
 		if(beans.size()>0)
-			addIncludeHeader(Types.orderedSet(beans.iterator().next()).getHeaderInclude()
+			addIncludeHeaderInSource(Types.orderedSet(beans.iterator().next()).getHeaderInclude()
 					);
 		for(EntityCls bean:beans) {
-			addIncludeHeader(EntityCls.getModelPath() + "entities/"+bean.getIncludeHeader());
+			addIncludeHeaderInSource(EntityCls.getModelPath() + "entities/"+bean.getIncludeHeader());
 			addIncludeHeader("query/"+bean.getName().toLowerCase()+"entityqueryselect");
 			
 			if(bean.getTbl().hasQueryType(Table.QueryType.Delete))
@@ -80,13 +80,7 @@ public class ClsEntityRepository extends Cls{
 //			addMethod(new MethodFetchOneStatic(bean));
 //			beanQueryClasses.add(new ClsBeanQuery(bean));
 			addForwardDeclaredClass(bean);
-			addForwardDeclaredClass(Types.beanQuerySelect(bean));
-			
-			if(bean.getTbl().hasQueryType(Table.QueryType.Update))
-				addForwardDeclaredClass(Types.beanQueryUpdate(bean));
-			
-			if(bean.getTbl().hasQueryType(Table.QueryType.Delete))
-				addForwardDeclaredClass(Types.beanQueryDelete(bean));
+		
 //			addMethod(new MethodLoadCollection(new Param(Types.qset(bean.toSharedPtr()).toRawPointer(), "collection")));
 			
 			if(bean.getTbl().isEnableLoadCollection())

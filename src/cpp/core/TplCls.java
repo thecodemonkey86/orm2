@@ -50,7 +50,12 @@ public class TplCls extends Cls {
 	
 	@Override
 	public String getForwardDeclaration() {
-		throw new UnsupportedOperationException();
+		if(useNamespace!=null) {
+			return CodeUtil.sp("namespace",useNamespace,"{", "template","<class T>","class",type,";","}");
+		} else {
+			return CodeUtil.sp("template","<class T>","class",type)+";";	
+		}
+		
 	}
 	
 	@Override

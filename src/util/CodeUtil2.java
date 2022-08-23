@@ -1,6 +1,5 @@
 package util;
 
-import util.StringUtil;
 import codegen.CodeUtil;
 
 public class CodeUtil2 extends CodeUtil {

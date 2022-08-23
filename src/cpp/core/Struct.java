@@ -69,6 +69,6 @@ public class Struct extends Type implements IAttributeContainer  {
 	
 	@Override
 	public String getForwardDeclaration() {
-		return CodeUtil.sp("struct", getName());
+		return CodeUtil.sp("struct", getName())+";";
 	}
 }

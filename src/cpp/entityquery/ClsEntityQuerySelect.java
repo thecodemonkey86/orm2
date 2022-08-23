@@ -102,14 +102,16 @@ public class ClsEntityQuerySelect extends Cls {
 		}
 		
 		addIncludeLib(ClsQList.CLSNAME);
-		addIncludeHeader(EntityCls.getModelPath() + "entities/"+cls.getIncludeHeader());
-		addIncludeHeader("../"+ Types.EntityRepository.getName().toLowerCase());
-		addIncludeHeader(Types.SqlUtil.getIncludeHeader());
+		addForwardDeclaredClass(cls);
+		addForwardDeclaredClass(Types.nullable(null));
+		addIncludeHeaderInSource(EntityCls.getModelPath() + "entities/"+cls.getIncludeHeader());
+		addIncludeHeaderInSource("../"+ Types.EntityRepository.getName().toLowerCase());
+		addIncludeHeaderInSource(Types.SqlUtil.getIncludeHeader());
 		addIncludeHeader(Types.SqlQuery.getIncludeHeader());
 //		addIncludeHeader(EnumQueryMode.INSTANCE.getName().toLowerCase());
-		addIncludeLib("QSqlError",true);
-		addIncludeLib("QSqlDriver");
-		addIncludeLib(Types.QVariant.getName());
+		addIncludeLibInSource("QSqlError",true);
+		addIncludeLibInSource("QSqlDriver",true);
+		addIncludeLibInSource(Types.QVariant);
 		addIncludeLibInSource(Types.QRegularExpression);
 		addAttr(new Attr(Types.EntityRepository.toSharedPtr(), "repository"));
 //		addAttr(new Attr(Types.QString,mainBeanAlias));
