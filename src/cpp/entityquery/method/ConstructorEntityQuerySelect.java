@@ -24,7 +24,7 @@ public class ConstructorEntityQuerySelect extends Constructor {
 		super();
 		this.bean = bean;
 		pSqlCon = addParam( new Param(Types.QSqlDatabase.toConstRef(), "sqlCon"));
-		pRepository = addParam(new Param(Types.EntityRepository.toSharedPtr(), "repository"));
+		pRepository = addParam(new Param(Types.EntityRepository.toRawPointer(), "repository"));
 //		pTable = addParam(new Param(Types.QString.toConstRef(), "table"));
 		if(bean.hasRelations())
 			pLazy = addParam(new Param(Types.Bool, "loadLazy",BoolExpression.FALSE));

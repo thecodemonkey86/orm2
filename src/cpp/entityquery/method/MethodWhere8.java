@@ -11,10 +11,10 @@ public class MethodWhere8 extends Method{
 	Param pWhereCond;
 	Param pParam;
 	
-	public MethodWhere8(Cls parentType,boolean qLatin1String) {
+	public MethodWhere8(Cls parentType) {
 		super(Public, parentType.toRef(), "where");
 		pWhereCond = addParam(Types.QString.toConstRef(),"whereCond");
-		pParam = addParam(qLatin1String ? Types.QString.toConstRef() : Types.QLatin1String.toConstRef(),"param");
+		pParam = addParam(Types.QString.toConstRef(), "param");
 		
 	}
 

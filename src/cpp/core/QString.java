@@ -1,12 +1,10 @@
 package cpp.core;
 
 import codegen.CodeUtil;
-import config.cpp.CppOrmConfig;
 import cpp.CoreTypes;
 import cpp.core.expression.Expression;
 import cpp.core.expression.QChar;
 import cpp.core.expression.QStringPlusOperatorExpression;
-import cpp.entity.EntityCls;
 import cpp.lib.ClsQString;
 
 public class QString extends Expression {
@@ -27,13 +25,6 @@ public class QString extends Expression {
 		return new QStringLiteral(str);
 	}
 	
-	@Deprecated
-	public static QString fromLatin1StringConstant(String str) {
-		if(EntityCls.getCfg().getQtVersion().ordinal() < CppOrmConfig.QtVersion.V5_14.ordinal()) {
-			return new QStringLiteral(str);
-		}
-		return new QLatin1StringLiteral(str);
-	}
 	
 	public static QString fromExpression(Expression expression) {
 		return new QString(expression);

@@ -19,8 +19,7 @@ public class EntityConstructor extends Constructor{
 	public EntityConstructor(boolean autoIncrement, List<Column> cols) {
 		this.autoIncrement = autoIncrement;
 		this.cols = cols;
-		// Shared Pointer due to circular dependency / forward declaration issue 
-		addParam(new Param(Types.EntityRepository.toSharedPtr(), "repository"));
+		addParam(new Param(Types.EntityRepository.toRawPointer(), "repository"));
 		try{
 //		addParam(new Param(Types.BeanRepository.toRawPointer(), "repository"));
 //		addPassToSuperConstructor(params.get(0));

@@ -8,11 +8,11 @@ import cpp.core.instruction.Instruction;
 
 public class MethodLeftJoin1 extends Method{
 
-	public MethodLeftJoin1(Cls parentType,boolean qLatin1StringParamJoinTable,boolean qLatin1StringParamAlias,boolean qLatin1StringParamOn) {
+	public MethodLeftJoin1(Cls parentType) {
 		super(Public, parentType.toRef(), "leftJoin");
-		addParam(new Param(qLatin1StringParamJoinTable ? Types.QLatin1String.toConstRef() : Types.QString.toConstRef(),"joinTable"));
-		addParam(new Param(qLatin1StringParamAlias ? Types.QLatin1String.toConstRef() : Types.QString.toConstRef(),"alias"));
-		addParam(new Param(qLatin1StringParamOn ? Types.QLatin1String.toConstRef() : Types.QString.toConstRef(),"on"));
+		addParam(new Param(  Types.QString.toConstRef(),"joinTable"));
+		addParam(new Param( Types.QString.toConstRef(),"alias"));
+		addParam(new Param( Types.QString.toConstRef(),"on"));
 		
 	}
 

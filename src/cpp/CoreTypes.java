@@ -7,7 +7,6 @@ import cpp.core.Type;
 import cpp.lib.ClsQByteArray;
 import cpp.lib.ClsQDate;
 import cpp.lib.ClsQDateTime;
-import cpp.lib.ClsQLatin1String;
 import cpp.lib.ClsQList;
 import cpp.lib.ClsQSet;
 import cpp.lib.ClsQSqlDatabase;
@@ -33,7 +32,7 @@ public class CoreTypes {
 	public static final PrimitiveType LongLong=new PrimitiveType("long long");
 	public static final PrimitiveType Short=new PrimitiveType("short");
 	public static final ClsQString QString= new ClsQString();
-	public static final ClsQLatin1String QLatin1String= new ClsQLatin1String();
+//	public static final ClsQAnyStringView QAnyStringView= new ClsQAnyStringView();
 	public static final PrimitiveType Char= new PrimitiveType("char");
 	public static final Type ConstCharPtr= Type.constPtr(Char);
 	public static final PrimitiveType Bool = new PrimitiveType("bool");

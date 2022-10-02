@@ -12,7 +12,7 @@ public class ConstructorEntityQueryDelete extends Constructor {
 	public ConstructorEntityQueryDelete() {
 		super();
 		pSqlCon = addParam( new Param(Types.QSqlDatabase.toConstRef(), "sqlCon"));
-		pRepository = addParam(new Param(Types.EntityRepository.toSharedPtr(), "repository"));
+		pRepository = addParam(new Param(Types.EntityRepository.toRawPointer(), "repository"));
 		pTable = addParam(Types.QString.toConstRef(),"table");
 	}
 

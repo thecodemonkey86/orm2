@@ -9,7 +9,7 @@ import cpp.core.expression.Expression;
 public class RepositoryAttr extends Attr{
 
 	public RepositoryAttr() {
-		super(Types.EntityRepository.toSharedPtr(), "repository");
+		super(Types.EntityRepository.toRawPointer(), "repository");
 	}
 
 	public MethodCall callGetByRecordMethod(EntityCls bean, Expression...args) {

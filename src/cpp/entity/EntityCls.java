@@ -87,7 +87,7 @@ public class EntityCls extends Cls {
 	public static final String END_CUSTOM_CLASS_MEMBERS = "/*END_CUSTOM_CLASS_MEMBERS*/";
 	public static final String BEGIN_CUSTOM_PREPROCESSOR = "/*BEGIN_CUSTOM_PREPROCESSOR*/";
 	public static final String END_CUSTOM_PREPROCESSOR = "/*END_CUSTOM_PREPROCESSOR*/";
-	public static final String APILEVEL = "3.9.5";
+	public static final String APILEVEL = "3.10.0";
 	
 	static Database database;
 	static DatabaseTypeMapper mapper;
@@ -203,7 +203,7 @@ public class EntityCls extends Cls {
 		if(this.getTbl().hasQueryType(Table.QueryType.Delete))
 			addForwardDeclaredClass(Types.beanQueryDelete(this));
 
-		addIncludeLibInSource(Types.QSqlRecord);
+		addIncludeLibInSource(Types.QString.toConstRef());
 		
 		addAttr(new RepositoryAttr());
 		for(OneRelation r:oneRelations) {

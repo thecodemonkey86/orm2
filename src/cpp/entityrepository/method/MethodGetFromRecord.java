@@ -16,7 +16,6 @@ import cpp.core.instruction.IfBlock;
 import cpp.entity.EntityCls;
 import cpp.lib.ClsQString;
 import cpp.lib.ClsQVariant;
-import cpp.lib.EnableSharedFromThis;
 import database.FirebirdDatabase;
 import database.column.Column;
 import cpp.core.expression.ParenthesesExpression;
@@ -29,16 +28,9 @@ public class MethodGetFromRecord extends Method {
 		return "get"+cls.getName()+ "FromRecord";
 	}
 	
-	public static final String getMethodNameStatic(EntityCls cls) {
-		return "get"+cls.getName()+ "FromRecordStatic";
-	}
 	
-	public MethodGetFromRecord(EntityCls cls, boolean staticVersion) {
-		super(Public, cls.toSharedPtr(), staticVersion? getMethodNameStatic(cls) : getMethodName(cls) );
-		if(staticVersion) {
-			setStatic(true);
-			addParam(new Param(Types.EntityRepository.toRawPointer(), "repository"));
-		}
+	public MethodGetFromRecord(EntityCls cls) {
+		super(Public, cls.toSharedPtr(),  getMethodName(cls) );
 		addParam(new Param(Types.QSqlRecord.toConstRef(), "record"));
 		addParam(new Param(Types.QString.toConstRef(), "alias"));
 		this.columns = cls.getTbl().getColumns(true);
@@ -60,7 +52,7 @@ public class MethodGetFromRecord extends Method {
 			Param pRepository = getParam("repository");
 			vBean = _declareMakeShared(bean, "entity", pRepository);
 		} else {
-			vBean = _declareMakeShared(bean, "entity", _this().callMethod(EnableSharedFromThis.SHARED_FROM_THIS));
+			vBean = _declareMakeShared(bean, "entity", _this());
 		}
 		for(Column col:columns) {
 			try{

@@ -6,7 +6,6 @@ import cpp.core.Param;
 import cpp.core.expression.BoolExpression;
 import cpp.core.expression.CreateObjectExpression;
 import cpp.entity.EntityCls;
-import cpp.lib.EnableSharedFromThis;
 
 public class MethodCreateQuerySelect extends Method {
 	EntityCls bean;
@@ -35,12 +34,12 @@ public class MethodCreateQuerySelect extends Method {
 		//_return(new MakeSharedExpression((SharedPtr)returnType, parent.getStaticAttribute("sqlCon").callMethod("buildQuery")));
 		if(bean.hasRelations()) {
 			if(pOverrideRelatedTableJoins==null) {
-				_return(new CreateObjectExpression(returnType,  parent.getAttrByName("sqlCon"), _this().callMethod(EnableSharedFromThis.SHARED_FROM_THIS),pLazy ));
+				_return(new CreateObjectExpression(returnType,  parent.getAttrByName("sqlCon"), _this(),pLazy ));
 			} else {
-				_return(new CreateObjectExpression(returnType,  parent.getAttrByName("sqlCon"), _this().callMethod(EnableSharedFromThis.SHARED_FROM_THIS),pLazy,pOverrideRelatedTableJoins ));
+				_return(new CreateObjectExpression(returnType,  parent.getAttrByName("sqlCon"), _this(),pLazy,pOverrideRelatedTableJoins ));
 			}
 		} else {
-			_return(new CreateObjectExpression(returnType,  parent.getAttrByName("sqlCon"), _this().callMethod(EnableSharedFromThis.SHARED_FROM_THIS) ));
+			_return(new CreateObjectExpression(returnType,  parent.getAttrByName("sqlCon"), _this() ));
 		}
 	}
 

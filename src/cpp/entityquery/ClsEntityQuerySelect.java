@@ -102,6 +102,7 @@ public class ClsEntityQuerySelect extends Cls {
 		}
 		
 		addIncludeLib(ClsQList.CLSNAME);
+		addIncludeLib(Types.QString.toConstRef());
 		addForwardDeclaredClass(cls);
 		addForwardDeclaredClass(Types.nullable(null));
 		addIncludeHeaderInSource(EntityCls.getModelPath() + "entities/"+cls.getIncludeHeader());
@@ -113,7 +114,7 @@ public class ClsEntityQuerySelect extends Cls {
 		addIncludeLibInSource("QSqlDriver",true);
 		addIncludeLibInSource(Types.QVariant);
 		addIncludeLibInSource(Types.QRegularExpression);
-		addAttr(new Attr(Types.EntityRepository.toSharedPtr(), "repository"));
+		addAttr(new Attr(Types.EntityRepository.toRawPointer(), "repository"));
 //		addAttr(new Attr(Types.QString,mainBeanAlias));
 //		addAttr(new Attr(Types.QString,selectFields));
 //		addAttr(new Attr(Types.QString,table));
@@ -149,8 +150,7 @@ public class ClsEntityQuerySelect extends Cls {
 				}
 			}
 		}*/
-		addMethod(new MethodLeftJoin1(this,false,true,true));
-		addMethod(new MethodLeftJoin1(this,false,false,false));
+		addMethod(new MethodLeftJoin1(this));
 		addMethod(new MethodLeftJoin2(this));
 		addMethod(new MethodLeftJoin3(this));
 		addMethod(new MethodLeftJoin4(this));
@@ -164,8 +164,7 @@ public class ClsEntityQuerySelect extends Cls {
 		addMethod(new MethodWhere5(this));
 		addMethod(new MethodWhere6(this));
 //		addMethod(new MethodWhere7(this));
-		addMethod(new MethodWhere8(this,true));
-		addMethod(new MethodWhere8(this,false));
+		addMethod(new MethodWhere8(this));
 		addMethod(new MethodWhere9(this));
 		addMethod(new MethodWhere10(this));
 		addMethod(new MethodWhere11(this));

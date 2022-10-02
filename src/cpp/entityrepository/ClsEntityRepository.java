@@ -25,7 +25,6 @@ import cpp.entityrepository.method.MethodRemoveAllRelated;
 import cpp.entityrepository.method.MethodRepoCreateNew;
 import cpp.entityrepository.method.MethodRepoCreateNewNonNullableOnly;
 import cpp.lib.ClsBaseRepository;
-import cpp.lib.EnableSharedFromThis;
 import database.column.Column;
 import database.relation.IManyRelation;
 import database.table.Table;
@@ -38,7 +37,7 @@ public class ClsEntityRepository extends Cls{
 	public ClsEntityRepository() {
 		super(CLSNAME);
 		addSuperclass(new ClsBaseRepository());
-		addSuperclass(new EnableSharedFromThis(this));
+		//addSuperclass(new EnableSharedFromThis(this));
 //		beanQueryClasses = new ArrayList<>(); 
 	}
 	
@@ -104,7 +103,7 @@ public class ClsEntityRepository extends Cls{
 //			addMethod(new MethodEntitySave(bean,false));
 //			addMethod(new MethodEntitySaveBulk(bean,false));
 //			addMethod(new MethodEntitySaveBulk(bean,true));
-			addMethod(new MethodGetFromRecord(bean,false));
+			addMethod(new MethodGetFromRecord(bean));
 			addMethod(new MethodRepoCreateNew(bean));
 			int countNullable = 0;
 			

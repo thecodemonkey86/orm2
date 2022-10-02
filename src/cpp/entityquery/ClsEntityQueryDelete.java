@@ -85,7 +85,7 @@ public class ClsEntityQueryDelete extends Cls {
 		addIncludeLib("QSqlDriver");
 		addIncludeLib(Types.QVariant.getName());
 		addIncludeLibInSource(Types.QRegularExpression);
-		addAttr(new Attr(Types.EntityRepository.toSharedPtr(), "repository"));
+		addAttr(new Attr(Types.EntityRepository.toRawPointer(), "repository"));
 		addAttr(new Attr(Types.QString,table));
 		addAttr(new Attr(Types.QStringList,"conditions"));
 		//addAttr(new Attr(Types.Int64,"limitResults"));
@@ -122,8 +122,7 @@ public class ClsEntityQueryDelete extends Cls {
 		addMethod(new MethodWhere5(this));
 		addMethod(new MethodWhere6(this));
 //		addMethod(new MethodWhere7(this));
-		addMethod(new MethodWhere8(this,true));
-		addMethod(new MethodWhere8(this,false));
+		addMethod(new MethodWhere8(this));
 		addMethod(new MethodWhere9(this));
 		addMethod(new MethodWhere10(this));
 		addMethod(new MethodWhere11(this));

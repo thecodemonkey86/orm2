@@ -11,7 +11,7 @@ public class ConstructorEntityQueryUpdate extends Constructor {
 	public ConstructorEntityQueryUpdate() {
 		super();
 		pSqlCon = addParam( new Param(Types.QSqlDatabase.toConstRef(), "sqlCon"));
-		pRepository = addParam(new Param(Types.EntityRepository.toSharedPtr(), "repository"));
+		pRepository = addParam(new Param(Types.EntityRepository.toRawPointer(), "repository"));
 		pTable = addParam(new Param(Types.QString.toConstRef(), "table"));
 	}
 
