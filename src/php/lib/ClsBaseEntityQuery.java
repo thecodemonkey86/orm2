@@ -8,7 +8,7 @@ import php.core.Types;
 public class ClsBaseEntityQuery extends PhpPseudoGenericClass{
 
 	public static final String sqlQuery = "sqlQuery";
-	public static final String mainBeanAlias = "mainBeanAlias";
+	public static final String mainEntityAlias = "mainEntityAlias";
 	public static final String where = "where";
 	public static final String join = "join";
 	public static final String addInsertRawExpression = "addInsertRawExpression";
@@ -25,7 +25,7 @@ public class ClsBaseEntityQuery extends PhpPseudoGenericClass{
 		addMethod(new LibMethod(this, where));
 		addMethod(new LibMethod(this, addInsertRawExpression));
 //		addMethod(new LibMethod(Types.mysqli_result, "query"));
-		addAttr(new Attr(Types.String, mainBeanAlias));
+		addAttr(new Attr(Types.String, mainEntityAlias));
 	}
 
 }

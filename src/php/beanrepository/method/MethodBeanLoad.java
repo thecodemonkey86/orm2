@@ -159,7 +159,7 @@ public class MethodBeanLoad extends Method {
 							Expression foreignPkArg = new PhpStringLiteral( EntityCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+colPk.getName()));
 							
 							pkSprintf.add(EntityCls.getTypeMapper().columnToType(colPk).getSprintfType());
-							ifIsRowIndexNotNullCondition[i] = foreignPkArg.isNotNull();
+							ifIsRowIndexNotNullCondition[i] = row.arrayIndex(foreignPkArg).isNotNull();
 							arrayIndexExpressions[++i] = row.arrayIndex(foreignPkArg);
 						}
 						ifIsRowIndexNotNull = ifRowNotNull.thenBlock()._if(Expressions.and(ifIsRowIndexNotNullCondition));

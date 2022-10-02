@@ -142,6 +142,8 @@ public class PhpOrm extends OrmGenerator {
 				dbFile = args[i+1];	
 			} else if(args[i].equals("--charset")) {
 				charset = args[i+1];
+			}  else if(args[i].equals("--user")) {
+				dbUser = args[i+1];
 			}
 		}
 		
