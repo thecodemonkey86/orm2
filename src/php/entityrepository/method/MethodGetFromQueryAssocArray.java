@@ -10,7 +10,6 @@ import php.core.Types;
 import php.core.expression.BoolExpression;
 import php.core.expression.Expression;
 import php.core.expression.Expressions;
-import php.core.expression.InlineIfExpression;
 import php.core.expression.PhpStringLiteral;
 import php.core.expression.Var;
 import php.core.method.Method;
@@ -76,7 +75,7 @@ public class MethodGetFromQueryAssocArray extends Method{
 					Var val = _declare(Types.Mixed, "_val"+col.getUc1stCamelCaseName(),array.arrayIndex(exprArrayIndex));
 					Expression convertTypeExpression = EntityCls.getTypeMapper().getConvertTypeExpression(val ,col);
 					
-					addInstr(bean.getClassConcreteType().getMethod("set"+col.getUc1stCamelCaseName()+"Internal").call(bean, col.isNullable() ? new InlineIfExpression(val.isNull(), val, convertTypeExpression) : convertTypeExpression).asInstruction());
+					addInstr(bean.getClassConcreteType().getMethod("set"+col.getUc1stCamelCaseName()+"Internal").call(bean, convertTypeExpression).asInstruction());
 				} catch (Exception e) {
 					e.printStackTrace();
 					System.out.println(parent);

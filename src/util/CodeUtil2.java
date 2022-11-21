@@ -53,7 +53,10 @@ public class CodeUtil2 extends CodeUtil {
 			return "";
 		StringBuilder sb=new StringBuilder();
 		for(int i=2;i<stackTrace.length;i++) {
-			sb.append(stackTrace[i].toString());
+			String s=stackTrace[i].toString();
+			if(s.startsWith("sun.reflect.NativeMethodAccessorImpl")) 
+				return sb.toString();
+			sb.append(s);
 			sb.append(" | ");
 		}
 		return sb.toString();

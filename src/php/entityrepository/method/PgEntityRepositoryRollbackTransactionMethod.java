@@ -6,9 +6,9 @@ import php.core.PhpFunctions;
 import php.core.Types;
 import php.core.expression.PhpStringLiteral;
 
-public class PgBeanRepositoryRollbackTransactionMethod extends AbstractBeanRepositoryRollbackTransactionMethod{
+public class PgEntityRepositoryRollbackTransactionMethod extends AbstractEntityRepositoryRollbackTransactionMethod{
 
-	public PgBeanRepositoryRollbackTransactionMethod() {
+	public PgEntityRepositoryRollbackTransactionMethod() {
 		super(Types.Resource);
 	}
 

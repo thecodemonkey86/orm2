@@ -16,6 +16,7 @@ public class ClsSqlQuery extends PhpCls{
 	public static final String execute = "execute";
 	public static final String where = "where";
 	public static final String join = "join";
+	public static final String orderBy = "orderBy";
 	public static final String beginTransaction = "beginTransaction";
 	public static final String commitTransaction = "commitTransaction";
 	public static final String rollbackTransaction = "rollbackTransaction";
@@ -50,6 +51,7 @@ public class ClsSqlQuery extends PhpCls{
 		addMethod(new LibMethod(this, addParamsWhere));
 		addMethod(new LibMethod(this, where));
 		addMethod(new LibMethod(this, join));
+		addMethod(new LibMethod(this, orderBy));
 		addMethod(new LibMethod(Types.Mixed, query));
 		addMethod(new LibMethod(Types.Int, getMode));
 		addConstant(new ClassConstant(Types.Int, MODE_SELECT,new IntExpression(1)));

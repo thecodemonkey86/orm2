@@ -15,9 +15,9 @@ import php.core.expression.NewOperator;
 import php.core.expression.PhpStringLiteral;
 import php.core.method.Method;
 import php.entity.EntityCls;
-import php.entityrepository.method.FirebirdBeanRepositoryBeginTransactionMethod;
-import php.entityrepository.method.FirebirdBeanRepositoryCommitTransactionMethod;
-import php.entityrepository.method.FirebirdBeanRepositoryRollbackTransactionMethod;
+import php.entityrepository.method.FirebirdEntityRepositoryBeginTransactionMethod;
+import php.entityrepository.method.FirebirdEntityRepositoryCommitTransactionMethod;
+import php.entityrepository.method.FirebirdEntityRepositoryRollbackTransactionMethod;
 import php.lib.ClsDateTime;
 
 public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
@@ -172,7 +172,7 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 				return e;
 			case "12":
 				if(!expr.getType().equals(Types.DateTime)) {
-					return new NewOperator(Types.DateTime,e, new NewOperator(Types.DateTimeZone,new PhpStringLiteral("Europe/Berlin"))) ;
+					return new NewOperator(Types.DateTime,e, new NewOperator(Types.DateTimeZone,new PhpStringLiteral("UTC"))) ;
 				} else {
 					return expr;
 				}
@@ -184,7 +184,7 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 				return e;
 			case "35":
 				if(!expr.getType().equals(Types.DateTime)) {
-					return new NewOperator(Types.DateTime,e, new NewOperator(Types.DateTimeZone,new PhpStringLiteral("Europe/Berlin"))) ;
+					return new NewOperator(Types.DateTime,e, new NewOperator(Types.DateTimeZone,new PhpStringLiteral("UTC"))) ;
 				} else {
 					return expr;
 				}
@@ -255,17 +255,17 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 	}
 	
 	public Method getBeanRepositoryBeginTransactionMethod() {
-		return new FirebirdBeanRepositoryBeginTransactionMethod();
+		return new FirebirdEntityRepositoryBeginTransactionMethod();
 	}
 
 	@Override
 	public Method getBeanRepositoryCommitTransactionMethod() {
-		return new FirebirdBeanRepositoryCommitTransactionMethod();
+		return new FirebirdEntityRepositoryCommitTransactionMethod();
 	}
 
 	@Override
 	public Method getBeanRepositoryRollbackTransactionMethod() {
-		return new FirebirdBeanRepositoryRollbackTransactionMethod();
+		return new FirebirdEntityRepositoryRollbackTransactionMethod();
 	}
 	
 	@Override

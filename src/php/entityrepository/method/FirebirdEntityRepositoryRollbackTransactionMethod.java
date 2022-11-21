@@ -4,11 +4,11 @@ import php.core.Param;
 import php.core.PhpFunctions;
 import php.core.Types;
 
-public class FirebirdBeanRepositoryCommitTransactionMethod extends AbstractBeanRepositoryCommitTransactionMethod{
+public class FirebirdEntityRepositoryRollbackTransactionMethod extends AbstractEntityRepositoryRollbackTransactionMethod{
 
 	Param transactionHandle;
 	
-	public FirebirdBeanRepositoryCommitTransactionMethod() {
+	public FirebirdEntityRepositoryRollbackTransactionMethod() {
 		super(Types.Bool);
 		transactionHandle = addParam(new Param(Types.Resource, "transactionHandle"));
 	}
@@ -16,7 +16,7 @@ public class FirebirdBeanRepositoryCommitTransactionMethod extends AbstractBeanR
 	@Override
 	public void addImplementation() {
 		_return(
-		PhpFunctions.ibase_commit.call(transactionHandle)
+		PhpFunctions.ibase_rollback.call(transactionHandle)
 		);
 		
 	}

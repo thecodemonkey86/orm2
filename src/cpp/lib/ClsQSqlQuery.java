@@ -9,11 +9,12 @@ public class ClsQSqlQuery extends Cls{
 
 //	public static final String clear = "clear";
 	public static final String record = "record";
+	public static final String next = "next";
 	
 	public ClsQSqlQuery() {
 		super("QSqlQuery");
 		addMethod(new LibMethod(this, record) );
-		addMethod(new LibMethod(CoreTypes.Bool, "next") );
+		addMethod(new LibMethod(CoreTypes.Bool, next) );
 //		addMethod(new LibMethod(CoreTypes.Void, clear) );
 	}
 	

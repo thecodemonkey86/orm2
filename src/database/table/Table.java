@@ -16,7 +16,7 @@ public class Table extends AbstractTable{
 	
 	protected ArrayList<ForeignKey> foreignKeys;
 	public static enum QueryType{Update, Delete};
-	
+	protected boolean optionToManuallyOverrideRelatedTableJoins;
 	protected boolean enableLoadCollection;
 	protected Set<QueryType> queryTypes;
 
@@ -33,6 +33,12 @@ public class Table extends AbstractTable{
 		return foreignKeys.add(e);
 	}
 
+	public boolean getOptionToManuallyOverrideRelatedTableJoins() {
+		return optionToManuallyOverrideRelatedTableJoins;
+	}
+	public void setOptionToManuallyOverrideRelatedTableJoins(boolean optionToManuallyOverrideRelatedTableJoins) {
+		this.optionToManuallyOverrideRelatedTableJoins = optionToManuallyOverrideRelatedTableJoins;
+	}
 	
 	
 	

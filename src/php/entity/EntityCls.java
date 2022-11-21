@@ -18,8 +18,8 @@ import php.core.expression.Expression;
 import php.core.expression.StaticAccessExpression;
 import php.core.method.MethodAttributeGetter;
 import php.core.method.MethodAttributeSetter;
-import php.entity.method.BeanConstructor;
-import php.entity.method.BeanEqualsMethod;
+import php.entity.method.EntityConstructor;
+import php.entity.method.EntityEqualsMethod;
 import php.entity.method.MethodAddManyToManyRelatedBean;
 import php.entity.method.MethodAddManyToManyRelatedBeanInternal;
 import php.entity.method.MethodAddRelatedBean;
@@ -32,7 +32,6 @@ import php.entity.method.MethodColumnAttrSetterInternal;
 import php.entity.method.MethodCreateNew;
 import php.entity.method.MethodGetFieldName;
 import php.entity.method.MethodGetFieldsAsAssocArray;
-import php.entity.method.MethodGetFieldsAsAssocStringArray;
 import php.entity.method.MethodGetPrimaryKeyFields;
 import php.entity.method.MethodHasAddedManyToMany;
 import php.entity.method.MethodHasRemovedManyToMany;
@@ -62,7 +61,7 @@ public class EntityCls extends PhpCls {
 	static PhpCls sqlQueryCls;
 	protected static String beanNamespace;
 	protected static String beanRepoNamespace;
-	public final static String API_LEVEL="2.0";
+	public final static String API_LEVEL="2.0.1";
 	
 	public static void setBeanRepoNamespace(String beanRepoClsNamespace) {
 		EntityCls.beanRepoNamespace = beanRepoClsNamespace;
@@ -248,7 +247,7 @@ public class EntityCls extends PhpCls {
 	public void addDeclarations() {
 		superclass = Types.BaseEntity;
 		
-		setConstructor(new BeanConstructor(tbl.getPrimaryKey().isAutoIncrement(),tbl.getColumnsWithoutPrimaryKey())); 
+		setConstructor(new EntityConstructor(tbl.getPrimaryKey().isAutoIncrement(),tbl.getColumnsWithoutPrimaryKey())); 
 
 
 		addAttributes(tbl.getAllColumns());
@@ -271,11 +270,10 @@ public class EntityCls extends PhpCls {
 		//			addMethod(new MethodSave(false));
 		//		}
 		addMethod(new MethodCreateNew(this));
-		addMethod(new BeanEqualsMethod(this, tbl.getPrimaryKey()));
+		addMethod(new EntityEqualsMethod(this, tbl.getPrimaryKey()));
 		addMethod(new MethodHasUpdate());
 		addMethod(new MethodClearModified());
 		addMethod(new MethodGetFieldsAsAssocArray(this));
-		addMethod(new MethodGetFieldsAsAssocStringArray());
 		addMethod(new MethodSetValue());
 		
 		fetchListHelper = new FetchListHelperClass(this, beanRepoNamespace);

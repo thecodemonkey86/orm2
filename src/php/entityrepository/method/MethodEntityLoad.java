@@ -33,12 +33,12 @@ import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
 import database.relation.PrimaryKey;
 
-public class MethodBeanLoad extends Method {
+public class MethodEntityLoad extends Method {
 
 	protected PrimaryKey primaryKey;
 	protected EntityCls bean;
 
-	public MethodBeanLoad(EntityCls bean) {
+	public MethodEntityLoad(EntityCls bean) {
 		super(Public, Types.Void, "load"+bean.getName());
 
 		this.primaryKey = bean.getTbl().getPrimaryKey();
@@ -90,6 +90,11 @@ public class MethodBeanLoad extends Method {
 				}
 				
 				exprSqlQuery = exprSqlQuery.callMethod("leftJoin", Types.BeanRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(Entities.get(r.getDestTable())),new PhpStringLiteral(r.getAlias())), new PhpStringLiteral(CodeUtil2.concat(joinConditions," AND ")));
+				
+
+				if(r.hasAdditionalJoin()) {
+					exprSqlQuery = exprSqlQuery.callMethod(ClsSqlQuery.join,new PhpStringLiteral(r.getAdditionalJoin()));
+				}
 			}
 			for(OneToManyRelation r:oneToManyRelations) {
 				ArrayList<String> joinConditions=new ArrayList<>();
@@ -98,6 +103,9 @@ public class MethodBeanLoad extends Method {
 				}
 				
 				exprSqlQuery = exprSqlQuery.callMethod("leftJoin", Types.BeanRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(Entities.get(r.getDestTable())),new PhpStringLiteral(r.getAlias())), new PhpStringLiteral(CodeUtil2.concat(joinConditions," AND ")));
+				if(r.hasAdditionalJoin()) {
+					exprSqlQuery = exprSqlQuery.callMethod(ClsSqlQuery.join,new PhpStringLiteral(r.getAdditionalJoin()));
+				}
 			}
 			for(ManyRelation r:manyToManyRelations) {
 				ArrayList<String> joinConditions=new ArrayList<>();
@@ -113,13 +121,20 @@ public class MethodBeanLoad extends Method {
 				}
 				
 				exprSqlQuery = exprSqlQuery.callMethod("leftJoin", Types.BeanRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(Entities.get(r.getDestTable())),new PhpStringLiteral(r.getAlias())), new PhpStringLiteral(CodeUtil2.concat(joinConditions," AND ")));
-				
+				if(r.hasAdditionalJoin()) {
+					exprSqlQuery = exprSqlQuery.callMethod(ClsSqlQuery.join,new PhpStringLiteral(r.getAdditionalJoin()));
+				}
 			}
 
 			
 			for(Column col:bean.getTbl().getPrimaryKey().getColumns()) {
 				exprSqlQuery = exprSqlQuery.callMethod("where", new PhpStringLiteral("e1."+ col.getEscapedName()+"=?"),pBean.callAttrGetter(bean.getAttrByName(col.getCamelCaseName())));
 						
+			}
+			for(AbstractRelation r:allRelations) {
+				if(r.hasAdditionalOrderBy()) {
+					exprSqlQuery = exprSqlQuery.callMethod(ClsSqlQuery.orderBy,new PhpStringLiteral(r.getAdditionalOrderBy()));
+				}
 			}
 			exprSqlQuery = exprSqlQuery.callMethod(ClsSqlQuery.query);
 			Var res = _declare(exprSqlQuery.getType(),
@@ -138,6 +153,7 @@ public class MethodBeanLoad extends Method {
 				manyRelations.addAll(manyToManyRelations);
 			
 				for(OneRelation r:oneRelations) {
+	//				BeanCls foreignCls = Beans.get(r.getDestTable()); 
 					IfBlock ifBlock= doWhileRowIsNotNull._if(Expressions.and( pBean.callMethod(new MethodOneRelationBeanIsNull(r)),row.arrayIndex(new PhpStringLiteral(EntityCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias() + "__" + r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull()) );
 					ifBlock.thenBlock().
 					_callMethodInstr(pBean, new MethodOneRelationAttrSetter( pBean.getClassConcreteType().getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)), true), 
@@ -158,7 +174,7 @@ public class MethodBeanLoad extends Method {
 							Expression foreignPkArg = new PhpStringLiteral( EntityCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+colPk.getName()));
 							
 							pkSprintf.add(EntityCls.getTypeMapper().columnToType(colPk).getSprintfType());
-							ifIsRowIndexNotNullCondition[i] = foreignPkArg.isNotNull();
+							ifIsRowIndexNotNullCondition[i] = row.arrayIndex(foreignPkArg).isNotNull();
 							arrayIndexExpressions[++i] = row.arrayIndex(foreignPkArg);
 						}
 						ifIsRowIndexNotNull = ifRowNotNull.thenBlock()._if(Expressions.and(ifIsRowIndexNotNullCondition));
@@ -172,12 +188,11 @@ public class MethodBeanLoad extends Method {
 						Column colPk = r.getDestTable().getPrimaryKey().getColumns().get(0);
 						
 						
-						//IfBlock ifNotRecValueIsNull = doWhileQSqlQueryNext._if(Expressions.not(  Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.fromStringConstant("pk"+r.getAlias()))));
+						//IfBlock ifNotRecValueIsNull = doWhileQSqlQueryNext._if(Expressions.not(  Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Beans.get(r.getDestTable())),  resultSet, JavaString.fromStringConstant("pk"+r.getAlias()))));
 						
 						Var pkSet = ifRowNotNull.thenBlock()._declareNewArray(Types.array(Types.Mixed), "pkSet"+StringUtil.ucfirst(r.getAlias()));
-						Expression rowArrayIndex =row.arrayIndex(new PhpStringLiteral( EntityCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+colPk.getName())));
-						pkArrayIndex = pkSet.arrayIndex(rowArrayIndex);
-						ifIsRowIndexNotNull = ifRowNotNull.thenBlock()._if(rowArrayIndex.isNotNull());
+						pkArrayIndex = pkSet.arrayIndex(row.arrayIndex(new PhpStringLiteral( EntityCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+colPk.getName()))));
+						ifIsRowIndexNotNull = ifRowNotNull.thenBlock()._if(pkArrayIndex.isNotNull());
 						
 						
 					}

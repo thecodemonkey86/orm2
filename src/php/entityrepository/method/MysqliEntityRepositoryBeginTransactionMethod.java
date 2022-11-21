@@ -5,9 +5,9 @@ import php.core.PhpCls;
 import php.core.Types;
 import php.lib.ClsMysqli;
 
-public class MysqliBeanRepositoryBeginTransactionMethod extends AbstractBeanRepositoryBeginTransactionMethod{
+public class MysqliEntityRepositoryBeginTransactionMethod extends AbstractEntityRepositoryBeginTransactionMethod{
 
-	public MysqliBeanRepositoryBeginTransactionMethod() {
+	public MysqliEntityRepositoryBeginTransactionMethod() {
 		super(Types.Bool);
 	}
 

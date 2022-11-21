@@ -70,7 +70,8 @@ public class FirebirdDatabase extends Database {
 						col.setDbType(rsColumndata.getString("field_type"));
 					}
 					rsColumndata.getInt("null_flag");
-					col.setNullable(rsColumndata.wasNull());
+					if(!col.isNullable())
+						col.setNullable(rsColumndata.wasNull());
 					col.setDefaultValue( rsColumndata.getString("default_value"));
 				}
 			}

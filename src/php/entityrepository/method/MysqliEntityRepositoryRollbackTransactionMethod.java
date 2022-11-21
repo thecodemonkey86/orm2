@@ -5,9 +5,9 @@ import php.core.PhpCls;
 import php.core.Types;
 import php.lib.ClsMysqli;
 
-public class MysqliBeanRepositoryRollbackTransactionMethod extends AbstractBeanRepositoryRollbackTransactionMethod{
+public class MysqliEntityRepositoryRollbackTransactionMethod extends AbstractEntityRepositoryRollbackTransactionMethod{
 
-	public MysqliBeanRepositoryRollbackTransactionMethod() {
+	public MysqliEntityRepositoryRollbackTransactionMethod() {
 		super(Types.Bool);
 	}
 

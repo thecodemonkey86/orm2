@@ -4,9 +4,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import cpp.entity.SetterValidator;
 import database.Database;
@@ -29,9 +31,11 @@ public class OrmConfig {
 	protected Map<Table,List<ManyRelation>> manyToManyRelations;
 	protected Map<String,List<Pair<String, String>>> renameMethods;
 	protected Map<String, Map<String,SetterValidator>> columnValidators;
+	protected Set<String> enableHasUpdateMethods; // class names
 	protected Database database;
 	
 	private boolean enableStacktrace = true;
+	private boolean enableGetValueByName = false;
 	
 	private boolean enableMethodLoadCollection = false;
 	private JsonMode jsonMode;
@@ -280,6 +284,13 @@ public class OrmConfig {
 		
 	}
 	
+	public void setEnableGetValueByName(boolean enableGetValueByName) {
+		this.enableGetValueByName = enableGetValueByName;
+	}
+	
+	public boolean isEnableGetValueByName() {
+		return enableGetValueByName;
+	}
 
 	public void setOverrideRepositoryClassName(String overrideRepositoryClassName) {
 		this.overrideRepositoryClassName = overrideRepositoryClassName;
@@ -314,12 +325,21 @@ public class OrmConfig {
 	public Map<String, SetterValidator> getValidators(String tableName) {
 		return columnValidators.get(tableName);
 	}
-	
 	public boolean isEnableMethodLoadCollection() {
 		return enableMethodLoadCollection;
 	}
 	
 	public void setEnableMethodLoadCollection(boolean enableMethodLoadCollection) {
 		this.enableMethodLoadCollection = enableMethodLoadCollection;
+	}
+	public void enableHasUpdateMethod(String classname)	{
+		if(enableHasUpdateMethods==null) {
+			enableHasUpdateMethods = new HashSet<>();
+		}
+		enableHasUpdateMethods.add(classname);
+	}
+	
+	public boolean isHasUpdateMethodEnabled(String classname) {
+		return enableHasUpdateMethods!=null && enableHasUpdateMethods.contains(classname);
 	}
 }

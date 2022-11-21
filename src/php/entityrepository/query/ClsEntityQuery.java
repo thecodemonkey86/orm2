@@ -5,8 +5,8 @@ import php.core.PhpCls;
 import php.entity.EntityCls;
 import php.entityrepository.query.method.ConstructorEntityQuery;
 import php.entityrepository.query.method.MethodAddRelatedTableJoins;
-import php.entityrepository.query.method.MethodEntityQuery;
-import php.entityrepository.query.method.MethodEntityQueryOne;
+import php.entityrepository.query.method.MethodEntityQueryFetch;
+import php.entityrepository.query.method.MethodEntityQueryFetchOne;
 import php.entityrepository.query.method.MethodEntityQueryWhereEquals;
 import php.entityrepository.query.method.MethodEntityQueryWhereIn;
 import php.entityrepository.query.method.MethodEntityQueryWhereIsNull;
@@ -30,8 +30,8 @@ public class ClsEntityQuery extends PhpCls {
 		
 		setSuperclass(new ClsBaseEntityQuery(cls));
 		setConstructor(new ConstructorEntityQuery());
-		addMethod(new MethodEntityQuery(cls));
-		addMethod(new MethodEntityQueryOne(cls));
+		addMethod(new MethodEntityQueryFetch(cls));
+		addMethod(new MethodEntityQueryFetchOne(cls));
 		addMethod(new MethodAddRelatedTableJoins(cls));
 		addMethod(new MethodGetAllSelectFields(cls));
 		addMethod(new MethodGetTableName(cls));

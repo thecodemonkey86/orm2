@@ -29,11 +29,11 @@ import php.orm.OrmUtil;
 import util.StringUtil;
 import util.pg.PgCppUtil;
 
-public class MethodEntityQueryOne extends Method{
+public class MethodEntityQueryFetchOne extends Method{
 	EntityCls bean;
 	
-	public MethodEntityQueryOne(EntityCls bean) {
-		super(Public, bean.toNullable(), "queryOne");
+	public MethodEntityQueryFetchOne(EntityCls bean) {
+		super(Public, bean.toNullable(), "fetchOne");
 		this.bean=bean;
 	}
 	

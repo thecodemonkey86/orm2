@@ -14,11 +14,11 @@ import php.core.expression.Expression;
 import php.core.instruction.SuperConstructorCall;
 import php.entity.EntityCls;
 
-public class BeanConstructor extends Constructor{
+public class EntityConstructor extends Constructor{
 	protected boolean autoIncrement;
 	protected List<Column> cols;
 	
-	public BeanConstructor(boolean autoIncrement, List<Column> cols) {
+	public EntityConstructor(boolean autoIncrement, List<Column> cols) {
 		this.autoIncrement = autoIncrement;
 		this.cols = cols;
 		addParam(new Param(Types.Bool, "insertNew", BoolExpression.TRUE));

@@ -23,7 +23,7 @@ public class TplMethodCall extends MethodCall{
 		}
 		String[] tplTypes=new String[this.tplTypes.length];
 		for(int i=0;i<tplTypes.length;i++) {
-			tplTypes[i] = this.tplTypes[i].getName();
+			tplTypes[i] = this.tplTypes[i].toUsageString();
 		}
 		
 		return expression + (expression.getType().isPtr() ? "\n->" : ".") +method.getName()+ CodeUtil.abr(CodeUtil.commaSep(tplTypes))+CodeUtil.parentheses(CodeUtil.commaSep(strArgs));

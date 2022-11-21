@@ -30,11 +30,11 @@ import php.lib.ClsSqlQuery;
 import php.orm.OrmUtil;
 import util.StringUtil;
 
-public class MethodEntityQuery extends Method{
+public class MethodEntityQueryFetch extends Method{
 	EntityCls bean;
 	
-	public MethodEntityQuery(EntityCls bean) {
-		super(Public, Types.array(bean).toNullable(), "query");
+	public MethodEntityQueryFetch(EntityCls bean) {
+		super(Public, Types.array(bean).toNullable(), "fetch");
 		this.bean=bean;
 	}
 	

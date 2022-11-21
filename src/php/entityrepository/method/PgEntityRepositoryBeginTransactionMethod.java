@@ -6,16 +6,16 @@ import php.core.PhpFunctions;
 import php.core.Types;
 import php.core.expression.PhpStringLiteral;
 
-public class PgBeanRepositoryCommitTransactionMethod extends AbstractBeanRepositoryCommitTransactionMethod{
+public class PgEntityRepositoryBeginTransactionMethod extends AbstractEntityRepositoryBeginTransactionMethod{
 
-	public PgBeanRepositoryCommitTransactionMethod() {
+	public PgEntityRepositoryBeginTransactionMethod() {
 		super(Types.Resource);
 	}
 
 	@Override
 	public void addImplementation() {
 		PhpCls repo = (PhpCls) parent;
-		_return(PhpFunctions.pg_query.call(repo.accessStaticAttribute(new Attr(Types.Resource, "sqlCon")), new PhpStringLiteral("COMMIT")));
+		_return(PhpFunctions.pg_query.call(repo.accessStaticAttribute(new Attr(Types.Resource, "sqlCon")), new PhpStringLiteral("BEGIN")));
 		
 	}
 

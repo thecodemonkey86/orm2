@@ -130,8 +130,6 @@ public class PhpOrm extends OrmGenerator {
 				engine = args[i+1];
 			} else if(args[i].equals("--name")) {
 				dbName = args[i+1];
-			} else if(args[i].equals("--user")) {
-				dbUser = args[i+1];
 			} else if(args[i].equals("--schema")) {
 				dbSchema = args[i+1];
 			} else if(args[i].equals("--host")) {
@@ -144,15 +142,14 @@ public class PhpOrm extends OrmGenerator {
 				dbFile = args[i+1];	
 			} else if(args[i].equals("--charset")) {
 				charset = args[i+1];
+			}  else if(args[i].equals("--user")) {
+				dbUser = args[i+1];
 			}
 		}
 		
 		Database database=null; 
 		DbCredentials credentials;
-		if(engine == null) {
-			System.out.println("Database engine \"" + engine + "\" is not provided in command-line");
-			return;
-		}
+		
 		if (engine.equals("postgres")) {
 			Class.forName("org.postgresql.Driver");
 			database = new PgDatabase(dbName, dbSchema);

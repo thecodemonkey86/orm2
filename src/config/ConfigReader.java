@@ -217,6 +217,15 @@ public abstract class ConfigReader implements ContentHandler {
 							col.setEnableFileImport(true);
 						}
 					}
+					String strOptionToManuallyOverrideRelatedTableJoins = atts.getValue("enableOverrideRelatedTableJoins");
+					if(strOptionToManuallyOverrideRelatedTableJoins != null) {
+						currentEntityTable.setOptionToManuallyOverrideRelatedTableJoins(strOptionToManuallyOverrideRelatedTableJoins.equals("true")||strOptionToManuallyOverrideRelatedTableJoins.equals("1"));
+					}
+					
+					String attEnableMethodHasUpdate= atts.getValue("enableMethodHasUpdate");
+					if(attEnableMethodHasUpdate !=null) {
+						cfg.enableHasUpdateMethod(currentEntityTable.getUc1stCamelCaseName());
+					}
 				} else {
 					throw new SAXException("Illegal state");
 				}
@@ -304,6 +313,14 @@ public abstract class ConfigReader implements ContentHandler {
 							
 						}
 					}
+					String attrAdditionalJoin=atts.getValue("additionalJoin");
+					if(attrAdditionalJoin!=null) {
+						currentManyToManyRelation.setAdditionalJoin(attrAdditionalJoin);
+					}
+					String attrAdditionalOrderBy=atts.getValue("additionalOrderBy");
+					if(attrAdditionalOrderBy!=null) {
+						currentManyToManyRelation.setAdditionalOrderBy(attrAdditionalOrderBy);
+					}
 					manyToManyAliasCounter++;
 					break;}
 				case ONE_TO_MANY_RELATIONS:
@@ -335,6 +352,14 @@ public abstract class ConfigReader implements ContentHandler {
 					}
 					currentOneToManyRelation.setSubstituteNameSingular(substituteNameSingular);
 					currentOneToManyRelation.setSubstituteNamePlural(substituteNamePlural);
+					String attrAdditionalJoin=atts.getValue("additionalJoin");
+					if(attrAdditionalJoin!=null) {
+						currentOneToManyRelation.setAdditionalJoin(attrAdditionalJoin);
+					}
+					String attrAdditionalOrderBy=atts.getValue("additionalOrderBy");
+					if(attrAdditionalOrderBy!=null) {
+						currentOneToManyRelation.setAdditionalOrderBy(attrAdditionalOrderBy);
+					}
 					oneToManyAliasCounter++;
 					break;
 				}
@@ -350,6 +375,14 @@ public abstract class ConfigReader implements ContentHandler {
 					currentOneRelation.setDestTable(currentDestTable);
 					String substituteName = atts.getValue("name");
 					currentOneRelation.setSubstituteNameSingular(substituteName);
+					String attrAdditionalJoin=atts.getValue("additionalJoin");
+					if(attrAdditionalJoin!=null) {
+						currentOneRelation.setAdditionalJoin(attrAdditionalJoin);
+					}
+					String attrAdditionalOrderBy=atts.getValue("additionalOrderBy");
+					if(attrAdditionalOrderBy!=null) {
+						currentOneRelation.setAdditionalOrderBy(attrAdditionalOrderBy);
+					}
 					oneAliasCounter++;
 					break;
 				default:

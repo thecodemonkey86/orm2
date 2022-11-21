@@ -90,24 +90,28 @@ public class Expressions {
 		}
 		return res;
 		
-//		return new Expression() {
-//			
-//			@Override
-//			public String toString() {
-//				if (expressions.size()>0) {
-//					String s=expressions.get(0).toString();
-//					for(int i=1;i<expressions.size();i++) {
-//						s+=" && "+ expressions.get(i);
-//					}
-//					return s;
-//				}
-//				return "";
-//			}
-//			
-//			@Override
-//			public Type getType() {
-//				return Types.Bool;
-//			}
-//		};
+	}
+	
+	public static Expression or(Expression ... expressions) {
+		if (expressions.length==0) {
+			throw new IllegalArgumentException();
+		} else if (expressions.length==1) {
+			return expressions[0];
+		}
+		return or(Arrays.asList(expressions));
+	}
+	
+	public static Expression or(List<Expression> expressions) {
+		if (expressions.size()==0) {
+			throw new IllegalArgumentException();
+		} else if (expressions.size()==1) {
+			return expressions.get(0);
+		}
+		Expression res = new BinaryOperatorExpression(expressions.get(0), Operators.OR, expressions.get(1));
+		for(int i=2;i<expressions.size();i++) {
+			res = new BinaryOperatorExpression(res, Operators.OR, expressions.get(i));
+		}
+		return res;
+		
 	}
 }

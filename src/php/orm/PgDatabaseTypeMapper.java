@@ -7,9 +7,9 @@ import php.core.Types;
 import php.core.expression.Expression;
 import php.core.method.Method;
 import php.entity.EntityCls;
-import php.entityrepository.method.PgBeanRepositoryBeginTransactionMethod;
-import php.entityrepository.method.PgBeanRepositoryCommitTransactionMethod;
-import php.entityrepository.method.PgBeanRepositoryRollbackTransactionMethod;
+import php.entityrepository.method.PgEntityRepositoryBeginTransactionMethod;
+import php.entityrepository.method.PgEntityRepositoryCommitTransactionMethod;
+import php.entityrepository.method.PgEntityRepositoryRollbackTransactionMethod;
 import php.lib.ClsSqlParam;
 
 public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
@@ -126,17 +126,17 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 
 	@Override
 	public Method getBeanRepositoryBeginTransactionMethod() {
-		return new PgBeanRepositoryBeginTransactionMethod();
+		return new PgEntityRepositoryBeginTransactionMethod();
 	}
 
 	@Override
 	public Method getBeanRepositoryCommitTransactionMethod() {
-		return new PgBeanRepositoryCommitTransactionMethod();
+		return new PgEntityRepositoryCommitTransactionMethod();
 	}
 
 	@Override
 	public Method getBeanRepositoryRollbackTransactionMethod() {
-		return new PgBeanRepositoryRollbackTransactionMethod();
+		return new PgEntityRepositoryRollbackTransactionMethod();
 	}
 
 }

@@ -13,10 +13,10 @@ import php.core.instruction.IfBlock;
 import php.core.method.Method;
 import php.entity.EntityCls;
 
-public class BeanEqualsMethod extends Method {
+public class EntityEqualsMethod extends Method {
 	PrimaryKey pk;
 	
-	public BeanEqualsMethod(EntityCls cls, PrimaryKey pk) {
+	public EntityEqualsMethod(EntityCls cls, PrimaryKey pk) {
 		super(Public, Types.Bool, "equals");
 		this.pk = pk;
 		addParam(new Param(cls, "entity"));

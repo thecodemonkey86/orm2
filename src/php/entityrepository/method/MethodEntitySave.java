@@ -37,10 +37,10 @@ import php.lib.ClsSqlUtil;
 import php.orm.OrmUtil;
 import util.CodeUtil2;
 
-public class MethodBeanSave extends Method {
+public class MethodEntitySave extends Method {
 	protected EntityCls bean;
 	Param pTransactionHandle ;
-	public MethodBeanSave(EntityCls bean) {
+	public MethodEntitySave(EntityCls bean) {
 		super(Public, Types.Void, "save"+bean.getName());
 		setStatic(true);
 		this.bean = bean;

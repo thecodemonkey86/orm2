@@ -6,9 +6,9 @@ import php.core.PhpFunctions;
 import php.core.Types;
 import php.core.expression.Expressions;
 
-public class FirebirdBeanRepositoryBeginTransactionMethod extends AbstractBeanRepositoryBeginTransactionMethod{
+public class FirebirdEntityRepositoryBeginTransactionMethod extends AbstractEntityRepositoryBeginTransactionMethod{
 
-	public FirebirdBeanRepositoryBeginTransactionMethod() {
+	public FirebirdEntityRepositoryBeginTransactionMethod() {
 		super(Types.Resource);
 	}
 

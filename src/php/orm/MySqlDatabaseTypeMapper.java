@@ -14,9 +14,9 @@ import php.core.expression.NewOperator;
 import php.core.expression.PhpStringLiteral;
 import php.core.method.Method;
 import php.entity.EntityCls;
-import php.entityrepository.method.MysqliBeanRepositoryBeginTransactionMethod;
-import php.entityrepository.method.MysqliBeanRepositoryCommitTransactionMethod;
-import php.entityrepository.method.MysqliBeanRepositoryRollbackTransactionMethod;
+import php.entityrepository.method.MysqliEntityRepositoryBeginTransactionMethod;
+import php.entityrepository.method.MysqliEntityRepositoryCommitTransactionMethod;
+import php.entityrepository.method.MysqliEntityRepositoryRollbackTransactionMethod;
 import php.lib.ClsDateTime;
 import php.lib.ClsMysqliResult;
 import php.lib.ClsSqlParam;
@@ -207,17 +207,17 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 
 	@Override
 	public Method getBeanRepositoryBeginTransactionMethod() {
-		return new MysqliBeanRepositoryBeginTransactionMethod();
+		return new MysqliEntityRepositoryBeginTransactionMethod();
 	}
 
 	@Override
 	public Method getBeanRepositoryCommitTransactionMethod() {
-		return new MysqliBeanRepositoryCommitTransactionMethod();
+		return new MysqliEntityRepositoryCommitTransactionMethod();
 	}
 
 	@Override
 	public Method getBeanRepositoryRollbackTransactionMethod() {
-		return new MysqliBeanRepositoryRollbackTransactionMethod();
+		return new MysqliEntityRepositoryRollbackTransactionMethod();
 	}
 
 	

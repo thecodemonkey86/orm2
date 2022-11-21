@@ -13,6 +13,8 @@ public class AbstractRelation {
 	protected String alias;
 	protected String substituteNameSingular;
 	protected String substituteNamePlural;
+	protected String additionalJoin;
+	protected String additionalOrderBy;
 	protected Set<RelationSqlOptions> sqlOptions;
 	
 	public AbstractRelation(String alias) {
@@ -77,5 +79,28 @@ public class AbstractRelation {
 			this.sqlOptions = new HashSet<>();
 		}
 		this.sqlOptions.add(opt);
+	}
+	
+	public String getAdditionalJoin() {
+		return additionalJoin;
+	}
+	public void setAdditionalJoin(String additionalJoin) {
+		this.additionalJoin = additionalJoin;
+	}
+	
+	public String getAdditionalOrderBy() {
+		return additionalOrderBy;
+	}
+	
+	public void setAdditionalOrderBy(String additionalOrderBy) {
+		this.additionalOrderBy = additionalOrderBy;
+	}
+	
+	public boolean hasAdditionalJoin() {
+		return additionalJoin!=null;
+	}
+
+	public boolean hasAdditionalOrderBy() {
+		return additionalOrderBy!=null;
 	}
 }

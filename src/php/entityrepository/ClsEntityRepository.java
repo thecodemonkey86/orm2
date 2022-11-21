@@ -8,9 +8,9 @@ import php.core.PhpCls;
 import php.core.Types;
 import php.core.method.MethodAttributeGetter;
 import php.entity.EntityCls;
-import php.entityrepository.method.ConstructorBeanRepository;
-import php.entityrepository.method.MethodBeanLoad;
-import php.entityrepository.method.MethodBeanSave;
+import php.entityrepository.method.ConstructorEntityRepository;
+import php.entityrepository.method.MethodEntityLoad;
+import php.entityrepository.method.MethodEntitySave;
 import php.entityrepository.method.MethodCreateQuery;
 import php.entityrepository.method.MethodGetAllSelectFields;
 import php.entityrepository.method.MethodGetById;
@@ -51,7 +51,7 @@ public class ClsEntityRepository extends PhpCls{
 	}*/
 	
 	public void addDeclarations(Collection<EntityCls> beans) {
-		setConstructor(new ConstructorBeanRepository());
+		setConstructor(new ConstructorEntityRepository());
 		addMethod(new MethodSetSqlCon());
 		addMethod(EntityCls.getTypeMapper().getBeanRepositoryBeginTransactionMethod());
 		addMethod(EntityCls.getTypeMapper().getBeanRepositoryCommitTransactionMethod());
@@ -67,8 +67,8 @@ public class ClsEntityRepository extends PhpCls{
 //			addMethod(new MethodLoadCollection(new Param(Types.qset(bean), "collection")));
 			addMethod(new MethodLoadCollection(new Param(Types.array(bean),  "collection"), bean));
 			addMethod(new MethodCreateQuery(bean));
-			addMethod(new MethodBeanLoad(bean));
-			addMethod(new MethodBeanSave(bean));
+			addMethod(new MethodEntityLoad(bean));
+			addMethod(new MethodEntitySave(bean));
 			addMethod(new MethodGetSelectFields(bean));
 			addMethod(new MethodGetAllSelectFields(bean));
 			addMethod(new MethodGetTableName(bean));
