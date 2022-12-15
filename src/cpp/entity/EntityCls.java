@@ -67,6 +67,7 @@ import cpp.entity.method.MethodRemoveAllManyRelatedEntities;
 import cpp.entity.method.MethodRemoveAllOneToManyRelatedEntities;
 import cpp.entity.method.MethodRemoveManyToManyRelatedEntity;
 import cpp.entity.method.MethodSetAutoIncrementId;
+import cpp.entity.method.MethodSetValueByName;
 import cpp.entity.method.MethodUnload;
 import cpp.orm.DatabaseTypeMapper;
 import cpp.orm.OrmUtil;
@@ -86,7 +87,7 @@ public class EntityCls extends Cls {
 	public static final String END_CUSTOM_CLASS_MEMBERS = "/*END_CUSTOM_CLASS_MEMBERS*/";
 	public static final String BEGIN_CUSTOM_PREPROCESSOR = "/*BEGIN_CUSTOM_PREPROCESSOR*/";
 	public static final String END_CUSTOM_PREPROCESSOR = "/*END_CUSTOM_PREPROCESSOR*/";
-	public static final String APILEVEL = "4.2";
+	public static final String APILEVEL = "4.3";
 	
 	static Database database;
 	static DatabaseTypeMapper mapper;
@@ -387,6 +388,7 @@ public class EntityCls extends Cls {
 		addMethod(new MethodGetAllSelectFields(allCols));
 		if(tbl.isEnableGetValueByName()) {
 			addMethod(new MethodGetValueByName());
+			addMethod(new MethodSetValueByName());
 			addMethod(new MethodAllFieldNames());
 		}
 		

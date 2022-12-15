@@ -9,14 +9,13 @@ import cpp.core.Param;
 import cpp.core.expression.CStringLiteral;
 import cpp.core.expression.Expression;
 import cpp.core.instruction.IfBlock;
-import cpp.core.instruction.ReturnInstruction;
+import cpp.core.instruction.MethodCallInstruction;
 import cpp.core.instruction.ThrowInstruction;
 import cpp.entity.EntityCls;
-import cpp.lib.ClsQVariant;
 import cpp.lib.ClsQtException;
 import database.column.Column;
 
-public class MethodGetValueByName extends Method {
+public class MethodSetValueByName extends Method {
 	
 	
 
@@ -32,9 +31,11 @@ public class MethodGetValueByName extends Method {
 	}*/
 	
 	Param pName;
-	public MethodGetValueByName() {
-		super(Public, Types.QVariant, "getValueByName");
+	Param pValue;
+	public MethodSetValueByName() {
+		super(Public, Types.Void, "setValueByName");
 		pName = addParam(Types.QString.toConstRef(),"name");
+		pValue = addParam(Types.QVariant.toConstRef(),"value");
 	}
 
 	@Override
@@ -99,13 +100,14 @@ public class MethodGetValueByName extends Method {
 		IfBlock ifblock = null;
 		for (Column c : columns) {
 			if(!c.isFileImportEnabled()) {
-				Expression ret = Types.QVariant.callStaticMethod(ClsQVariant.fromValue,_this().callAttrGetter(c.getCamelCaseName()));
+				MethodCallInstruction setterMethodInstruction = _this().callSetterMethodInstruction(c.getCamelCaseName(),pValue.callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(c)));
 				Expression cond = pName._equals(new CStringLiteral(c.getName()));
 				if (ifblock == null) {
 					ifblock = _if(cond);
-					ifblock.thenBlock()._return(ret);
+					
+					ifblock.thenBlock().addInstr(setterMethodInstruction);
 				} else {
-					ifblock.addElseIf(cond, new ReturnInstruction(ret));
+					ifblock.addElseIf(cond, setterMethodInstruction);
 				}
 			}
 		}
