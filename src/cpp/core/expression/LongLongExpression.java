@@ -13,7 +13,7 @@ public class LongLongExpression extends Expression{
 	
 	@Override
 	public Type getType() {
-		return Types.LongLong;
+		return Types.Int64;
 	}
 
 	@Override

@@ -15,6 +15,7 @@ import cpp.entity.EntityCls;
 import cpp.entity.Nullable;
 import cpp.entity.method.MethodColumnAttrSetNull;
 import database.column.Column;
+import util.StringUtil;
 
 public class MethodRepoCreateNew extends Method {
 
@@ -92,9 +93,9 @@ public class MethodRepoCreateNew extends Method {
 					if(pkCol.isNullable()) {
 						IfBlock ifIsNull= _if(param.callMethod(Nullable.isNull));
 						ifIsNull.thenBlock().addInstr(bean.callMethodInstruction(MethodColumnAttrSetNull.getMethodName(bean.getClassType().getAttrByName(param.getName()))));
-						ifIsNull.elseBlock().addInstr(bean.callSetterMethodInstruction(param.getName(),param.callMethod(Nullable.val)));
+						ifIsNull.elseBlock().addInstr(bean.callMethodInstruction("set" +StringUtil.ucfirst(param.getName())+"Internal",param.callMethod(Nullable.val)));
 					} else {
-						addInstr(bean.callSetterMethodInstruction(param.getName(),param));
+						addInstr(bean.callMethodInstruction("set" +StringUtil.ucfirst(param.getName())+"Internal",param));
 					}
 				}
 				}
@@ -112,7 +113,7 @@ public class MethodRepoCreateNew extends Method {
 				}
 			} else {
 				for (Param param : initializeFieldsParams) {
-					addInstr(bean.callSetterMethodInstruction(param.getName(),param));
+					addInstr(bean.callMethodInstruction("set" +StringUtil.ucfirst(param.getName())+"Internal",param));
 				}
 			}
 			

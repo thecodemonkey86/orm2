@@ -96,7 +96,7 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 				case "8":
 					return Types.nullable(Types.Int);
 				case "16":
-					return Types.nullable(Types.LongLong);
+					return Types.nullable(Types.Int64);
 				case "7":
 					return Types.nullable(Types.Short);
 				case "14":	

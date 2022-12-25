@@ -58,6 +58,7 @@ import cpp.entity.method.MethodGetUpdateFields;
 import cpp.entity.method.MethodGetValueByName;
 import cpp.entity.method.MethodIsNullOrEmpty;
 import cpp.entity.method.MethodManyAttrGetter;
+import cpp.entity.method.MethodNullableColumnAttrSetter;
 import cpp.entity.method.MethodOneRelationAttrSetter;
 import cpp.entity.method.MethodOneRelationEntityIsNull;
 import cpp.entity.method.MethodQHashEntity;
@@ -66,7 +67,9 @@ import cpp.entity.method.MethodQHashPkStruct;
 import cpp.entity.method.MethodRemoveAllManyRelatedEntities;
 import cpp.entity.method.MethodRemoveAllOneToManyRelatedEntities;
 import cpp.entity.method.MethodRemoveManyToManyRelatedEntity;
+import cpp.entity.method.MethodResetModifiedFlags;
 import cpp.entity.method.MethodSetAutoIncrementId;
+import cpp.entity.method.MethodSetPrimaryKey;
 import cpp.entity.method.MethodSetValueByName;
 import cpp.entity.method.MethodUnload;
 import cpp.orm.DatabaseTypeMapper;
@@ -267,6 +270,7 @@ public class EntityCls extends Cls {
 		
 		Type nullstring = Types.nullable(Types.QString);
 //		structPk.setScope(name);
+		boolean singleColPk = tbl.getPrimaryKey().getColumnCount()==1;
 		for(Column col:allColumns) {
 			if(col.isFileImportEnabled()) {
 				Attr attr = new Attr(Types.QString, col.getCamelCaseName()+"FilePath");
@@ -283,7 +287,12 @@ public class EntityCls extends Cls {
 				addAttr(attr);
 				
 				addMethod(new MethodAttrGetter(attr,false));	
-				addMethod(new MethodColumnAttrSetter(col,attr));
+				if(!col.isPartOfPk() || singleColPk) {
+					addMethod(new MethodColumnAttrSetter(col,attr));
+					if (col.isNullable()) {
+						addMethod(new MethodNullableColumnAttrSetter(col,attr));
+					}
+				}
 				addMethod(new MethodColumnAttrSetterInternal(col,attr));
 				if (col.isNullable()) {
 					if(attr.getType().equals(nullstring))
@@ -320,6 +329,9 @@ public class EntityCls extends Cls {
 //				
 //			}
 			
+		}
+		if(!singleColPk) {
+			addMethod(new MethodSetPrimaryKey(tbl.getPrimaryKey()));
 		}
 		addMethod(new MethodSetAutoIncrementId(getTbl().getPrimaryKey().isAutoIncrement()));
 		//for(OneToManyRelation r:oneToManyRelations) {
@@ -381,6 +393,7 @@ public class EntityCls extends Cls {
 		addMethod(new MethodGetInsertValuePlaceholders(tbl));
 		addMethod(new MethodGetInsertParams(cols));
 		addMethod(new MethodGetUpdateFields(tbl.getColumnsWithoutPrimaryKey(),tbl.getPrimaryKey()));
+		addMethod(new MethodResetModifiedFlags());
 		addMethod(new MethodGetUpdateConditionParams(tbl.getPrimaryKey()));
 		addMethod(new MethodGetUpdateCondition(tbl.getPrimaryKey()));
 //		addMethod(new MethodGetById(oneRelations,manyRelations, tbl, this));

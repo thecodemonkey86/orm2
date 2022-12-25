@@ -1,7 +1,7 @@
 package cpp.entity.method;
 
 
-import java.util.ArrayList;
+import java.util.List;
 
 import cpp.Types;
 import cpp.core.Method;
@@ -41,7 +41,7 @@ public class MethodSetValueByName extends Method {
 	@Override
 	public void addImplementation() {
 		
-		ArrayList<Column> columns = ((EntityCls) parent).getTbl().getAllColumns();
+		List<Column> columns = ((EntityCls) parent).getTbl().getColumnsWithoutPrimaryKey();
 		if (columns.isEmpty()) {
 			throw new RuntimeException();
 		}

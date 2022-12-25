@@ -11,6 +11,7 @@ import cpp.core.expression.MakeSharedExpression;
 import cpp.core.expression.Var;
 import cpp.entity.EntityCls;
 import database.column.Column;
+import util.StringUtil;
 
 public class MethodRepoCreateNewNonNullableOnly extends Method {
 
@@ -55,7 +56,7 @@ public class MethodRepoCreateNewNonNullableOnly extends Method {
 		addInstr(bean.callMethodInstruction("setLoaded", BoolExpression.TRUE));
 		
 		for (Param param : initializeFieldsParams) {
-			addInstr(bean.callSetterMethodInstruction(param.getName(),param));
+			addInstr(bean.callMethodInstruction("set" +StringUtil.ucfirst(param.getName())+"Internal",param));
 		}
 		_return(bean);
 		

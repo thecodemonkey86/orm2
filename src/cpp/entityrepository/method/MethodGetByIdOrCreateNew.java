@@ -1,13 +1,11 @@
 package cpp.entityrepository.method;
 
 import cpp.Types;
-import cpp.core.IAttributeContainer;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.Type;
 import cpp.core.expression.Var;
 import cpp.core.instruction.IfBlock;
-import cpp.core.method.MethodAttributeSetter;
 import cpp.entity.EntityCls;
 import cpp.util.ClsDbPool;
 import database.column.Column;
@@ -50,7 +48,7 @@ public class MethodGetByIdOrCreateNew extends Method {
 
 		if(!entity.getTbl().isAutoIncrement()) {
 			for(Column colPk:entity.getTbl().getPrimaryKey()) {
-				ifBlock.thenBlock()._callMethodInstr(e1, MethodAttributeSetter.getMethodName( ((IAttributeContainer)e1.getType()).getAttrByName(colPk.getCamelCaseName())),getParam(colPk.getCamelCaseName()));
+				ifBlock.thenBlock()._callMethodInstr(e1, "set"+ colPk.getUc1stCamelCaseName()+"Internal",getParam(colPk.getCamelCaseName()));
 			}
 			
 		}
