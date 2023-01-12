@@ -132,7 +132,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 				case "integer":
 					return new CreateObjectExpression( Types.nullable(Types.Int));
 				case "bigint":
-					return new CreateObjectExpression(Types.nullable(Types.LongLong));
+					return new CreateObjectExpression(Types.nullable(Types.Int64));
 				case "smallint":
 					return new CreateObjectExpression(Types.nullable(Types.Int16));
 				case "character varying":
