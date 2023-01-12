@@ -26,7 +26,7 @@ public class ClsQVariant extends Cls{
 //		addMethod(new LibMethod(CoreTypes.Short, toShort));
 		addMethod(new LibMethod(CoreTypes.Bool, isNull));
 		addMethod(new LibMethod(this, fromValue,true));
-		addMethod(new LibMethod(CoreTypes.LongLong, "toLongLong"));
+		addMethod(new LibMethod(CoreTypes.Int64, "toLongLong"));
 		addMethodTemplate(new LibMethodTemplate(new TplSymbol("T"), value) {
 
 			@Override

@@ -29,7 +29,7 @@ public class CoreTypes {
 	public static final PrimitiveType UInt16=new PrimitiveType("uint16_t");
 	public static final PrimitiveType UInt8=new PrimitiveType("uint8_t");
 	public static final PrimitiveType UInt64=new PrimitiveType("uint64_t");
-	public static final PrimitiveType LongLong=new PrimitiveType("long long");
+	//public static final PrimitiveType LongLong=new PrimitiveType("long long");
 	public static final PrimitiveType Short=new PrimitiveType("short");
 	public static final ClsQString QString= new ClsQString();
 //	public static final ClsQAnyStringView QAnyStringView= new ClsQAnyStringView();
