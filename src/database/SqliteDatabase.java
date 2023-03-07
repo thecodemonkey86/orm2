@@ -68,9 +68,9 @@ public class SqliteDatabase extends Database {
 		stColumndata.setString(1, tbl.getName());
 		ResultSet rsColumndata = stColumndata.executeQuery();
 		PrimaryKey pk = new PrimaryKey();
-		if(tbl.getName().equals("item_category")) {
-			System.out.println();
-		}
+		 if(tbl.getName().equals("metadata")) 		 {
+			 System.out.println();
+		 }
 		if(rsColumndata.next()) {
 			String sql = rsColumndata.getString("sql");
 			List<String> l = getTokenList(sql);
@@ -122,9 +122,11 @@ public class SqliteDatabase extends Database {
 				case "VARCHAR":
 				case "INT":
 				case "TINYINT":
-					expectToken(l, index++, "(");
+					if(isTokenAt(l, index, "(")) {
+						index++;
 					expectInteger(l, index++);
 					expectToken(l, index++, ")");
+					}
 					break;
 				
 				default:
@@ -161,6 +163,7 @@ public class SqliteDatabase extends Database {
 						(isTokenAt(l, index, ",") && 
 								(isTokenAt(l, index+1, "FOREIGN")
 										||isTokenAt(l, index+1, "PRIMARY")
+										||isTokenAt(l, index+1, "CONSTRAINT")
 					)))){
 					
 					endOfColumnList = true;
@@ -227,6 +230,25 @@ public class SqliteDatabase extends Database {
 						break;
 					} else {
 						expectToken(l, index++, ",");
+					}
+				} else if(isTokenAt(l, index, "CONSTRAINT")) {
+					String constraintName=filterColName(l.get(++index));
+					if(!constraintName.matches("^([A-Za-z0-9]|_)+$")) {
+						throw new RuntimeException("expected constraint name");
+					}
+					if(isTokenAt(l, ++index, "PRIMARY")) {
+						expectToken(l, ++index, "KEY");
+						expectToken(l, ++index, "(");
+						do {
+							pk.add(tbl.getColumnByName(filterColName(l.get(++index))));
+							
+						} while(l.get(++index).equals(","));
+						
+						if(isTokenAt(l, index, ")")) {
+							break;
+						} else {
+							expectToken(l, index++, ",");
+						}
 					}
 				} else {
 					throw new RuntimeException("unexpected token " + l.get(index));

@@ -67,7 +67,7 @@ public class MethodGetFromRecord extends Method {
 					if (col.isNullable()) {
 						Var val = _declare(CoreTypes.QVariant, "_val"+col.getUc1stCamelCaseName(),getParam("record").callMethod("value", exprArrayIndex));
 						IfBlock ifIsNull = _if(val.callMethod(ClsQVariant.isNull));
-						Expression eValue = getParam("record").callMethod("value", new QStringPlusOperatorExpression(getParam("alias"), QString.fromStringConstant("__"+ col.getName()))).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(col));
+						Expression eValue = val.callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(col));
 						ifIsNull.thenBlock().addInstr(vBean.callMethodInstruction("set"+col.getUc1stCamelCaseName()+"NullInternal"));
 						ifIsNull.elseBlock().addInstr(vBean.callMethodInstruction("set"+col.getUc1stCamelCaseName()+"Internal",EntityCls.getDatabase() instanceof FirebirdDatabase && eValue.getType().equals(CoreTypes.QString) ? eValue.callMethod(ClsQString.trimmed) : eValue));
 					} else {

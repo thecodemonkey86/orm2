@@ -52,6 +52,7 @@ public abstract class ConfigReader implements ContentHandler {
 	private Path xmlDirectory;
 	private PrimaryKey overrideColsPrimaryKey;
 	private String[] enableRawValueColumns;
+	private String currentTableUpdatePreconditionOnAllColumns;
 	
 	public OrmConfig getCfg() {
 		return cfg;
@@ -148,6 +149,7 @@ public abstract class ConfigReader implements ContentHandler {
 					currentEntityTable = cfg.getDatabase().makeTableInstance( atts.getValue("table"));
 					cfg.addEntityTable(currentEntityTable);
 					currentEntityTable.setOverrideColumnsFromConfig(atts.getValue("overrideColumns")!=null && atts.getValue("overrideColumns").equals("true"));
+					currentTableUpdatePreconditionOnAllColumns=atts.getValue("updatePreconditionOnAllColumns");						
 					currentEntityTable.setEnableLoadCollection(atts.getValue("enableLoadCollectionMethod")!=null && atts.getValue("enableLoadCollectionMethod").equals("true"));
 					if(!currentEntityTable.isOverrideColumnsFromConfig()) {
 						overrideColsPrimaryKey = null;
@@ -534,6 +536,11 @@ public abstract class ConfigReader implements ContentHandler {
 					for(String enableRawValueColumn : enableRawValueColumns) {
 						currentEntityTable.getColumnByName(enableRawValueColumn.trim()).setEnableRawValue(true);
 					}
+				}
+				if(currentTableUpdatePreconditionOnAllColumns != null) {
+					for(Column col:currentEntityTable.getAllColumns())
+					cfg.addValidators(currentEntityTable.getName(),col.getName(),new SetterValidator( currentTableUpdatePreconditionOnAllColumns, 
+							 SetterValidator.OnFailValidateMode.ReturnFalse , null));
 				}
 				break;
 			default:

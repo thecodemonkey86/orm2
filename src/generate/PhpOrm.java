@@ -18,7 +18,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
 import config.OrmConfig;
-import config.SetPassConfigReader;
 import config.php.PhpConfigReader;
 import config.php.PhpOrmConfig;
 import database.Database;
@@ -109,12 +108,7 @@ public class PhpOrm extends OrmGenerator {
 		Path xmlFile = Paths.get(args[args.length-1]);
 		
 		boolean setPass= args[0].equals("--setpass");
-		if(setPass) {
-			SetPassConfigReader cfgReader = new SetPassConfigReader();
-			DefaultXMLReader.read(xmlFile, cfgReader);
-			PasswordManager.saveToFile(cfgReader.getCredentials(), args[1] );
-			return;
-		}
+		
 		
 		String engine = null;
 		String dbName = null;
@@ -172,7 +166,7 @@ public class PhpOrm extends OrmGenerator {
 			throw new IOException(
 					"Database engine \"" + engine + "\" is currently not supported");
 		}
-		String password = PasswordManager.loadFromFile(credentials);
+		String password = !setPass ? PasswordManager.loadFromFile(credentials) : null;
 		if(password == null && !engine.equals("sqlite")) {
 			JPasswordField jpf = new JPasswordField(24);
 		    JLabel jl = new JLabel("Passwort: ");
@@ -193,7 +187,9 @@ public class PhpOrm extends OrmGenerator {
 		}
 		credentials.setPassword(password);
 		
-	
+		if(setPass) {
+			PasswordManager.saveToFile(credentials, password);
+		}
 		
 		
 		

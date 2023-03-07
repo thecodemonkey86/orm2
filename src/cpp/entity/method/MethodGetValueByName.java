@@ -7,14 +7,18 @@ import cpp.Types;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.expression.CStringLiteral;
+import cpp.core.expression.CreateObjectExpression;
 import cpp.core.expression.Expression;
+import cpp.core.expression.Expressions;
 import cpp.core.instruction.IfBlock;
 import cpp.core.instruction.ReturnInstruction;
 import cpp.core.instruction.ThrowInstruction;
 import cpp.entity.EntityCls;
+import cpp.entity.Nullable;
 import cpp.lib.ClsQVariant;
 import cpp.lib.ClsQtException;
 import database.column.Column;
+import cpp.core.expression.InlineIfExpression;
 
 public class MethodGetValueByName extends Method {
 	
@@ -99,7 +103,7 @@ public class MethodGetValueByName extends Method {
 		IfBlock ifblock = null;
 		for (Column c : columns) {
 			if(!c.isFileImportEnabled()) {
-				Expression ret = Types.QVariant.callStaticMethod(ClsQVariant.fromValue,_this().callAttrGetter(c.getCamelCaseName()));
+				Expression ret = Types.QVariant.callStaticMethod(ClsQVariant.fromValue, c.isNullable() ? new InlineIfExpression(Expressions.not(_this().callAttrGetter(c.getCamelCaseName()).callMethod(Nullable.isNull)),_this().callAttrGetter(c.getCamelCaseName()).callMethod(Nullable.val),new CreateObjectExpression(EntityCls.getDatabaseMapper().columnToType(c,false))) : _this().callAttrGetter(c.getCamelCaseName()));
 				Expression cond = pName._equals(new CStringLiteral(c.getName()));
 				if (ifblock == null) {
 					ifblock = _if(cond);

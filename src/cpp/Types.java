@@ -15,6 +15,7 @@ import cpp.jsonentity.JsonEntities;
 import cpp.jsonentity.JsonEntity;
 import cpp.lib.ClsBaseEntity;
 import cpp.lib.ClsFirebirdSqlQuery;
+import cpp.lib.ClsMySqlQuery;
 import cpp.lib.ClsOrderedSet;
 import cpp.lib.ClsSql;
 import cpp.lib.ClsSqlQuery;
@@ -31,6 +32,7 @@ public class Types extends CoreTypes{
 	
 	public static final ClsSqlQuery SqlQuery = 	new ClsSqlQuery();
 	public static final ClsPgSqlQuery PgSqlQuery = 	new ClsPgSqlQuery();
+	public static final ClsMySqlQuery MySqlQuery = 	new ClsMySqlQuery();
 	public static final ClsFirebirdSqlQuery FirebirdSqlQuery = 	new ClsFirebirdSqlQuery();
 	public static final ClsSqliteSqlQuery SqliteSqlQuery = 	new ClsSqliteSqlQuery();
 	public static final ClsSql Sql = 	new ClsSql();

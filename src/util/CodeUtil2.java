@@ -61,4 +61,21 @@ public class CodeUtil2 extends CodeUtil {
 		}
 		return sb.toString();
 	}
+	
+	public static String ccToUnderscoreUppercase(String s) {
+		if(s.length()==0) 
+			return s;
+		StringBuilder sb=new StringBuilder();
+		sb.append(Character.toUpperCase(s.charAt(0)));
+		for(int i=1;i<s.length();++i) {
+			if(Character.isUpperCase(s.charAt(i))) {
+				sb.append('_');
+				sb.append(s.charAt(i));
+			} else {
+				sb.append(Character.toUpperCase(s.charAt(i)));
+			}
+			
+		}
+		return sb.toString();
+	}
 }

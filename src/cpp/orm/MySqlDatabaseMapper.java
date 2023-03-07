@@ -182,7 +182,7 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 
 	@Override
 	public ClsSqlQuery getSqlQueryType() {
-		throw new RuntimeException("not impl");
+		return Types.MySqlQuery;
 	}
 
 	@Override

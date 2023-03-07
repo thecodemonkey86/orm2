@@ -154,7 +154,7 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 			case "7":
 			case "10":
 			case "27":
-				return new InlineIfExpression(expr.isNull(), Expressions.Null, getConvertTypeExpression(expr, dbType, false));
+				return new InlineIfExpression(expr.isNull().binOp("||", expr._equals(new PhpStringLiteral(""))), Expressions.Null, getConvertTypeExpression(expr, dbType, false));
 			default:
 				return new InlineIfExpression(expr.isNull(), Expressions.Null, PhpFunctions.trim.call(expr));
 			}

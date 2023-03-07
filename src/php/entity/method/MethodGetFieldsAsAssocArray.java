@@ -24,6 +24,7 @@ public class MethodGetFieldsAsAssocArray extends Method {
 	
 	public MethodGetFieldsAsAssocArray(EntityCls bean) {
 		super(Public, Types.array(Types.String), METHOD_NAME);
+		pSpecificColumns = addParam(new Param(Types.array(Types.String), "columns",Expressions.Null));
 		for(Column col : bean.getTbl().getAllColumns()) {
 			if(!col.isRelationDestColumn() || col.isPartOfPk()) {
 				if(EntityCls.getTypeMapper().columnToType(col).equals(Types.DateTime)) {
@@ -34,7 +35,7 @@ public class MethodGetFieldsAsAssocArray extends Method {
 			}
 		}
 		
-		pSpecificColumns = addParam(new Param(Types.array(Types.String), "columns",Expressions.Null));
+		
 		
 	}
 
