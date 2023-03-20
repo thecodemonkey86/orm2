@@ -21,11 +21,15 @@ public class MethodColumnAttrSetter extends Method {
 	EntityCls bean;
 	
 	public MethodColumnAttrSetter(EntityCls cls, Column col, Attr a) {
-		super(Public, Types.Void, "set" + StringUtil.ucfirst(a.getName()));
+		super(Public, Types.Void, getMethodName(col));
 		this.a = a;
 		addParam(new Param(a.getType(), a.getName(), col.isNullable() ? Expressions.Null : null));
 		this.col = col;
 		this.bean = cls;
+	}
+
+	public static String getMethodName(Column col) {
+		return "set" + StringUtil.ucfirst(col.getCamelCaseName());
 	}
 
 	@Override
@@ -38,7 +42,7 @@ public class MethodColumnAttrSetter extends Method {
 					BoolExpression.TRUE));
 			_assign(_accessThis(a), param);
 		} else {
-			IfBlock ifNotInsert = _if(_not(_this().accessAttr(ClsBaseEntity.insert)));
+			IfBlock ifNotInsert = _if(_not(_this().accessAttr(ClsBaseEntity.insert).and(param._notEquals(_accessThis(a)))));
 			for(Column colPk : bean.getTbl().getPrimaryKey().getColumns()) {
 				Expression prev = EntityCls.accessColumnAttrOrEntityPrevious(_this(), colPk);
 				if(colPk.hasOneRelation()) {

@@ -8,7 +8,6 @@ import cpp.core.Attr;
 import cpp.core.LambdaExpression;
 import cpp.core.Method;
 import cpp.core.Param;
-import cpp.core.expression.BoolExpression;
 import cpp.core.expression.StdFunctionInvocation;
 import cpp.core.expression.Var;
 import cpp.jsonentity.JsonEntity;
@@ -36,7 +35,7 @@ public class MethodLoadFromUrl extends Method {
 	public void addImplementation() {
 		Attr aNetwork = parent.getStaticAttribute(ClsJsonEntityRepository.network);
 		Var req = _declareInitConstructor(NetworkTypes.QNetworkRequest, "req", pUrl);
-		addInstr(req.callMethodInstruction(ClsQNetworkRequest.setAttribute, NetworkTypes.QNetworkRequest.FollowRedirectsAttribute, BoolExpression.TRUE));
+		addInstr(req.callMethodInstruction(ClsQNetworkRequest.setAttribute, NetworkTypes.QNetworkRequest.redirectPolicyAttribute, NetworkTypes.QNetworkRequest.sameOriginRedirectPolicy));
 		Var reply = _declare(NetworkTypes.QNetworkReply.toRawPointer(), "reply", aNetwork.callMethod(ClsQNetworkAccessManager.get, req));
 		
 		LambdaExpression lambdaExpression = new LambdaExpression();

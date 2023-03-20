@@ -11,7 +11,7 @@ public class MethodCreateNew extends Method {
 	EntityCls cls;
 	
 	public MethodCreateNew(EntityCls cls) {
-		super(Public, cls, "createNew");
+		super(Public, cls,getMethodName());
 //		addParam(new Param(Types.Sql, "sqlCon"));
 		setStatic(true);
 		this.cls=cls;
@@ -28,4 +28,7 @@ public class MethodCreateNew extends Method {
 		
 	}
 
+	public static String getMethodName() {
+		return  "createNew";
+	}
 }

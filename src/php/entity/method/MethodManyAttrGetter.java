@@ -29,7 +29,7 @@ public class MethodManyAttrGetter extends Method{
 //		parent.addImport("ormtest.repository.BeanRepository");
 		_if(Expressions.not(parent.getAttrByName("loaded"))).thenBlock()
 //			._callMethodInstr(_this(), "load");
-		.addInstr( Types.BeanRepository.callStaticMethod("load"+parent.getName(), _this()).asInstruction());
+		.addInstr( Types.EntityRepository.callStaticMethod("load"+parent.getName(), _this()).asInstruction());
 		
 		IfBlock ifAttrIsNotNull= _if(a.isNotNull());
 		ifAttrIsNotNull.thenBlock().

@@ -1,6 +1,7 @@
 package cpp.util;
 
 import cpp.CoreTypes;
+import cpp.core.ConstRef;
 import cpp.core.TplCls;
 import cpp.core.Type;
 import cpp.core.expression.Expression;
@@ -14,6 +15,9 @@ public class JsonOrmUtil {
 		if(e.getType() instanceof Nullable) {
 			t= ((TplCls) e.getType()).getElementType();
 			ex=e.callMethod(Nullable.val);
+		} else if(e.getType() instanceof ConstRef) {
+			t=((ConstRef) e.getType()).getBase();
+			ex=e;
 		} else {
 			t=e.getType();
 			ex=e;

@@ -34,8 +34,12 @@ public class MethodEntityQueryFetch extends Method{
 	EntityCls bean;
 	
 	public MethodEntityQueryFetch(EntityCls bean) {
-		super(Public, Types.array(bean).toNullable(), "fetch");
+		super(Public, Types.array(bean).toNullable(), getMethodName());
 		this.bean=bean;
+	}
+
+	public static String getMethodName() {
+		return "fetch";
 	}
 	
 	private Expression getFetchExpression(Var res) {
@@ -93,7 +97,7 @@ public class MethodEntityQueryFetch extends Method{
 		
 	
 		
-		ifNotE1SetContains.thenBlock()._assign(e1DoWhile, Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(bean), row,  new PhpStringLiteral("e1")));
+		ifNotE1SetContains.thenBlock()._assign(e1DoWhile, Types.EntityRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(bean), row,  new PhpStringLiteral("e1")));
 		
 		if (!manyRelations.isEmpty()) {
 			
@@ -106,7 +110,7 @@ public class MethodEntityQueryFetch extends Method{
 			
 			for(AbstractRelation r:manyRelations) {
 				Type beanPk=OrmUtil.getRelationForeignPrimaryKeyType(r);
-				Expression foreignBeanExpression = Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Entities.get(r.getDestTable())), row,  new PhpStringLiteral(r.getAlias()));
+				Expression foreignBeanExpression = Types.EntityRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Entities.get(r.getDestTable())), row,  new PhpStringLiteral(r.getAlias()));
 //				IfBlock ifRecValueIsNotNull = null;
 				Var foreignBean = null;				
 				
@@ -163,7 +167,7 @@ public class MethodEntityQueryFetch extends Method{
 		}
 		for(OneRelation r:oneRelations) {
 			EntityCls foreignCls = Entities.get(r.getDestTable());
-			Expression foreignBeanExpression = Types.BeanRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(foreignCls), row, new PhpStringLiteral(r.getAlias()));
+			Expression foreignBeanExpression = Types.EntityRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(foreignCls), row, new PhpStringLiteral(r.getAlias()));
 			
 			IfBlock ifRelatedBeanIsNull= ifNotE1SetContains.thenBlock().
 					_if(Expressions.and( e1DoWhile.callMethod(new MethodOneRelationBeanIsNull(r)) ,row.arrayIndex(new PhpStringLiteral(EntityCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias() + "__" + r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull()));

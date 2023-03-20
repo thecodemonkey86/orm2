@@ -1,0 +1,78 @@
+//package cpp.jsonentity.method;
+//
+//import cpp.JsonTypes;
+//import cpp.core.Method;
+//import cpp.core.QString;
+//import cpp.core.expression.CreateObjectExpression;
+//import cpp.core.expression.Expression;
+//import cpp.core.expression.Var;
+//import cpp.core.instruction.IfBlock;
+//import cpp.entity.EntityCls;
+//import cpp.entity.Nullable;
+//import cpp.jsonentity.JsonEntity;
+//import cpp.lib.ClsBaseJsonEntity;
+//import cpp.lib.ClsQJsonDocument;
+//import cpp.lib.ClsQJsonObject;
+//import cpp.orm.JsonOrmUtil;
+//import database.column.Column;
+//
+//public class MethodGetUpdateJson extends Method {
+//
+//	JsonEntity entity;
+//
+//	public MethodGetUpdateJson(JsonEntity entity) {
+//		super(Public, JsonTypes.QJsonDocument, getMethodName());
+//		
+//		this.entity = entity;
+//		setConstQualifier();
+//	}
+//
+//	@Override
+//	public void addImplementation() {
+//		EntityCls parent = (EntityCls) this.parent;
+//			Expression _this=_this();
+//			Var d = _declareInitConstructor(JsonTypes.QJsonDocument, "_d");
+//			Var o = _declareInitConstructor(JsonTypes.QJsonObject, "_o");
+//			
+//			addInstr(o.callMethodInstruction(ClsQJsonObject.insert,QString.fromStringConstant(ClsBaseJsonEntity.insert),_this.accessAttr(ClsBaseJsonEntity.insert)));
+//			
+//			IfBlock ifNotInsert=_ifNot(_this.accessAttr(ClsBaseJsonEntity.insert));
+//			for(Column pkCol : entity.getTbl().getPrimaryKey()) {
+//				ifNotInsert.thenBlock().addInstr(o.callMethodInstruction(ClsQJsonObject.insert,QString.fromStringConstant(pkCol.getName()), JsonOrmUtil.convertToQJsonValue(
+//						_this.accessAttr(pkCol.getCamelCaseName()))));
+//				
+//				ifNotInsert.thenBlock()._if(_this.accessAttr(ClsBaseJsonEntity.primaryKeyModified)).thenBlock().addInstr(o.callMethodInstruction(ClsQJsonObject.insert,QString.fromStringConstant(pkCol.getName()+"Previous"), JsonOrmUtil.convertToQJsonValue(
+//						_this.accessAttr(pkCol.getCamelCaseName()+"Previous"))));
+//			}
+//			
+//			
+//			for (Column col : entity.getTbl().getColumnsWithoutPrimaryKey()) {
+//				if (!col.isRelationSourceColumn()) {
+//					IfBlock ifFieldModfied= _if(parent.getAttrByName(col.getCamelCaseName()+"Modified"));
+//						
+//					if (col.isNullable()) {
+//						IfBlock ifValueIsNull = ifFieldModfied.thenBlock()._ifNot(
+//								_this.callAttrGetter(col.getCamelCaseName())
+//										.callMethod(Nullable.isNull));
+//						// ifValueIsNull.thenBlock().addInstr(
+//						// e1.callMethodInstruction(MethodColumnAttrSetNull.getMethodName(col)));
+//						ifValueIsNull.thenBlock().addInstr(o.callMethodInstruction(ClsQJsonObject.insert,QString.fromStringConstant(col.getName()), JsonOrmUtil.convertToQJsonValue(
+//								_this.callAttrGetter(col.getCamelCaseName())
+//								.callMethod(Nullable.val))));
+//						ifValueIsNull.elseBlock().addInstr(o.callMethodInstruction(ClsQJsonObject.insert,QString.fromStringConstant(col.getName()), new CreateObjectExpression(JsonTypes.QJsonValue)));
+//					} else {
+//						 ifFieldModfied.thenBlock().addInstr(o.callMethodInstruction(ClsQJsonObject.insert,QString.fromStringConstant(col.getName()), JsonOrmUtil.convertToQJsonValue(
+//								_this.callAttrGetter(col.getCamelCaseName()))));
+//					}
+//				}
+//			}
+//			addInstr(d.callMethodInstruction(ClsQJsonDocument.setObject, o));
+//			_return(d);
+//			
+//
+//	}
+//
+//	public static String getMethodName() {
+//		return "getUpdateJson";
+//	}
+//}

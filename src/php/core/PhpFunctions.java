@@ -23,6 +23,8 @@ public class PhpFunctions {
 	public static final PhpFunction serialize = new PhpFunction("serialize", Types.String);
 	public static final PhpFunction pg_query = new PhpFunction("pg_query", Types.Resource);
 	public static final PhpFunction json_encode = new PhpFunction("json_encode", Types.String);
+	public static final PhpFunction json_decode = new PhpFunction("json_decode", Types.array(Types.Mixed));
+	public static final PhpFunction stream_get_contents = new PhpFunction("stream_get_contents", Types.String);
 	
 	public static Instruction echo(Expression e) {
 		return new SemicolonTerminatedInstruction("echo " +e);

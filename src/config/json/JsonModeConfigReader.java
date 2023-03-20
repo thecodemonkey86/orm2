@@ -24,7 +24,7 @@ import generate.PhpOrm;
 import util.Pair;
 
 public class JsonModeConfigReader {
-	public static Pair<OrmGenerator, OrmGenerator> read(Path xmlFile,Connection connServer,Connection connClient,Database serverDb,Database clientDb) throws IOException {
+	public static Pair<OrmGenerator, OrmGenerator> read(Path xmlFile,Connection conn,String engine, Database db) throws IOException {
 		
 
 		try(InputStream inputStream = new ByteArrayInputStream(Files.readAllBytes(xmlFile))) {
@@ -38,7 +38,7 @@ public class JsonModeConfigReader {
 			inputStream.reset();
 			
 			boolean serverIsCpp = serverType.equals("cpp");
-			ConfigReader serverCfgReader = serverIsCpp ? new CppConfigReader(xmlFile,connServer,serverDb) : new PhpConfigReader(xmlFile,connServer,serverDb);
+			ConfigReader serverCfgReader = serverIsCpp ? new CppConfigReader(xmlFile,conn,db) : new PhpConfigReader(xmlFile,conn,db);
 			
 			xr = XMLReaderFactory.createXMLReader();
 			xr.setContentHandler(serverCfgReader);
@@ -52,7 +52,7 @@ public class JsonModeConfigReader {
 			
 			inputStream.reset();
 			boolean clientIsCpp = clientType.equals("cpp");
-			ConfigReader clientCfgReader = clientIsCpp ? new CppConfigReader(xmlFile,connClient,clientDb) : new PhpConfigReader(xmlFile,connClient,clientDb);
+			ConfigReader clientCfgReader = clientIsCpp ? new CppConfigReader(xmlFile,conn,db) : new PhpConfigReader(xmlFile,conn,db);
 			
 		
 			xr = XMLReaderFactory.createXMLReader();
@@ -74,6 +74,11 @@ public class JsonModeConfigReader {
 			
 			cfg.setClientConfig(clientConfig);
 			cfg.setServerConfig(serverConfig);
+			
+			serverConfig.setDatabase(db);
+			serverConfig.setDbEngine(engine);
+			clientConfig.setDatabase(db);
+			clientConfig.setDbEngine(engine);
 			OrmGenerator orm1 = serverIsCpp ? new CppOrm(serverConfig) : new PhpOrm(serverConfig);
 			OrmGenerator orm2 = clientIsCpp ? new CppOrm(clientConfig) : new PhpOrm(clientConfig);
 			return new Pair<OrmGenerator, OrmGenerator>(orm1, orm2);

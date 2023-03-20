@@ -144,6 +144,14 @@ public abstract class Expression {
 	public Expression equalsOp(Expression e) {
 		return new BinaryOperatorExpression(this, new LibEqualsOperator(), e);
 	}
+	
+	public Expression notEqualsOp(Expression e) {
+		return new BinaryOperatorExpression(this, NotEqualOperator.INSTANCE, e);
+	}
+	
+	public Expression and(Expression e) {
+		return new BinaryOperatorExpression(this, Operators.AND, e);
+	}
 	public Expression binOp(String symbol, Expression arg) {
 		BinaryOperatorExpression e=new BinaryOperatorExpression(this, new LibOperator(symbol, arg.getType(), false), arg);
 		return e ;
@@ -160,6 +168,14 @@ public abstract class Expression {
 			return equalsOp(other);
 		} else {
 			return callMethod("equals", other);
+		}
+		
+	}
+	public Expression _notEquals(Expression other) {
+		if (other.getType().isPrimitiveType() || other.getType().equals(Types.String)|| other.getType().equals(Types.DateTime)) {
+			return notEqualsOp(other);
+		} else {
+			return new NotExpression(callMethod("equals", other));
 		}
 		
 	}

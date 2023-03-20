@@ -38,6 +38,7 @@ import cpp.jsonentity.method.MethodOneRelationAttrSetter;
 import cpp.jsonentity.method.MethodQHashPkStruct;
 import cpp.jsonentity.method.MethodRemoveAllManyRelatedEntities;
 import cpp.jsonentity.method.MethodReplaceAllManyRelatedEntities;
+import cpp.jsonentity.method.MethodToJson;
 import cpp.jsonentity.method.MethodToggleAddRemoveRelatedEntity;
 import cpp.orm.DatabaseTypeMapper;
 import cpp.orm.OrmUtil;
@@ -146,7 +147,6 @@ public class JsonEntity extends Cls {
 		this.customPreprocessorCode.add(code);
 	}
 	private void addAttributes(List<Column> allColumns) {
-		addAttr(new Attr(Types.Bool, "loaded"));
 		for(OneRelation r:oneRelations) {
 			OneAttr attr = new OneAttr(r);
 				addAttr(attr);
@@ -272,6 +272,7 @@ public class JsonEntity extends Cls {
 		for(ManyRelation r:manyRelations) {
 			addMethod(new MethodToggleAddRemoveRelatedEntity(r));
 		}
+		addMethod(new MethodToJson(this)); 
 //		addAttr(new RepositoryAttr());
 	}
 	
@@ -286,7 +287,12 @@ public class JsonEntity extends Cls {
 			
 			@Override
 			public void addImplementation() {
-				addInstr(_accessThis(JsonEntity.this.getAttrByName("loaded")).assign(BoolExpression.FALSE));
+				for(Column col:getTbl().getColumnsWithoutPrimaryKey()) {
+					 
+					if (!col.hasOneRelation() && !col.isFileImportEnabled()) {
+						_assign(parent.getAttrByName(col.getCamelCaseName()+ "Modified"), BoolExpression.FALSE);
+					}
+				}
 			}
 		});
 	//	addPreprocessorInstruction("#define " + getName()+ " "+CodeUtil2.uc1stCamelCase(tbl.getName()));
@@ -297,7 +303,6 @@ public class JsonEntity extends Cls {
 		addIncludeDefaultHeaderFileName(Types.nullable(Types.Void));
 		addIncludeDefaultHeaderFileName(JsonTypes.BaseJsonEntity);
 addIncludeHeaderInSource(JsonTypes.JsonEntityRepository.getHeaderInclude());
-		addIncludeHeader(Types.orderedSet(null).getHeaderInclude());
 		addAttributes(tbl.getAllColumns());
 		
 		if (tbl.getPrimaryKey().isMultiColumn()) {
@@ -517,7 +522,7 @@ addIncludeHeaderInSource(JsonTypes.JsonEntityRepository.getHeaderInclude());
 		CodeUtil.writeLine(sb, "/*Dies ist eine automatisch generierte Datei des C++ ORM Systems https://github.com/thecodemonkey86/orm2*/");
 		CodeUtil.writeLine(sb, "/*Generator (Java-basiert): https://github.com/thecodemonkey86/orm2*/");
 		CodeUtil.writeLine(sb, "/*Abhängigkeiten (C++ libraries): https://github.com/thecodemonkey86/libcpporm, https://github.com/thecodemonkey86/QtCommonLibs2, https://github.com/thecodemonkey86/SqlUtil2*/");
-		CodeUtil.writeLine(sb, "/*API Level " + APILEVEL + "*/\n");
+		CodeUtil.writeLine(sb, "/*API Level " + APILEVEL + "* (JSOM/REST API modus)*/\n");
 		
 	}
 

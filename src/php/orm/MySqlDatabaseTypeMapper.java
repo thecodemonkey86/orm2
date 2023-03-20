@@ -125,13 +125,13 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 	@Override
 	public Expression getConvertTypeExpression(Expression arg,String dbType, boolean nullable) {
 		
+		if(nullable) {
+			return new InlineIfExpression(arg.isNull(), Expressions.Null, getConvertTypeExpression(arg, dbType, false)); 
+		}
 		switch(dbType) {
 		case "date":
 		case "datetime":			
 		case "timestamp":
-			if(nullable) {
-				return new InlineIfExpression(arg.isNull(), Expressions.Null, new NewOperator(Types.DateTime, arg));
-			}
 			return arg.getType().equals(Types.DateTime) ? arg : new NewOperator(Types.DateTime, arg);
 		case "varchar":
 		case "character":	
@@ -218,6 +218,25 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 	@Override
 	public Method getBeanRepositoryRollbackTransactionMethod() {
 		return new MysqliEntityRepositoryRollbackTransactionMethod();
+	}
+
+	@Override
+	public Expression getConvertJsonValueToTypedExpression(Expression v, Column col ) {
+		Expression e=v;
+		String dbType = col.getDbType();
+		switch(dbType) {
+		case "date":
+			e = new NewOperator(Types.DateTime, v) ;
+			break;
+		case "datetime":
+		case "timestamp":
+			e = new NewOperator(Types.DateTime, v) ;
+			break;
+		}
+		if(col.isNullable()) {
+			return new InlineIfExpression(v.isNull(), Expressions.Null, e);
+		}
+		return e;
 	}
 
 	

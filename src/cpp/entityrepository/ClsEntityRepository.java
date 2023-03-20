@@ -44,9 +44,6 @@ public class ClsEntityRepository extends Cls{
 		addIncludeHeader(getSuperclass().getHeaderInclude());
 		addIncludeInSourceDefaultHeaderFileName(EntityCls.getDatabaseMapper().getSqlQueryType());
 		addInclude(ClsDbPool.instance.getHeaderInclude());
-		if(beans.size()>0)
-			addIncludeHeader(Types.orderedSet(beans.iterator().next()).getHeaderInclude()
-					);
 		
 		if(EntityCls.getDatabase().supportsInsertOrIgnore()) {
 			addMethodTemplate(EntityCls.getDatabaseMapper().getInsertOrIgnoreMethod(true));

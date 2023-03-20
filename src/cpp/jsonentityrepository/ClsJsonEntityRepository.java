@@ -11,11 +11,15 @@ import cpp.core.expression.Expressions;
 import cpp.core.method.MethodStaticAttributeGetter;
 import cpp.core.method.MethodStaticAttributeSetter;
 import cpp.jsonentity.JsonEntity;
-import cpp.jsonentityrepository.method.ConstructorJsonEntityRepository;
+import cpp.jsonentityrepository.method.MethodLoadById;
+import cpp.jsonentityrepository.method.MethodCreateNew;
+import cpp.jsonentityrepository.method.MethodCreateNewNonNullableOnly;
 import cpp.jsonentityrepository.method.MethodGetOneFromJson;
 import cpp.jsonentityrepository.method.MethodGetVectorFromJson;
 import cpp.jsonentityrepository.method.MethodLoadFromUrl;
 import cpp.jsonentityrepository.method.MethodLoadOneFromUrl;
+import cpp.jsonentityrepository.method.MethodSave;
+import database.column.Column;
 
 public class ClsJsonEntityRepository extends Cls {
 	public static final String CLSNAME = "JsonEntityRepository";
@@ -42,7 +46,6 @@ public class ClsJsonEntityRepository extends Cls {
 			public void addImplementation() {
 			}
 		});
-		addConstructor(new ConstructorJsonEntityRepository());
 		Attr aNetwork = new Attr(Attr.Protected, NetworkTypes.QNetworkAccessManager.toRawPointer(), network, Expressions.Nullptr, true);
 		
 		Attr aBaseUrl = new Attr(Attr.Protected, NetworkTypes.QUrl, baseUrl,null,true);
@@ -64,11 +67,42 @@ public class ClsJsonEntityRepository extends Cls {
 		for(JsonEntity e : entityClasses) {
 			addForwardDeclaredClass(e);
 			addIncludeHeader(e.getHeaderInclude());
+			addMethod(new MethodCreateNew(e));
+			int countNullable = 0;
+			
+			for(Column c : e.getTbl().getFieldColumns()) {
+				if(c.isNullable()) {
+					countNullable++;
+				}
+			}
+			
+			int countInitializeFields = e.getTbl().getFieldColumns().size();
+			if(!e.getTbl().getPrimaryKey().isAutoIncrement()) {
+				countInitializeFields += e.getTbl().getPrimaryKey().getColumnCount();
+				
+				for(Column c : e.getTbl().getPrimaryKey()) {
+					if(c.isNullable()) {
+						countNullable++;
+					}
+				}
+			}
+			if(countInitializeFields > 0) {
+				addMethod(new MethodCreateNew(e,true,false));
+				
+				if(countNullable > 0) {
+					addMethod(new MethodCreateNew(e,true,true));
+					MethodCreateNewNonNullableOnly methodRepoCreateNewNonNullableOnly = new MethodCreateNewNonNullableOnly(e);
+					if(!methodRepoCreateNewNonNullableOnly.getParams().isEmpty())
+						addMethod(methodRepoCreateNewNonNullableOnly);
+				}
+			}
 			addMethod(new MethodGetOneFromJson(e,true));
 			addMethod(new MethodGetOneFromJson(e,false));
+			addMethod(new MethodLoadById(e));
 			addMethod(new MethodGetVectorFromJson(e));
 			addMethod(new MethodLoadFromUrl(e));
 			addMethod(new MethodLoadOneFromUrl(e));
+			addMethod(new MethodSave(e));
 //			addMethod(new MethodLoadByIdFromUrlAsynchronous(e));
 //			addMethod(new MethodEntityLoad(e));
 		}

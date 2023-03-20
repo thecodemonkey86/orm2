@@ -38,17 +38,21 @@ import php.orm.OrmUtil;
 import util.CodeUtil2;
 
 public class MethodEntitySave extends Method {
-	protected EntityCls bean;
+	protected EntityCls entity;
 	Param pTransactionHandle ;
-	public MethodEntitySave(EntityCls bean) {
-		super(Public, Types.Void, "save"+bean.getName());
+	public MethodEntitySave(EntityCls entity) {
+		super(Public, Types.Void, getMethodName(entity));
 		setStatic(true);
-		this.bean = bean;
-		addParam(new Param(bean, "entity"));
+		this.entity = entity;
+		addParam(new Param(entity, "entity"));
 		if( EntityCls.getTypeMapper().hasTransactionHandle()) {
 			pTransactionHandle = addParam(new Param(Types.Resource, "transactionHandle",Expressions.Null));
 		
 		}
+	}
+
+	public static String getMethodName(EntityCls bean) {
+		return "save"+bean.getName();
 	}
 
 	@Override
@@ -69,18 +73,18 @@ public class MethodEntitySave extends Method {
 		
 		ifIsInsertNew.thenBlock()
 		
-			._callMethodInstr(sqlQuery,  ClsSqlQuery.insertInto,parent.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(bean)));
+			._callMethodInstr(sqlQuery,  ClsSqlQuery.insertInto,parent.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(entity)));
 		
 		IfBlock ifHasUpdate = ifIsInsertNew.elseBlock()._if(pBean.callMethod(ClsBaseEntity.METHOD_NAME_HAS_UPDATE));
 		
 		
 //		ifHasUpdate.thenBlock()._callMethodInstr(sqlQuery, ClsSqlQuery.METHOD_NAME_BEGIN_TRANSACTION);
-		ifHasUpdate.thenBlock()._callMethodInstr(sqlQuery,  ClsSqlQuery.update,parent.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(bean)));
+		ifHasUpdate.thenBlock()._callMethodInstr(sqlQuery,  ClsSqlQuery.update,parent.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(entity)));
 		
 		
 		
 		
-		Table tbl = bean.getTbl();
+		Table tbl = entity.getTbl();
 		List<Column> columns = tbl.getColumns(!tbl.getPrimaryKey().isAutoIncrement());
 		for(Column col : columns) {
 			if(!col.isRawValueEnabled()) {
@@ -150,7 +154,7 @@ public class MethodEntitySave extends Method {
 
 
 		
-		List<ManyRelation> manyRelations = bean.getManyToManyRelations();
+		List<ManyRelation> manyRelations = entity.getManyToManyRelations();
 
 		
 		for(ManyRelation r:manyRelations) {
@@ -163,7 +167,7 @@ public class MethodEntitySave extends Method {
 			}
 			
 			// "removed"
-			MethodCall expressionManyToManyRemoved = pBean.callAttrGetter(bean.getAttrByName(OrmUtil.getManyRelationDestAttrName(r)+"Removed" ));
+			MethodCall expressionManyToManyRemoved = pBean.callAttrGetter(entity.getAttrByName(OrmUtil.getManyRelationDestAttrName(r)+"Removed" ));
 			IfBlock ifRemoveBeans = _if(pBean.callMethod(MethodHasRemovedManyToMany.getMethodName(r)));
 		
 			
@@ -216,7 +220,7 @@ public class MethodEntitySave extends Method {
 			}
 			// end of "removed"
 			// "added"
-			MethodCall expressionManyToManyAdded = pBean.callAttrGetter(bean.getAttrByName(OrmUtil.getManyRelationDestAttrName(r)+"Added" ));
+			MethodCall expressionManyToManyAdded = pBean.callAttrGetter(entity.getAttrByName(OrmUtil.getManyRelationDestAttrName(r)+"Added" ));
 			IfBlock ifAddedBeans = _if(pBean.callMethod(MethodHasAddedManyToMany.getMethodName(r)));
 			
 			Expression[] argsInsertMultiRow = new Expression[r.getMappingTable().getPrimaryKey().getColumnCount()];

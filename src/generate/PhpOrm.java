@@ -242,7 +242,7 @@ public class PhpOrm extends OrmGenerator {
 			Entities.add(cls);
 		}
 
-		ClsEntityRepository repo = Types.BeanRepository;
+		ClsEntityRepository repo = Types.EntityRepository;
 		repo.addDeclarations(Entities.getAllEntities());
 
 		for (EntityCls c : Entities.getAllEntities()) {

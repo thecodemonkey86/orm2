@@ -18,7 +18,7 @@ public class MethodGetAllSelectFields extends Method {
 
 	@Override
 	public void addImplementation() {
-		_return(Types.BeanRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetAllSelectFields(bean), _this().accessAttr(ClsBaseEntityQuery.mainEntityAlias))); 
+		_return(Types.EntityRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetAllSelectFields(bean), _this().accessAttr(ClsBaseEntityQuery.mainEntityAlias))); 
 	}
 	
 	@Override

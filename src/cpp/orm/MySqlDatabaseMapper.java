@@ -106,6 +106,7 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 				case "boolean":
 					return Types.Bool;
 				case "datetime":
+				case "timestamp":
 					return Types.QDateTime;
 				default:
 					return CoreTypes.QVariant;

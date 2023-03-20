@@ -273,4 +273,10 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 		return true;
 	}
 
+	@Override
+	public Expression getConvertJsonValueToTypedExpression(Expression obj, Column col) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

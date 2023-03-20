@@ -139,4 +139,10 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 		return new PgEntityRepositoryRollbackTransactionMethod();
 	}
 
+	@Override
+	public Expression getConvertJsonValueToTypedExpression(Expression obj, Column col) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

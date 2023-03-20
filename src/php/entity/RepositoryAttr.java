@@ -9,7 +9,7 @@ import php.core.expression.MethodCall;
 public class RepositoryAttr extends Attr{
 
 	public RepositoryAttr() {
-		super(Types.BeanRepository, "repository");
+		super(Types.EntityRepository, "repository");
 	}
 
 	public MethodCall callGetByRecordMethod(EntityCls bean, Expression...args) {

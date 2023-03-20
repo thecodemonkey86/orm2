@@ -29,7 +29,7 @@ public class AccessExpression extends Expression{
 	}
 
 	public BinaryOperatorExpression isNotNull() {
-		return new BinaryOperatorExpression(this, new NotEqualOperator(), Expressions.Null);
+		return new BinaryOperatorExpression(this, NotEqualOperator.INSTANCE, Expressions.Null);
 	}
 
 	public AssignInstruction assign(Expression value) {

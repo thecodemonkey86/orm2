@@ -1,4 +1,4 @@
-package cpp.entityrepository.method;
+package cpp.jsonentityrepository.method;
 
 import java.util.ArrayList;
 
@@ -11,25 +11,24 @@ import cpp.core.expression.BoolExpression;
 import cpp.core.expression.MakeSharedExpression;
 import cpp.core.expression.Var;
 import cpp.core.instruction.IfBlock;
-import cpp.entity.EntityCls;
 import cpp.entity.Nullable;
 import cpp.entity.method.MethodColumnAttrSetNull;
-import cpp.lib.ClsBaseJsonEntity;
+import cpp.jsonentity.JsonEntity;
 import database.column.Column;
 import util.StringUtil;
 
-public class MethodRepoCreateNew extends Method {
+public class MethodCreateNew extends Method {
 
-	EntityCls cls;
+	JsonEntity cls;
 	boolean initializeFields,initializeFieldsWithNullable;
 	ArrayList<Param> initializeFieldsParams;
 	
-	public MethodRepoCreateNew(EntityCls cls) {
+	public MethodCreateNew(JsonEntity cls) {
 		this(cls,false,false);
 		setStatic(true);
 	}
 	
-	public MethodRepoCreateNew(EntityCls cls,boolean initializeFields,boolean initializeFieldsWithNullable) {
+	public MethodCreateNew(JsonEntity cls,boolean initializeFields,boolean initializeFieldsWithNullable) {
 		super(Public, cls.toSharedPtr(), "createNew" + cls.getName());
 		this.cls=cls;
 		this.initializeFields = initializeFields;
@@ -38,7 +37,7 @@ public class MethodRepoCreateNew extends Method {
 			initializeFieldsParams = new ArrayList<>();
 			if(!cls.getTbl().getPrimaryKey().isAutoIncrement()) {
 				for(Column pkCol : cls.getTbl().getPrimaryKey().getColumns()) {
-					Type t = EntityCls.getDatabaseMapper().columnToType(pkCol);
+					Type t = JsonEntity.getDatabaseMapper().columnToType(pkCol);
 					if(initializeFieldsWithNullable) {
 						initializeFieldsParams.add(addParam(new Param((t.isPrimitiveType() 
 										? t 
@@ -56,7 +55,7 @@ public class MethodRepoCreateNew extends Method {
 			}
 			for(Column col : cls.getTbl().getFieldColumns()) {
 				if(!col.isFileImportEnabled()) {
-					Type t = EntityCls.getDatabaseMapper().columnToType(col);
+					Type t = JsonEntity.getDatabaseMapper().columnToType(col);
 					if(initializeFieldsWithNullable) {
 						initializeFieldsParams.add(addParam(new Param((t.isPrimitiveType() 
 										? t 
@@ -81,7 +80,7 @@ public class MethodRepoCreateNew extends Method {
 	@Override
 	public void addImplementation() {
 		Var bean = _declare(returnType, "entity", new MakeSharedExpression((SharedPtr) returnType));
-		_callMethodInstr(bean, ClsBaseJsonEntity.setInsertNew);
+		_callMethodInstr(bean, "setInsertNew");
 		addInstr(bean.callMethodInstruction("setLoaded", BoolExpression.TRUE));
 		
 		if(initializeFields) {

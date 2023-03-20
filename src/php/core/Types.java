@@ -28,7 +28,7 @@ public class Types extends CoreTypes{
 	public static final ClsMySqlQuery MysqlSqlQuery = new ClsMySqlQuery();
 	public static final ClsFirebirdSqlQuery FirebirdSqlQuery = new ClsFirebirdSqlQuery();
 	
-	public static final ClsEntityRepository BeanRepository = new ClsEntityRepository();
+	public static final ClsEntityRepository EntityRepository = new ClsEntityRepository();
 	
 	public static final ClsSqlParam SqlParam = new ClsSqlParam();
 	public static final ClsSqlUtil SqlUtil = new ClsSqlUtil();
