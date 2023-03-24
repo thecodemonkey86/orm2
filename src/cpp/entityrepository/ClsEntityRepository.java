@@ -48,9 +48,6 @@ public class ClsEntityRepository extends Cls{
 		addIncludeLibInSource(Types.QSqlRecord);
 		addIncludeHeader(getSuperclass().getHeaderInclude());
 		addIncludeHeaderInSource(EntityCls.getDatabaseMapper().getSqlQueryType().getIncludeHeader());
-		if(beans.size()>0)
-			addIncludeHeaderInSource(Types.orderedSet(beans.iterator().next()).getHeaderInclude()
-					);
 		for(EntityCls bean:beans) {
 			addIncludeHeaderInSource(EntityCls.getModelPath() + "entities/"+bean.getIncludeHeader());
 			addIncludeHeader("query/"+bean.getName().toLowerCase()+"entityqueryselect");

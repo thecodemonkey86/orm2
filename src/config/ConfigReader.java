@@ -349,11 +349,11 @@ public abstract class ConfigReader implements ContentHandler {
 					currentOneToManyRelation.setSubstituteNamePlural(substituteNamePlural);
 					String attrAdditionalJoin=atts.getValue("additionalJoin");
 					if(attrAdditionalJoin!=null) {
-						currentManyToManyRelation.setAdditionalJoin(attrAdditionalJoin);
+						currentOneToManyRelation.setAdditionalJoin(attrAdditionalJoin);
 					}
 					String attrAdditionalOrderBy=atts.getValue("additionalOrderBy");
 					if(attrAdditionalOrderBy!=null) {
-						currentManyToManyRelation.setAdditionalOrderBy(attrAdditionalOrderBy);
+						currentOneToManyRelation.setAdditionalOrderBy(attrAdditionalOrderBy);
 					}
 					oneToManyAliasCounter++;
 					break;

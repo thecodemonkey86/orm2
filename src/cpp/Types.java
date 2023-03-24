@@ -14,7 +14,6 @@ import cpp.jsonentity.JsonEntities;
 import cpp.jsonentity.JsonEntity;
 import cpp.lib.ClsBaseEntity;
 import cpp.lib.ClsFirebirdSqlQuery;
-import cpp.lib.ClsOrderedSet;
 import cpp.lib.ClsSql;
 import cpp.lib.ClsSqlQuery;
 import cpp.lib.ClsSqlUtil;
@@ -104,10 +103,5 @@ public class Types extends CoreTypes{
 		return beanPk;
 		
 	}
-	
-	public static ClsOrderedSet orderedSet(Type elementType) {
-		return new ClsOrderedSet(elementType);
-	}
-	
 	
 }

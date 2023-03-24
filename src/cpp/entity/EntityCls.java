@@ -378,7 +378,6 @@ public class EntityCls extends Cls {
 		//addIncludeHeader("entityquery");
 		addIncludeHeader(repositoryPath + Types.EntityRepository.getName().toLowerCase());
 		addForwardDeclaredClass(Types.EntityRepository);
-		addIncludeHeader(Types.orderedSet(this).getHeaderInclude());
 		addAttributes(tbl.getAllColumns());
 		addForwardDeclaredClass(this);
 		List<Column> cols = tbl.getColumns(!tbl.getPrimaryKey().isAutoIncrement());

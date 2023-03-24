@@ -286,7 +286,6 @@ public class JsonEntity extends Cls {
 		addIncludeHeader("nullable");
 		addIncludeHeader(JsonTypes.BaseJsonEntity.getIncludeHeader());
 
-		addIncludeHeader(Types.orderedSet(null).getHeaderInclude());
 		addAttributes(tbl.getAllColumns());
 		
 		if (tbl.getPrimaryKey().isMultiColumn()) {
