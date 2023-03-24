@@ -25,10 +25,10 @@ import php.entityrepository.query.method.MethodEntityQueryFetch;
 import php.entityrepository.query.method.MethodEntityQueryFetchOne;
 import php.lib.ClsBaseEntityQuery;
 
-public class RestMethodGet extends Method {
+public class RestMethodGetList extends Method {
 
 	Collection<EntityCls> entities;
-	public RestMethodGet(Collection<EntityCls> entities) {
+	public RestMethodGetList(Collection<EntityCls> entities) {
 		super(Public, Types.Void, "get");
 		setStatic(true);
 		this.entities = entities;

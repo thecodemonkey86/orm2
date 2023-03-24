@@ -52,7 +52,7 @@ public class MethodLoadOneRelation extends Method{
 			 
 			Var vUrlQuery = ifNotLoaded.thenBlock()._declare(NetworkTypes.QUrlQuery, "urlQuery");
 			ifNotLoaded.thenBlock().addInstr(vUrlQuery.callMethodInstruction(ClsQUrlQuery.addQueryItem, QString.fromStringConstant("entityType"), QString.fromStringConstant(r.getDestTable().getUc1stCamelCaseName())));
-			ifNotLoaded.thenBlock().addInstr(vUrlQuery.callMethodInstruction(ClsQUrlQuery.addQueryItem, QString.fromStringConstant("queryType"), QString.fromStringConstant("getOne")));
+			ifNotLoaded.thenBlock().addInstr(vUrlQuery.callMethodInstruction(ClsQUrlQuery.addQueryItem, QString.fromStringConstant("queryType"), QString.fromStringConstant("one")));
 			for(int i=0;i<r.getColumnCount();i++) {
 				ifNotLoaded.thenBlock().addInstr(vUrlQuery.callMethodInstruction(ClsQUrlQuery.addQueryItem,QString.fromStringConstant("condition"), QString.fromStringConstant("e1."+ r.getColumns(i).getValue2()+"=").concat(JsonOrmUtil.convertToQString(_this().accessAttr(r.getColumns(i).getValue1().getCamelCaseName())))));
 			}	

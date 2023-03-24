@@ -37,12 +37,12 @@ public class MethodToJson extends Method {
 		
 		addInstr(o.callMethodInstruction(ClsQJsonObject.insert,QString.fromStringConstant(ClsBaseJsonEntity.insert),_this.accessAttr(ClsBaseJsonEntity.insert)));
 		
-		IfBlock ifNotInsert=_ifNot(_this.accessAttr(ClsBaseJsonEntity.insert));
+		IfBlock ifInsert=_if(_this.accessAttr(ClsBaseJsonEntity.insert));
 		for(Column pkCol : entity.getTbl().getPrimaryKey()) {
-			ifNotInsert.thenBlock().addInstr(o.callMethodInstruction(ClsQJsonObject.insert,QString.fromStringConstant(pkCol.getName()), JsonOrmUtil.convertToQJsonValue(
+			 addInstr(o.callMethodInstruction(ClsQJsonObject.insert,QString.fromStringConstant(pkCol.getName()), JsonOrmUtil.convertToQJsonValue(
 					_this.accessAttr(pkCol.getCamelCaseName()))));
 			
-			ifNotInsert.thenBlock()._if(_this.accessAttr(ClsBaseJsonEntity.primaryKeyModified)).thenBlock().addInstr(o.callMethodInstruction(ClsQJsonObject.insert,QString.fromStringConstant(pkCol.getName()+"Previous"), JsonOrmUtil.convertToQJsonValue(
+			ifInsert.elseBlock()._if(_this.accessAttr(ClsBaseJsonEntity.primaryKeyModified)).thenBlock().addInstr(o.callMethodInstruction(ClsQJsonObject.insert,QString.fromStringConstant(pkCol.getName()+"Previous"), JsonOrmUtil.convertToQJsonValue(
 					_this.accessAttr(pkCol.getCamelCaseName()+"Previous"))));
 		}
 		

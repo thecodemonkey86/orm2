@@ -249,7 +249,7 @@ public class EntityCls extends PhpCls {
 		
 		setConstructor(new EntityConstructor(tbl.getPrimaryKey().isAutoIncrement(),tbl.getColumnsWithoutPrimaryKey())); 
 
-
+addMethod(new MethodSetValue());
 		addAttributes(tbl.getAllColumns());
 		//		List<Column> cols = tbl.getColumns(!tbl.getPrimaryKey().isAutoIncrement());
 		//		List<Column> allCols = tbl.getColumns(true);
@@ -274,7 +274,7 @@ public class EntityCls extends PhpCls {
 		addMethod(new MethodHasUpdate());
 		addMethod(new MethodClearModified());
 		addMethod(new MethodGetFieldsAsAssocArray(this));
-		addMethod(new MethodSetValue());
+		
 		
 		fetchListHelper = new FetchListHelperClass(this, beanRepoNamespace);
 	}
