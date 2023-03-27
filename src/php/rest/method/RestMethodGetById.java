@@ -25,7 +25,6 @@ import php.entity.Entities;
 import php.entity.EntityCls;
 import php.entity.method.MethodGetFieldsAsAssocArray;
 import php.entityrepository.method.MethodGetById;
-import php.lib.ClsBaseEntityQuery;
 
 public class RestMethodGetById extends Method {
 

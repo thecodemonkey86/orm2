@@ -16,7 +16,6 @@ import php.core.expression.Var;
 import php.core.instruction.AssignInstruction;
 import php.core.instruction.CaseBlock;
 import php.core.instruction.IfBlock;
-import php.core.instruction.MethodCallInstruction;
 import php.core.instruction.SwitchBlock;
 import php.core.instruction.TryCatchBlock;
 import php.core.method.Method;

@@ -22,7 +22,6 @@ import php.entity.Entities;
 import php.entity.EntityCls;
 import php.entity.method.MethodGetFieldsAsAssocArray;
 import php.entityrepository.query.method.MethodEntityQueryFetch;
-import php.entityrepository.query.method.MethodEntityQueryFetchOne;
 import php.lib.ClsBaseEntityQuery;
 
 public class RestMethodGetList extends Method {
@@ -46,6 +45,9 @@ public class RestMethodGetList extends Method {
 			IfBlock ifIssetCondition= caseBeanType
 					._if(PhpFunctions.isset.call(PhpGlobals.$_GET.arrayIndex(new PhpStringLiteral("condition")))) ;
 			ifIssetCondition.thenBlock().addInstr(vQuery.callMethodInstruction(ClsBaseEntityQuery.where,PhpGlobals.$_GET.arrayIndex(new PhpStringLiteral("condition"))));
+			IfBlock ifIssetOrderBy= caseBeanType
+					._if(PhpFunctions.isset.call(PhpGlobals.$_GET.arrayIndex(new PhpStringLiteral("orderBy")))) ;
+			ifIssetOrderBy.thenBlock().addInstr(vQuery.callMethodInstruction(ClsBaseEntityQuery.orderBy,PhpGlobals.$_GET.arrayIndex(new PhpStringLiteral("orderBy"))));
 			Var vBeans = caseBeanType._declare(e.getType(),"entities",vQuery.callMethod( MethodEntityQueryFetch.getMethodName()) );
 			Var vResult = caseBeanType._declare(Types.array(Types.String), "result", new ArrayInitExpression());
 			ForeachLoop foreachBean = caseBeanType._foreach(new Var(entity, "entity"), vBeans);

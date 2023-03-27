@@ -3,11 +3,9 @@ package php.rest.method;
 import java.util.Collection;
 
 import cpp.orm.OrmUtil;
-import database.column.Column;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
-import database.relation.PrimaryKey;
 import php.core.PhpConstants;
 import php.core.PhpFunctions;
 import php.core.PhpGlobals;
