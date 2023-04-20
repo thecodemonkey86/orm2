@@ -10,11 +10,11 @@ import cpp.orm.OrmUtil;
 import database.relation.ManyRelation;
 import database.relation.OneToManyRelation;
 
-public class MethodAddRelatedBeanInternal extends Method {
+public class MethodAddRelatedEntityInternal extends Method {
 
 	protected OneToManyRelation rel;
 	Param pBean; 
-	public MethodAddRelatedBeanInternal(OneToManyRelation r, Param p) {
+	public MethodAddRelatedEntityInternal(OneToManyRelation r, Param p) {
 		super(Public, Types.Void, getMethodName(r) );
 		pBean = addParam(p);
 		rel=r;
@@ -48,8 +48,8 @@ public class MethodAddRelatedBeanInternal extends Method {
 //		addInstr(parent.getAttrByName("_added"+StringUtil.ucfirst(a.getName())).callMethod("append",getParam("entity")).asInstruction());
 	}
 	
-	public static MethodAddRelatedBeanInternal prototype() {
-		return new MethodAddRelatedBeanInternal(null, null);
+	public static MethodAddRelatedEntityInternal prototype() {
+		return new MethodAddRelatedEntityInternal(null, null);
 	}
 
 }

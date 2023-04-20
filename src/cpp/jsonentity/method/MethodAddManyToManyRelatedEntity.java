@@ -7,18 +7,18 @@ import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.Struct;
 import cpp.core.expression.Var;
-import cpp.entity.Entities;
-import cpp.entity.EntityCls;
+import cpp.jsonentity.JsonEntities;
+import cpp.jsonentity.JsonEntity;
 import cpp.lib.ClsQList;
 import cpp.orm.OrmUtil;
 import database.column.Column;
 import database.relation.ManyRelation;
 
-public class MethodAddManyToManyRelatedBean extends Method {
+public class MethodAddManyToManyRelatedEntity extends Method {
 
 	protected ManyRelation rel;
 	Param pBean;
-	public MethodAddManyToManyRelatedBean(ManyRelation r, Param p) {
+	public MethodAddManyToManyRelatedEntity(ManyRelation r, Param p) {
 		super(Public, Types.Void, getMethodName(r));
 		pBean = addParam(p);
 		rel=r;
@@ -32,7 +32,7 @@ public class MethodAddManyToManyRelatedBean extends Method {
 	public void addImplementation() {
 		Attr a=parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
 		addInstr(a.callMethod(ClsQList.append,pBean).asInstruction());
-		EntityCls relationBean = Entities.get( rel.getDestTable());
+		JsonEntity relationBean = JsonEntities.get( rel.getDestTable());
 		
 		if (relationBean.getTbl().getPrimaryKey().isMultiColumn()) {
 			Struct pkType=relationBean.getStructPk();

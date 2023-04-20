@@ -11,6 +11,7 @@ public class ClsBaseEntityQuery extends PhpPseudoGenericClass{
 	public static final String mainEntityAlias = "mainEntityAlias";
 	public static final String where = "where";
 	public static final String join = "join";
+	public static final String orderBy = "orderBy";
 	public static final String addInsertRawExpression = "addInsertRawExpression";
 	public static final String select = "select";
 
@@ -23,6 +24,7 @@ public class ClsBaseEntityQuery extends PhpPseudoGenericClass{
 		addMethod(new LibMethod(this, "leftJoin"));
 		addMethod(new LibMethod(this, join));
 		addMethod(new LibMethod(this, where));
+		addMethod(new LibMethod(this, orderBy));
 		addMethod(new LibMethod(this, addInsertRawExpression));
 //		addMethod(new LibMethod(Types.mysqli_result, "query"));
 		addAttr(new Attr(Types.String, mainEntityAlias));

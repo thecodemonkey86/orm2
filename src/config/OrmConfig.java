@@ -34,7 +34,7 @@ public class OrmConfig {
 	protected Set<String> enableHasUpdateMethods; // class names
 	protected Database database;
 	
-	private boolean enableStacktrace = true;
+	private boolean enableStacktrace = false;
 	private boolean enableGetValueByName = false;
 	
 	private boolean enableMethodLoadCollection = false;

@@ -21,8 +21,10 @@ import cpp.core.expression.StaticAccessExpression;
 import cpp.core.method.MethodAttributeGetter;
 import cpp.core.method.MethodAttributeSetter;
 import cpp.jsonentity.method.MethodAddInsertParamForRawExpression;
+import cpp.jsonentity.method.MethodAddManyToManyRelatedEntity;
+import cpp.jsonentity.method.MethodAddManyToManyRelatedEntityInternal;
 import cpp.jsonentity.method.MethodAddRelatedBean;
-import cpp.jsonentity.method.MethodAddRelatedBeanInternal;
+import cpp.jsonentity.method.MethodAddRelatedEntityInternal;
 import cpp.jsonentity.method.MethodColumnAttrSetNull;
 import cpp.jsonentity.method.MethodColumnAttrSetter;
 import cpp.jsonentity.method.MethodColumnAttrSetterInternal;
@@ -72,18 +74,18 @@ public class JsonEntity extends Cls {
 		headerInclude=modelPath + "entities/"+type.toLowerCase();
 	}
 	
-	private static final String BEAN_PARAM_NAME = "entity";
+	private static final String ENTIITY_PARAM_NAME = "entity";
 	public static final String BEGIN_CUSTOM_CLASS_MEMBERS = "/*BEGIN_CUSTOM_CLASS_MEMBERS*/";
 	public static final String END_CUSTOM_CLASS_MEMBERS = "/*END_CUSTOM_CLASS_MEMBERS*/";
 	public static final String BEGIN_CUSTOM_PREPROCESSOR = "/*BEGIN_CUSTOM_PREPROCESSOR*/";
 	public static final String END_CUSTOM_PREPROCESSOR = "/*END_CUSTOM_PREPROCESSOR*/";
-	public static final String APILEVEL = "1.2";
+	public static final String APILEVEL = "1.3";
 	
 	static Database database;
 	static DatabaseTypeMapper mapper;
 	private static String modelPath, repositoryPath;
 	
-	private ArrayList<String> customHeaderCode, customSourceCode, customPreprocessorCode;
+	private ArrayList<String> customHeaderCode, customSourceCode, customPreprocessorCode,customPreprocessorCodeInSource;
 	
 	
 	public static void setModelPath(String modelPath) {
@@ -166,6 +168,13 @@ public class JsonEntity extends Cls {
 				if (!r.isPartOfPk()) {
 					Attr attrModified = new Attr(Types.Bool, attr.getName()+"Modified");
 					addAttr(attrModified);
+					/*addMethod(new Method(Method.Public, Types.Bool, "is"+StringUtil.ucfirst(attrModified.getName())) {
+						
+						@Override
+						public void addImplementation() {
+							_return(attrModified);
+						}
+					}.setConstQualifier());*/
 				}
 				
 //				for(Column col:r.getDestTable().getPrimaryKey().getColumns()) {
@@ -191,10 +200,10 @@ public class JsonEntity extends Cls {
 			}
 			
 			addMethod(new MethodManyAttrGetter(attr));
-			addMethod(new MethodAddRelatedBean(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
+			addMethod(new MethodAddRelatedBean(r, new Param(attr.getElementType().toConstRef(), ENTIITY_PARAM_NAME)));
 			//addMethod(new MethodAddRelatedBean(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
-			addMethod(new MethodAddRelatedBeanInternal(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
-			addMethod(new MethodAddRelatedBeanInternal(r, new Param(Types.qlist(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
+			addMethod(new MethodAddRelatedEntityInternal(r, new Param(attr.getElementType().toConstRef(), ENTIITY_PARAM_NAME)));
+			addMethod(new MethodAddRelatedEntityInternal(r, new Param(Types.qlist(attr.getElementType()).toConstRef(), ENTIITY_PARAM_NAME)));
 			addMethod(new MethodGetManyRelatedAtIndex(attr, r));
 			addMethod(new MethodGetManyRelatedCount(attr, r));
 			addMethod(new MethodRemoveAllManyRelatedEntities(r));
@@ -205,12 +214,23 @@ public class JsonEntity extends Cls {
 		for(ManyRelation r:manyRelations) {
 			ManyAttr attr = new ManyAttr(r);
 			addAttr(attr);
+			addAttr(new Attr(Types.qlist(JsonEntities.get(r.getDestTable()).getPkType()), attr.getName()+"Added"));
+			addAttr(new Attr(Types.qlist(JsonEntities.get(r.getDestTable()).getPkType()), attr.getName()+"Removed"));
 			addIncludeDefaultHeaderFileName(attr.getClassType());
 			addForwardDeclaredClass((Cls) attr.getElementType());
 			if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
 				addForwardDeclaredClass( ((JsonEntity) Types.getRelationForeignPrimaryKeyTypeJsonEntities(r)).getStructPk());
 			}
 			addMethod(new MethodManyAttrGetter(attr));
+			addMethod(new MethodAddManyToManyRelatedEntity(r, new Param(attr.getElementType().toConstRef(), ENTIITY_PARAM_NAME)));
+			//addMethod(new MethodAddRelatedBean(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
+			addMethod(new MethodAddManyToManyRelatedEntityInternal(r, new Param(attr.getElementType().toConstRef(), ENTIITY_PARAM_NAME)));
+			addMethod(new MethodAddManyToManyRelatedEntityInternal(r, new Param(Types.qlist(attr.getElementType()).toConstRef(), ENTIITY_PARAM_NAME)));
+			addMethod(new MethodGetManyRelatedAtIndex(attr, r));
+			addMethod(new MethodGetManyRelatedCount(attr, r));
+			addMethod(new MethodRemoveAllManyRelatedEntities(r));
+			addMethod(new MethodReplaceAllManyRelatedEntities(r));
+			addMethod(new MethodGetLastItem(attr.getElementType(), r));
 			
 		}
 		
@@ -242,6 +262,13 @@ public class JsonEntity extends Cls {
 					
 					Attr attrModified = new Attr(Types.Bool, col.getCamelCaseName()+"Modified");
 					addAttr(attrModified);
+					/*addMethod(new Method(Method.Public, Types.Bool, "is"+StringUtil.ucfirst(attrModified.getName())) {
+						
+						@Override
+						public void addImplementation() {
+							_return(attrModified);
+						}
+					}.setConstQualifier());*/
 				}
 				if(col.isRawValueEnabled()) {
 					Attr attrInsertExpression = new Attr(Attr.Protected, Types.QString,"insertExpression"+col.getUc1stCamelCaseName(), null,false);
@@ -518,6 +545,20 @@ addIncludeHeaderInSource(JsonTypes.JsonEntityRepository.getHeaderInclude());
 	}
 	
 	@Override
+	protected void addBeforeSourceCode(StringBuilder sb) {
+		super.addBeforeSourceCode(sb);
+		sb.append(BEGIN_CUSTOM_PREPROCESSOR).append('\n');
+		if(customPreprocessorCodeInSource != null) {
+			
+			for(String cc : customPreprocessorCodeInSource) {
+				sb.append(cc.trim());
+			}
+			
+		}
+		sb.append('\n').append(END_CUSTOM_PREPROCESSOR).append('\n').append('\n');
+	}
+	
+	@Override
 	protected void addBeforeHeader(StringBuilder sb) {
 		CodeUtil.writeLine(sb, "/*Dies ist eine automatisch generierte Datei des C++ ORM Systems https://github.com/thecodemonkey86/orm2*/");
 		CodeUtil.writeLine(sb, "/*Generator (Java-basiert): https://github.com/thecodemonkey86/orm2*/");
@@ -526,4 +567,11 @@ addIncludeHeaderInSource(JsonTypes.JsonEntityRepository.getHeaderInclude());
 		
 	}
 
+	public void addCustomPreprocessorCodeInSource(String code) {
+		if(this.customPreprocessorCodeInSource == null) {
+			this.customPreprocessorCodeInSource = new ArrayList<>();
+		}
+		this.customPreprocessorCodeInSource.add(code);
+	}
+	
 }

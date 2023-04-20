@@ -56,7 +56,7 @@ public class MethodGetVectorFromJson extends Method{
 					ifValueIsNull.thenBlock().addInstr( e1.callMethodInstruction(MethodColumnAttrSetterInternal.getMethodName(col), JsonOrmUtil.jsonConvertMethod(jsonobject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(col.getName())), ((Nullable)( ((Cls)e1.getType()).getAttrByName(col.getCamelCaseName())).getType()).getElementType())));
 				} else {
 				
-					foreachJsonValue.addInstr( e1.callSetterMethodInstruction(col.getCamelCaseName(), JsonOrmUtil.jsonConvertMethod(jsonobject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(col.getName())), ((Cls)e1.getType()).getAttrByName(col.getCamelCaseName()).getType())));
+					foreachJsonValue.addInstr( e1.callMethodInstruction(MethodColumnAttrSetterInternal.getMethodName(col), JsonOrmUtil.jsonConvertMethod(jsonobject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(col.getName())), ((Cls)e1.getType()).getAttrByName(col.getCamelCaseName()).getType())));
 				}
 			}
 			

@@ -24,6 +24,7 @@ import php.entity.Entities;
 import php.entity.EntityCls;
 import php.entity.method.MethodAttrSetterInternal;
 import php.entity.method.MethodOneRelationBeanIsNull;
+import php.entitypk.method.MethodPkHash;
 import php.entityrepository.method.MethodGetFromQueryAssocArray;
 import php.lib.ClsBaseEntity;
 import php.lib.ClsSqlQuery;
@@ -80,13 +81,15 @@ public class MethodEntityQueryFetch extends Method{
 		Expression e1ArrayIndexExpression = null;
 		if (pk.isMultiColumn()) {
 			
+			
 			Expression[] e1PkArgs = new Expression[pk.getColumnCount()];
 			for(int i = 0; i < pk.getColumnCount(); i++) {
 				e1PkArgs[i] = row.arrayIndex(new PhpStringLiteral(EntityCls.getTypeMapper().filterFetchAssocArrayKey("e1__" + pk.getColumn(i).getName())));
 			}
 			
 			Var e1Pk = doWhileQueryNext._declareNew(bean.getPkType(), "e1pk", e1PkArgs);
-			e1ArrayIndexExpression = PhpFunctions.md5.call(PhpFunctions.serialize.call(e1Pk));
+			Var vMd5=doWhileQueryNext._declare(Types.String,"_md5", e1Pk.callMethod(MethodPkHash.getMethodName()) );
+			e1ArrayIndexExpression = vMd5;
 			//throw new RuntimeException("not implemented");
 		} else {
 			e1ArrayIndexExpression = row.arrayIndex( new PhpStringLiteral(EntityCls.getTypeMapper().filterFetchAssocArrayKey("e1__"+ pk.getFirstColumn().getName())));

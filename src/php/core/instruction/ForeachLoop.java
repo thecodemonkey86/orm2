@@ -20,7 +20,7 @@ public class ForeachLoop extends InstructionBlock{
 		StringBuilder sb=new StringBuilder(CodeUtil2.sp("foreach",CodeUtil2.parentheses(CodeUtil.sp(collection.toString(),"as",var.getUsageString()))));
 		sb.append("{\n");
 		for(Instruction i: instructions) {
-			if(enableStacktrace)
+			if(Instruction.isStackTraceEnabled)
 				CodeUtil.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
 			sb.append(i.toString()).append('\n');
 		}

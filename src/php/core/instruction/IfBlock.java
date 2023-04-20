@@ -64,7 +64,7 @@ public class IfBlock extends Instruction{
 		sb.append(CodeUtil.parentheses(condition.getUsageString()));
 		sb.append("{\n");
 		for(Instruction i:ifInstr) {
-			if(InstructionBlock.enableStacktrace)
+			if(Instruction.isStackTraceEnabled)
 				CodeUtil.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
 			sb.append(i);
 			sb.append('\n');
@@ -77,7 +77,7 @@ public class IfBlock extends Instruction{
 				InstructionBlock elifInstr = elseifInstr.get(i);
 				sb.append("{\n");
 				for(Instruction instr:elifInstr) {
-					if(InstructionBlock.enableStacktrace)
+					if(Instruction.isStackTraceEnabled)
 					CodeUtil.writeLine(sb,new Comment(CodeUtil2.traceComment(instr.getStackTrace())));
 					sb.append(instr);
 					sb.append("\n");
@@ -89,7 +89,7 @@ public class IfBlock extends Instruction{
 		if (elseInstr != null) {
 			sb.append(" else {\n");
 			for(Instruction instr:elseInstr) {
-				if(InstructionBlock.enableStacktrace)
+				if(Instruction.isStackTraceEnabled)
 					CodeUtil.writeLine(sb,new Comment(CodeUtil2.traceComment(instr.getStackTrace())));
 				sb.append(instr);
 				sb.append("\n");

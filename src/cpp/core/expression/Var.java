@@ -10,6 +10,7 @@ import cpp.core.instruction.Instruction;
 public class Var extends Expression{
 	protected Type type;
 	protected String name;
+	protected String ifDef,ifNDef;
 	
 	public Var(Type type, String name) {
 		this.type = type;
@@ -41,6 +42,11 @@ public class Var extends Expression{
 //	}
 	
 	public String toDeclarationString() {
+		if(ifDef!=null) {
+			return "#ifdef "+ifDef+"\r\n"+CodeUtil.sp(type.toDeclarationString(),name)+"\r\n#endif\r\n";
+		} else if(ifNDef!=null) {
+			return "#ifndef "+ifNDef+"\r\n"+CodeUtil.sp(type.toDeclarationString(),name)+"\r\n#endif\r\n";
+		}
 		return CodeUtil.sp(type.toDeclarationString(),name);
 	}
 
@@ -82,6 +88,30 @@ public class Var extends Expression{
 		return new PointerExpression(this);
 	}
 
+	public Var setIfDef(String ifDef) {
+		this.ifDef = ifDef;
+		return this;
+	}
+	
+	public Var setIfNDef(String ifNDef) {
+		this.ifNDef = ifNDef;
+		return this;
+	}
+	
+	public boolean hasIfDef() {
+		return ifDef!=null;
+	}
+	public boolean hasIfNDef() {
+		return ifNDef!=null;
+	}
+	
+	public String getIfDef() {
+		return ifDef;
+	}
+	
+	public String getIfNDef() {
+		return ifNDef;
+	}
 	
 	
 }

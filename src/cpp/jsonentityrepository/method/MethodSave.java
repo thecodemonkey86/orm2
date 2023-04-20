@@ -8,7 +8,6 @@ import cpp.core.LambdaExpression;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.QString;
-import cpp.core.expression.Operators;
 import cpp.core.expression.PlusOperatorExpression;
 import cpp.core.expression.QByteArrayLiteral;
 import cpp.core.expression.StdFunctionInvocation;

@@ -24,11 +24,15 @@ public class MethodLoadFromUrl extends Method {
 	JsonEntity entity;
 	
 	public MethodLoadFromUrl(JsonEntity entity) {
-		super(Public, CoreTypes.Void, "load"+ entity.getName()+"FromUrl");
+		super(Public, CoreTypes.Void, getMethodName(entity));
 		pUrl = addParam(new Param(NetworkTypes.QUrl.toConstRef(), "url"));
 		pCallback = addParam(new Param(new ClsStdFunction(CoreTypes.Void, Types.qlist(entity.toSharedPtr()).toConstRef()), "callback"));
 		this.entity = entity;
 		setStatic(true); 
+	}
+
+	public static String getMethodName(JsonEntity entity) {
+		return "load"+ entity.getName()+"FromUrl";
 	}
 
 	@Override

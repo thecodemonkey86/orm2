@@ -47,7 +47,6 @@ public class JsonOrmGenerator {
 		Path xmlFile = Paths.get(args[args.length-1]);
 		
 		boolean setPass= args[0].equals("--setpass");
-		 
 		
 		String engine = null;
 		String dbName = null;

@@ -19,8 +19,6 @@ public class EntityConstructor extends Constructor{
 		this.cols = cols;
 		// Shared Pointer due to circular dependency / forward declaration issue 
 		try{
-//		addParam(new Param(Types.BeanRepository.toRawPointer(), "repository"));
-//		addPassToSuperConstructor(params.get(0));
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -50,10 +48,10 @@ public class EntityConstructor extends Constructor{
 			}
 		    
 		}
-		EntityCls bean = (EntityCls) parent;
-		for(OneRelation r:bean.getOneRelations()) {
+		EntityCls entity = (EntityCls) parent;
+		for(OneRelation r:entity.getOneRelations()) {
 			if (!r.isPartOfPk()) {
-				_assign(parent.getAttrByName(bean.getOneRelationAttr(r).getName()+ "Modified"), BoolExpression.FALSE);
+				_assign(parent.getAttrByName(entity.getOneRelationAttr(r).getName()+ "Modified"), BoolExpression.FALSE);
 			}
 		}
 	}

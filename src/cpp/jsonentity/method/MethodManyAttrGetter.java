@@ -14,7 +14,7 @@ public class MethodManyAttrGetter extends Method{
 //		
 		setReturnType(new ClsQList(((TplCls)a.getType()).getElementType()).toConstRef());
 		this.a = a;
-//		setConstQualifier(true);
+		setConstQualifier(true);
 	}
 
 	@Override

@@ -23,6 +23,7 @@ import php.entity.Entities;
 import php.entity.EntityCls;
 import php.entity.method.MethodOneRelationAttrSetter;
 import php.entity.method.MethodOneRelationBeanIsNull;
+import php.entitypk.method.MethodPkHash;
 import php.entityrepository.method.MethodGetFromQueryAssocArray;
 import php.lib.ClsSqlQuery;
 import php.orm.OrmUtil;
@@ -102,9 +103,9 @@ public class MethodEntityQueryFetchOne extends Method{
 				
 				
 				Var foreignPk = ifNotPkForeignIsNull.thenBlock()._declareNew(beanPk, "foreignPk"+StringUtil.ucfirst(r.getAlias()),foreignPkArgs);
-							
+				Var vMd5 = ifNotPkForeignIsNull.thenBlock()._declare(Types.String, "_md5"+r.getAlias(), foreignPk.callMethod(MethodPkHash.getMethodName()));			
 				Var pkSet = ifRowNotNull.thenBlock()._declareNewArray(Types.array(Types.Mixed), "pkSet"+StringUtil.ucfirst(r.getAlias()));
-				pkArrayIndex = pkSet.arrayIndex(PhpFunctions.md5.call(PhpFunctions.serialize.call(foreignPk)));
+				pkArrayIndex = pkSet.arrayIndex(vMd5);
 				
 			} else {
 				Column colPk = r.getDestTable().getPrimaryKey().getColumns().get(0);

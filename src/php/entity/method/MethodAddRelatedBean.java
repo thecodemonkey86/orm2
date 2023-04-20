@@ -6,13 +6,13 @@ import database.relation.PrimaryKey;
 import php.core.Attr;
 import php.core.Param;
 import php.core.PhpCls;
-import php.core.PhpFunctions;
 import php.core.Types;
 import php.core.expression.ArrayInitExpression;
 import php.core.expression.Expression;
 import php.core.expression.Var;
 import php.core.method.Method;
 import php.entity.Entities;
+import php.entitypk.method.MethodPkHash;
 import php.orm.OrmUtil;
 
 public class MethodAddRelatedBean extends Method {
@@ -44,7 +44,7 @@ public class MethodAddRelatedBean extends Method {
 			}
 			
 			Var relPk = _declareNew(Entities.get( rel.getDestTable() ).getPkType(), "relPk", e1PkArgs);
-			addInstr(a.arrayIndexSet(PhpFunctions.md5.call(PhpFunctions.serialize.call(relPk)),pBean));
+			addInstr(a.arrayIndexSet(relPk.callMethod(MethodPkHash.getMethodName()),pBean));
 		} else {
 			addInstr(a.arrayIndexSet(pBean.callAttrGetter(rel.getDestTable().getPrimaryKey().getFirstColumn().getCamelCaseName()),pBean));
 		}

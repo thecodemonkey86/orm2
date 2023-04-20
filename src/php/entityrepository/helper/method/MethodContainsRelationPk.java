@@ -2,9 +2,9 @@ package php.entityrepository.helper.method;
 
 import database.relation.AbstractRelation;
 import php.core.Param;
-import php.core.PhpFunctions;
 import php.core.Types;
 import php.core.method.Method;
+import php.entitypk.method.MethodPkHash;
 import php.entityrepository.helper.FetchListHelperClass;
 import php.orm.OrmUtil;
 import util.StringUtil;
@@ -22,7 +22,7 @@ public class MethodContainsRelationPk extends Method {
 	public void addImplementation() {
 		FetchListHelperClass parent = (FetchListHelperClass) this.parent;
 		Param paramPk = getParam("pk");
-		_return(parent.getAttrByName(relation.getAlias()+"Set").arrayIndexIsset(relation.getDestTable().getPrimaryKey().getColumnCount() == 1 ? paramPk : PhpFunctions.md5.call(PhpFunctions.serialize.call(paramPk))));
+		_return(parent.getAttrByName(relation.getAlias()+"Set").arrayIndexIsset(relation.getDestTable().getPrimaryKey().getColumnCount() == 1 ? paramPk : paramPk.callMethod(MethodPkHash.getMethodName() )));
 		
 	}
 

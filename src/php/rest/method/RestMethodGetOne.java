@@ -2,7 +2,6 @@ package php.rest.method;
 
 import java.util.Collection;
 
-import cpp.orm.OrmUtil;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
@@ -11,18 +10,22 @@ import php.core.PhpFunctions;
 import php.core.PhpGlobals;
 import php.core.Types;
 import php.core.expression.ArrayInitExpression;
-import php.core.expression.Expression;
+import php.core.expression.BoolExpression;
 import php.core.expression.PhpStringLiteral;
 import php.core.expression.Var;
 import php.core.instruction.CaseBlock;
 import php.core.instruction.ForeachLoop;
 import php.core.instruction.IfBlock;
+import php.core.instruction.MethodCallInstruction;
 import php.core.instruction.SwitchBlock;
+import php.core.instruction.ThrowInstruction;
 import php.core.method.Method;
 import php.entity.Entities;
 import php.entity.EntityCls;
 import php.entity.method.MethodGetFieldsAsAssocArray;
+import php.entityrepository.query.method.MethodEntityQueryFetchOne;
 import php.lib.ClsBaseEntityQuery;
+import php.orm.OrmUtil;
 
 public class RestMethodGetOne extends Method {
 
@@ -39,13 +42,45 @@ public class RestMethodGetOne extends Method {
 		SwitchBlock switchEntityType = _switch(PhpGlobals.$_GET.arrayIndex(new PhpStringLiteral("entityType")));
 		for(EntityCls bean : beans) {
 			CaseBlock caseBeanType = switchEntityType._case(new PhpStringLiteral(bean.getName()));
+			Var vEntityQuery= caseBeanType._declare(Types.beanQuery(bean), "_query", Types.EntityRepository.callStaticMethod("createQuery"+bean.getName())
+					.callMethod(ClsBaseEntityQuery.select) );
+			Var vQueryJson =  caseBeanType._declare(Types.array(Types.Mixed), "_json", PhpFunctions.json_decode.call(PhpGlobals.$_GET.arrayIndex(new PhpStringLiteral("condition")) ,BoolExpression.TRUE));
 			
-			Expression e = Types.EntityRepository.callStaticMethod("createQuery"+bean.getName())
-					.callMethod(ClsBaseEntityQuery.select)
-				 .callMethod(ClsBaseEntityQuery.where, PhpGlobals.$_GET.arrayIndex(new PhpStringLiteral("condition" )));
+			Var vJoinJson = caseBeanType._declare(Types.array(Types.Mixed), "_joinJson",vQueryJson.arrayIndex("joins") );
+			ForeachLoop forJoins= caseBeanType._foreach(new Var(Types.Mixed, "_j"), vJoinJson);
+			Var vSqlJoinTable =  forJoins._declare(Types.String, "_sqlJoinTable", forJoins.getVar().arrayIndex("table"));
+			Var vSqlJoinOn =  forJoins._declare(Types.String, "_sqlJoinOn", forJoins.getVar().arrayIndex("on"));
 			
-			e = e.callMethod("fetchOne");
-			Var vBean = caseBeanType._declare(e.getType(),"entity",e );
+			forJoins._if(PhpFunctions.str_contains.call(vSqlJoinTable,new PhpStringLiteral("\'"))
+					._or(PhpFunctions.str_contains.call(vSqlJoinTable,new PhpStringLiteral("\""))
+					._or(PhpFunctions.str_contains.call(vSqlJoinTable,new PhpStringLiteral("/*"))
+					._or(PhpFunctions.str_contains.call(vSqlJoinTable,new PhpStringLiteral("*/"))
+					._or(PhpFunctions.str_contains.call(vSqlJoinTable,new PhpStringLiteral("//"))
+					._or(PhpFunctions.str_contains.call(vSqlJoinOn,new PhpStringLiteral("\'"))
+					._or(PhpFunctions.str_contains.call(vSqlJoinOn,new PhpStringLiteral("\""))
+					._or(PhpFunctions.str_contains.call(vSqlJoinOn,new PhpStringLiteral("/*"))
+					._or(PhpFunctions.str_contains.call(vSqlJoinOn,new PhpStringLiteral("*/"))
+					._or(PhpFunctions.str_contains.call(vSqlJoinOn,new PhpStringLiteral("//"))
+					)))))))))).thenBlock().
+			addInstr(new ThrowInstruction(Types.Exception, new PhpStringLiteral("invalid SQL")));
+			
+			forJoins.addInstr(new MethodCallInstruction(vEntityQuery.callMethod(ClsBaseEntityQuery.join,vSqlJoinTable,vSqlJoinOn,  forJoins.getVar().arrayIndex(new PhpStringLiteral("params")))));
+			
+			Var vCondJson = caseBeanType._declare(Types.array(Types.Mixed), "_condJson",vQueryJson.arrayIndex("conditions") );
+			ForeachLoop forCond= caseBeanType._foreach(new Var(Types.Mixed, "_c"), vCondJson);
+			Var vSqlCond =  forCond._declare(Types.String, "_sqlCond", forCond.getVar().arrayIndex("cond"));
+			
+			forCond._if(PhpFunctions.str_contains.call(vSqlCond,new PhpStringLiteral("\'"))
+					._or(PhpFunctions.str_contains.call(vSqlCond,new PhpStringLiteral("\""))
+					._or(PhpFunctions.str_contains.call(vSqlCond,new PhpStringLiteral("/*"))
+					._or(PhpFunctions.str_contains.call(vSqlCond,new PhpStringLiteral("*/"))
+					._or(PhpFunctions.str_contains.call(vSqlCond,new PhpStringLiteral("//"))
+					))))).thenBlock().
+			addInstr(new ThrowInstruction(Types.Exception, new PhpStringLiteral("invalid SQL")));
+			
+			forCond.addInstr(new MethodCallInstruction(vEntityQuery.callMethod(ClsBaseEntityQuery.where,vSqlCond,  forCond.getVar().arrayIndex(new PhpStringLiteral("params")))));
+			
+			Var vBean = caseBeanType._declare(bean,"entity",vEntityQuery.callMethod(MethodEntityQueryFetchOne.getMethodName()) );
 			
 			Var beanData =  caseBeanType._declare(Types.array(Types.String), "entityData",vBean.callMethod(MethodGetFieldsAsAssocArray.METHOD_NAME));
 			

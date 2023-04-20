@@ -146,6 +146,13 @@ public class Table extends AbstractTable{
 		return queryTypes.contains(queryType);
 	}
 
+	public boolean hasNullableColumn() {
+		for(Column c:allColumns) {
+			if(c.isNullable()) return true;
+		}
+		return false;
+	}
+
 
 
 	

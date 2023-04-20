@@ -11,11 +11,13 @@ import cpp.core.expression.Expressions;
 import cpp.core.method.MethodStaticAttributeGetter;
 import cpp.core.method.MethodStaticAttributeSetter;
 import cpp.jsonentity.JsonEntity;
+import cpp.jsonentityquery.ClsJsonEntityQuerySelect;
 import cpp.jsonentityrepository.method.MethodLoadById;
 import cpp.jsonentityrepository.method.MethodCreateNew;
 import cpp.jsonentityrepository.method.MethodCreateNewNonNullableOnly;
 import cpp.jsonentityrepository.method.MethodGetOneFromJson;
 import cpp.jsonentityrepository.method.MethodGetVectorFromJson;
+import cpp.jsonentityrepository.method.MethodJsonSelect;
 import cpp.jsonentityrepository.method.MethodLoadFromUrl;
 import cpp.jsonentityrepository.method.MethodLoadOneFromUrl;
 import cpp.jsonentityrepository.method.MethodSave;
@@ -65,6 +67,7 @@ public class ClsJsonEntityRepository extends Cls {
 		addIncludeLib("memory");
 		
 		for(JsonEntity e : entityClasses) {
+			addInclude(new ClsJsonEntityQuerySelect(e).getHeaderInclude());
 			addForwardDeclaredClass(e);
 			addIncludeHeader(e.getHeaderInclude());
 			addMethod(new MethodCreateNew(e));
@@ -103,6 +106,7 @@ public class ClsJsonEntityRepository extends Cls {
 			addMethod(new MethodLoadFromUrl(e));
 			addMethod(new MethodLoadOneFromUrl(e));
 			addMethod(new MethodSave(e));
+			addMethod(new MethodJsonSelect(e));
 //			addMethod(new MethodLoadByIdFromUrlAsynchronous(e));
 //			addMethod(new MethodEntityLoad(e));
 		}

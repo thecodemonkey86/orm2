@@ -25,7 +25,6 @@ public class CoreTypes {
 			return false;
 		}
 	};
-	public static final PrimitiveType Uint = new PrimitiveType("uint");
 	public static final PhpStringType String = new PhpStringType();
 	public static final Type Mixed = new Type("mixed") {
 

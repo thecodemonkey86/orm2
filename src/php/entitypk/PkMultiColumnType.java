@@ -10,6 +10,7 @@ import php.core.method.MethodAttributeGetter;
 import php.core.method.MethodAttributeSetter;
 import php.entity.EntityCls;
 import php.entitypk.method.MethodPkEquals;
+import php.entitypk.method.MethodPkHash;
 
 public class PkMultiColumnType extends PhpCls{
 
@@ -37,6 +38,7 @@ public class PkMultiColumnType extends PhpCls{
 		}
 		
 		addMethod(new MethodPkEquals(tbl,this));
+		addMethod(new MethodPkHash(tbl.getPrimaryKey()));
 	}
 
 }

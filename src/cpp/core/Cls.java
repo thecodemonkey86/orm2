@@ -367,8 +367,17 @@ public class Cls extends Type implements IAttributeContainer{
 		}
 		
 		for(Attr a:attrs) {
-			if (a.isStatic())
+			if (a.isStatic()) {
+				if(a.hasIfDef()) {
+					CodeUtil.writeLine(sb,"#ifdef "+a.getIfDef());
+				} else if(a.hasIfNDef()) {
+					CodeUtil.writeLine(sb,"#ifndef "+a.getIfNDef());
+				}
 				CodeUtil.writeLine(sb, CodeUtil.sp(a.getType().toDeclarationString(),getName()+"::"+a.getName(),a.getInitValue()!=null?"="+a.getInitValue():null,";"));
+				if(a.hasIfDef() || a.hasIfNDef()) {
+					CodeUtil.writeLine(sb,"#endif");
+				}
+			}
 		}
 		if (nonMemberMethods!=null) {
 			for(Method m:nonMemberMethods) {

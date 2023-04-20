@@ -11,23 +11,6 @@ import database.Database;
 
 
 public class CppConfigReader extends ConfigReader{
-//	@Override
-//	public void characters(char[] ch, int start, int length)
-//			throws SAXException {
-//		super.characters(ch, start, length);
-//		PhpOrmOutputConfig cfg = (PhpOrmOutputConfig) this.cfg;
-//		if (this.tag!=null) {
-//			String v=new String(ch, start, length);
-//			switch(this.tag) {
-//			case "entityPhpPackage":
-//				cfg.setBeanPackageName(v);
-//				return;
-//			case "repositoryPhpPackage":
-//				cfg.setRepositoryPackageName(v);
-//				return;
-//			}
-//		}
-//	}
 
 	public CppConfigReader(Path xmlDirectory,Connection conn,Database database) {
 		super(xmlDirectory,conn,database);

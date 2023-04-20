@@ -31,6 +31,7 @@ import cpp.entityquery.ClsEntityQueryUpdate;
 import cpp.entityrepository.ClsEntityRepository;
 import cpp.jsonentity.JsonEntities;
 import cpp.jsonentity.JsonEntity;
+import cpp.jsonentityquery.ClsJsonEntityQuerySelect;
 import cpp.jsonentityrepository.ClsJsonEntityRepository;
 import cpp.orm.DatabaseTypeMapper;
 import cpp.orm.FirebirdDatabaseTypeMapper;
@@ -472,6 +473,15 @@ public class CppOrm extends OrmGenerator {
 						//c.addMethod(new CustomClassMemberCode(customClassMember, implCode) );
 						c.addCustomSourceCode(implCode);
 					}
+					startSrc = -1;
+					while((startSrc = existingSourceFile.indexOf(EntityCls.BEGIN_CUSTOM_PREPROCESSOR,startSrc+1))>-1) {
+						int endSrc = existingSourceFile.indexOf(EntityCls.END_CUSTOM_PREPROCESSOR,startSrc);
+						if(endSrc == -1) {
+							throw new RuntimeException("Missing custom preprocessor instructions end marker: " + pathHeader);
+						}
+						String customPp = existingSourceFile.substring(startSrc+EntityCls.BEGIN_CUSTOM_PREPROCESSOR.length(), endSrc);
+						c.addCustomPreprocessorCodeInSource(customPp );
+					}
 					startHdr = -1;
 					while((startHdr = existingHeaderFile.indexOf(EntityCls.BEGIN_CUSTOM_PREPROCESSOR,startHdr+1))>-1) {
 						int endHdr = existingHeaderFile.indexOf(EntityCls.END_CUSTOM_PREPROCESSOR,startHdr);
@@ -512,8 +522,12 @@ public class CppOrm extends OrmGenerator {
 			}*/
 			
 			for (JsonEntity c : JsonEntities.getAllEntities()) {
+				ClsJsonEntityQuerySelect clsQuery = new ClsJsonEntityQuerySelect(c);
+				clsQuery.addMethodImplementations();
 				FileUtil2.writeFileIfContentChanged(pathEntities.resolve(c.getName().toLowerCase()+".h"), c.toHeaderString().getBytes(utf8), writeOptions);
 				FileUtil2.writeFileIfContentChanged(pathEntities.resolve(c.getName().toLowerCase()+".cpp"), c.toSourceString().getBytes(utf8), writeOptions);
+				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+".h"), clsQuery.toHeaderString().getBytes(utf8), writeOptions);
+				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+".cpp"), clsQuery.toSourceString().getBytes(utf8), writeOptions);
 			}
 			FileUtil2.writeFileIfContentChanged(pathRepository.resolve(repo.getName().toLowerCase()+".h"), repo.toHeaderString().getBytes(utf8), writeOptions);
 			FileUtil2.writeFileIfContentChanged(pathRepository.resolve(repo.getName().toLowerCase()+".cpp"), repo.toSourceString().getBytes(utf8), writeOptions);

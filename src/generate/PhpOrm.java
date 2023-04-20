@@ -38,7 +38,7 @@ import io.PasswordManager;
 import php.Php;
 import php.core.PhpCls;
 import php.core.Types;
-import php.core.instruction.InstructionBlock;
+import php.core.instruction.Instruction;
 import php.entity.CustomClassMemberCode;
 import php.entity.Entities;
 import php.entity.EntityCls;
@@ -226,7 +226,7 @@ public class PhpOrm extends OrmGenerator {
 		EntityCls.setSqlQueryCls(getSqlQueryCls(cfg));
 		EntityCls.setDatabase(cfg.getDatabase());
 	
-		InstructionBlock.setEnableStacktrace(cfg.isEnableStacktrace());
+		Instruction.setStackTraceEnabled(cfg.isEnableStacktrace());
 		
 		Path pathModel = cfg.getModelPath();
 

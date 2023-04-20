@@ -30,7 +30,7 @@ public class MethodReplaceAllManyRelatedEntities extends Method {
 		if(rel instanceof OneToManyRelation)
 			foreach._callMethodInstr(_this(), MethodAddRelatedBean.getMethodName((OneToManyRelation) rel), foreach.getVar());
 		else if(rel instanceof ManyRelation)
-			foreach._callMethodInstr(_this(), MethodAddManyToManyRelatedBean.getMethodName((ManyRelation) rel), foreach.getVar());
+			foreach._callMethodInstr(_this(), MethodAddManyToManyRelatedEntity.getMethodName((ManyRelation) rel), foreach.getVar());
 	}
 
 }

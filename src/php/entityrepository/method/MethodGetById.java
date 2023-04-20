@@ -27,6 +27,7 @@ import php.entity.Entities;
 import php.entity.EntityCls;
 import php.entity.method.MethodOneRelationAttrSetter;
 import php.entity.method.MethodOneRelationBeanIsNull;
+import php.entitypk.method.MethodPkHash;
 import php.entityrepository.ClsEntityRepository;
 import php.lib.ClsFirebirdSqlQuery;
 import php.lib.ClsSqlQuery;
@@ -188,7 +189,7 @@ public class MethodGetById extends Method {
 				Var foreignPk = ifIsRowIndexNotNull.thenBlock()._declareNew(beanPk, "foreignPk"+StringUtil.ucfirst(r.getAlias()),foreignPkArgs);
 							
 				Var pkSet = ifIsRowIndexNotNull.thenBlock()._declareNewArray(Types.array(Types.Mixed), "pkSet"+StringUtil.ucfirst(r.getAlias()));
-				pkArrayIndex = pkSet.arrayIndex(PhpFunctions.md5.call(PhpFunctions.serialize.call(foreignPk)));
+				pkArrayIndex = pkSet.arrayIndex(foreignPk.callMethod(MethodPkHash.getMethodName()));
 				
 			} else {
 				Column colPk = r.getDestTable().getPrimaryKey().getFirstColumn();

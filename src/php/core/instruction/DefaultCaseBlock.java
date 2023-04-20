@@ -11,7 +11,7 @@ public class DefaultCaseBlock extends InstructionBlock {
 		StringBuilder sb = new StringBuilder();
 		CodeUtil.writeLine(sb, CodeUtil.sp("default:"));
 		for(Instruction i:instructions) {
-			if(InstructionBlock.enableStacktrace)
+			if(Instruction.isStackTraceEnabled)
 				CodeUtil.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
 			sb.append(i);
 			sb.append('\n');

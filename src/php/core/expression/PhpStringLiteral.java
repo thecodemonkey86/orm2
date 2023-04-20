@@ -30,7 +30,7 @@ public class PhpStringLiteral extends Expression {
 
 	@Override
 	public String toString() {
-		String s = StringUtil.replaceAll(literal,"\"", "\\\"");
+		String s =  StringUtil.replaceAll(StringUtil.replaceAll(literal,"\"", "\\\""),"\'", "\\\'");
 		return doubleQuote ? CodeUtil.quote(s) : CodeUtil2.singleQuote(s);
 	}
 

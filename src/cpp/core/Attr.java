@@ -43,7 +43,11 @@ public class Attr extends Var {
 	
 	@Override
 	public String toDeclarationString() {
-		//return CodeUtil.sp(visibility+ ":",isStatic?"static":(mutableModifier?"mutable": ""),type.toDeclarationString(),getName())+";";
+		if(ifDef!=null) {
+			return "#ifdef "+ifDef+"\r\n"+CodeUtil.sp(visibility+ ":",isStatic?"static":null,type.toDeclarationString(),getName())+";\r\n#endif";
+		} else if(ifNDef!=null) {
+			return "#ifndef "+ifNDef+"\r\n"+CodeUtil.sp(visibility+ ":",isStatic?"static":null,type.toDeclarationString(),getName())+";\r\n#endif";
+		}
 		return CodeUtil.sp(visibility+ ":",isStatic?"static":null,type.toDeclarationString(),getName())+";";
 	}
 	
@@ -71,5 +75,12 @@ public class Attr extends Var {
 		return visibility.equals(Public);
 	}
 
+	public Attr setIfDef(String ifDef) {
+		return (Attr)super.setIfDef(ifDef);
+	}
+	
+	public Attr setIfNDef(String ifNDef) {
+		return (Attr)super.setIfNDef(ifNDef);
+	}
 	
 }
