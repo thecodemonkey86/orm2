@@ -6,6 +6,7 @@ import php.core.Constructor;
 import php.core.PhpCls;
 import php.entity.EntityCls;
 import php.rest.method.RestMethodGetList;
+import php.rest.method.RestMethodDelete;
 import php.rest.method.RestMethodGetById;
 import php.rest.method.RestMethodGetOne;
 import php.rest.method.RestMethodSave;
@@ -18,6 +19,7 @@ public class PhpJsonRestServer extends PhpCls {
 		addMethod(new RestMethodGetOne(beans));
 		addMethod(new RestMethodGetById(beans));
 		addMethod(new RestMethodSave(beans));
+		addMethod(new RestMethodDelete(beans));
 		setConstructor(new Constructor() {
 			
 			@Override

@@ -19,13 +19,15 @@ public class MethodJsonQueryWhereEquals extends Method {
 	Column col;
 	Param pValue;
 	boolean nullableParam;
+	boolean hasTableAlias;
 	
-	public MethodJsonQueryWhereEquals(Cls query,Column col, boolean nullableParam ) {
+	public MethodJsonQueryWhereEquals(Cls query,Column col, boolean nullableParam,boolean hasTableAlias ) {
 		super(Public, query.toRef(), getMethodName(col));
 		this.col = col;
 		this.nullableParam = nullableParam;
 		Type t=JsonEntity.getDatabaseMapper().columnToType(col,nullableParam);
-		this.pValue = addParam(t.isPrimitiveType() ? t : t.toConstRef(), col.getCamelCaseName()); 
+		this.pValue = addParam(t.isPrimitiveType() ? t : t.toConstRef(), col.getCamelCaseName());
+		this.hasTableAlias = hasTableAlias;
 	}
 
 	public static String getMethodName(Column col) {
@@ -34,12 +36,13 @@ public class MethodJsonQueryWhereEquals extends Method {
 
 	@Override
 	public void addImplementation() {
+		String alias=hasTableAlias ? "e1."  : "";
 		if(nullableParam) {
 			IfBlock ifNotIsNull= _if(Expressions.not(pValue.callMethod(Nullable.isNull)));
-			ifNotIsNull.thenBlock()._callMethodInstr(_this(), ClsBaseJsonEntitySelectQuery.where,QString.fromStringConstant("e1."+col.getEscapedName()+"=?") ,new CreateObjectExpression(Types.QVariantList).binOp("<<", new CreateObjectExpression(Types.QVariant,this.pValue.callMethod(Nullable.val))));
-			ifNotIsNull.elseBlock()._callMethodInstr(_this(), ClsBaseJsonEntitySelectQuery.where,QString.fromStringConstant("e1."+col.getEscapedName()+" is null")  );
+			ifNotIsNull.thenBlock()._callMethodInstr(_this(), ClsBaseJsonEntitySelectQuery.where,QString.fromStringConstant(alias+col.getEscapedName()+"=?") ,new CreateObjectExpression(Types.QVariantList).binOp("<<", new CreateObjectExpression(Types.QVariant,this.pValue.callMethod(Nullable.val))));
+			ifNotIsNull.elseBlock()._callMethodInstr(_this(), ClsBaseJsonEntitySelectQuery.where,QString.fromStringConstant(alias+col.getEscapedName()+" is null")  );
 		} else {
-			_callMethodInstr(_this(), ClsBaseJsonEntitySelectQuery.where,QString.fromStringConstant("e1."+col.getEscapedName()+"=?") ,new CreateObjectExpression(Types.QVariantList).binOp("<<", new CreateObjectExpression(Types.QVariant,this.pValue)));
+			_callMethodInstr(_this(), ClsBaseJsonEntitySelectQuery.where,QString.fromStringConstant(alias+col.getEscapedName()+"=?") ,new CreateObjectExpression(Types.QVariantList).binOp("<<", new CreateObjectExpression(Types.QVariant,this.pValue)));
 		}
 		_return(_this().dereference());
 	}

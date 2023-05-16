@@ -12,6 +12,7 @@ import php.core.Types;
 import php.core.expression.ArrayInitExpression;
 import php.core.expression.BoolExpression;
 import php.core.expression.Expression;
+import php.core.expression.InlineIfExpression;
 import php.core.expression.PhpStringLiteral;
 import php.core.expression.Var;
 import php.core.instruction.CaseBlock;
@@ -49,6 +50,7 @@ public class RestMethodGetList extends Method {
 					._if(PhpFunctions.isset.call(PhpGlobals.$_GET.arrayIndex(new PhpStringLiteral("condition")))) ;
 			Var vQueryJson = ifIssetCondition.thenBlock()._declare(Types.array(Types.Mixed), "_json", PhpFunctions.json_decode.call(PhpGlobals.$_GET.arrayIndex(new PhpStringLiteral("condition")) ,BoolExpression.TRUE));
 			Var vJoinJson = ifIssetCondition.thenBlock()._declare(Types.array(Types.Mixed), "_joinJson",vQueryJson.arrayIndex("joins") );
+			Var vOrderByJson = ifIssetCondition.thenBlock()._declare(Types.array(Types.Mixed), "_jOrderBy",vQueryJson.arrayIndex("orderby") );
 			ForeachLoop forJoins= ifIssetCondition.thenBlock()._foreach(new Var(Types.Mixed, "_j"), vJoinJson);
 			Var vSqlJoinTable =  forJoins._declare(Types.String, "_sqlJoinTable", forJoins.getVar().arrayIndex("table"));
 			Var vSqlJoinOn =  forJoins._declare(Types.String, "_sqlJoinOn", forJoins.getVar().arrayIndex("on"));
@@ -82,6 +84,17 @@ public class RestMethodGetList extends Method {
 			
 			forCond.addInstr(new MethodCallInstruction(vEntityQuery.callMethod(ClsBaseEntityQuery.where,vSqlCond,  forCond.getVar().arrayIndex(new PhpStringLiteral("params")))));
 			
+			ForeachLoop forOrder= caseBeanType._foreach(new Var(Types.Mixed, "_o"), vOrderByJson);
+Var vOrderByExpr =  forOrder._declare(Types.String, "_orderByExpr", forOrder.getVar().arrayIndex("expr"));
+Var vAsc = forOrder._declare(Types.String, "_orderByAsc", forOrder.getVar().arrayIndex(new PhpStringLiteral("asc")).cast(Types.Bool));			
+forOrder._if(PhpFunctions.str_contains.call(vOrderByExpr,new PhpStringLiteral("\'"))
+					._or(PhpFunctions.str_contains.call(vOrderByExpr,new PhpStringLiteral("\""))
+					._or(PhpFunctions.str_contains.call(vOrderByExpr,new PhpStringLiteral("/*"))
+					._or(PhpFunctions.str_contains.call(vOrderByExpr,new PhpStringLiteral("*/"))
+					._or(PhpFunctions.str_contains.call(vOrderByExpr,new PhpStringLiteral("//"))
+					))))).thenBlock().addInstr(new ThrowInstruction(Types.Exception, new PhpStringLiteral("invalid SQL")));
+
+forOrder.addInstr(new MethodCallInstruction(vEntityQuery.callMethod(ClsBaseEntityQuery.orderBy,vOrderByExpr, new InlineIfExpression(vAsc,new PhpStringLiteral("asc"),new PhpStringLiteral("desc")))));
 		/*	IfBlock ifIssetOrderBy= caseBeanType
 					._if(PhpFunctions.isset.call(PhpGlobals.$_GET.arrayIndex(new PhpStringLiteral("orderBy")))) ;
 			ifIssetOrderBy.thenBlock().addInstr(vEntityQuery.callMethodInstruction(ClsBaseEntityQuery.orderBy,PhpGlobals.$_GET.arrayIndex(new PhpStringLiteral("orderBy"))));*/

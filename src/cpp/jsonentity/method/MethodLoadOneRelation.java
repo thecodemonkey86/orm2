@@ -2,25 +2,27 @@ package cpp.jsonentity.method;
 
 import util.StringUtil;
 import util.pg.PgCppUtil;
+
+import java.util.ArrayList;
+
 import cpp.CoreTypes;
 import cpp.JsonTypes;
 import cpp.Types;
 import cpp.core.LambdaExpression;
 import cpp.core.Method;
 import cpp.core.Param;
-import cpp.core.expression.AccessExpression;
 import cpp.core.expression.BoolExpression;
 import cpp.core.expression.Expression;
 import cpp.core.expression.Expressions;
 import cpp.core.expression.StdFunctionInvocation;
 import cpp.core.instruction.IfBlock;
+import cpp.entity.Nullable;
 import cpp.jsonentity.OneAttr;
 import cpp.jsonentity.JsonEntities;
 import cpp.jsonentity.JsonEntity;
 import cpp.jsonentityrepository.method.MethodLoadById;
 import cpp.lib.ClsStdFunction;
 import database.relation.OneRelation;
-import database.relation.PrimaryKey;
 
 public class MethodLoadOneRelation extends Method{
 
@@ -45,12 +47,27 @@ public class MethodLoadOneRelation extends Method{
 					
 					
 			);
-			PrimaryKey pk=e.getTbl().getPrimaryKey();
-			Expression[] pkArgs = new Expression[pk.getColumnCount()+1];
-			AccessExpression a=_this().accessAttr(new OneAttr(r));
-			for(int i=0;i<pk.getColumnCount();++i) {
-				pkArgs[i] = a.callMethod("get"+pk.getColumn(i).getUc1stCamelCaseName());
+			Expression[] pkArgs = new Expression[r.getColumnCount()+1];
+			ArrayList<Expression> nullCheckArgs = new ArrayList<>();
+			
+			for(int i=0;i<r.getColumnCount();++i) {
+				if(r.getColumns(i).getValue1().isNullable()) {
+					nullCheckArgs.add(_this().accessAttr(r.getColumns(i).getValue1().getCamelCaseName()).callMethod(Nullable.isNull));
+					pkArgs[i] = _this().accessAttr(r.getColumns(i).getValue1().getCamelCaseName()).callMethod(Nullable.val);
+				} else {
+					pkArgs[i] = _this().accessAttr(r.getColumns(i).getValue1().getCamelCaseName());
+				}
+				
+				
 			}
+			
+			if(!nullCheckArgs.isEmpty()) {
+				IfBlock ifAnyAttrNull = ifNotLoaded.thenBlock()._if(Expressions.or(nullCheckArgs));
+				
+				ifAnyAttrNull.thenBlock().addInstr(new StdFunctionInvocation(pCallback, Expressions.Nullptr));
+				ifAnyAttrNull.thenBlock()._return(null);
+			}
+			
 			pkArgs[pkArgs.length-1]=pCallback;
 			
 			ifNotLoaded.thenBlock().addInstr(JsonTypes.JsonEntityRepository.callStaticMethod(MethodLoadById.getMethodName(e), pkArgs).asInstruction());

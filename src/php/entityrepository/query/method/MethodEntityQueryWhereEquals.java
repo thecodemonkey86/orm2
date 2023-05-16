@@ -19,7 +19,7 @@ public class MethodEntityQueryWhereEquals extends Method {
 	Param pValue ;
 	Column c;
 	public MethodEntityQueryWhereEquals(ClsEntityQuery query, EntityCls bean,Column c) {
-		super(Public, query, "where"+c.getUc1stCamelCaseName()+"Equals");
+		super(Public, query, getMethodName(c));
 		this.bean=bean;
 		Type t = EntityCls.getTypeMapper().columnToType(c);
 		
@@ -29,6 +29,10 @@ public class MethodEntityQueryWhereEquals extends Method {
 		
 		pValue = addParam(new Param(t, "value"));
 		this.c = c;
+	}
+
+	public static String getMethodName(Column c) {
+		return "where"+c.getUc1stCamelCaseName()+"Equals";
 	}
 
 	@Override

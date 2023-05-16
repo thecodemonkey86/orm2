@@ -314,22 +314,51 @@ public class JsonEntity extends Cls {
 			
 			@Override
 			public void addImplementation() {
-				for(Column col:getTbl().getColumnsWithoutPrimaryKey()) {
-					 
-					if (!col.hasOneRelation() && !col.isFileImportEnabled()) {
-						_assign(parent.getAttrByName(col.getCamelCaseName()+ "Modified"), BoolExpression.FALSE);
+				JsonEntity entity = (JsonEntity) parent;
+				for(OneRelation r:entity.getOneRelations()) {
+					if (!r.isPartOfPk()) {
+						_assign(parent.getAttrByName(entity.getOneRelationAttr(r).getName()+ "Modified"), BoolExpression.FALSE);
 					}
 				}
+				for(Column col:tbl.getAllColumns()) {
+					 
+					if (!col.hasOneRelation() && !col.isFileImportEnabled()) {
+						
+						Expression defValExpr =  JsonEntity.getDatabaseMapper().getColumnDefaultValueExpression(col);
+						if (defValExpr != null) {
+							_assign(parent.getAttrByName(col.getCamelCaseName()),  defValExpr);
+						} else {
+							_assign(parent.getAttrByName(col.getCamelCaseName()), JsonEntity.getDatabaseMapper().getGenericDefaultValueExpression(col)); 
+						}
+						if(!col.isPartOfPk() ) {
+							_assign(parent.getAttrByName(col.getCamelCaseName()+ "Modified"), BoolExpression.FALSE);
+						}
+					}
+					if(col.isRawValueEnabled()) {
+						Attr a = parent.getAttrByName("insertExpression"+col.getUc1stCamelCaseName());
+						if(a.getInitValue() != null)
+							_assign(a, a.getInitValue());
+					}
+				    
+				}
+				
 			}
 		});
 	//	addPreprocessorInstruction("#define " + getName()+ " "+CodeUtil2.uc1stCamelCase(tbl.getName()));
 		addIncludeLib(Types.QString);
 		addIncludeLib(CoreTypes.QVariant);
 		addIncludeLib(Types.QDate);
-		addIncludeLib("memory");
-		addIncludeDefaultHeaderFileName(Types.nullable(Types.Void));
+		if(!oneRelations.isEmpty() || !oneToManyRelations.isEmpty() || !manyRelations.isEmpty()) {
+			addIncludeLib("memory");
+			addIncludeHeaderInSource(JsonTypes.JsonEntityRepository.getHeaderInclude());
+		}
+		addIncludeLibInSource(JsonTypes.QJsonDocument);
+		addIncludeLibInSource(JsonTypes.QJsonObject);
+		if(tbl.hasNullableColumn()) {
+			addIncludeDefaultHeaderFileName(Types.nullable(Types.Void));
+		}
 		addIncludeDefaultHeaderFileName(JsonTypes.BaseJsonEntity);
-addIncludeHeaderInSource(JsonTypes.JsonEntityRepository.getHeaderInclude());
+
 		addAttributes(tbl.getAllColumns());
 		
 		if (tbl.getPrimaryKey().isMultiColumn()) {

@@ -11,10 +11,14 @@ public class MethodCreateQuery extends Method {
 	
 	public MethodCreateQuery(EntityCls cls) {
 		//super(Public, new ClsBeanQuery(cls), "createQuery"+cls.getName());
-		super(Public, new ClsEntityQuery(cls), "createQuery"+cls.getName());
+		super(Public, new ClsEntityQuery(cls), getMethodName(cls));
 //		setStatic(true);
 		this.bean=cls;
 		setStatic(true);
+	}
+
+	public static String getMethodName(EntityCls cls) {
+		return "createQuery"+cls.getName();
 	}
 
 	@Override

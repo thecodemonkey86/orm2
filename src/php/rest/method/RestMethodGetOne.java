@@ -39,15 +39,17 @@ public class RestMethodGetOne extends Method {
 
 	@Override
 	public void addImplementation() {
+		Var vQueryJson =   _declare(Types.array(Types.Mixed), "_json", PhpFunctions.json_decode.call(PhpGlobals.$_GET.arrayIndex(new PhpStringLiteral("condition")) ,BoolExpression.TRUE));
 		SwitchBlock switchEntityType = _switch(PhpGlobals.$_GET.arrayIndex(new PhpStringLiteral("entityType")));
+		
 		for(EntityCls bean : beans) {
 			CaseBlock caseBeanType = switchEntityType._case(new PhpStringLiteral(bean.getName()));
 			Var vEntityQuery= caseBeanType._declare(Types.beanQuery(bean), "_query", Types.EntityRepository.callStaticMethod("createQuery"+bean.getName())
 					.callMethod(ClsBaseEntityQuery.select) );
-			Var vQueryJson =  caseBeanType._declare(Types.array(Types.Mixed), "_json", PhpFunctions.json_decode.call(PhpGlobals.$_GET.arrayIndex(new PhpStringLiteral("condition")) ,BoolExpression.TRUE));
 			
-			Var vJoinJson = caseBeanType._declare(Types.array(Types.Mixed), "_joinJson",vQueryJson.arrayIndex("joins") );
-			ForeachLoop forJoins= caseBeanType._foreach(new Var(Types.Mixed, "_j"), vJoinJson);
+			IfBlock ifJoinsSet = caseBeanType._if(PhpFunctions.isset.call(vQueryJson.arrayIndex("joins") ));
+			Var vJoinJson = ifJoinsSet.thenBlock()._declare(Types.array(Types.Mixed), "_joinJson",vQueryJson.arrayIndex("joins") );
+			ForeachLoop forJoins= ifJoinsSet.thenBlock()._foreach(new Var(Types.Mixed, "_j"), vJoinJson);
 			Var vSqlJoinTable =  forJoins._declare(Types.String, "_sqlJoinTable", forJoins.getVar().arrayIndex("table"));
 			Var vSqlJoinOn =  forJoins._declare(Types.String, "_sqlJoinOn", forJoins.getVar().arrayIndex("on"));
 			
@@ -65,9 +67,9 @@ public class RestMethodGetOne extends Method {
 			addInstr(new ThrowInstruction(Types.Exception, new PhpStringLiteral("invalid SQL")));
 			
 			forJoins.addInstr(new MethodCallInstruction(vEntityQuery.callMethod(ClsBaseEntityQuery.join,vSqlJoinTable,vSqlJoinOn,  forJoins.getVar().arrayIndex(new PhpStringLiteral("params")))));
-			
-			Var vCondJson = caseBeanType._declare(Types.array(Types.Mixed), "_condJson",vQueryJson.arrayIndex("conditions") );
-			ForeachLoop forCond= caseBeanType._foreach(new Var(Types.Mixed, "_c"), vCondJson);
+			IfBlock ifConditionsSet = caseBeanType._if(PhpFunctions.isset.call(vQueryJson.arrayIndex("conditions") ));
+			Var vCondJson = ifConditionsSet.thenBlock()._declare(Types.array(Types.Mixed), "_condJson",vQueryJson.arrayIndex("conditions") );
+			ForeachLoop forCond=  ifConditionsSet.thenBlock()._foreach(new Var(Types.Mixed, "_c"), vCondJson);
 			Var vSqlCond =  forCond._declare(Types.String, "_sqlCond", forCond.getVar().arrayIndex("cond"));
 			
 			forCond._if(PhpFunctions.str_contains.call(vSqlCond,new PhpStringLiteral("\'"))

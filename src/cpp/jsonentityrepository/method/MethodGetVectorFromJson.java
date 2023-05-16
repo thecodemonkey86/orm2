@@ -10,6 +10,7 @@ import cpp.core.expression.Var;
 import cpp.core.instruction.ForeachLoop;
 import cpp.core.instruction.IfBlock;
 import cpp.entity.Nullable;
+import cpp.entity.method.MethodAttrSetterInternal;
 import cpp.jsonentity.JsonEntities;
 import cpp.jsonentity.JsonEntity;
 import cpp.jsonentity.method.MethodColumnAttrSetterInternal;
@@ -65,7 +66,7 @@ public class MethodGetVectorFromJson extends Method{
 			IfBlock ifValueIsNull = foreachJsonValue._ifNot(jsonobject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(r.getColumns(0).getValue1().getName())).callMethod(ClsQJsonValue.isNull));
 			JsonEntity e = JsonEntities.get(r.getDestTable());
 			Var relationBeanData =ifValueIsNull.thenBlock()._declare(e.toSharedPtr(),r.getAlias(),parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e), jsonobject.callMethod(ClsQJsonObject.value,QString.fromStringConstant(OrmUtil.getOneRelationDestAttrName(r))).callMethod(ClsQJsonValue.toObject)));
-			ifValueIsNull.thenBlock().addInstr(e1.callSetterMethodInstruction(OrmUtil.getOneRelationDestAttrName(r), relationBeanData));
+			ifValueIsNull.thenBlock().addInstr(e1.callMethodInstruction(MethodAttrSetterInternal.getMethodName(r), relationBeanData));
 		}
 		for(OneToManyRelation r : entity.getOneToManyRelations() ) {
 			IfBlock ifValueIsNull = foreachJsonValue._ifNot(jsonobject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(OrmUtil.getOneToManyRelationDestAttrNameSingular(r))).callMethod(ClsQJsonValue.isNull));

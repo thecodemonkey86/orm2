@@ -38,6 +38,7 @@ public class ClsEntityQuery extends PhpCls {
 		addMethod(new MethodLimitAndOffset(cls,this));
 		getMethod(ClsBaseEntityQuery.select).setReturnType(this);
 		getMethod(ClsBaseEntityQuery.where).setReturnType(this);
+		getMethod(ClsBaseEntityQuery.delete).setReturnType(this);
 		for(Column c : cls.getTbl().getAllColumns()) {
 			addMethod(new MethodEntityQueryWhereEquals(this, cls, c));
 			addMethod(new MethodEntityQueryWhereIn(this, cls, c));

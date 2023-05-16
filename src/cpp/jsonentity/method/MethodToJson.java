@@ -48,7 +48,6 @@ public class MethodToJson extends Method {
 		
 		
 		for (Column col : entity.getTbl().getColumnsWithoutPrimaryKey()) {
-			if (!col.isRelationSourceColumn()) {
 				IfBlock ifFieldModfied= _if(_this.accessAttr(ClsBaseJsonEntity.insert).binOp(Operators.OR, parent.getAttrByName(col.getCamelCaseName()+"Modified")));
 					
 				if (col.isNullable()) {
@@ -65,8 +64,8 @@ public class MethodToJson extends Method {
 					 ifFieldModfied.thenBlock().addInstr(o.callMethodInstruction(ClsQJsonObject.insert,QString.fromStringConstant(col.getName()), JsonOrmUtil.convertToQJsonValue(
 							_this.callAttrGetter(col.getCamelCaseName()))));
 				}
-			}
 		}
+		 
 		addInstr(d.callMethodInstruction(ClsQJsonDocument.setObject, o));
 		_return(d);
 		

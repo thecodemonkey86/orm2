@@ -167,13 +167,14 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 			case "boolean":
 				return BoolExpression.FALSE;
 			case "datetime":
+			case "timestamp":
 				return new CreateObjectExpression(Types.QDateTime);
 			default:
 				return new CreateObjectExpression(CoreTypes.QVariant);
 			}
 		} else {
 			Expression e = getGenericDefaultValueExpression(false, dbType);
-			return new CreateObjectExpression(Types.nullable(e.getType()), e);
+			return new CreateObjectExpression(Types.nullable(e.getType()));
 		}
 	}
 	@Override

@@ -31,6 +31,7 @@ import cpp.entityquery.ClsEntityQueryUpdate;
 import cpp.entityrepository.ClsEntityRepository;
 import cpp.jsonentity.JsonEntities;
 import cpp.jsonentity.JsonEntity;
+import cpp.jsonentityquery.ClsJsonEntityQueryDelete;
 import cpp.jsonentityquery.ClsJsonEntityQuerySelect;
 import cpp.jsonentityrepository.ClsJsonEntityRepository;
 import cpp.orm.DatabaseTypeMapper;
@@ -258,19 +259,19 @@ public class CppOrm extends OrmGenerator {
 			if(cfg.hasOverrideRepositoryClassName()) {
 				repo.setName(cfg.getOverrideRepositoryClassName());
 			}
-			repo.addDeclarations(Entities.getAllBeans());
-			for (EntityCls c : Entities.getAllBeans()) {
+			repo.addDeclarations(Entities.getAllEntities());
+			for (EntityCls c : Entities.getAllEntities()) {
 				c.setPrimaryKeyType();
 			}
 			
-			for (EntityCls c : Entities.getAllBeans()) {
+			for (EntityCls c : Entities.getAllEntities()) {
 				c.addDeclarations();
 			}
 	//		for (BeanCls c : Beans.getAllBeans()) {
 	//			c.breakPointerCircles();
 	//		}
 			Path pathBeans = pathModel.resolve("entities");
-			for (EntityCls c : Entities.getAllBeans()) {
+			for (EntityCls c : Entities.getAllEntities()) {
 				Path pathHeader = pathBeans.resolve(c.getName().toLowerCase()+".h");
 				Path pathSrc = pathBeans.resolve(c.getName().toLowerCase()+".cpp");
 				
@@ -354,7 +355,7 @@ public class CppOrm extends OrmGenerator {
 			Files.createDirectories(pathRepositoryQuery);
 	
 			
-			for (EntityCls c : Entities.getAllBeans()) {
+			for (EntityCls c : Entities.getAllEntities()) {
 				
 				FileUtil2.writeFileIfContentChanged(pathBeans.resolve(c.getName().toLowerCase()+".h"), c.toHeaderString().getBytes(utf8), writeOptions);
 				FileUtil2.writeFileIfContentChanged(pathBeans.resolve(c.getName().toLowerCase()+".cpp"), c.toSourceString().getBytes(utf8), writeOptions);
@@ -523,11 +524,15 @@ public class CppOrm extends OrmGenerator {
 			
 			for (JsonEntity c : JsonEntities.getAllEntities()) {
 				ClsJsonEntityQuerySelect clsQuery = new ClsJsonEntityQuerySelect(c);
+				ClsJsonEntityQueryDelete clsQueryDelete = new ClsJsonEntityQueryDelete(c);
 				clsQuery.addMethodImplementations();
+				clsQueryDelete.addMethodImplementations();
 				FileUtil2.writeFileIfContentChanged(pathEntities.resolve(c.getName().toLowerCase()+".h"), c.toHeaderString().getBytes(utf8), writeOptions);
 				FileUtil2.writeFileIfContentChanged(pathEntities.resolve(c.getName().toLowerCase()+".cpp"), c.toSourceString().getBytes(utf8), writeOptions);
 				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+".h"), clsQuery.toHeaderString().getBytes(utf8), writeOptions);
 				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+".cpp"), clsQuery.toSourceString().getBytes(utf8), writeOptions);
+				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsQueryDelete.getName().toLowerCase()+".h"), clsQueryDelete.toHeaderString().getBytes(utf8), writeOptions);
+				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsQueryDelete.getName().toLowerCase()+".cpp"), clsQueryDelete.toSourceString().getBytes(utf8), writeOptions);
 			}
 			FileUtil2.writeFileIfContentChanged(pathRepository.resolve(repo.getName().toLowerCase()+".h"), repo.toHeaderString().getBytes(utf8), writeOptions);
 			FileUtil2.writeFileIfContentChanged(pathRepository.resolve(repo.getName().toLowerCase()+".cpp"), repo.toSourceString().getBytes(utf8), writeOptions);

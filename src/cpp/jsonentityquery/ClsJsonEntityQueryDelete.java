@@ -6,35 +6,32 @@ import cpp.Types;
 import cpp.core.Cls;
 import cpp.core.Constructor;
 import cpp.jsonentity.JsonEntity;
-import cpp.jsonentityquery.method.MethodJsonQuery;
-import cpp.jsonentityquery.method.MethodJsonQueryJoin;
-import cpp.jsonentityquery.method.MethodJsonQueryOne;
-import cpp.jsonentityquery.method.MethodJsonQueryOrderBy;
+import cpp.jsonentityquery.method.MethodJsonQueryExecute;
 import cpp.jsonentityquery.method.MethodJsonQueryWhere;
 import cpp.jsonentityquery.method.MethodJsonQueryWhereEquals;
 import cpp.jsonentityquery.method.MethodJsonQueryWhereIsNull;
 import database.column.Column;
 
-public class ClsJsonEntityQuerySelect extends Cls{
-
-	public ClsJsonEntityQuerySelect(JsonEntity entity) {
-		super(entity.getName() +"JsonEntityQuerySelect");
+public class ClsJsonEntityQueryDelete extends Cls{
+	
+	public ClsJsonEntityQueryDelete(JsonEntity entity) {
+		super(entity.getName() +"JsonEntityQueryDelete");
 		addConstructor(new Constructor() {
 			
 			@Override
 			public void addImplementation() {
 			}
 		});
-		addSuperclass(JsonTypes.BaseJsonEntitySelectQuery);
+		addSuperclass(JsonTypes.BaseJsonEntityDeleteQuery);
 		addIncludeDefaultHeaderFileName(getSuperclass());
 		if(entity.getTbl().hasNullableColumn()) {
 			addIncludeDefaultHeaderFileName(Types.nullable(null)) ;
 		}
 		
 		for(Column c : entity.getTbl().getAllColumns()) {
-			addMethod(new MethodJsonQueryWhereEquals(this, c,false,true));
+			addMethod(new MethodJsonQueryWhereEquals(this, c,false,false));
 			if(c.isNullable()) {
-				addMethod(new MethodJsonQueryWhereEquals(this, c,true,true));
+				addMethod(new MethodJsonQueryWhereEquals(this, c,true,false));
 				addMethod(new MethodJsonQueryWhereIsNull(this, c));
 			}
 		}
@@ -42,12 +39,9 @@ public class ClsJsonEntityQuerySelect extends Cls{
 		addForwardDeclaredClass(entity);
 		addIncludeLibInSource(NetworkTypes.QUrl);
 		addIncludeLibInSource(NetworkTypes.QUrlQuery);
-		addIncludeHeaderInSource(JsonTypes.JsonEntityRepository.getHeaderInclude());
+		addIncludeHeaderInSource(JsonTypes.JsonEntityRepository.getHeaderInclude());	
 		addMethod(new MethodJsonQueryWhere(this));
-		addMethod(new MethodJsonQueryJoin(this));
-		addMethod(new MethodJsonQueryOrderBy(this));
-		addMethod(new MethodJsonQueryOne(entity));
-		addMethod(new MethodJsonQuery(entity));
+		addMethod(new MethodJsonQueryExecute(entity));
 		headerInclude = "repository/query/"+getName().toLowerCase()+".h";
 	}
 
