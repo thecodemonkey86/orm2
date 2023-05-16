@@ -23,7 +23,6 @@ import cpp.entityrepository.ClsEntityRepository;
 import cpp.entityrepository.expression.ThisEntityRepositoryExpression;
 import cpp.lib.ClsQHash;
 import cpp.lib.ClsQSet;
-import cpp.lib.ClsQSqlQuery;
 import cpp.lib.ClsQVariant;
 import cpp.orm.OrmUtil;
 import database.column.Column;
@@ -229,7 +228,6 @@ public class MethodFetchList extends Method {
 			ifNotE1SetContains.thenBlock()._callMethodInstr(e1DoWhile, "setLoaded", BoolExpression.TRUE);
 		}
 		ifNotE1SetContains.thenBlock()._callMethodInstr(result, "append", e1DoWhile);
-		_callMethodInstr(query, ClsQSqlQuery.clear); 
 		_return(result);
 		
 	}

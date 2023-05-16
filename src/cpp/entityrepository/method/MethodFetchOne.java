@@ -92,7 +92,6 @@ protected Expression getExpressionQuery() {
 			
 			ifInstr._callMethodInstr(e1, "setLoaded", BoolExpression.FALSE);
 			ifInstr._return(e1);
-			_callMethodInstr(query, ClsQSqlQuery.clear); 
 			_return(Expressions.Nullptr);
 		} else {
 			List<OneRelation> oneRelations = bean.getOneRelations();
@@ -221,7 +220,6 @@ protected Expression getExpressionQuery() {
 			
 			ifInstr._callMethodInstr(e1, "setLoaded", BoolExpression.TRUE);
 			ifInstr._return(e1);
-			_callMethodInstr(query, ClsQSqlQuery.clear); 
 			_return(Expressions.Nullptr);
 		}
 		
