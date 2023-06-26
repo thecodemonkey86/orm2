@@ -70,7 +70,9 @@ public class PgDatabase extends Database {
 				"where col.column_default is not null\r\n" + 
 				"      and col.table_schema not in('information_schema', 'pg_catalog')\r\n" + 
 				"and table_schema='%s' and table_name='%s' and column_name=a.attname and column_default like 'nextval(%%')  as autoincrement FROM   pg_index i JOIN   pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey) WHERE  i.indrelid = '%s.%s'::regclass AND    i.indisprimary  order by col.ordinal_position;", tbl.getSchema(),tbl.getName(), tbl.getSchema(), tbl.getName());
+		System.out.println(sql);
 		Statement stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_READ_ONLY  );
+		
 		ResultSet rs = stmt.executeQuery(sql);
 		while(rs.next()) {
 			Column c = tbl.getColumnByName(rs.getString("colname"));

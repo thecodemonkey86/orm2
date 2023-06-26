@@ -7,6 +7,7 @@ import java.util.List;
 import codegen.CodeUtil;
 import cpp.core.expression.Expression;
 import cpp.core.instruction.Comment;
+import cpp.core.instruction.IfBlock;
 import cpp.core.instruction.Instruction;
 import cpp.core.instruction.InstructionBlock;
 import util.CodeUtil2;
@@ -76,6 +77,10 @@ public class LambdaExpression extends Expression{
 	public void _assign(Expression expr, Expression value) {
 		instructions._assign(expr, value);
 		
+	}
+	
+	public IfBlock _if(Expression cond)	{
+		return instructions._if(cond);
 	}
 
 	public Expression getArgument(int i) {

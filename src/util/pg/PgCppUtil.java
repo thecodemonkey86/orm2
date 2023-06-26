@@ -9,6 +9,7 @@ import cpp.core.SharedPtr;
 import cpp.core.expression.Expression;
 import cpp.core.expression.MethodCall;
 import cpp.entity.EntityCls;
+import cpp.jsonentity.JsonEntity;
 import cpp.orm.OrmUtil;
 import database.column.Column;
 import database.relation.ManyRelation;
@@ -98,6 +99,33 @@ public class PgCppUtil {
 		}
 	}
 	
+	public static Expression getJsonEntityPkExpression(Expression e, Column colPk) {
+		JsonEntity cls= e.getType() instanceof EntityCls 
+				? (JsonEntity) e.getType() :
+				(e.getType() instanceof Ref
+						?
+								(JsonEntity)(((Ref)e.getType()).getBase())
+						: (e.getType() instanceof ConstRef 
+							
+							? (((ConstRef)e.getType()).getBase()) instanceof JsonEntity 
+									? (JsonEntity)(((ConstRef)e.getType()).getBase())
+									: (JsonEntity)((SharedPtr)(((ConstRef)e.getType()).getBase())).getElementType()
+							: (JsonEntity) ((SharedPtr)e.getType()).getElementType()));
+								
+		if (colPk.hasOneRelation()) {
+			try{
+				
+			Attr attr = cls.getOneRelationAttr(colPk.getOneRelation());
+			return e.accessAttr(cls.getAttr(attr)).callMethod("get"+colPk.getOneRelationMappedColumn().getUc1stCamelCaseName());
+			} catch(Exception ex) {
+				ex.printStackTrace();
+				throw ex;
+			}
+		} else {
+			return e.accessAttr(cls.getAttrByName(colPk.getCamelCaseName()));
+		}
+	}
+	
 	public static MethodCall getPkGetterExpression(Expression e, Column colPk) {
 		EntityCls cls= e.getType() instanceof EntityCls 
 				? (EntityCls) e.getType() :
@@ -125,6 +153,33 @@ public class PgCppUtil {
 		}
 	}
 
+	public static MethodCall getJsonEntityPkGetterExpression(Expression e, Column colPk) {
+		JsonEntity cls= e.getType() instanceof JsonEntity 
+				? (JsonEntity) e.getType() :
+				(e.getType() instanceof Ref
+						?
+								(JsonEntity)(((Ref)e.getType()).getBase())
+						: (e.getType() instanceof ConstRef 
+							
+							? (((ConstRef)e.getType()).getBase()) instanceof JsonEntity 
+									? (JsonEntity)(((ConstRef)e.getType()).getBase())
+									: (JsonEntity)((SharedPtr)(((ConstRef)e.getType()).getBase())).getElementType()
+							: (JsonEntity) ((SharedPtr)e.getType()).getElementType()));
+								
+		if (colPk.hasOneRelation()) {
+			try{
+				
+			Attr attr = cls.getOneRelationAttr(colPk.getOneRelation());
+			return e.callAttrGetter(cls.getAttr(attr)).callMethod("get"+colPk.getOneRelationMappedColumn().getUc1stCamelCaseName());
+			} catch(Exception ex) {
+				ex.printStackTrace();
+				throw ex;
+			}
+		} else {
+			return e.callAttrGetter(cls.getAttrByName(colPk.getCamelCaseName()));
+		}
+	}
+	
 	public static String getOneRelationDestAttrGetter(OneRelation oneRelation) {
 		// TODO Auto-generated method stub
 		return OrmUtil.getOneRelationDestAttrGetter(oneRelation);

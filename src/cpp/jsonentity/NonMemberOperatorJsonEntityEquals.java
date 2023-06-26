@@ -1,4 +1,4 @@
-package cpp.entity;
+package cpp.jsonentity;
 
 import java.util.ArrayList;
 
@@ -12,15 +12,15 @@ import database.column.Column;
 import database.relation.PrimaryKey;
 import util.pg.PgCppUtil;
 
-public class NonMemberOperatorEntityEquals extends NonMemberOperator{
+public class NonMemberOperatorJsonEntityEquals extends NonMemberOperator{
 
 	PrimaryKey pk;
 	
-	public NonMemberOperatorEntityEquals(EntityCls cls, PrimaryKey pk) {
+	public NonMemberOperatorJsonEntityEquals(JsonEntity cls, boolean sp) {
 		super("==", Types.Bool, false);
-		addParam(new Param(cls.toSharedPtr().toConstRef(), "entity1"));
-		addParam(new Param(cls.toSharedPtr().toConstRef(), "entity2"));
-		this.pk = pk;
+		addParam(new Param(sp? cls.toSharedPtr().toConstRef():cls.toConstRef(), "entity1"));
+		addParam(new Param(sp? cls.toSharedPtr().toConstRef():cls.toConstRef(), "entity2"));
+		this.pk = cls.getTbl().getPrimaryKey();
 		
 	}
 
@@ -30,17 +30,17 @@ public class NonMemberOperatorEntityEquals extends NonMemberOperator{
 		Param entity2 = getParam("entity2");
 		if (!pk.isMultiColumn()) {
 			_return(new BinaryOperatorExpression(
-					PgCppUtil.getPkGetterExpression(entity1,pk.getFirstColumn()), 
+					PgCppUtil.getJsonEntityPkGetterExpression(entity1,pk.getFirstColumn()), 
 					this,
-					PgCppUtil.getPkGetterExpression(entity2,pk.getFirstColumn()))
+					PgCppUtil.getJsonEntityPkGetterExpression(entity2,pk.getFirstColumn()))
 			);	
 		} else {
 			ArrayList<Expression> expr=new ArrayList<>();
 			for(Column colPk:pk.getColumns()) {
 				expr.add(new BinaryOperatorExpression(
-						PgCppUtil.getPkGetterExpression(entity1,colPk), 
+						PgCppUtil.getJsonEntityPkGetterExpression(entity1,colPk), 
 					this, 
-					PgCppUtil.getPkGetterExpression(entity2,colPk)));
+					PgCppUtil.getJsonEntityPkGetterExpression(entity2,colPk)));
 			}
 			_return(Expressions.and(expr));
 		}

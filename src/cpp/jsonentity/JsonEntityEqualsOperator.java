@@ -1,4 +1,4 @@
-package cpp.entity;
+package cpp.jsonentity;
 
 import java.util.ArrayList;
 
@@ -11,31 +11,31 @@ import cpp.core.expression.Expressions;
 import database.column.Column;
 import database.relation.PrimaryKey;
 
-public class EntityEqualsOperator extends EqualOperator {
-	PrimaryKey pk;
+public class JsonEntityEqualsOperator extends EqualOperator {
+	JsonEntity cls;
 	
-	public EntityEqualsOperator(EntityCls cls, PrimaryKey pk) {
-		super(new Param(cls.toConstRef(), "entity") );
-		this.pk = pk;
-		
+	public JsonEntityEqualsOperator(JsonEntity cls,boolean sp) {
+		super(new Param(sp? cls.toSharedPtr().toConstRef(): cls.toConstRef(), "entity") );
+		this.cls=cls;
+		setParent(cls);
 	}
 
 	@Override
 	public void addImplementation() {
-		EntityCls parent=(EntityCls) this.parent;
+		PrimaryKey pk = cls.getTbl().getPrimaryKey();
 		Param entity = getParam("entity");
 		if (!pk.isMultiColumn()) {
-			_return(new BinaryOperatorExpression(parent.accessThisAttrGetterByColumn(pk.getFirstColumn()), 
+			_return(new BinaryOperatorExpression(cls.accessThisAttrGetterByColumn(pk.getFirstColumn()), 
 					this,
-					PgCppUtil.getPkExpression(entity,pk.getFirstColumn()))
+					PgCppUtil.getJsonEntityPkExpression(entity,pk.getFirstColumn()))
 			);	
 		} else {
 			ArrayList<Expression> expr=new ArrayList<>();
 			for(Column colPk:pk.getColumns()) {
 				expr.add(new BinaryOperatorExpression(
-						parent.accessThisAttrGetterByColumn(colPk), 
+						cls.accessThisAttrGetterByColumn(colPk), 
 					this, 
-					PgCppUtil.getPkExpression(entity,colPk)));
+					PgCppUtil.getJsonEntityPkExpression(entity,colPk)));
 			}
 			_return(Expressions.and(expr));
 		}

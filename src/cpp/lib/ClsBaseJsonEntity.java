@@ -15,6 +15,7 @@ public class ClsBaseJsonEntity extends Cls {
 	public static final String setInsertNew = "setInsertNew";
 	public static final String setLoaded = "setLoaded";
 	public static final String isLoaded = "isLoaded";
+	public static final String isInsertNew = "isInsertNew";
 	public static final String primaryKeyModified = "primaryKeyModified";
 	
 	public ClsBaseJsonEntity() {
@@ -24,6 +25,7 @@ public class ClsBaseJsonEntity extends Cls {
 		addAttr(new Attr(Types.Bool, loaded));
 		addAttr(new Attr(Types.Bool, primaryKeyModified));
 		addMethod(new LibMethod(Types.Void, setInsertNew));
+		addMethod(new LibMethod(Types.Bool, isInsertNew));
 		addMethod(new LibMethod(Types.Void, setLoaded));
 		addMethod(new LibMethod(Types.Bool, isLoaded));
 		useNamespace = Namespaces.ORM2;

@@ -115,6 +115,7 @@ public class CppOrm extends OrmGenerator {
 		String dbHost = null;
 		String dbFile = null;
 		String charset = "utf8" ;
+		boolean enableStackTrace = true;
 		
 		for(int i=0;i<args.length-1;i++) {
 			if(args[i].equals("--engine")) {
@@ -133,6 +134,8 @@ public class CppOrm extends OrmGenerator {
 				dbFile = args[i+1];	
 			} else if(args[i].equals("--charset")) {
 				charset = args[i+1];
+			} else if(args[i].equals("--disabledebugtrace")) {
+				enableStackTrace = false;
 			}
 		}
 		if(engine == null) {
@@ -212,7 +215,7 @@ public class CppOrm extends OrmGenerator {
 		
 		cfg.setDatabase(database);
 		cfg.setDbEngine(engine);
-		
+		cfg.setEnableStacktrace(enableStackTrace);
 		
 		
 		new CppOrm(cfg).generate();

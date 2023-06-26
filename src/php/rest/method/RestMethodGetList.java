@@ -69,9 +69,11 @@ public class RestMethodGetList extends Method {
 			addInstr(new ThrowInstruction(Types.Exception, new PhpStringLiteral("invalid SQL")));
 			
 			forJoins.addInstr(new MethodCallInstruction(vEntityQuery.callMethod(ClsBaseEntityQuery.join,vSqlJoinTable,vSqlJoinOn,  forJoins.getVar().arrayIndex(new PhpStringLiteral("params")))));
-			
-			Var vCondJson = caseBeanType._declare(Types.array(Types.Mixed), "_condJson",vQueryJson.arrayIndex("conditions") );
-			ForeachLoop forCond= caseBeanType._foreach(new Var(Types.Mixed, "_c"), vCondJson);
+			Expression eConditions = vQueryJson.arrayIndex("conditions");
+			IfBlock ifIssetConditions =  ifIssetCondition.thenBlock()._if(PhpFunctions.isset.call(eConditions));
+					
+			Var vCondJson =  ifIssetConditions.thenBlock()._declare(Types.array(Types.Mixed), "_condJson",eConditions );
+			ForeachLoop forCond=  ifIssetConditions.thenBlock()._foreach(new Var(Types.Mixed, "_c"), vCondJson);
 			Var vSqlCond =  forCond._declare(Types.String, "_sqlCond", forCond.getVar().arrayIndex("cond"));
 			
 			forCond._if(PhpFunctions.str_contains.call(vSqlCond,new PhpStringLiteral("\'"))
@@ -84,7 +86,7 @@ public class RestMethodGetList extends Method {
 			
 			forCond.addInstr(new MethodCallInstruction(vEntityQuery.callMethod(ClsBaseEntityQuery.where,vSqlCond,  forCond.getVar().arrayIndex(new PhpStringLiteral("params")))));
 			
-			ForeachLoop forOrder= caseBeanType._foreach(new Var(Types.Mixed, "_o"), vOrderByJson);
+			ForeachLoop forOrder= ifIssetCondition.thenBlock()._foreach(new Var(Types.Mixed, "_o"), vOrderByJson);
 Var vOrderByExpr =  forOrder._declare(Types.String, "_orderByExpr", forOrder.getVar().arrayIndex("expr"));
 Var vAsc = forOrder._declare(Types.String, "_orderByAsc", forOrder.getVar().arrayIndex(new PhpStringLiteral("asc")).cast(Types.Bool));			
 forOrder._if(PhpFunctions.str_contains.call(vOrderByExpr,new PhpStringLiteral("\'"))
@@ -111,18 +113,18 @@ forOrder.addInstr(new MethodCallInstruction(vEntityQuery.callMethod(ClsBaseEntit
 				ifRelatedBeanIsNotNull.thenBlock().addInstr( beanData.arrayIndexSet(new PhpStringLiteral(OrmUtil.getOneRelationDestAttrName(r)), relationBeanData));
 			}
 			for(OneToManyRelation r : entity.getOneToManyRelations() ) {
-				Var arrRelationBeans =foreachBean._declare(Types.array(Types.Mixed),"relationBeans", foreachBean.getVar().callAttrGetter( OrmUtil.getOneToManyRelationDestAttrName(r)));
-				ForeachLoop foreachRelationBean = foreachBean._foreach(new Var(Entities.get(r.getDestTable()), "relationBean"+r.getAlias() ), arrRelationBeans);
+				caseBeanType.addInstr( beanData.arrayIndexSet(new PhpStringLiteral(OrmUtil.getOneToManyRelationDestAttrNameSingular(r)), new ArrayInitExpression()));
+				Var arrRelationBeans =caseBeanType._declare(Types.array(Types.Mixed),"relationBeans", foreachBean.getVar().callAttrGetter( OrmUtil.getOneToManyRelationDestAttrName(r)));
+				ForeachLoop foreachRelationBean = caseBeanType._foreach(new Var(Entities.get(r.getDestTable()), "relationBean"+r.getAlias() ), arrRelationBeans);
 				
-				Var relationBeanData= foreachRelationBean._declare(Types.array(Types.String), "relationBeanData_"+r.getAlias(), foreachRelationBean.getVar().callMethod(MethodGetFieldsAsAssocArray.METHOD_NAME));
-				beanData.arrayIndexSet(new PhpStringLiteral(OrmUtil.getOneToManyRelationDestAttrNameSingular(r)), relationBeanData);
+				foreachRelationBean._arrayPush( beanData.arrayIndex(new PhpStringLiteral(OrmUtil.getOneToManyRelationDestAttrNameSingular(r))), foreachRelationBean.getVar().callMethod(MethodGetFieldsAsAssocArray.METHOD_NAME));
 			}
 			for(ManyRelation r : entity.getManyRelations() ) {
-				Var arrRelationBeans =foreachBean._declare(Types.array(Types.Mixed),"relationBeans", foreachBean.getVar().callAttrGetter( OrmUtil.getManyRelationDestAttrName(r)));
-				ForeachLoop foreachRelationBean = foreachBean._foreach(new Var(Entities.get(r.getDestTable()), "relationBean"+r.getAlias() ), arrRelationBeans);
+				caseBeanType.addInstr( beanData.arrayIndexSet(new PhpStringLiteral(OrmUtil.getManyRelationDestAttrNameSingular(r)), new ArrayInitExpression()));
+				Var arrRelationBeans =caseBeanType._declare(Types.array(Types.Mixed),"relationBeans", foreachBean.getVar().callAttrGetter( OrmUtil.getManyRelationDestAttrName(r)));
+				ForeachLoop foreachRelationBean = caseBeanType._foreach(new Var(Entities.get(r.getDestTable()), "relationBean"+r.getAlias() ), arrRelationBeans);
 				
-				Var relationBeanData= foreachRelationBean._declare(Types.array(Types.String), "relationBeanData_"+r.getAlias(), foreachRelationBean.getVar().callMethod(MethodGetFieldsAsAssocArray.METHOD_NAME));
-				beanData.arrayIndexSet(new PhpStringLiteral(OrmUtil.getManyRelationDestAttrNameSingular(r)), relationBeanData);
+				foreachRelationBean._arrayPush( beanData.arrayIndex(new PhpStringLiteral(OrmUtil.getManyRelationDestAttrNameSingular(r))), foreachRelationBean.getVar().callMethod(MethodGetFieldsAsAssocArray.METHOD_NAME));
 			}
 			
 			foreachBean.addInstr( vResult.arrayPush(beanData) );

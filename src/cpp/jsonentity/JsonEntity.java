@@ -360,6 +360,14 @@ public class JsonEntity extends Cls {
 		addIncludeDefaultHeaderFileName(JsonTypes.BaseJsonEntity);
 
 		addAttributes(tbl.getAllColumns());
+		addOperator(new JsonEntityEqualsOperator(this,true));
+		addOperator(new JsonEntityEqualsOperator(this,false));
+		
+		addNonMemberOperator(new NonMemberOperatorJsonEntityEquals(this,true));
+		addNonMemberOperator(new NonMemberOperatorJsonEntityEquals(this,false));
+		
+		addNonMemberMethod(new MethodQHashEntity(this,true));
+		addNonMemberMethod(new MethodQHashEntity(this,false));
 		
 		if (tbl.getPrimaryKey().isMultiColumn()) {
 			addNonMemberMethod(new MethodQHashPkStruct(getStructPk(), tbl.getPrimaryKey()));

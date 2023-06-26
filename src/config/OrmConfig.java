@@ -342,4 +342,8 @@ public class OrmConfig {
 	public boolean isHasUpdateMethodEnabled(String classname) {
 		return enableHasUpdateMethods!=null && enableHasUpdateMethods.contains(classname);
 	}
+	
+	public void setEnableStacktrace(boolean enableStacktrace) {
+		this.enableStacktrace = enableStacktrace;
+	}
 }

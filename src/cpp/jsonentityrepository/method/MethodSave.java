@@ -14,11 +14,13 @@ import cpp.core.expression.QByteArrayLiteral;
 import cpp.core.expression.StdFunctionInvocation;
 import cpp.core.expression.Var;
 import cpp.core.instruction.DeclareInstruction;
+import cpp.core.instruction.IfBlock;
 import cpp.core.method.MethodAttributeSetter;
 import cpp.entity.method.MethodAttrGetter;
 import cpp.jsonentity.JsonEntity;
 import cpp.jsonentity.method.MethodToJson;
 import cpp.jsonentityrepository.ClsJsonEntityRepository;
+import cpp.lib.ClsBaseJsonEntity;
 import cpp.lib.ClsQJsonDocument;
 import cpp.lib.ClsQJsonObject;
 import cpp.lib.ClsQNetworkAccessManager;
@@ -61,12 +63,13 @@ public class MethodSave extends Method {
 		addInstr(new QObjectConnect(reply,"&QNetworkReply::finished",aNetwork,
 				lambdaExpression.setCapture(reply, pCallback, pEntity),true));
 		if(entity.getTbl().isAutoIncrement()) {
+			IfBlock ifInsert = lambdaExpression._if(pEntity.callMethod(ClsBaseJsonEntity.isInsertNew));
 			Var d=new Var(JsonTypes.QJsonDocument, "_d");
-			lambdaExpression.addInstr(new DeclareInstruction(d, JsonTypes.QJsonDocument.callStaticMethod(ClsQJsonDocument.fromJson, reply.callMethod(ClsQNetworkReply.readAll))));
+			ifInsert.thenBlock().addInstr(new DeclareInstruction(d, JsonTypes.QJsonDocument.callStaticMethod(ClsQJsonDocument.fromJson, reply.callMethod(ClsQNetworkReply.readAll))));
 			Var o = new Var(JsonTypes.QJsonObject, "_o");
-			lambdaExpression.addInstr(new DeclareInstruction(o, d.callMethod(ClsQJsonDocument.object)));
+			ifInsert.thenBlock().addInstr(new DeclareInstruction(o, d.callMethod(ClsQJsonDocument.object)));
 			Column col = entity.getTbl().getPrimaryKey().getColumn(0);
-			lambdaExpression.addInstr(pEntity.callMethodInstruction(MethodAttributeSetter.getMethodName(entity.getAttrByName(col.getCamelCaseName())),JsonOrmUtil.jsonConvertMethod(o.callMethod(ClsQJsonObject.value, QStringLiteral.fromStringConstant(col.getName())), JsonEntity.getDatabaseMapper().columnToType(col)))); 
+			ifInsert.thenBlock().addInstr(pEntity.callMethodInstruction(MethodAttributeSetter.getMethodName(entity.getAttrByName(col.getCamelCaseName())),JsonOrmUtil.jsonConvertMethod(o.callMethod(ClsQJsonObject.value, QStringLiteral.fromStringConstant(col.getName())), JsonEntity.getDatabaseMapper().columnToType(col)))); 
 		}
 		
 		lambdaExpression.addInstr(new StdFunctionInvocation(pCallback, reply.callMethod(ClsQNetworkReply.error)._equals(NetworkTypes.QNetworkReply.noError)));
