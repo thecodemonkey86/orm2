@@ -13,6 +13,7 @@ public class ClsQList extends TplCls implements IArrayAccessible{
 	public static final String append = "append";
 	public static final String removeOne = "removeOne";
 	public static final String contains = "contains";
+	public static final String empty = "empty";
 	public static final String size = "size";
 	public static final String last = "last";
 	
@@ -21,7 +22,7 @@ public class ClsQList extends TplCls implements IArrayAccessible{
 		addMethod(new LibMethod(CoreTypes.Void, append));
 		addMethod(new LibMethod(CoreTypes.Void, "remove"));
 		addMethod(new LibMethod(CoreTypes.Void, removeOne));
-		addMethod(new LibMethod(CoreTypes.Bool, "empty"));
+		addMethod(new LibMethod(CoreTypes.Bool, empty));
 		addMethod(new LibMethod(CoreTypes.SizeT, size));
 		addMethod(new LibMethod(CoreTypes.Void, clear));
 		addMethod(new LibMethod(CoreTypes.Bool, contains));
