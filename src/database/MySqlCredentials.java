@@ -29,6 +29,6 @@ public class MySqlCredentials extends DbCredentials{
 
 	@Override
 	public String getConnectionUrl() {
-		return String.format("jdbc:mysql://%s:%d/%s", host ,port, db.getName());
+		return String.format("jdbc:mysql://%s:%d/%s?useSSL=false", host ,port, db.getName());
 	}
 }

@@ -35,7 +35,7 @@ public class PgDatabase extends Database {
 	public void readColumns(AbstractTable tbl, Connection conn,boolean columnsFromConfig)
 			throws SQLException {
 		if (stColumndata==null)
-			stColumndata = conn.prepareStatement("select * from information_schema.columns where table_name = ? and TABLE_CATALOG = ?  order by ordinal_position");
+			stColumndata = conn.prepareStatement("select * from information_schema.columns where table_name = ? and TABLE_CATALOG = ? order by ordinal_position");
 		stColumndata.setString(1, tbl.getName());
 		stColumndata.setString(2, getName());
 		ResultSet rsColumndata = stColumndata.executeQuery();
@@ -69,10 +69,8 @@ public class PgDatabase extends Database {
 				"from information_schema.columns col\r\n" + 
 				"where col.column_default is not null\r\n" + 
 				"      and col.table_schema not in('information_schema', 'pg_catalog')\r\n" + 
-				"and table_schema='%s' and table_name='%s' and column_name=a.attname and column_default like 'nextval(%%')  as autoincrement FROM   pg_index i JOIN   pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey) WHERE  i.indrelid = '%s.%s'::regclass AND    i.indisprimary  order by col.ordinal_position;", tbl.getSchema(),tbl.getName(), tbl.getSchema(), tbl.getName());
-		System.out.println(sql);
+				"and table_schema='%s' and table_name='%s' and column_name=a.attname and column_default like 'nextval(%%')  as autoincrement FROM   pg_index i JOIN   pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey) WHERE  i.indrelid = '%s.%s'::regclass AND    i.indisprimary", tbl.getSchema(),tbl.getName(), tbl.getSchema(), tbl.getName());
 		Statement stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_READ_ONLY  );
-		
 		ResultSet rs = stmt.executeQuery(sql);
 		while(rs.next()) {
 			Column c = tbl.getColumnByName(rs.getString("colname"));

@@ -21,7 +21,9 @@ public class MethodResetModifiedFlags extends Method{
 		addInstr( parent.getAttrByName("primaryKeyModified").assign(BoolExpression.FALSE));
 		List<Column> cols = parent.getTbl().getColumnsWithoutPrimaryKey();
 		for(Column col: cols) {
-			addInstr( parent.getAttrByName(col.getCamelCaseName()+"Modified").assign(BoolExpression.FALSE));
+			if(!col.isFileImportEnabled()) {
+				addInstr( parent.getAttrByName(col.getCamelCaseName()+"Modified").assign(BoolExpression.FALSE));
+			}
 		}
 		
 		for(OneRelation r:parent.getOneRelations()) {

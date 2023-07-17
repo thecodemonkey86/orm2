@@ -12,7 +12,9 @@ import cpp.jsonentityquery.method.MethodJsonQueryOne;
 import cpp.jsonentityquery.method.MethodJsonQueryOrderBy;
 import cpp.jsonentityquery.method.MethodJsonQueryWhere;
 import cpp.jsonentityquery.method.MethodJsonQueryWhereEquals;
+import cpp.jsonentityquery.method.MethodJsonQueryWhereIsNotNull;
 import cpp.jsonentityquery.method.MethodJsonQueryWhereIsNull;
+import cpp.jsonentityquery.method.MethodJsonQueryWhereNotEquals;
 import database.column.Column;
 
 public class ClsJsonEntityQuerySelect extends Cls{
@@ -33,9 +35,12 @@ public class ClsJsonEntityQuerySelect extends Cls{
 		
 		for(Column c : entity.getTbl().getAllColumns()) {
 			addMethod(new MethodJsonQueryWhereEquals(this, c,false,true));
+			addMethod(new MethodJsonQueryWhereNotEquals(this, c,false,true));
 			if(c.isNullable()) {
 				addMethod(new MethodJsonQueryWhereEquals(this, c,true,true));
+				addMethod(new MethodJsonQueryWhereNotEquals(this, c,true,true));
 				addMethod(new MethodJsonQueryWhereIsNull(this, c));
+				addMethod(new MethodJsonQueryWhereIsNotNull(this, c));
 			}
 		}
 		addIncludeLib("memory");
