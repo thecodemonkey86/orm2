@@ -110,6 +110,7 @@ public class ClsEntityQuerySelect extends Cls {
 		addIncludeLibInSource(Types.QRegularExpression);
 		addIncludeDefaultHeaderFileName(Types.SqlUtil);
 		addIncludeDefaultHeaderFileName(Types.SqlQuery);
+		addIncludeInSourceDefaultHeaderFileName(QtSqlTypes.QSqlDriver);
 		addIncludeDefaultHeaderFileName(Types.nullable(null));
 		addIncludeHeader(ClsDbPool.instance.getHeaderInclude());
 		addIncludeLibInSource(QtCoreTypes.QDebug,true);
