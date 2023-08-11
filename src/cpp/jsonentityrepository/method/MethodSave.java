@@ -9,20 +9,23 @@ import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.QString;
 import cpp.core.QStringLiteral;
+import cpp.core.expression.Operators;
 import cpp.core.expression.PlusOperatorExpression;
 import cpp.core.expression.QByteArrayLiteral;
 import cpp.core.expression.StdFunctionInvocation;
 import cpp.core.expression.Var;
 import cpp.core.instruction.DeclareInstruction;
 import cpp.core.instruction.IfBlock;
-import cpp.core.method.MethodAttributeSetter;
+import cpp.core.instruction.SemicolonTerminatedInstruction;
 import cpp.entity.method.MethodAttrGetter;
 import cpp.jsonentity.JsonEntity;
+import cpp.jsonentity.method.MethodColumnAttrSetterInternal;
 import cpp.jsonentity.method.MethodToJson;
 import cpp.jsonentityrepository.ClsJsonEntityRepository;
 import cpp.lib.ClsBaseJsonEntity;
 import cpp.lib.ClsQJsonDocument;
 import cpp.lib.ClsQJsonObject;
+import cpp.lib.ClsQJsonValue;
 import cpp.lib.ClsQNetworkAccessManager;
 import cpp.lib.ClsQNetworkReply;
 import cpp.lib.ClsQNetworkRequest;
@@ -32,6 +35,7 @@ import cpp.lib.ClsStdFunction;
 import cpp.lib.QObjectConnect;
 import cpp.orm.JsonOrmUtil;
 import database.column.Column;
+import cpp.core.expression.Expressions;
 
 public class MethodSave extends Method {
 
@@ -69,10 +73,12 @@ public class MethodSave extends Method {
 			Var o = new Var(JsonTypes.QJsonObject, "_o");
 			ifInsert.thenBlock().addInstr(new DeclareInstruction(o, d.callMethod(ClsQJsonDocument.object)));
 			Column col = entity.getTbl().getPrimaryKey().getColumn(0);
-			ifInsert.thenBlock().addInstr(pEntity.callMethodInstruction(MethodAttributeSetter.getMethodName(entity.getAttrByName(col.getCamelCaseName())),JsonOrmUtil.jsonConvertMethod(o.callMethod(ClsQJsonObject.value, QStringLiteral.fromStringConstant(col.getName())), JsonEntity.getDatabaseMapper().columnToType(col)))); 
+			ifInsert.thenBlock().addInstr(pEntity.callMethodInstruction(MethodColumnAttrSetterInternal.getMethodName(col),JsonOrmUtil.jsonConvertMethod(o.callMethod(ClsQJsonObject.value, QStringLiteral.fromStringConstant(col.getName())), JsonEntity.getDatabaseMapper().columnToType(col)))); 
 		}
 		
-		lambdaExpression.addInstr(new StdFunctionInvocation(pCallback, reply.callMethod(ClsQNetworkReply.error)._equals(NetworkTypes.QNetworkReply.noError)));
+		Var vJson = lambdaExpression._declare(JsonTypes.QJsonDocument, "json",JsonTypes.QJsonDocument.callStaticMethod(ClsQJsonDocument.fromJson,reply.callMethod(ClsQNetworkReply.readAll)));
+		lambdaExpression.addInstr(new SemicolonTerminatedInstruction("qWarning()<<json.object().value(\"message\").toString()"));
+		lambdaExpression.addInstr(new StdFunctionInvocation(pCallback, reply.callMethod(ClsQNetworkReply.error)._equals(NetworkTypes.QNetworkReply.noError).binOp(Operators.AND,Expressions.not(vJson.callMethod(ClsQJsonDocument.object).callMethod(ClsQJsonObject.value, QStringLiteral.fromStringConstant("error")).callMethod(ClsQJsonValue.toBool)))));
 		lambdaExpression.addInstr(reply.callMethodInstruction(ClsQNetworkReply.deleteLater));
 	}
 

@@ -40,6 +40,7 @@ import cpp.jsonentity.method.MethodOneRelationAttrSetter;
 import cpp.jsonentity.method.MethodQHashPkStruct;
 import cpp.jsonentity.method.MethodRemoveAllManyRelatedEntities;
 import cpp.jsonentity.method.MethodReplaceAllManyRelatedEntities;
+import cpp.jsonentity.method.MethodSetPrimaryKey;
 import cpp.jsonentity.method.MethodToJson;
 import cpp.jsonentity.method.MethodToggleAddRemoveRelatedEntity;
 import cpp.orm.DatabaseTypeMapper;
@@ -245,7 +246,9 @@ public class JsonEntity extends Cls {
 				addAttr(attr);
 				
 				addMethod(new MethodAttributeGetter(attr));	
-				addMethod(new MethodColumnAttrSetter(col,attr));
+				if(!col.isPartOfPk()) {
+					addMethod(new MethodColumnAttrSetter(col,attr));
+				} 
 				addMethod(new MethodColumnAttrSetterInternal(col,attr));
 				if (col.isNullable()) {
 					if(attr.getType().equals(nullstring))
@@ -292,7 +295,7 @@ public class JsonEntity extends Cls {
 //			}
 			
 		}
-		
+		addMethod(new MethodSetPrimaryKey(tbl.getPrimaryKey())); 
 		for(OneToManyRelation r:oneToManyRelations) {
 			addMethod(new MethodToggleAddRemoveRelatedEntity(r));
 		}

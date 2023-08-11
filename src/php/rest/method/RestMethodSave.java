@@ -17,6 +17,7 @@ import php.core.instruction.AssignInstruction;
 import php.core.instruction.CaseBlock;
 import php.core.instruction.IfBlock;
 import php.core.instruction.SwitchBlock;
+import php.core.instruction.ThrowInstruction;
 import php.core.instruction.TryCatchBlock;
 import php.core.method.Method;
 import php.entity.EntityCls;
@@ -61,7 +62,7 @@ public class RestMethodSave extends Method {
 			
 			Var vEntity=ifInsert.thenBlock()._declare(entity,"_entity",entity.callStaticMethod(MethodCreateNew.getMethodName()));
 			Var vEntityUpdate=ifInsert.elseBlock()._declare(entity,"_entity", new InlineIfExpression(vIsPkMod, Types.EntityRepository.callStaticMethod(MethodGetById.getMethodName(entity),getByPrevIdArgs) , Types.EntityRepository.callStaticMethod(MethodGetById.getMethodName(entity),getByIdArgs))	);
-			
+			ifInsert.elseBlock()._if(vEntity.isNull()).thenBlock().addInstr(new ThrowInstruction(Types.Exception.newInstance(new PhpStringLiteral("no such entry"))));
 			for(Column col:entity.getTbl().getColumnsWithoutPrimaryKey()) {
 				ifInsert.thenBlock()._callMethodInstr(vEntity, MethodColumnAttrSetter.getMethodName(col), EntityCls.getTypeMapper().getConvertJsonValueToTypedExpression(postData.arrayIndex(new PhpStringLiteral(col.getName())), col));
 				ifInsert.elseBlock()._if(postData.arrayIndexIsset(new PhpStringLiteral(col.getName()))).thenBlock()._callMethodInstr(vEntity, MethodColumnAttrSetter.getMethodName(col), EntityCls.getTypeMapper().getConvertJsonValueToTypedExpression(postData.arrayIndex(new PhpStringLiteral(col.getName())), col) );

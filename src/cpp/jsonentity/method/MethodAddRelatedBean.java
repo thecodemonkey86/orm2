@@ -29,7 +29,11 @@ public class MethodAddRelatedBean extends Method {
 		
 		if(!pBean.getType().getName().startsWith(ClsQList.CLSNAME)) // TODO overloaded with QVector
 		for(int i=0;i < rel.getColumnCount(); i++) {
-			addInstr(pBean.callSetterMethodInstruction(rel.getDestMappingColumn(i).getCamelCaseName(), _this().callAttrGetter(rel.getColumns(i).getValue1().getCamelCaseName())));
+			if(!rel.getDestMappingColumn(i).isPartOfPk()) {
+				addInstr(pBean.callSetterMethodInstruction(rel.getDestMappingColumn(i).getCamelCaseName(), _this().callAttrGetter(rel.getColumns(i).getValue1().getCamelCaseName())));
+			} else {
+				addInstr(pBean.callMethodInstruction("set"+ rel.getDestMappingColumn(i).getUc1stCamelCaseName()+"Internal", _this().callAttrGetter(rel.getColumns(i).getValue1().getCamelCaseName())));
+			}
 		}
 	}
 

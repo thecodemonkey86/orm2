@@ -6,6 +6,7 @@ import java.util.List;
 
 import codegen.CodeUtil;
 import cpp.core.expression.Expression;
+import cpp.core.expression.Var;
 import cpp.core.instruction.Comment;
 import cpp.core.instruction.IfBlock;
 import cpp.core.instruction.Instruction;
@@ -81,6 +82,17 @@ public class LambdaExpression extends Expression{
 	
 	public IfBlock _if(Expression cond)	{
 		return instructions._if(cond);
+	}
+	
+	public Var _declare(Type type, String varName) {
+		return instructions._declare(type, varName);
+	}
+		
+	public Var _declare(Type type, String varName, Expression init ) {
+		return instructions._declare(type, varName,init);
+	}
+	public Var _declareInitConstructor(Type type, String varName, Expression init ) {
+		return instructions._declareInitConstructor(type, varName, init);
 	}
 
 	public Expression getArgument(int i) {

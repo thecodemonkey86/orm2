@@ -85,6 +85,7 @@ public abstract class Expression {
 		try{
 			return new MethodCall(this, ((Cls)getType()).getMethod(m),args);
 		} catch (Exception e) {
+			System.out.println(getType());
 			e.printStackTrace();
 			throw e;
 		}

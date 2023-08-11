@@ -13,6 +13,7 @@ public class ClsQJsonValue extends Cls {
 	public static final String toString = "toString";
 	public static final String toObject = "toObject";
 	public static final String toArray = "toArray";
+	public static final String toBool = "toBool";
 	public static final String isNull = "isNull";
 	
 	public ClsQJsonValue() {
@@ -23,6 +24,7 @@ public class ClsQJsonValue extends Cls {
 		addMethod(new LibMethod(JsonTypes.QJsonObject, toObject));
 		addMethod(new LibMethod(JsonTypes.QJsonArray, toArray));
 		addMethod(new LibMethod(CoreTypes.Double, toDouble));
+		addMethod(new LibMethod(CoreTypes.Bool, toBool));
 		addMethod(new LibMethod(CoreTypes.Bool, isNull));
 	}
 

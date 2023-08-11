@@ -1,4 +1,4 @@
-package cpp.entity.method;
+package cpp.jsonentity.method;
 
 import cpp.Types;
 import cpp.core.Attr;
