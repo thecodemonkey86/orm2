@@ -371,7 +371,8 @@ public class EntityCls extends Cls {
 		addIncludeLib(Types.QDate);
 		addIncludeLib(Types.qset(null));
 		addIncludeLib("memory");
-		addIncludeHeader("nullable");
+		if(tbl.hasNullableColumn())
+			addIncludeHeader("nullable");
 				
 //		Attr aTableName = new Attr(Attr.Public, Types.ConstCharPtr, "TABLENAME",constCharPtr(tbl.getName()),true);
 //		addAttr(aTableName);

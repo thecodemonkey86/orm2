@@ -38,23 +38,23 @@ public class MethodEntityLoad extends Method {
 	protected List<OneToManyRelation> oneToManyRelations;
 	protected List<ManyRelation> manyRelations;
 	protected PrimaryKey primaryKey;
-	protected EntityCls bean;
-	protected Param pBean;
+	protected EntityCls entity;
+	protected Param pEntity;
 	protected Param pSqlCon;
 	
 	public static String getMethodName() {
 		return "load";
 	}
 	
-	public MethodEntityLoad(EntityCls bean) {
+	public MethodEntityLoad(EntityCls entity) {
 		super(Public, Types.Void, getMethodName());
 		
-		this.oneRelations = bean.getOneRelations();
-		this.oneToManyRelations = bean.getOneToManyRelations();
-		this.manyRelations = bean.getManyRelations();
-		this.primaryKey = bean.getTbl().getPrimaryKey();
-		this.bean = bean;
-		pBean = addParam(bean.toRef(), "entity");
+		this.oneRelations = entity.getOneRelations();
+		this.oneToManyRelations = entity.getOneToManyRelations();
+		this.manyRelations = entity.getManyRelations();
+		this.primaryKey = entity.getTbl().getPrimaryKey();
+		this.entity = entity;
+		pEntity = addParam(entity.toRef(), "entity");
 		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 		setStatic(true);
 	}
@@ -66,12 +66,12 @@ public class MethodEntityLoad extends Method {
 	
 	@Override
 	public void addImplementation() {
-		EntityCls bean = this.bean;
+		EntityCls entity = this.entity;
 		
 		Var sqlQuery = _declareInitConstructor( EntityCls.getDatabaseMapper().getSqlQueryType(),"query");
 		
 		ArrayList<Expression> selectFields = new ArrayList<>();
-		selectFields.add(bean.callStaticMethod("getSelectFields",QString.fromStringConstant("e1")));
+		selectFields.add(entity.callStaticMethod("getSelectFields",QString.fromStringConstant("e1")));
 		
 		List<AbstractRelation> allRelations = new ArrayList<>(oneRelations.size()+oneToManyRelations.size()+manyRelations.size());
 		allRelations.addAll(oneRelations);
@@ -84,7 +84,7 @@ public class MethodEntityLoad extends Method {
 			
 		}
 		Expression exprQSqlQuery = sqlQuery.callMethod("select", Expressions.concat(QChar.fromChar(','), selectFields) )
-									.callMethod("from", QString.fromExpression(bean.callStaticMethod("getTableName",QString.fromStringConstant("e1"))));
+									.callMethod("from", QString.fromExpression(entity.callStaticMethod("getTableName",QString.fromStringConstant("e1"))));
 		
 				
 		for(OneRelation r:oneRelations) {
@@ -142,7 +142,7 @@ public class MethodEntityLoad extends Method {
 		
 		for(Column col:primaryKey.getColumns()) {
 			
-			exprQSqlQuery = exprQSqlQuery.callMethod("where", QString.fromStringConstant("e1."+ col.getEscapedName()+"=?"),EntityCls.accessThisAttrGetterByColumn(pBean,col));
+			exprQSqlQuery = exprQSqlQuery.callMethod("where", QString.fromStringConstant("e1."+ col.getEscapedName()+"=?"),EntityCls.accessThisAttrGetterByColumn(pEntity,col));
 					
 		}
 		for(AbstractRelation r:allRelations) {
@@ -203,7 +203,7 @@ public class MethodEntityLoad extends Method {
 //				IfBlock ifNotContains = 
 				ifNotPkForeignIsNull.thenBlock()._if(Expressions.not(pkSet.callMethod("contains", pk)))
 						.addIfInstr(pkSet.callMethodInstruction("insert", pk))
-						.addIfInstr(pBean.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r) , parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias()))));
+						.addIfInstr(pEntity.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r) , parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias()))));
 				
 			} else {
 				
@@ -228,7 +228,7 @@ public class MethodEntityLoad extends Method {
 							Expressions.not(pkSet.callMethod("contains", pk.callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk))))
 						))
 							.addIfInstr(pkSet.callMethodInstruction("insert", pk.callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk))))
-							.addIfInstr(pBean.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r) , parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias()))))
+							.addIfInstr(pEntity.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r) , parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias()))))
 					;
 			}
 			
@@ -252,7 +252,7 @@ public class MethodEntityLoad extends Method {
 //				IfBlock ifNotContains = 
 						doWhileQSqlQueryNext._if(Expressions.not(pkSet.callMethod("contains", pk)))
 						.addIfInstr(pkSet.callMethodInstruction("insert", pk))
-						.addIfInstr(pBean.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r) ,_this().callMethod(MethodGetFromRecord.getMethodName(foreignCls),  rec, QString.fromStringConstant(r.getAlias()))));
+						.addIfInstr(pEntity.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r) ,_this().callMethod(MethodGetFromRecord.getMethodName(foreignCls),  rec, QString.fromStringConstant(r.getAlias()))));
 				
 			} else {
 				
@@ -266,7 +266,7 @@ public class MethodEntityLoad extends Method {
 							Expressions.not(pkSet.callMethod("contains", pk.callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk))))
 						))
 							.addIfInstr(pkSet.callMethodInstruction("insert", pk.callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk))))
-							.addIfInstr(pBean.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r) , parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias()))))
+							.addIfInstr(pEntity.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r) , parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias()))))
 					;
 			}
 		}
@@ -275,12 +275,12 @@ public class MethodEntityLoad extends Method {
 			try {
 				IfBlock ifBlock= doWhileQSqlQueryNext._if(
 						Expressions.and(
-								pBean.callMethod(MethodOneRelationEntityIsNull.getMethodName(r, true))
+								pEntity.callMethod(MethodOneRelationEntityIsNull.getMethodName(r, true))
 								,
 								Expressions.not( rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getFirstColumn().getName())).callMethod(ClsQVariant.isNull))
 						
 						));
-				ifBlock.thenBlock()._callMethodInstr(pBean, MethodOneRelationAttrSetter.getMethodName(r, true), parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias())));
+				ifBlock.thenBlock()._callMethodInstr(pEntity, MethodOneRelationAttrSetter.getMethodName(r, true), parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias())));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
