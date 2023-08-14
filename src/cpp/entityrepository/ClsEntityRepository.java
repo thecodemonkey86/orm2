@@ -48,26 +48,26 @@ public class ClsEntityRepository extends Cls{
 		addIncludeLibInSource(Types.QSqlRecord);
 		addIncludeHeader(getSuperclass().getHeaderInclude());
 		addIncludeHeaderInSource(EntityCls.getDatabaseMapper().getSqlQueryType().getIncludeHeader());
-		for(EntityCls bean:beans) {
-			addIncludeHeaderInSource(EntityCls.getModelPath() + "entities/"+bean.getIncludeHeader());
-			addIncludeHeader("query/"+bean.getName().toLowerCase()+"entityqueryselect");
+		for(EntityCls entity:beans) {
+			addIncludeHeaderInSource(EntityCls.getModelPath() + "entities/"+entity.getIncludeHeader());
+			addIncludeHeader("query/"+entity.getName().toLowerCase()+"entityqueryselect");
 			
-			if(bean.getTbl().hasQueryType(Table.QueryType.Delete))
-				addIncludeHeader("query/"+bean.getName().toLowerCase()+"entityquerydelete");
+			if(entity.getTbl().hasQueryType(Table.QueryType.Delete))
+				addIncludeHeader("query/"+entity.getName().toLowerCase()+"entityquerydelete");
 			
-			if(bean.getTbl().hasQueryType(Table.QueryType.Update))
-				addIncludeHeader("query/"+bean.getName().toLowerCase()+"entityqueryupdate");
+			if(entity.getTbl().hasQueryType(Table.QueryType.Update))
+				addIncludeHeader("query/"+entity.getName().toLowerCase()+"entityqueryupdate");
 //			addAttr(new Attr(new ClsQHash(bean.getPkType(), bean.toRawPointer()), "loadedBeans"+bean.getName()));
-			addMethod(new MethodGetById(bean));
-			addMethod(new MethodGetById(bean,true));
-			addMethod(new MethodGetByIdOrCreateNew(bean));
-			addMethod(new MethodGetByIdOrCreateNew(bean,true));			
+			addMethod(new MethodGetById(entity));
+			addMethod(new MethodGetById(entity,true));
+			addMethod(new MethodGetByIdOrCreateNew(entity));
+			addMethod(new MethodGetByIdOrCreateNew(entity,true));			
 //			addMethod(new MethodGetByRecord(bean.getTbl().getColumns(true), bean));
-			addMethod(new MethodFetchList(bean, bean.getTbl().getPrimaryKey(),false));
-			addMethod(new MethodFetchOne(bean.getOneRelations(),bean.getOneToManyRelations(), bean, null, false));
-			if(bean.hasRelations()) {
-				addMethod(new MethodFetchList(bean, bean.getTbl().getPrimaryKey(),true));
-				addMethod(new MethodFetchOne(bean.getOneRelations(),bean.getOneToManyRelations(), bean, null, true));
+			addMethod(new MethodFetchList(entity, entity.getTbl().getPrimaryKey(),false));
+			addMethod(new MethodFetchOne(entity.getOneRelations(),entity.getOneToManyRelations(), entity, null, false));
+			if(entity.hasRelations()) {
+				addMethod(new MethodFetchList(entity, entity.getTbl().getPrimaryKey(),true));
+				addMethod(new MethodFetchOne(entity.getOneRelations(),entity.getOneToManyRelations(), entity, null, true));
 			}
 			
 //			addMethod(new MethodFetchListStatic(bean));
@@ -75,66 +75,67 @@ public class ClsEntityRepository extends Cls{
 			
 //			addMethod(new MethodFetchOneStatic(bean));
 //			beanQueryClasses.add(new ClsBeanQuery(bean));
-			addForwardDeclaredClass(bean);
+			addForwardDeclaredClass(entity);
 		
 //			addMethod(new MethodLoadCollection(new Param(Types.qset(bean.toSharedPtr()).toRawPointer(), "collection")));
 			
-			if(bean.getTbl().isEnableLoadCollection())
-				addMethod(new MethodLoadCollection(new Param(Types.qlist(bean.toSharedPtr()).toRef(),  "collection"), bean));
-			addMethod(new MethodCreateQuerySelect(bean));
+			if(entity.getTbl().isEnableLoadCollection())
+				addMethod(new MethodLoadCollection(new Param(Types.qlist(entity.toSharedPtr()).toRef(),  "collection"), entity));
+			addMethod(new MethodCreateQuerySelect(entity));
 			
-			if(bean.getTbl().hasQueryType(Table.QueryType.Delete))
-				addMethod(new MethodCreateQueryDelete(bean));
+			if(entity.getTbl().hasQueryType(Table.QueryType.Delete))
+				addMethod(new MethodCreateQueryDelete(entity));
 			
-			if(bean.getTbl().hasQueryType(Table.QueryType.Update))
-				addMethod(new MethodCreateQueryUpdate(bean));
+			if(entity.getTbl().hasQueryType(Table.QueryType.Update))
+				addMethod(new MethodCreateQueryUpdate(entity));
 			
-			addMethod(new MethodEntityLoad(bean));
+			if(entity.hasRelations())
+				addMethod(new MethodEntityLoad(entity));
 			
 			if(EntityCls.getDatabase().supportsInsertOrIgnore()) {
 //				addMethod(new MethodEntitySave(bean,true));
-				addMethod(new MethodPrepareInsertOrIgnore(bean));
-				addMethod(new MethodInsertOrIgnore(bean));
+				addMethod(new MethodPrepareInsertOrIgnore(entity));
+				addMethod(new MethodInsertOrIgnore(entity));
 				
 			}
 //			addMethod(new MethodEntitySave(bean,false));
 //			addMethod(new MethodEntitySaveBulk(bean,false));
 //			addMethod(new MethodEntitySaveBulk(bean,true));
-			addMethod(new MethodGetFromRecord(bean));
-			addMethod(new MethodRepoCreateNew(bean));
+			addMethod(new MethodGetFromRecord(entity));
+			addMethod(new MethodRepoCreateNew(entity));
 			int countNullable = 0;
 			
-			for(Column c : bean.getTbl().getFieldColumns()) {
+			for(Column c : entity.getTbl().getFieldColumns()) {
 				if(c.isNullable()) {
 					countNullable++;
 				}
 			}
 			
-			int countInitializeFields = bean.getTbl().getFieldColumns().size();
-			if(!bean.getTbl().getPrimaryKey().isAutoIncrement()) {
-				countInitializeFields += bean.getTbl().getPrimaryKey().getColumnCount();
+			int countInitializeFields = entity.getTbl().getFieldColumns().size();
+			if(!entity.getTbl().getPrimaryKey().isAutoIncrement()) {
+				countInitializeFields += entity.getTbl().getPrimaryKey().getColumnCount();
 				
-				for(Column c : bean.getTbl().getPrimaryKey()) {
+				for(Column c : entity.getTbl().getPrimaryKey()) {
 					if(c.isNullable()) {
 						countNullable++;
 					}
 				}
 			}
 			if(countInitializeFields > 0) {
-				addMethod(new MethodRepoCreateNew(bean,true,false));
+				addMethod(new MethodRepoCreateNew(entity,true,false));
 				
 				if(countNullable > 0) {
-					addMethod(new MethodRepoCreateNew(bean,true,true));
-					MethodRepoCreateNewNonNullableOnly methodRepoCreateNewNonNullableOnly = new MethodRepoCreateNewNonNullableOnly(bean);
+					addMethod(new MethodRepoCreateNew(entity,true,true));
+					MethodRepoCreateNewNonNullableOnly methodRepoCreateNewNonNullableOnly = new MethodRepoCreateNewNonNullableOnly(entity);
 					if(!methodRepoCreateNewNonNullableOnly.getParams().isEmpty())
 						addMethod(methodRepoCreateNewNonNullableOnly);
 				}
 			}
-			addMethod(new MethodEntityRemove(bean,false));
-			addMethod(new MethodEntitySharedPtrRemove(bean,false));
+			addMethod(new MethodEntityRemove(entity,false));
+			addMethod(new MethodEntitySharedPtrRemove(entity,false));
 			
-			for(IManyRelation r:bean.getAllManyRelations())
-				addMethod(new MethodRemoveAllRelated(bean, r));
+			for(IManyRelation r:entity.getAllManyRelations())
+				addMethod(new MethodRemoveAllRelated(entity, r));
 		}
 		
 	}
