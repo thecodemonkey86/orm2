@@ -32,10 +32,21 @@ public class MethodAddRelatedBean extends Method {
 		_if(a.isNull()).addIfInstr(a.assign(new ArrayInitExpression()));
 		
 		Param pBean = getParam("entity");
-		for(int i=0;i < rel.getColumnCount(); i++) {
-			addInstr(pBean.callAttrSetterMethodInstr(rel.getDestMappingColumn(i).getCamelCaseName(), _this().callAttrGetter(rel.getColumns(i).getValue1().getCamelCaseName())));
-		}
 		PrimaryKey pk = rel.getDestTable().getPrimaryKey();
+		for(int i=0;i < rel.getColumnCount(); i++) {
+			if(rel.getDestMappingColumn(i).isPartOfPk()) {
+				addInstr(pBean.callMethodInstruction("set"+rel.getDestMappingColumn(i).getUc1stCamelCaseName()+"Internal", _this().callAttrGetter(rel.getColumns(i).getValue1().getCamelCaseName())));
+			} else {
+				try {
+					addInstr(pBean.callAttrSetterMethodInstr(rel.getDestMappingColumn(i).getCamelCaseName(), _this().callAttrGetter(rel.getColumns(i).getValue1().getCamelCaseName())));	
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+					
+			}
+			
+		}
+		
 		if(pk.isMultiColumn()) {
 			Expression[] e1PkArgs = new Expression[pk.getColumnCount()];
 			int i=0;

@@ -28,7 +28,7 @@ public class MethodSetValue extends Method {
 		for(Column col : bean.getTbl().getAllColumns()) {
 			if(!col.hasRelation()) {
 				CaseBlock caseBlock = switchBlock._case(new PhpStringLiteral(col.getName()));
-				caseBlock.addInstr(caseBlock._this().callAttrSetter(col.getCamelCaseName(), EntityCls.getTypeMapper().getConvertTypeExpression(pValue, col)).asInstruction());
+				caseBlock.addInstr(caseBlock._this().assignAttr(col.getCamelCaseName(), EntityCls.getTypeMapper().getConvertTypeExpression(pValue, col)));
 				caseBlock._break();
 			}
 		}

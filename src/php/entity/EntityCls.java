@@ -45,6 +45,7 @@ import php.entity.method.MethodRemoveAllManyToManyRelatedBeans;
 import php.entity.method.MethodRemoveAllOneToManyRelatedBeans;
 import php.entity.method.MethodRemoveManyToManyRelatedBean;
 import php.entity.method.MethodSetAutoIncrementId;
+import php.entity.method.MethodSetPrimaryKey;
 import php.entity.method.MethodSetValue;
 import php.entitypk.PkMultiColumnType;
 import php.entityrepository.helper.FetchListHelperClass;
@@ -61,7 +62,7 @@ public class EntityCls extends PhpCls {
 	static PhpCls sqlQueryCls;
 	protected static String beanNamespace;
 	protected static String beanRepoNamespace;
-	public final static String API_LEVEL="2.1.0";
+	public final static String API_LEVEL="2.2.0";
 	
 	public static void setBeanRepoNamespace(String beanRepoClsNamespace) {
 		EntityCls.beanRepoNamespace = beanRepoClsNamespace;
@@ -163,8 +164,8 @@ public class EntityCls extends PhpCls {
 			
 			addMethod(new MethodRemoveAllManyToManyRelatedBeans(r));
 		}
-
-
+		addMethod(new MethodSetPrimaryKey(this));
+		
 		for(Column col:allColumns) {
 
 			if (!col.hasOneRelation()
@@ -173,7 +174,9 @@ public class EntityCls extends PhpCls {
 				Attr attr = new Attr(EntityCls.getTypeMapper().getTypeFromDbDataType(col), col.getCamelCaseName());
 				addAttr(attr);
 				addMethod(new MethodAttrGetter(attr,false));	
-				addMethod(new MethodColumnAttrSetter(this,col,attr));
+				if(!col.isPartOfPk()) {
+					addMethod(new MethodColumnAttrSetter(this,col,attr));
+				}
 				addMethod(new MethodColumnAttrSetterInternal(this,col,attr));
 				if (col.isNullable()) {
 					addMethod(new MethodColumnAttrSetNull(this, col, attr));

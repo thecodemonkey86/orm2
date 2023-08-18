@@ -5,13 +5,9 @@ import php.core.Attr;
 import php.core.Param;
 import php.core.Types;
 import php.core.expression.BoolExpression;
-import php.core.expression.Expression;
 import php.core.expression.Expressions;
-import php.core.instruction.AssignInstruction;
-import php.core.instruction.IfBlock;
 import php.core.method.Method;
 import php.entity.EntityCls;
-import php.lib.ClsBaseEntity;
 import util.StringUtil;
 
 public class MethodColumnAttrSetter extends Method {
@@ -37,25 +33,9 @@ public class MethodColumnAttrSetter extends Method {
 		//addThrowsException(Types.SqlException);
 		Param param = getParam(a.getName());
 		
-		if (!col.isPartOfPk()) {
-			addInstr(_this().assignAttr(a.getName() + "Modified",
-					BoolExpression.TRUE));
-			_assign(_accessThis(a), param);
-		} else {
-			IfBlock ifNotInsert = _if(_not(_this().accessAttr(ClsBaseEntity.insert).and(param._notEquals(_accessThis(a)))));
-			for(Column colPk : bean.getTbl().getPrimaryKey().getColumns()) {
-				Expression prev = EntityCls.accessColumnAttrOrEntityPrevious(_this(), colPk);
-				if(colPk.hasOneRelation()) {
-					IfBlock ifNotNull = ifNotInsert.thenBlock()._if(_not(EntityCls.accessColumnAttrOrEntity(_this(), colPk).isNull()));
-					ifNotNull.thenBlock().addInstr(new AssignInstruction(prev, EntityCls.accessAttrGetterByColumn(_this(), colPk,false)));
-				} else {
-					ifNotInsert.thenBlock().addInstr(new AssignInstruction(prev, EntityCls.accessAttrGetterByColumn(_this(), colPk,false)));
-				}
-			}
-			_assign(_accessThis(a), param);
-			ifNotInsert.thenBlock().addInstr(_this().assignAttr("primaryKeyModified",
-					BoolExpression.TRUE));
-		}
+		addInstr(_this().assignAttr(a.getName() + "Modified",
+				BoolExpression.TRUE));
+		_assign(_accessThis(a), param);
 		//_return(_this());
 
 	}

@@ -23,6 +23,7 @@ import php.core.method.Method;
 import php.entity.EntityCls;
 import php.entity.method.MethodColumnAttrSetter;
 import php.entity.method.MethodCreateNew;
+import php.entity.method.MethodSetPrimaryKey;
 import php.entityrepository.method.MethodEntitySave;
 import php.entityrepository.method.MethodGetById;
 import php.lib.ClsException;
@@ -69,12 +70,14 @@ public class RestMethodSave extends Method {
 			}
 			
 			if(!entity.getTbl().isAutoIncrement()) {
+				Expression[] pkArgs=new Expression[entity.getTbl().getPrimaryKey().getColumnCount()];
+				i=0;
 				for(Column colPk : entity.getTbl().getPrimaryKey()) {
-					
-					
-					ifInsert.thenBlock()._callMethodInstr(vEntity, MethodColumnAttrSetter.getMethodName(colPk), postData.arrayIndex(new PhpStringLiteral(colPk.getName())));
-					ifInsert.elseBlock()._if(postData.arrayIndexIsset(new PhpStringLiteral(colPk.getName()))).thenBlock()._callMethodInstr(vEntityUpdate, MethodColumnAttrSetter.getMethodName(colPk), postData.arrayIndex(new PhpStringLiteral(colPk.getName())));
+					pkArgs[i++] = postData.arrayIndex(new PhpStringLiteral(colPk.getName()));
 				}
+
+				ifInsert.thenBlock()._callMethodInstr(vEntity, MethodSetPrimaryKey.getMethodName(entity), pkArgs);
+				ifInsert.elseBlock()._if(postData.arrayIndexIsset(new PhpStringLiteral(entity.getTbl().getPrimaryKey().getColumn(0).getName()))).thenBlock()._callMethodInstr(vEntityUpdate, MethodSetPrimaryKey.getMethodName(entity), pkArgs);
 			}
 			/*Expression e = Types.EntityRepository.callStaticMethod("createQuery"+entity.getName())
 					.callMethod(ClsBaseEntityQuery.select);
