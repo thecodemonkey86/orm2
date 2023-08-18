@@ -3,6 +3,7 @@ package cpp.jsonentityrepository.method;
 import cpp.CoreTypes;
 import cpp.JsonTypes;
 import cpp.NetworkTypes;
+import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.LambdaExpression;
 import cpp.core.Method;
@@ -23,6 +24,7 @@ import cpp.jsonentity.method.MethodColumnAttrSetterInternal;
 import cpp.jsonentity.method.MethodToJson;
 import cpp.jsonentityrepository.ClsJsonEntityRepository;
 import cpp.lib.ClsBaseJsonEntity;
+import cpp.lib.ClsQByteArray;
 import cpp.lib.ClsQJsonDocument;
 import cpp.lib.ClsQJsonObject;
 import cpp.lib.ClsQJsonValue;
@@ -35,6 +37,7 @@ import cpp.lib.ClsStdFunction;
 import cpp.lib.QObjectConnect;
 import cpp.orm.JsonOrmUtil;
 import database.column.Column;
+import cpp.core.expression.BoolExpression;
 import cpp.core.expression.Expressions;
 
 public class MethodSave extends Method {
@@ -75,11 +78,15 @@ public class MethodSave extends Method {
 			Column col = entity.getTbl().getPrimaryKey().getColumn(0);
 			ifInsert.thenBlock().addInstr(pEntity.callMethodInstruction(MethodColumnAttrSetterInternal.getMethodName(col),JsonOrmUtil.jsonConvertMethod(o.callMethod(ClsQJsonObject.value, QStringLiteral.fromStringConstant(col.getName())), JsonEntity.getDatabaseMapper().columnToType(col)))); 
 		}
+		Var vRaw = lambdaExpression._declare(Types.QByteArray, "rawResponse",reply.callMethod(ClsQNetworkReply.readAll));
+		IfBlock ifNotEmpty = lambdaExpression._if(Expressions.not(vRaw.callMethod(ClsQByteArray.isEmpty)));
+		Var vJson = ifNotEmpty.thenBlock()
+				._declare(JsonTypes.QJsonDocument, "json",JsonTypes.QJsonDocument.callStaticMethod(ClsQJsonDocument.fromJson,vRaw));
 		
-		Var vJson = lambdaExpression._declare(JsonTypes.QJsonDocument, "json",JsonTypes.QJsonDocument.callStaticMethod(ClsQJsonDocument.fromJson,reply.callMethod(ClsQNetworkReply.readAll)));
-		lambdaExpression.addInstr(new SemicolonTerminatedInstruction("qWarning()<<json.object().value(\"message\").toString()"));
-		lambdaExpression.addInstr(new StdFunctionInvocation(pCallback, reply.callMethod(ClsQNetworkReply.error)._equals(NetworkTypes.QNetworkReply.noError).binOp(Operators.AND,Expressions.not(vJson.callMethod(ClsQJsonDocument.object).callMethod(ClsQJsonObject.value, QStringLiteral.fromStringConstant("error")).callMethod(ClsQJsonValue.toBool)))));
-		lambdaExpression.addInstr(reply.callMethodInstruction(ClsQNetworkReply.deleteLater));
+		lambdaExpression.addInstr(new SemicolonTerminatedInstruction("qWarning()<<rawResponse"));
+		ifNotEmpty.thenBlock().addInstr(new StdFunctionInvocation(pCallback, reply.callMethod(ClsQNetworkReply.error)._equals(NetworkTypes.QNetworkReply.noError).binOp(Operators.AND,Expressions.not(vJson.callMethod(ClsQJsonDocument.object).callMethod(ClsQJsonObject.value, QStringLiteral.fromStringConstant("error")).callMethod(ClsQJsonValue.toBool)))));
+		ifNotEmpty.thenBlock().addInstr(reply.callMethodInstruction(ClsQNetworkReply.deleteLater));
+		ifNotEmpty.elseBlock().addInstr(new StdFunctionInvocation(pCallback,BoolExpression.FALSE));
 	}
 
 }
