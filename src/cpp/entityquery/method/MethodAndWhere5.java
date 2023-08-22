@@ -14,7 +14,7 @@ public class MethodAndWhere5 extends Method{
 	public MethodAndWhere5(Cls parentType) {
 		super(Public, parentType.toRef(), "andWhere");
 		pWhereCond = addParam(Types.QString.toConstRef(),"whereCond");
-		pParams = addParam(Types.QVariantList,"params");
+		pParams = addParam(Types.QVariantList.toConstRef(),"params");
 		
 	}
 

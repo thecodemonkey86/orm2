@@ -99,6 +99,12 @@ public class Type {
 		return rawPtr(this);
 	}
 	
+	public Type toConstRawPointer() {
+		RawPtr ptr=new RawPtr(this);
+		ptr.setConstness(true);
+		return ptr;
+	}
+	
 	public void addOperator(Operator op) {
 		if (operators == null)
 			operators = new ArrayList<>();

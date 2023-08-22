@@ -355,7 +355,7 @@ public class EntityCls extends Cls {
 	}
 	
 	public void addDeclarations() {
-		Constructor c=new EntityConstructor(tbl.getPrimaryKey().isAutoIncrement(),tbl.getColumnsWithoutPrimaryKey());
+		Constructor c=new EntityConstructor(tbl.getPrimaryKey().isAutoIncrement(),tbl.getAllColumns());
 		addSuperclass(Types.BaseEntity);
 		addConstructor(c); 
 		Destructor d = new EntityDestructor(this);
