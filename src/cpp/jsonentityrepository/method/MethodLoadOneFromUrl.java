@@ -3,14 +3,18 @@ package cpp.jsonentityrepository.method;
 import cpp.CoreTypes;
 import cpp.JsonTypes;
 import cpp.NetworkTypes;
+import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.LambdaExpression;
 import cpp.core.Method;
 import cpp.core.Param;
+import cpp.core.expression.Expressions;
 import cpp.core.expression.StdFunctionInvocation;
 import cpp.core.expression.Var;
+import cpp.core.instruction.IfBlock;
 import cpp.jsonentity.JsonEntity;
 import cpp.jsonentityrepository.ClsJsonEntityRepository;
+import cpp.lib.ClsQByteArray;
 import cpp.lib.ClsQNetworkAccessManager;
 import cpp.lib.ClsQNetworkReply;
 import cpp.lib.ClsQNetworkRequest;
@@ -45,7 +49,10 @@ public class MethodLoadOneFromUrl extends Method {
 		addInstr(new QObjectConnect(reply,"&QNetworkReply::finished",aNetwork,
 				lambdaExpression.setCapture(reply, pCallback),true));
 	    		
-		lambdaExpression.addInstr(new StdFunctionInvocation(pCallback, JsonTypes.JsonEntityRepository.callStaticMethod(MethodGetOneFromJson.getMethodName(entity),reply.callMethod(ClsQNetworkReply.readAll))));
+		Var vResponse= lambdaExpression._declare(Types.QByteArray, "response", reply.callMethod(ClsQNetworkReply.readAll));
+		IfBlock ifNotEmptyResponse= lambdaExpression._ifNot(vResponse.callMethod(ClsQByteArray.isEmpty)); 
+		ifNotEmptyResponse.elseBlock().addInstr(new StdFunctionInvocation(pCallback, Expressions.Nullptr));
+		ifNotEmptyResponse.thenBlock().addInstr(new StdFunctionInvocation(pCallback, JsonTypes.JsonEntityRepository.callStaticMethod(MethodGetOneFromJson.getMethodName(entity),vResponse)));
 		lambdaExpression.addInstr(reply.callMethodInstruction(ClsQNetworkReply.deleteLater));
 	}
 

@@ -98,4 +98,8 @@ public class LambdaExpression extends Expression{
 	public Expression getArgument(int i) {
 		return arguments.get(i);
 	}
+
+	public IfBlock _ifNot(Expression cond) {
+		return instructions._ifNot(cond);
+	}
 }

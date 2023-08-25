@@ -38,8 +38,8 @@ public class JavaConfigReader extends ConfigReader{
 		super.startElement(uri, localName, qName, atts);
 		switch (this.tags.peek()) {
 		case "java":
-			((JavaOrmOutputConfig)cfg).setBeanPackageName(atts.getValue("entityPackageName"));
-			((JavaOrmOutputConfig)cfg).setRepositoryPackageName(atts.getValue("repositoryJavaPackage"));
+			((JavaOrmOutputConfig)cfg).setEntityPackageName(atts.getValue("entityPackage"));
+			((JavaOrmOutputConfig)cfg).setRepositoryPackageName(atts.getValue("repositoryPackage"));
 			break;
 		default:
 			break;

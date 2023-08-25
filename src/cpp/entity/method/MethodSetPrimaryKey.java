@@ -1,5 +1,7 @@
 package cpp.entity.method;
 
+import java.util.ArrayList;
+
 import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.ConstRef;
@@ -9,6 +11,7 @@ import cpp.core.TplCls;
 import cpp.core.expression.BoolExpression;
 import cpp.core.expression.CreateObjectExpression;
 import cpp.core.expression.Expression;
+import cpp.core.expression.Expressions;
 import cpp.core.expression.Operators;
 import cpp.core.instruction.IfBlock;
 import cpp.entity.Nullable;
@@ -38,17 +41,17 @@ public class MethodSetPrimaryKey extends Method{
 			}
 		}
 		
-		Expression cond = null;
+		ArrayList<Expression> cond = new ArrayList<>();
 		for(Column col:pk) {
 			String a=col.getCamelCaseName();
 			Param param = getParam(a);
 			if(col.isNullable()) {
-				cond = _this().accessAttr(a).callMethod(Nullable.isNull).binOp(Operators.OR, param._notEquals(_this().accessAttr(a).callMethod(Nullable.val)));
+				cond.add(_this().accessAttr(a).callMethod(Nullable.isNull).binOp(Operators.OR, param._notEquals(_this().accessAttr(a).callMethod(Nullable.val))));
 			} else {
-				cond = param._notEquals(_this().accessAttr(a));
+				cond.add(param._notEquals(_this().accessAttr(a)));
 			}
 		}
-		 IfBlock ifNotEquals = _if(cond);
+		 IfBlock ifNotEquals = _if(Expressions.or(cond));
 		 IfBlock ifNotInsert=ifNotEquals.thenBlock()._ifNot(_this().accessAttr("insert"));
 		for(Column col:pk) {
 			String a=col.getCamelCaseName();

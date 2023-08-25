@@ -29,6 +29,7 @@ public class PhpFunctions {
 	public static final PhpFunction json_decode = new PhpFunction("json_decode", Types.array(Types.Mixed));
 	public static final PhpFunction stream_get_contents = new PhpFunction("stream_get_contents", Types.String);
 	public static final PhpFunction str_contains = new PhpFunction("str_contains", Types.Bool);
+	public static final PhpFunction exit = new PhpFunction("exit", Types.Bool);
 	
 	public static Instruction echo(Expression e) {
 		return new SemicolonTerminatedInstruction("echo " +e);

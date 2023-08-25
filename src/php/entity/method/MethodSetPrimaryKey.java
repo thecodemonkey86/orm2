@@ -1,5 +1,7 @@
 package php.entity.method;
 
+import java.util.ArrayList;
+
 import database.column.Column;
 import database.relation.PrimaryKey;
 import php.core.Attr;
@@ -34,17 +36,17 @@ public class MethodSetPrimaryKey extends Method{
 				addParam(new Param(a.getType(), a.getName()));
 			}
 		}
-		Expression cond = null;
+		ArrayList<Expression> cond = new ArrayList<>();
 		for(Column col:pk) {
 			String a=col.getCamelCaseName();
 			Param param = getParam(a);
 			if(col.isNullable()) {
-				cond = _this().accessAttr(a)._equals(Expressions.Null).binOp(Operators.OR, param._notEquals(_this().accessAttr(a)));
+				cond.add( _this().accessAttr(a)._equals(Expressions.Null).binOp(Operators.OR, param._notEquals(_this().accessAttr(a))));
 			} else {
-				cond = param._notEquals(_this().accessAttr(a));
+				cond.add(param._notEquals(_this().accessAttr(a)));
 			}
 		}
-		 IfBlock ifNotEquals = _if(cond);
+		 IfBlock ifNotEquals = _if(Expressions.or(cond) );
 		 IfBlock ifNotInsert=ifNotEquals.thenBlock()._if(Expressions.not(_this().accessAttr("insert")));
 		for(Column col:pk) {
 			String a=col.getCamelCaseName();

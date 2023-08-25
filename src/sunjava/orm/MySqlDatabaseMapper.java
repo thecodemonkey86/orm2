@@ -1,11 +1,11 @@
 package sunjava.orm;
 
 import database.column.Column;
-import sunjava.bean.BeanCls;
 import sunjava.core.Type;
 import sunjava.core.Types;
 import sunjava.core.expression.Expression;
 import sunjava.core.expression.Var;
+import sunjava.entity.EntityCls;
 
 public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 	
@@ -83,11 +83,11 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 	}
 
 	@Override
-	public Type getBeanQueryClass(BeanCls beanCls) {
+	public Type getBeanQueryClass(EntityCls beanCls) {
 		throw new RuntimeException("not implemented");
 	}
 	@Override
-	public Type getLibBeanQueryClass(BeanCls beanCls) {
+	public Type getLibBeanQueryClass(EntityCls beanCls) {
 		throw new RuntimeException("not implemented");
 	}
 

@@ -24,7 +24,7 @@ import database.column.Column;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
-import sunjava.bean.method.MethodAddRelatedBeanInternal;
+import sunjava.entity.method.MethodAddRelatedEntityInternal;
 import util.StringUtil;
 
 public class MethodGetOneFromJson extends Method {
@@ -93,7 +93,7 @@ public class MethodGetOneFromJson extends Method {
 				JsonEntity e = JsonEntities.get(r.getDestTable());
 				Var relationBeanDataArray  =ifValueIsNull.thenBlock()._declare(JsonTypes.QJsonArray,"_jsonDataArray" +r.getAlias(), pJsonObject.callMethod(ClsQJsonObject.value,QString.fromStringConstant(OrmUtil.getOneToManyRelationDestAttrNameSingular(r))).callMethod(ClsQJsonValue.toArray));
 				ForeachLoop foreachRelationBean = ifValueIsNull.thenBlock()._foreach(new Var(JsonTypes.QJsonValue.toConstRef(),"_jsonData" + r.getAlias()), relationBeanDataArray);
-				foreachRelationBean.addInstr(e1.callMethodInstruction(MethodAddRelatedBeanInternal.getMethodName(r), parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e),foreachRelationBean.getVar().callMethod(ClsQJsonValue.toObject))));
+				foreachRelationBean.addInstr(e1.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r), parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e),foreachRelationBean.getVar().callMethod(ClsQJsonValue.toObject))));
 			}
 			for(ManyRelation r : entity.getManyRelations() ) {
 				IfBlock ifValueIsNull = _if(Expressions.and(
@@ -103,7 +103,7 @@ public class MethodGetOneFromJson extends Method {
 				JsonEntity e = JsonEntities.get(r.getDestTable());
 				Var relationBeanDataArray  =ifValueIsNull.thenBlock()._declare(JsonTypes.QJsonArray,"_jsonDataArray" +r.getAlias(), pJsonObject.callMethod(ClsQJsonObject.value,QString.fromStringConstant(OrmUtil.getManyRelationDestAttrNameSingular(r))).callMethod(ClsQJsonValue.toArray));
 				ForeachLoop foreachRelationBean = ifValueIsNull.thenBlock()._foreach(new Var(JsonTypes.QJsonValue.toConstRef(),"_jsonData" + r.getAlias()), relationBeanDataArray);
-				foreachRelationBean.addInstr(e1.callMethodInstruction(MethodAddRelatedBeanInternal.getMethodName(r), parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e),foreachRelationBean.getVar().callMethod(ClsQJsonValue.toObject))));
+				foreachRelationBean.addInstr(e1.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r), parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e),foreachRelationBean.getVar().callMethod(ClsQJsonValue.toObject))));
 			}
 			_return(e1);
 		}
