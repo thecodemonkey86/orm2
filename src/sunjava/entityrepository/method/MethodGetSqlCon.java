@@ -1,25 +1,34 @@
 package sunjava.entityrepository.method;
 
-import sunjava.core.JavaCls;
 import sunjava.core.Method;
-import sunjava.core.Types;
-import sunjava.lib.ClsThreadLocal;
+import sunjava.core.Type;
 
 public class MethodGetSqlCon extends Method {
 
-	public MethodGetSqlCon() {
-		super(Public, Types.Connection,getMethodName() );
-		setStatic(true);
+	public MethodGetSqlCon(String visibility, Type returnType, String name) {
+		super(visibility, returnType, name);
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void addImplementation() {
-		_return(((JavaCls) parent).accessStaticAttributeByName("sqlConnection").callMethod(ClsThreadLocal.get));
+		// TODO Auto-generated method stub
 		
 	}
 
-	public static String getMethodName() {
-		return "getSqlConnection";
-	}
+//	public MethodGetSqlCon() {
+//		super(Public, Types.Connection,getMethodName() );
+//		setStatic(true);
+//	}
+//
+//	@Override
+//	public void addImplementation() {
+//		_return(((JavaCls) parent).accessStaticAttributeByName("sqlConnection").callMethod(ClsThreadLocal.get));
+//		
+//	}
+//
+//	public static String getMethodName() {
+//		return "getSqlConnection";
+//	}
 
 }

@@ -33,21 +33,22 @@ import sunjava.lib.ClsSqlUtil;
 import sunjava.orm.OrmUtil;
 import util.CodeUtil2;
 
-public class MethodBeanSave extends Method {
+public class MethodEntitySave extends Method {
 	protected EntityCls bean;
-
-	public MethodBeanSave(EntityCls bean) {
+	Param pSqlCon;
+	public MethodEntitySave(EntityCls bean) {
 		super(Public, Types.Void, "save");
 		setStatic(true);
 		this.bean = bean;
 		addParam(new Param(bean, "entity"));
+		pSqlCon =addParam(new Param(Types.Connection, "sqlConnection"));
 	}
 
 	@Override
 	public void addImplementation() {
 		addThrowsException(Types.SqlException);
 		ClsEntityRepository parent = (ClsEntityRepository) this.parent;
-		Var sqlQuery = _declare(Types.SqlQuery, "query",EntityCls.getSqlQueryCls().newInstance(parent.callStaticMethod(MethodGetSqlCon.getMethodName())));
+		Var sqlQuery = _declare(Types.SqlQuery, "query",EntityCls.getSqlQueryCls().newInstance(pSqlCon));
 //		TryCatchBlock tryCatch = _tryCatch();
 		
 		InstructionBlock mainBlock = this; //tryCatch.getTryBlock()
@@ -172,7 +173,7 @@ public class MethodBeanSave extends Method {
 			IfBlock ifRemoveBeans = _if(pBean.callMethod(MethodHasRemovedManyToMany.getMethodName(r)));
 		
 			
-			Var varDeleteSql = ifRemoveBeans.thenBlock()._declare(Types.SqlQuery, "deleteSqlQuery",EntityCls.getSqlQueryCls().newInstance(parent.callStaticMethod(MethodGetSqlCon.getMethodName())));
+			Var varDeleteSql = ifRemoveBeans.thenBlock()._declare(Types.SqlQuery, "deleteSqlQuery",EntityCls.getSqlQueryCls().newInstance(pSqlCon));
 			ifRemoveBeans.thenBlock()._callMethodInstr(varDeleteSql, ClsSqlQuery.deleteFrom, JavaString.stringConstant(r.getMappingTable().getName()));
 			
 			ArrayList<String> whereSourceCols = new ArrayList<>(r.getSourceColumnCount());
@@ -236,7 +237,7 @@ public class MethodBeanSave extends Method {
 				argsOnConflictDoNothing[i] = JavaString.stringConstant(r.getMappingTable().getPrimaryKey().getColumn(i).getName());
 			}
 			
-			Var varAddSql = ifAddedBeans.thenBlock()._declare(Types.SqlQuery, "addSqlQuery",EntityCls.getSqlQueryCls().newInstance(parent.callStaticMethod(MethodGetSqlCon.getMethodName())));
+			Var varAddSql = ifAddedBeans.thenBlock()._declare(Types.SqlQuery, "addSqlQuery",EntityCls.getSqlQueryCls().newInstance(pSqlCon));
 			ifAddedBeans.thenBlock()._callMethodInstr(varAddSql, ClsSqlQuery.insertMultiRow, argsInsertMultiRow);
 			ifAddedBeans.thenBlock()._callMethodInstr(varAddSql, ClsSqlQuery.onConflictDoNothing, argsOnConflictDoNothing);
 			Type foreachAddedElementType = ((ClsArrayList) expressionManyToManyAdded.getType()).getElementType();

@@ -35,7 +35,7 @@ import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
 import database.relation.PrimaryKey;
 
-public class MethodBeanLoad extends Method {
+public class MethodEntityLoad extends Method {
 
 	protected List<OneRelation> oneRelations;
 	protected List<OneToManyRelation> oneToManyRelations;
@@ -43,7 +43,7 @@ public class MethodBeanLoad extends Method {
 	protected PrimaryKey primaryKey;
 	protected EntityCls bean;
 
-	public MethodBeanLoad(EntityCls bean) {
+	public MethodEntityLoad(EntityCls bean) {
 		super(Public, Types.Void, "load"+bean.getName());
 
 		this.oneRelations =bean.getOneRelations();

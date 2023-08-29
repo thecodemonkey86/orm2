@@ -2,7 +2,7 @@ package sunjava.entityrepository.query;
 
 import sunjava.core.JavaCls;
 import sunjava.entity.EntityCls;
-import sunjava.entityrepository.query.method.ConstructorBeanQuery;
+import sunjava.entityrepository.query.method.ConstructorEntityQuery;
 import sunjava.entityrepository.query.method.MethodAddRelatedTableJoins;
 import sunjava.entityrepository.query.method.MethodBeanQueryFetch;
 import sunjava.entityrepository.query.method.MethodBeanQueryFetchOne;
@@ -22,7 +22,7 @@ public class ClsEntityQuery extends JavaCls {
 		super(cls.getName()+ "EntityQuery",beanQueryPackage);
 		addImport((JavaCls) EntityCls.getTypeMapper().getSqlQueryClass());
 		setSuperclass(new ClsBaseEntityQuery(cls));
-		addConstructor(new ConstructorBeanQuery());
+		addConstructor(new ConstructorEntityQuery());
 		addMethod(new MethodBeanQueryFetch(cls));
 		addMethod(new MethodBeanQueryFetchOne(cls));
 		addMethod(new MethodAddRelatedTableJoins(cls));

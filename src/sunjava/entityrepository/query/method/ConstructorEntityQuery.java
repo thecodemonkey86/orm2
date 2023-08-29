@@ -6,9 +6,9 @@ import sunjava.core.Types;
 import sunjava.core.expression.NewOperator;
 import sunjava.entity.EntityCls;
 
-public class ConstructorBeanQuery extends Constructor {
+public class ConstructorEntityQuery extends Constructor {
 
-	public ConstructorBeanQuery() {
+	public ConstructorEntityQuery() {
 		super();
 		Param sqlCon = new Param(Types.Connection, "sqlCon");
 		addParam(sqlCon);

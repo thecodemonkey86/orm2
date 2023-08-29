@@ -35,6 +35,8 @@ import util.pg.PgCppUtil;
 public class MethodGetById extends Method {
 
 	protected EntityCls entity;
+	Param pSqlCon;
+	
 	public MethodGetById(EntityCls cls) {
 //		super(Public, cls, "getById");
 		super(Public, cls, "get"+cls.getName()+"ById");
@@ -43,6 +45,7 @@ public class MethodGetById extends Method {
 			addParam(new Param(colType.isPrimitiveType() ? colType : colType, col.getCamelCaseName()));
 			
 		}
+		pSqlCon =addParam(new Param(Types.Connection, "sqlConnection"));
 		setStatic(true);
 		addThrowsException(Types.SqlException);
 		this.entity=cls;
@@ -56,13 +59,13 @@ public class MethodGetById extends Method {
 	@Override
 	public void addImplementation() {
 		//		StringBuilder sbSql = new StringBuilder(CodeUtil.sp("select");
-		ClsEntityRepository parent = (ClsEntityRepository) this.parent;
+		//ClsEntityRepository parent = (ClsEntityRepository) this.parent;
 		
 		List<OneRelation> oneRelations = entity.getOneRelations();
 		List<OneToManyRelation> oneToManyRelations = entity.getOneToManyRelations();
 		List<ManyRelation> manyToManyRelations = entity.getManyToManyRelations();
 		
-		Expression sqlCon = parent.callStaticMethod(MethodGetSqlCon.getMethodName());
+		Expression sqlCon = pSqlCon;// parent.callStaticMethod(MethodGetSqlCon.getMethodName());
 		//Method mBuildQuery = aSqlCon.getClassType().getMethod("buildQuery");
 		Var sqlQuery = _declare(Types.SqlQuery, "query",EntityCls.getSqlQueryCls().newInstance(sqlCon));
 		

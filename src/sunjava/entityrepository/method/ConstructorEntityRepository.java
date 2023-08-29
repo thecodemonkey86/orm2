@@ -2,9 +2,9 @@ package sunjava.entityrepository.method;
 
 import sunjava.core.Constructor;
 
-public class ConstructorBeanRepository extends Constructor{
+public class ConstructorEntityRepository extends Constructor{
 
-	public ConstructorBeanRepository() {
+	public ConstructorEntityRepository() {
 		visibility = Private;
 	}
 	

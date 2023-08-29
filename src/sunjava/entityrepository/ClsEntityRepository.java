@@ -2,25 +2,21 @@ package sunjava.entityrepository;
 
 import java.util.Collection;
 
-import sunjava.core.Attr;
 import sunjava.core.JavaCls;
 import sunjava.core.Param;
 import sunjava.core.Types;
 import sunjava.entity.EntityCls;
-import sunjava.entityrepository.method.ConstructorBeanRepository;
-import sunjava.entityrepository.method.MethodBeanLoad;
-import sunjava.entityrepository.method.MethodBeanSave;
+import sunjava.entityrepository.method.ConstructorEntityRepository;
+import sunjava.entityrepository.method.MethodEntityLoad;
+import sunjava.entityrepository.method.MethodEntitySave;
 import sunjava.entityrepository.method.MethodCreateQuery;
 import sunjava.entityrepository.method.MethodGetAllSelectFields;
 import sunjava.entityrepository.method.MethodGetById;
 import sunjava.entityrepository.method.MethodGetFromResultSet;
 import sunjava.entityrepository.method.MethodGetSelectFields;
-import sunjava.entityrepository.method.MethodGetSqlCon;
 import sunjava.entityrepository.method.MethodGetTableName;
 import sunjava.entityrepository.method.MethodGetTableNameAlias;
 import sunjava.entityrepository.method.MethodLoadCollection;
-import sunjava.entityrepository.method.MethodInit;
-import sunjava.lib.ClsThreadLocal;
 
 public class ClsEntityRepository extends JavaCls{
 //	protected ArrayList<ClsBeanQuery> beanQueryClasses;
@@ -33,9 +29,9 @@ public class ClsEntityRepository extends JavaCls{
 	
 	public ClsEntityRepository() {
 		super(CLSNAME,entityRepositoryPackage);
-		Attr sqlCon = new Attr(Attr.Protected,new ClsThreadLocal(Types.Connection) , "sqlConnection",null, true);
-		addAttr(sqlCon);
-		addMethod(new MethodGetSqlCon());
+		//Attr sqlCon = new Attr(Attr.Protected,new ClsThreadLocal(Types.Connection) , "sqlConnection",null, true);
+		//addAttr(sqlCon);
+		//addMethod(new MethodGetSqlCon());
 //		beanQueryClasses = new ArrayList<>(); 
 	}
 
@@ -48,8 +44,8 @@ public class ClsEntityRepository extends JavaCls{
 	}*/
 	
 	public void addDeclarations(Collection<EntityCls> beans) {
-		addConstructor(new ConstructorBeanRepository());
-		addMethod(new MethodInit());
+		addConstructor(new ConstructorEntityRepository());
+//		addMethod(new MethodInit());
 		for(EntityCls bean:beans) {
 			addImport(bean.getPackage()+"."+bean.getName());
 //			addAttr(new Attr(new ClsQHash(bean.getPkType(), bean), "loadedBeans"+bean.getName()));
@@ -63,8 +59,8 @@ public class ClsEntityRepository extends JavaCls{
 //			addMethod(new MethodLoadCollection(new Param(Types.qset(bean), "collection")));
 			addMethod(new MethodLoadCollection(new Param(Types.linkedHashSet(bean),  "collection"), bean));
 			addMethod(new MethodCreateQuery(bean));
-			addMethod(new MethodBeanLoad(bean));
-			addMethod(new MethodBeanSave(bean));
+			addMethod(new MethodEntityLoad(bean));
+			addMethod(new MethodEntitySave(bean));
 			addMethod(new MethodGetSelectFields(bean));
 			addMethod(new MethodGetAllSelectFields(bean));
 			addMethod(new MethodGetTableNameAlias(bean));

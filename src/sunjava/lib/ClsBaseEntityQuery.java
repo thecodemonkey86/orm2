@@ -8,6 +8,7 @@ import sunjava.core.Types;
 public class ClsBaseEntityQuery extends JavaGenericClass{
 
 	public static final String MAIN_ENTITY_ALIAS = "MAIN_ENTITY_ALIAS";
+	public static final String sqlQuery = "sqlQuery";
 
 	public ClsBaseEntityQuery( JavaCls cls) {
 		super("EntityQuery",cls,"sql.orm.query");
@@ -15,6 +16,7 @@ public class ClsBaseEntityQuery extends JavaGenericClass{
 		addMethod(new LibMethod(this, "select"));
 		addMethod(new LibMethod(this, "leftJoin"));
 		addAttr(new Attr(Types.String, MAIN_ENTITY_ALIAS));
+		addAttr(new Attr(Types.SqlQuery, sqlQuery));
 	}
 
 }
