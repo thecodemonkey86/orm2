@@ -6,6 +6,7 @@ import cpp.core.Attr;
 import cpp.core.Cls;
 import cpp.core.Param;
 import cpp.core.Type;
+import cpp.core.method.MethodAttributeGetter;
 import cpp.entity.EntityCls;
 import cpp.entityquery.method.ConstructorEntityQuerySelect;
 import cpp.entityquery.method.MethodAddQueryParameter;
@@ -129,6 +130,7 @@ public class ClsEntityQuerySelect extends Cls {
 		if(cls.hasRelations())
 			addAttr(new Attr(Types.Bool,lazyLoading));
 		addAttr(new Attr(Types.QVariantList,params));
+		addMethod(new MethodAttributeGetter(getAttrByName(params)));
 		addAttr(new Attr(Types.QSqlDatabase,"sqlCon"));
 //		addAttr(new Attr(EnumQueryMode.INSTANCE,queryMode));
 		

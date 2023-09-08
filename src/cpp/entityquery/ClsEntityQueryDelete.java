@@ -18,6 +18,7 @@ import cpp.entityquery.method.MethodAndWhere5;
 import cpp.entityquery.method.MethodAndWhere6;
 import cpp.entityquery.method.MethodAndWhere8;
 import cpp.entityquery.method.MethodAndWhere9;
+import cpp.entityquery.method.MethodEntityQueryBoolWhere;
 import cpp.entityquery.method.MethodEntityQueryWhereCompareOperator;
 import cpp.entityquery.method.MethodEntityQueryWhereEquals;
 import cpp.entityquery.method.MethodEntityQueryWhereIn;
@@ -58,6 +59,10 @@ public class ClsEntityQueryDelete extends Cls {
 			addMethod(new MethodSqlFieldEquals(c,false));
 			addMethod(new MethodSqlFieldEquals(c,true));
 			addMethod(new MethodEntityQueryWhereEquals(this,EntityQueryType.Delete,  cls, c));
+			if( EntityCls.getDatabaseMapper().columnToType(c).equals(Types.Bool)) {
+				addMethod(new MethodEntityQueryBoolWhere(this,EntityQueryType.Delete,  c, true));
+				addMethod(new MethodEntityQueryBoolWhere(this,EntityQueryType.Delete,  c, false));
+			}
 			addMethod(new MethodEntityQueryWhereNotEquals(this,EntityQueryType.Delete, cls, c));
 			Type colType = EntityCls.getDatabaseMapper().columnToType(c);
 			addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Delete, cls, c,CoreTypes.qlist(colType)));

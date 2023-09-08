@@ -425,11 +425,12 @@ public abstract class ConfigReader implements ContentHandler {
 				case ONE_TO_MANY_RELATIONS:
 					Pair<Column, Column> columnMapping = new Pair<Column, Column>(null, null);
 					Column oneToManySrcColumn = currentSrcTable.getColumnByName(atts.getValue("src"));
-					oneToManySrcColumn.setRelationSourceColumn(true);
+//					oneToManySrcColumn.setRelationSourceColumn(true);
 					columnMapping.setValue1(oneToManySrcColumn);
 					Column destTblCol = currentDestTable.getColumnByName(atts.getValue("dest"));
 					columnMapping.setValue2(destTblCol);
 					destTblCol.setOneToManyRelation(currentOneToManyRelation);
+					destTblCol.setRelationDestColumn(true);
 					currentOneToManyRelation.add(columnMapping);
 					break;
 				case ONE_RELATIONS:
