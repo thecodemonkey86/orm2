@@ -67,24 +67,25 @@ public class MethodSave extends Method {
 		Var reply = _declare(NetworkTypes.QNetworkReply.toRawPointer(), "reply", aNetwork.callMethod(ClsQNetworkAccessManager.post,vRec, new PlusOperatorExpression(new QByteArrayLiteral("data="),NetworkTypes.QUrl.callStaticMethod(ClsQUrl.toPercentEncoding,  pEntity.callMethod(MethodToJson.getMethodName()).callMethod(ClsQJsonDocument.toJson, JsonTypes.QJsonDocument.Compact)))));
 		
 		LambdaExpression lambdaExpression = new LambdaExpression();
+		Var vRaw = lambdaExpression._declare(Types.QByteArray, "rawResponse",reply.callMethod(ClsQNetworkReply.readAll));
+		Var d=new Var(JsonTypes.QJsonDocument, "_d");
+		lambdaExpression.addInstr(new DeclareInstruction(d, JsonTypes.QJsonDocument.callStaticMethod(ClsQJsonDocument.fromJson, vRaw)));
 		addInstr(new QObjectConnect(reply,"&QNetworkReply::finished",aNetwork,
 				lambdaExpression.setCapture(reply, pCallback, pEntity),true));
 		if(entity.getTbl().isAutoIncrement()) {
 			IfBlock ifInsert = lambdaExpression._if(pEntity.callMethod(ClsBaseJsonEntity.isInsertNew));
-			Var d=new Var(JsonTypes.QJsonDocument, "_d");
-			ifInsert.thenBlock().addInstr(new DeclareInstruction(d, JsonTypes.QJsonDocument.callStaticMethod(ClsQJsonDocument.fromJson, reply.callMethod(ClsQNetworkReply.readAll))));
+			
+			
 			Var o = new Var(JsonTypes.QJsonObject, "_o");
 			ifInsert.thenBlock().addInstr(new DeclareInstruction(o, d.callMethod(ClsQJsonDocument.object)));
 			Column col = entity.getTbl().getPrimaryKey().getColumn(0);
 			ifInsert.thenBlock().addInstr(pEntity.callMethodInstruction(MethodColumnAttrSetterInternal.getMethodName(col),JsonOrmUtil.jsonConvertMethod(o.callMethod(ClsQJsonObject.value, QStringLiteral.fromStringConstant(col.getName())), JsonEntity.getDatabaseMapper().columnToType(col)))); 
 		}
-		Var vRaw = lambdaExpression._declare(Types.QByteArray, "rawResponse",reply.callMethod(ClsQNetworkReply.readAll));
+		
 		IfBlock ifNotEmpty = lambdaExpression._if(Expressions.not(vRaw.callMethod(ClsQByteArray.isEmpty)));
-		Var vJson = ifNotEmpty.thenBlock()
-				._declare(JsonTypes.QJsonDocument, "json",JsonTypes.QJsonDocument.callStaticMethod(ClsQJsonDocument.fromJson,vRaw));
 		
 		lambdaExpression.addInstr(new SemicolonTerminatedInstruction("qWarning()<<rawResponse"));
-		ifNotEmpty.thenBlock().addInstr(new StdFunctionInvocation(pCallback, reply.callMethod(ClsQNetworkReply.error)._equals(NetworkTypes.QNetworkReply.noError).binOp(Operators.AND,Expressions.not(vJson.callMethod(ClsQJsonDocument.object).callMethod(ClsQJsonObject.value, QStringLiteral.fromStringConstant("error")).callMethod(ClsQJsonValue.toBool)))));
+		ifNotEmpty.thenBlock().addInstr(new StdFunctionInvocation(pCallback, reply.callMethod(ClsQNetworkReply.error)._equals(NetworkTypes.QNetworkReply.noError).binOp(Operators.AND,Expressions.not(d.callMethod(ClsQJsonDocument.object).callMethod(ClsQJsonObject.value, QStringLiteral.fromStringConstant("error")).callMethod(ClsQJsonValue.toBool)))));
 		ifNotEmpty.thenBlock().addInstr(reply.callMethodInstruction(ClsQNetworkReply.deleteLater));
 		ifNotEmpty.elseBlock().addInstr(new StdFunctionInvocation(pCallback,BoolExpression.FALSE));
 	}
