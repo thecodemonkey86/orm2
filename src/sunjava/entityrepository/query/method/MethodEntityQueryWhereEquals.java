@@ -4,14 +4,8 @@ import database.column.Column;
 import sunjava.core.Method;
 import sunjava.core.Param;
 import sunjava.core.Type;
-import sunjava.core.expression.Expression;
-import sunjava.core.expression.InlineIfExpression;
-import sunjava.core.expression.JavaStringLiteral;
-import sunjava.core.instruction.IfBlock;
 import sunjava.entity.EntityCls;
 import sunjava.entityrepository.query.ClsEntityQuery;
-import sunjava.lib.ClsBaseEntityQuery;
-import sunjava.lib.ClsSqlQuery;
  
 
 public class MethodEntityQueryWhereEquals extends Method {

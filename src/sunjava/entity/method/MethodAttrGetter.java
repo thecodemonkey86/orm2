@@ -6,6 +6,7 @@ import database.relation.OneToManyRelation;
 import sunjava.core.Attr;
 import sunjava.core.JavaCls;
 import sunjava.core.Method;
+import sunjava.core.Param;
 import sunjava.core.Types;
 import sunjava.core.expression.Expressions;
 import util.StringUtil;
@@ -15,7 +16,7 @@ public class MethodAttrGetter extends Method{
 
 	Attr a;
 	boolean loadIfNotLoaded;
-	
+	protected Param pSqlCon;
 	public MethodAttrGetter(Attr a,boolean loadIfNotLoaded) {
 		super(Public, 
 				a.getType()
@@ -23,6 +24,9 @@ public class MethodAttrGetter extends Method{
 						, getMethodName(a));
 		this.a=a;
 		this.loadIfNotLoaded= loadIfNotLoaded;
+		if(loadIfNotLoaded) {
+			pSqlCon =addParam(new Param(Types.Connection, "sqlConnection"));
+		}
 //		if (loadIfNotLoaded) {
 //			addParam(new Param(Types.Bool , "noLoading", BoolExpression.FALSE));
 //		}
@@ -38,7 +42,7 @@ public class MethodAttrGetter extends Method{
 				)
 					
 					
-			).thenBlock().addInstr( Types.BeanRepository.callStaticMethod("load"+parent.getName(), _this()).asInstruction());
+			).thenBlock().addInstr( Types.BeanRepository.callStaticMethod("load"+parent.getName(), _this(),pSqlCon).asInstruction());
 		}
 		_return(a);
 		

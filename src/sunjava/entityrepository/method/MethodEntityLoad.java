@@ -42,7 +42,7 @@ public class MethodEntityLoad extends Method {
 	protected List<ManyRelation> manyToManyRelations;
 	protected PrimaryKey primaryKey;
 	protected EntityCls bean;
-
+	protected Param pSqlCon;
 	public MethodEntityLoad(EntityCls bean) {
 		super(Public, Types.Void, "load"+bean.getName());
 
@@ -54,6 +54,7 @@ public class MethodEntityLoad extends Method {
 		setStatic(true);
 
 		addParam(new Param(bean, "entity"));
+		pSqlCon =addParam(new Param(Types.Connection, "sqlConnection"));
 		this.bean = bean;
 	}
 
@@ -68,10 +69,8 @@ public class MethodEntityLoad extends Method {
 		if(!oneRelations.isEmpty() || !oneToManyRelations.isEmpty() || !manyToManyRelations.isEmpty()) {
 			addThrowsException(Types.SqlException);
 			ClsEntityRepository parent = (ClsEntityRepository) this.parent;
-			Attr aSqlCon = parent.getAttrByName("sqlCon");
-			
 
-			Var sqlQuery =  _declare(Types.SqlQuery, "query",EntityCls.getSqlQueryCls().newInstance(aSqlCon));
+			Var sqlQuery =  _declare(Types.SqlQuery, "query",EntityCls.getSqlQueryCls().newInstance(pSqlCon));
 
 			ArrayList<Expression> selectFields = new ArrayList<>();
 			selectFields.add(parent.callStaticMethod(MethodGetSelectFields.getMethodName(bean),JavaString.stringConstant("e1")));
