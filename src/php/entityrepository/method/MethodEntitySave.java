@@ -110,7 +110,7 @@ public class MethodEntitySave extends Method {
 						
 						ifColIsNullElse.thenBlock()._callMethodInstr(sqlQuery, 
 								ClsSqlQuery.setValue,new PhpStringLiteral(col.getEscapedName()), 
-								Expressions.Null);
+								EntityCls.getTypeMapper().getNullInsertUpdateValueExpression( col));
 						
 						ifColIsNullElse.elseBlock()._callMethodInstr(sqlQuery, 
 								ClsSqlQuery.setValue,new PhpStringLiteral(col.getEscapedName()), 

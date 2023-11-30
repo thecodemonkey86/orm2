@@ -61,7 +61,9 @@ public abstract class Expression {
 	public Expression arrayIndexIsset(Expression arg) {
 		return PhpFunctions.isset.call(this.arrayIndex(arg));
 	}
-	
+	public Expression arrayKeyExists(Expression arg) {
+		return PhpFunctions.array_key_exists.call(arg,this);
+	}
 	public MethodCallInstruction callAttrSetterMethodInstr(String attrName, Expression...args) {
 		Type type = getType();
 		if (type instanceof IAttributeContainer) {

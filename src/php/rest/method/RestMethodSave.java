@@ -46,7 +46,7 @@ public class RestMethodSave extends Method {
 		for(EntityCls entity : entities) {
 			CaseBlock caseBeanType = switchEntityType._case(new PhpStringLiteral(entity.getName()));
 			Var postData = caseBeanType._declare(Types.array(Types.Mixed), "_postdata",PhpFunctions.json_decode.call( PhpGlobals.$_POST.arrayIndex("data"),BoolExpression.TRUE));
-			Var vIsPkMod = caseBeanType._declare(Types.Bool,"_isPkMod",postData.arrayIndexIsset(new PhpStringLiteral(entity.getTbl().getPrimaryKey().getFirstColumn().getName()+"Previous")));
+			Var vIsPkMod = caseBeanType._declare(Types.Bool,"_isPkMod",postData.arrayKeyExists(new PhpStringLiteral(entity.getTbl().getPrimaryKey().getFirstColumn().getName()+"Previous")));
 			
 			IfBlock ifInsert= caseBeanType._if(postData.arrayIndex(new PhpStringLiteral("insert")).cast(Types.Bool));
 			
@@ -66,7 +66,7 @@ public class RestMethodSave extends Method {
 			ifInsert.elseBlock()._if(vEntity.isNull()).thenBlock().addInstr(new ThrowInstruction(Types.Exception.newInstance(new PhpStringLiteral("no such entry"))));
 			for(Column col:entity.getTbl().getColumnsWithoutPrimaryKey()) {
 				ifInsert.thenBlock()._callMethodInstr(vEntity, MethodColumnAttrSetter.getMethodName(col), EntityCls.getTypeMapper().getConvertJsonValueToTypedExpression(postData.arrayIndex(new PhpStringLiteral(col.getName())), col));
-				ifInsert.elseBlock()._if(postData.arrayIndexIsset(new PhpStringLiteral(col.getName()))).thenBlock()._callMethodInstr(vEntity, MethodColumnAttrSetter.getMethodName(col), EntityCls.getTypeMapper().getConvertJsonValueToTypedExpression(postData.arrayIndex(new PhpStringLiteral(col.getName())), col) );
+				ifInsert.elseBlock()._if(postData.arrayKeyExists(new PhpStringLiteral(col.getName()))).thenBlock()._callMethodInstr(vEntity, MethodColumnAttrSetter.getMethodName(col), EntityCls.getTypeMapper().getConvertJsonValueToTypedExpression(postData.arrayIndex(new PhpStringLiteral(col.getName())), col) );
 			}
 			
 			if(!entity.getTbl().isAutoIncrement()) {
@@ -77,7 +77,7 @@ public class RestMethodSave extends Method {
 				}
 
 				ifInsert.thenBlock()._callMethodInstr(vEntity, MethodSetPrimaryKey.getMethodName(entity), pkArgs);
-				ifInsert.elseBlock()._if(postData.arrayIndexIsset(new PhpStringLiteral(entity.getTbl().getPrimaryKey().getColumn(0).getName()))).thenBlock()._callMethodInstr(vEntityUpdate, MethodSetPrimaryKey.getMethodName(entity), pkArgs);
+				ifInsert.elseBlock()._if(postData.arrayKeyExists(new PhpStringLiteral(entity.getTbl().getPrimaryKey().getColumn(0).getName()))).thenBlock()._callMethodInstr(vEntityUpdate, MethodSetPrimaryKey.getMethodName(entity), pkArgs);
 			}
 			/*Expression e = Types.EntityRepository.callStaticMethod("createQuery"+entity.getName())
 					.callMethod(ClsBaseEntityQuery.select);
