@@ -20,8 +20,8 @@ public class MethodHasRemovedManyToMany extends Method{
 
 	@Override
 	public void addImplementation() {
-		EntityCls bean = (EntityCls) parent;
-		Attr attrAdded = bean.getAttrByName(OrmUtil.getManyRelationDestAttrName(r)+"Removed" );
+		EntityCls entity = (EntityCls) parent;
+		Attr attrAdded = entity.getAttrByName(OrmUtil.getManyRelationDestAttrName(r)+"Removed" );
 		_return(Expressions.and(
 				attrAdded.isNotNull(),
 				attrAdded.count().greaterThan(new IntExpression(0))

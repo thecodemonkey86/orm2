@@ -11,15 +11,15 @@ import sunjava.entity.EntityCls;
 public class MethodFetchOneStatic extends Method {
 
 
-	protected EntityCls bean;
+	protected EntityCls entity;
 	
-	public MethodFetchOneStatic(EntityCls bean) {
-		super(Public, bean, getMethodName(bean) );
+	public MethodFetchOneStatic(EntityCls entity) {
+		super(Public, entity, getMethodName(entity) );
 		addParam(new Param(Types.Connection, "sqlCon"));
 //		addParam(new Param(Types.QSqlQuery, "query"));	
 	
 		setStatic(true);
-		this.bean = bean;
+		this.entity = entity;
 	}
 	
 //	@Override
@@ -27,9 +27,9 @@ public class MethodFetchOneStatic extends Method {
 		//return new ThisBeanRepositoryExpression((BeanRepository) parent);
 //	}
 
-	protected Expression getByRecordExpression(EntityCls bean, Var record, JavaString alias) {
+	protected Expression getByRecordExpression(EntityCls entity, Var record, JavaString alias) {
 		//return new ThisBeanRepositoryExpression((BeanRepository) parent);
-		return bean.callStaticMethod("getByRecord", getVarSqlCon(), record, alias);
+		return entity.callStaticMethod("getByRecord", getVarSqlCon(), record, alias);
 	}
 	
 	protected Expression getExpressionQuery() {
@@ -43,27 +43,27 @@ public class MethodFetchOneStatic extends Method {
 	@Override
 	public void addImplementation() {
 //		//BeanCls cls = (BeanCls) parent;
-//		List<OneRelation> oneRelations = bean.getOneRelations();
-//		//PrimaryKey pk=bean.getTbl().getPrimaryKey();
+//		List<OneRelation> oneRelations = entity.getOneRelations();
+//		//PrimaryKey pk=entity.getTbl().getPrimaryKey();
 //		
 //		Expression query = getExpressionQuery();
 //		//int //bCount = 2;
-//		//Type e1PkType = pk.isMultiColumn() ? bean.getStructPk() : pk.getColumns().get(0).toType();
+//		//Type e1PkType = pk.isMultiColumn() ? entity.getStructPk() : pk.getColumns().get(0).toType();
 //		
 //		ArrayList<AbstractRelation> manyRelations = new ArrayList<>();
 //		
-//		manyRelations.addAll(bean.getOneToManyRelations());
-//		manyRelations.addAll(bean.getManyToManyRelations());
+//		manyRelations.addAll(entity.getOneToManyRelations());
+//		manyRelations.addAll(entity.getManyToManyRelations());
 //		
 //		IfBlock ifQueryNext = _if(query.callMethod("next"));
 //		InstructionBlock ifInstr = ifQueryNext.getIfInstr();
-//		//Var e1Map =  ifInstr._declare((!manyRelations.isEmpty()) ? new ClsQHash(e1PkType, bean.getFetchListHelperCls()) : new ClsQSet(e1PkType), "e1Map");
+//		//Var e1Map =  ifInstr._declare((!manyRelations.isEmpty()) ? new ClsQHash(e1PkType, entity.getFetchListHelperCls()) : new ClsQSet(e1PkType), "e1Map");
 //		Var recDoWhile =ifInstr._declare(Types.QSqlRecord, "rec",query.callMethod("record") );
 //		
 ///*		Var e1pk = null;
 //		
 //		if (pk.isMultiColumn()) {
-//			e1pk =ifInstr._declare( bean.getStructPk(), "e1pk" );
+//			e1pk =ifInstr._declare( entity.getStructPk(), "e1pk" );
 //			for(Column colPk:pk.getColumns()) {
 //				ifInstr._assign(e1pk.accessAttr(colPk.getCamelCaseName()), recDoWhile.callMethod("value", JavaString.fromStringConstant("e1__"+ colPk.getName())).callMethod(BeanCls.getTypeMapper().getConvertMethod(colPk.getDbType())));
 //			}
@@ -76,11 +76,11 @@ public class MethodFetchOneStatic extends Method {
 //		
 //		
 //		Var e1 = ifInstr
-//				._declare(bean, "e1", getByRecordExpression(bean, recDoWhile, JavaString.fromStringConstant("e1")));
+//				._declare(entity, "e1", getByRecordExpression(entity, recDoWhile, JavaString.fromStringConstant("e1")));
 //		//bCount = 2;
 //		if (!manyRelations.isEmpty()) {
 //			
-//		//	Var structHelper = ifInstr._declare(bean.getFetchListHelperCls(), "structHelper", new NewOperator(bean.getFetchListHelperCls()));
+//		//	Var structHelper = ifInstr._declare(entity.getFetchListHelperCls(), "structHelper", new NewOperator(entity.getFetchListHelperCls()));
 //
 ////			for(Relation r:manyRelations) {
 ////				Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
@@ -90,9 +90,9 @@ public class MethodFetchOneStatic extends Method {
 //
 //			ifInstr._assignInstruction(recDoWhile, query.callMethod("record"));
 //			
-//		//	Var fkHelper = ifInstr._declare(bean.getFetchListHelperCls(), "fkHelper",e1Map.arrayIndex(e1pk));
+//		//	Var fkHelper = ifInstr._declare(entity.getFetchListHelperCls(), "fkHelper",e1Map.arrayIndex(e1pk));
 //			
-//		//	Var structHelperIfNotE1SetContains = ifNotE1SetContains.getIfInstr()._declare(bean.getFetchListHelperCls(), "structHelper");
+//		//	Var structHelperIfNotE1SetContains = ifNotE1SetContains.getIfInstr()._declare(entity.getFetchListHelperCls(), "structHelper");
 //		//	ifNotE1SetContains.getIfInstr()._assign(structHelperIfNotE1SetContains.accessAttr("e1"), e1);
 ////			//bCount = 2;
 ////			for(Relation r:manyRelations) {
@@ -102,7 +102,7 @@ public class MethodFetchOneStatic extends Method {
 ////			}
 //			
 //			//ifNotE1SetContains.getIfInstr()._callMethodInstr(e1Map, "insert", e1pk, structHelperIfNotE1SetContains );
-//			Var fkHelper = ifInstr._declare(bean.getFetchListHelperCls(), "fkHelper");		
+//			Var fkHelper = ifInstr._declare(entity.getFetchListHelperCls(), "fkHelper");		
 //			
 //			for(AbstractRelation r:manyRelations) {
 //				Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
@@ -153,7 +153,7 @@ public class MethodFetchOneStatic extends Method {
 //					 ;
 //				
 //				for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
-//					if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
+//					if (foreignOneRelation.getDestTable().equals(entity.getTbl())) {
 //						ifRecValueIsNotNull.getIfInstr().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("e1")));
 //					}
 //				}
@@ -180,12 +180,12 @@ public class MethodFetchOneStatic extends Method {
 //				._callMethodInstr(
 //						e1 ,
 //						new MethodAttrSetterInternal(foreignCls,
-//								bean.getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)))
+//								entity.getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)))
 //						,  foreignBean);
 //			
 //		
 //			for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
-//				if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
+//				if (foreignOneRelation.getDestTable().equals(entity.getTbl())) {
 //					ifRelatedBeanIsNull.getIfInstr().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", e1));
 //				}
 //			}
@@ -205,7 +205,7 @@ public class MethodFetchOneStatic extends Method {
 		return super.toString();
 	}
 
-	public static String getMethodName(EntityCls bean) {
-		return "fetchOne"+bean.getName()+"Static";
+	public static String getMethodName(EntityCls entity) {
+		return "fetchOne"+entity.getName()+"Static";
 	}
 }

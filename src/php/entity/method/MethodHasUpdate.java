@@ -18,11 +18,11 @@ public class MethodHasUpdate extends Method{
 
 	@Override
 	public void addImplementation() {
-		EntityCls bean = (EntityCls) parent;
+		EntityCls entity = (EntityCls) parent;
 		
 		ArrayList<Expression> conditions = new ArrayList<>();
 		conditions.add(_this().callMethod("isPrimaryKeyModified"));
-		for(Column col : bean.getTbl().getColumns(false)) {
+		for(Column col : entity.getTbl().getColumns(false)) {
 			if (!col.isPartOfPk()) {
 				conditions.add(EntityCls.accessIsColumnAttrOrEntityModified(_this(), col));
 				;

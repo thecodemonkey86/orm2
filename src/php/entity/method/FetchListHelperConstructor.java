@@ -13,19 +13,19 @@ import php.entity.EntityCls;
 
 public class FetchListHelperConstructor extends Constructor{
 
-	EntityCls bean;
+	EntityCls entity;
 	
-	public FetchListHelperConstructor(EntityCls bean) {
-		this.bean = bean;
-		addParam(new Param(bean, "e1"));
+	public FetchListHelperConstructor(EntityCls entity) {
+		this.entity = entity;
+		addParam(new Param(entity, "e1"));
 	}
 	
 	@Override
 	public void addImplementation() {
 		addInstr(_this().assignAttr("e1", getParam("e1")));
 		List<AbstractRelation> manyRelations = new ArrayList<>();
-		manyRelations.addAll(bean.getOneToManyRelations());
-		manyRelations.addAll(bean.getManyToManyRelations());
+		manyRelations.addAll(entity.getOneToManyRelations());
+		manyRelations.addAll(entity.getManyToManyRelations());
 		
 		for(AbstractRelation r:manyRelations) {	
 			Attr a = ((PhpCls)parent).getAttrByName(r.getAlias()+"Set"); 

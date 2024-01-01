@@ -14,14 +14,14 @@ public class MethodColumnAttrSetter extends Method {
 
 	Attr a;
 	Column col;
-	EntityCls bean;
+	EntityCls entity;
 	
 	public MethodColumnAttrSetter(EntityCls cls, Column col, Attr a) {
 		super(Public, Types.Void, getMethodName(col));
 		this.a = a;
 		addParam(new Param(a.getType(), a.getName(), col.isNullable() ? Expressions.Null : null));
 		this.col = col;
-		this.bean = cls;
+		this.entity = cls;
 	}
 
 	public static String getMethodName(Column col) {

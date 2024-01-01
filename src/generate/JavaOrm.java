@@ -102,8 +102,8 @@ public class JavaOrm extends OrmGenerator{
 //				c.breakPointerCircles();
 //			}
 			for (EntityCls c : Entities.getAllBeans()) {
-				//Path pathHeader = Paths.get(path+"/beans/"+c.getName().toLowerCase()+".h");
-				Path pathSrc = Paths.get(path+"/beans/"+c.getName()+".java");
+				//Path pathHeader = Paths.get(path+"/entities/"+c.getName().toLowerCase()+".h");
+				Path pathSrc = Paths.get(path+"/entities/"+c.getName()+".java");
 				
 				
 				if (Files.exists(pathSrc)) {

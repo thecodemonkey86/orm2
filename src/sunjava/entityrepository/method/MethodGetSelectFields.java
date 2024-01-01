@@ -16,19 +16,19 @@ import sunjava.entity.EntityCls;
 
 public class MethodGetSelectFields extends Method  {
 
-	protected EntityCls bean;
+	protected EntityCls entity;
 	
-	public MethodGetSelectFields(EntityCls bean) {
-		super(Public, Types.String, getMethodName(bean));
+	public MethodGetSelectFields(EntityCls entity) {
+		super(Public, Types.String, getMethodName(entity));
 		setStatic(true);
 		addParam(new Param(Types.String, "alias"));
-		this.bean = bean;
+		this.entity = entity;
 	}
 
 	@Override
 	public void addImplementation() {
 		ArrayList<Expression> l=new ArrayList<>();
-		ArrayList<Column> cols = bean.getTbl().getAllColumns(); 
+		ArrayList<Column> cols = entity.getTbl().getAllColumns(); 
 		for(Column col:cols) {
 			JavaStringPlusOperatorExpression e= new JavaStringPlusOperatorExpression(getParam("alias"), JavaString.stringConstant('.' + CodeUtil.sp(col.getEscapedName(),"as ") ));
 			l.add(e.concat(getParam("alias")).concat(JavaString.stringConstant("__" + col.getName() + ' ')));
@@ -37,7 +37,7 @@ public class MethodGetSelectFields extends Method  {
 		_return(Expressions.concat(CharExpression.fromChar(','), l));		
 	}
 
-	public static String getMethodName(EntityCls bean) {
-		return "getSelectFields"+ bean.getName();
+	public static String getMethodName(EntityCls entity) {
+		return "getSelectFields"+ entity.getName();
 	}
 }

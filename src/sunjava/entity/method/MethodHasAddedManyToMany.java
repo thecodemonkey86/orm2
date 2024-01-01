@@ -20,8 +20,8 @@ public class MethodHasAddedManyToMany extends Method{
 
 	@Override
 	public void addImplementation() {
-		EntityCls bean = (EntityCls) parent;
-		Attr attrAdded = bean.getAttrByName(OrmUtil.getManyRelationDestAttrName(r)+"Added" );
+		EntityCls entity = (EntityCls) parent;
+		Attr attrAdded = entity.getAttrByName(OrmUtil.getManyRelationDestAttrName(r)+"Added" );
 		_return(Expressions.and(
 				attrAdded.isNotNull(),
 				_not(attrAdded.callMethod(ClsArrayList.isEmpty))

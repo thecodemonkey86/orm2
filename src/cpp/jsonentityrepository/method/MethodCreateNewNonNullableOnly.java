@@ -52,14 +52,14 @@ public class MethodCreateNewNonNullableOnly extends Method {
 
 	@Override
 	public void addImplementation() {
-		Var bean = _declare(returnType, "entity", new MakeSharedExpression((SharedPtr) returnType));
-		_callMethodInstr(bean, ClsBaseJsonEntity.setInsertNew);
-		addInstr(bean.callMethodInstruction("setLoaded", BoolExpression.TRUE));
+		Var entity = _declare(returnType, "entity", new MakeSharedExpression((SharedPtr) returnType));
+		_callMethodInstr(entity, ClsBaseJsonEntity.setInsertNew);
+		addInstr(entity.callMethodInstruction("setLoaded", BoolExpression.TRUE));
 		
 		for (Param param : initializeFieldsParams) {
-			addInstr(bean.callMethodInstruction("set" +StringUtil.ucfirst(param.getName())+"Internal",param));
+			addInstr(entity.callMethodInstruction("set" +StringUtil.ucfirst(param.getName())+"Internal",param));
 		}
-		_return(bean);
+		_return(entity);
 		
 	}
 

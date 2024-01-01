@@ -12,9 +12,9 @@ public class RepositoryAttr extends Attr{
 		super(Types.BeanRepository, "repository");
 	}
 
-	public MethodCall callGetByRecordMethod(EntityCls bean, Expression...args) {
+	public MethodCall callGetByRecordMethod(EntityCls entity, Expression...args) {
 		try{
-			return new MethodCall(this, ((JavaCls)getType()).getMethod("get"+bean.getName()+"ByRecord"),args);
+			return new MethodCall(this, ((JavaCls)getType()).getMethod("get"+entity.getName()+"ByRecord"),args);
 		} catch (Exception e) {
 			System.out.println(e);
 			throw e;

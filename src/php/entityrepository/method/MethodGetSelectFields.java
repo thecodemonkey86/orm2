@@ -12,18 +12,18 @@ import php.entity.EntityCls;
 
 public class MethodGetSelectFields extends Method  {
 
-	protected EntityCls bean;
+	protected EntityCls entity;
 	
-	public MethodGetSelectFields(EntityCls bean) {
-		super(Public, Types.String, getMethodName(bean));
+	public MethodGetSelectFields(EntityCls entity) {
+		super(Public, Types.String, getMethodName(entity));
 		setStatic(true);
 		addParam(new Param(Types.String, "alias", new PhpStringLiteral("e1")));
-		this.bean = bean;
+		this.entity = entity;
 	}
 
 	@Override
 	public void addImplementation() {
-		ArrayList<Column> cols = bean.getTbl().getAllColumns(); 
+		ArrayList<Column> cols = entity.getTbl().getAllColumns(); 
 		String sprintfTmpl = "%1$s." + cols.get(0).getEscapedName() + " as %1$s__" + cols.get(0).getName();
 
 		for(int i=1;i<cols.size();i++) {
@@ -33,7 +33,7 @@ public class MethodGetSelectFields extends Method  {
 		_return (PhpFunctions.sprintf.call(new PhpStringLiteral(sprintfTmpl),getParam("alias")));
 	}
 
-	public static String getMethodName(EntityCls bean) {
-		return "getSelectFields"+ bean.getName();
+	public static String getMethodName(EntityCls entity) {
+		return "getSelectFields"+ entity.getName();
 	}
 }

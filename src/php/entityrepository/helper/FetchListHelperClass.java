@@ -18,17 +18,17 @@ import php.orm.OrmUtil;
 
 public class FetchListHelperClass extends PhpCls{
 
-	public FetchListHelperClass(EntityCls bean, String repositoryNamespace) {
-		super(bean.getName()+"FetchListHelper",repositoryNamespace+"\\Helper");
-		Attr e1 = new Attr(bean, "e1");
+	public FetchListHelperClass(EntityCls entity, String repositoryNamespace) {
+		super(entity.getName()+"FetchListHelper",repositoryNamespace+"\\Helper");
+		Attr e1 = new Attr(entity, "e1");
 		addAttr(e1);
 
 		addMethod(new MethodAttributeSetter(e1));
 		addMethod(new MethodAttributeGetter(e1));
 		List<AbstractRelation> manyRelations = new ArrayList<>();
-		manyRelations.addAll(bean.getOneToManyRelations());
-		manyRelations.addAll(bean.getManyToManyRelations());
-		setConstructor(new FetchListHelperConstructor(bean));
+		manyRelations.addAll(entity.getOneToManyRelations());
+		manyRelations.addAll(entity.getManyToManyRelations());
+		setConstructor(new FetchListHelperConstructor(entity));
 		for(AbstractRelation r:manyRelations) {
 			Type beanPk=OrmUtil.getRelationForeignPrimaryKeyType(r);
 			Attr attrSet = new Attr(Types.array(Types.String, beanPk), r.getAlias()+"Set");

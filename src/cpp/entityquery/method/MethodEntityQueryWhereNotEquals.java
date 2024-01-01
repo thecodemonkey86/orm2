@@ -15,13 +15,13 @@ import database.column.Column;
 import cpp.core.Type;
 
 public class MethodEntityQueryWhereNotEquals extends Method{
-	EntityCls bean;
+	EntityCls entity;
 	Param pValue ;
 	EntityQueryType beanQueryType;
 	Column c;
-	public MethodEntityQueryWhereNotEquals(Cls query,EntityQueryType beanQueryType, EntityCls bean,Column c) {
+	public MethodEntityQueryWhereNotEquals(Cls query,EntityQueryType beanQueryType, EntityCls entity,Column c) {
 		super(Public, query.toRef(), "where"+c.getUc1stCamelCaseName()+"NotEquals");
-		this.bean=bean;
+		this.entity=entity;
 		Type t = EntityCls.getDatabaseMapper().columnToType(c);
 		pValue = addParam(new Param(t.isPrimitiveType() ? t : t.toConstRef(), "value"));
 		this.c = c;

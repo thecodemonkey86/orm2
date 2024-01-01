@@ -9,12 +9,12 @@ import cpp.util.ClsDbPool;
 
 public class MethodEntitySharedPtrRemove extends Method {
 
-	protected EntityCls bean;
+	protected EntityCls entity;
 	protected boolean overloadCascadeDeleteRelations;
 	protected Param pBean;
 	protected Param pSqlCon;
 	
-	public MethodEntitySharedPtrRemove(EntityCls bean,
+	public MethodEntitySharedPtrRemove(EntityCls entity,
 			 boolean overloadCascadeDeleteRelations
 			) {
 		super(Public, Types.Void, MethodEntityRemove.getMethodName());
@@ -22,9 +22,9 @@ public class MethodEntitySharedPtrRemove extends Method {
 			this.addParam(new Param(Types.Bool, "overloadCascadeDeleteRelations"));
 //		this.setVirtualQualifier(true);
 		this.overloadCascadeDeleteRelations = overloadCascadeDeleteRelations;
-		pBean = addParam(bean.toSharedPtr(), "entity");
+		pBean = addParam(entity.toSharedPtr(), "entity");
 		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
-		this.bean = bean;
+		this.entity = entity;
 		setStatic(true);
 	}
 

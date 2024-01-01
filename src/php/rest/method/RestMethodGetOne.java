@@ -30,12 +30,12 @@ import php.orm.OrmUtil;
 
 public class RestMethodGetOne extends Method {
 
-	Collection<EntityCls> beans;
+	Collection<EntityCls> entities;
 	
-	public RestMethodGetOne(Collection<EntityCls> beans) {
+	public RestMethodGetOne(Collection<EntityCls> entities) {
 		super(Public, Types.Void, "getOne");
 		setStatic(true);
-		this.beans = beans;
+		this.entities = entities;
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class RestMethodGetOne extends Method {
 		Var vQueryJson =   _declare(Types.array(Types.Mixed), "_json", PhpFunctions.json_decode.call(PhpGlobals.$_GET.arrayIndex(new PhpStringLiteral("condition")) ,BoolExpression.TRUE));
 		SwitchBlock switchEntityType = _switch(PhpGlobals.$_GET.arrayIndex(new PhpStringLiteral("entityType")));
 		
-		for(EntityCls entity : beans) {
+		for(EntityCls entity : entities) {
 			CaseBlock caseBeanType = switchEntityType._case(new PhpStringLiteral(entity.getName()));
 			Var vEntityQuery= caseBeanType._declare(Types.beanQuery(entity), "_query", Types.EntityRepository.callStaticMethod("createQuery"+entity.getName())
 					.callMethod(ClsBaseEntityQuery.select) );

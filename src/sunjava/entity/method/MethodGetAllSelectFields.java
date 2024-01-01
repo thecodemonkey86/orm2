@@ -30,11 +30,11 @@ public class MethodGetAllSelectFields extends Method  {
 
 	@Override
 	public void addImplementation() {
-		EntityCls bean=(EntityCls) parent;
-		List<OneRelation> oneRelations =bean.getOneRelations();
-		List<AbstractRelation> relations = new ArrayList<>(bean.getOneToManyRelations().size()+bean.getManyToManyRelations().size());
-		relations.addAll(bean.getOneToManyRelations());
-		relations.addAll(bean.getManyToManyRelations());
+		EntityCls entity=(EntityCls) parent;
+		List<OneRelation> oneRelations =entity.getOneRelations();
+		List<AbstractRelation> relations = new ArrayList<>(entity.getOneToManyRelations().size()+entity.getManyToManyRelations().size());
+		relations.addAll(entity.getOneToManyRelations());
+		relations.addAll(entity.getManyToManyRelations());
 		
 		ArrayList<Expression> l=new ArrayList<>();
 		for(Column col:cols) {

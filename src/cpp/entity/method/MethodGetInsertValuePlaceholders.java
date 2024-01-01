@@ -25,7 +25,7 @@ public class MethodGetInsertValuePlaceholders extends Method {
 
 	@Override
 	public void addImplementation() {
-		EntityCls bean = (EntityCls) this.parent;
+		EntityCls entity = (EntityCls) this.parent;
 		List<Column> columns = this.table.getColumns(!this.table.getPrimaryKey().isAutoIncrement());
 		boolean hasColumnWithRawValueEnabled = table.hasColumnWithRawValueEnabled();
 		boolean hasColumnWithFileStreamEnabled = table.hasColumnWithFileStreamEnabled();
@@ -40,7 +40,7 @@ public class MethodGetInsertValuePlaceholders extends Method {
 			
 			for(Column c : columns) {
 				if(c.isRawValueEnabled()) {
-					placeholderExpressions.add(bean.getAttrByName("insertExpression"+c.getUc1stCamelCaseName()));
+					placeholderExpressions.add(entity.getAttrByName("insertExpression"+c.getUc1stCamelCaseName()));
 					placeholders.add("%"+placeholderExpressions.size());
 				} else if(c.isFileImportEnabled()){
 					placeholders.add(EntityCls.getDatabase().getFileLoadFunction()+CodeUtil2.parentheses("?") );

@@ -6,22 +6,22 @@ import sunjava.core.Types;
 import sunjava.entity.EntityCls;
 
 public class MethodGetTableName extends Method{
-	protected EntityCls bean;
+	protected EntityCls entity;
 	
-	public MethodGetTableName(EntityCls bean) {
-		super(Method.Public, Types.String, getMethodName(bean));
+	public MethodGetTableName(EntityCls entity) {
+		super(Method.Public, Types.String, getMethodName(entity));
 		setStatic(true);
-		this.bean = bean;
+		this.entity = entity;
 	}
 
 	@Override
 	public void addImplementation() {
-		_return(JavaString.stringConstant(EntityCls.getDatabase().getEscapedTableName(bean.getTbl())));
+		_return(JavaString.stringConstant(EntityCls.getDatabase().getEscapedTableName(entity.getTbl())));
 		
 	}
 	
-	public static String getMethodName(EntityCls bean) {
-		return "getTableName"+ bean.getName();
+	public static String getMethodName(EntityCls entity) {
+		return "getTableName"+ entity.getName();
 	}
 
 }

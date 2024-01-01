@@ -25,7 +25,7 @@ public class MethodHashCode extends Method {
 
 	@Override
 	public void addImplementation() {
-		EntityCls bean = (EntityCls) parent;
+		EntityCls entity = (EntityCls) parent;
 		_return(new Expression() {
 
 			@Override
@@ -34,7 +34,7 @@ public class MethodHashCode extends Method {
 				ArrayList<String> expr=new ArrayList<>();
 				if (pk.isMultiColumn()) {
 					for(Column colPk:pk.getColumns()) {
-						expr.add(bean.accessThisAttrByColumn(colPk).toString());
+						expr.add(entity.accessThisAttrByColumn(colPk).toString());
 					}
 					return "java.util.Objects.hash" + CodeUtil.parentheses(CodeUtil.commaSep(expr));
 				} else {
@@ -42,12 +42,12 @@ public class MethodHashCode extends Method {
 					Type type = EntityCls.getTypeMapper().columnToType(colPk);
 					if (type.isPrimitiveType()) {
 						if(type.equals(Types.Int)) {
-							return bean.accessThisAttrByColumn(colPk).toString();
+							return entity.accessThisAttrByColumn(colPk).toString();
 						}
 						PrimitiveType primitiveType = (PrimitiveType) type;
-						return new StaticMethodCall( primitiveType.getAutoBoxingClass(),  primitiveType.getAutoBoxingClass().getStaticMethod("hashCode"), bean.accessThisAttrByColumn(colPk)).toString();
+						return new StaticMethodCall( primitiveType.getAutoBoxingClass(),  primitiveType.getAutoBoxingClass().getStaticMethod("hashCode"), entity.accessThisAttrByColumn(colPk)).toString();
 					} else {
-						return bean.accessThisAttrByColumn(colPk).callMethod("hashCode").toString();
+						return entity.accessThisAttrByColumn(colPk).callMethod("hashCode").toString();
 					}
 				}
 

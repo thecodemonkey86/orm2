@@ -13,14 +13,14 @@ import database.column.Column;
 import cpp.core.Type;
 
 public class MethodEntityQueryWhereEquals extends Method{
-	EntityCls bean;
+	EntityCls entity;
 	Param pValue ;
 	Column c;
 	EntityQueryType beanQueryType;
 	
-	public MethodEntityQueryWhereEquals(Cls query,EntityQueryType beanQueryType, EntityCls bean,Column c) {
+	public MethodEntityQueryWhereEquals(Cls query,EntityQueryType beanQueryType, EntityCls entity,Column c) {
 		super(Public, query.toRef(), "where"+c.getUc1stCamelCaseName()+"Equals");
-		this.bean=bean;
+		this.entity=entity;
 		Type t = EntityCls.getDatabaseMapper().columnToType(c,false);
 		pValue = addParam(new Param( t.isPrimitiveType() ? t : t.toConstRef(), "value"));
 		this.c = c;

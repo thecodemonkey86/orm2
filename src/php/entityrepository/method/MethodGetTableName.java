@@ -10,25 +10,25 @@ import php.core.method.Method;
 import php.entity.EntityCls;
 
 public class MethodGetTableName extends Method{
-	protected EntityCls bean;
+	protected EntityCls entity;
 	
-	public MethodGetTableName(EntityCls bean) {
-		super(Method.Public, Types.String, getMethodName(bean));
+	public MethodGetTableName(EntityCls entity) {
+		super(Method.Public, Types.String, getMethodName(entity));
 		addParam(new Param(Types.String, "alias", Expressions.Null));
 		setStatic(true);
-		this.bean = bean;
+		this.entity = entity;
 	}
 
 	@Override
 	public void addImplementation() {
 		IfBlock ifAliasIsNotNull = _if(getParam("alias").isNotNull());
 		ifAliasIsNotNull.thenBlock().
-		_return(PhpFunctions.sprintf.call( new PhpStringLiteral(EntityCls.getDatabase().getEscapedTableName(bean.getTbl())+" %s"),getParam("alias"))); 
+		_return(PhpFunctions.sprintf.call( new PhpStringLiteral(EntityCls.getDatabase().getEscapedTableName(entity.getTbl())+" %s"),getParam("alias"))); 
 		ifAliasIsNotNull.elseBlock()
-		._return(new PhpStringLiteral(EntityCls.getDatabase().getEscapedTableName(bean.getTbl())));
+		._return(new PhpStringLiteral(EntityCls.getDatabase().getEscapedTableName(entity.getTbl())));
 	}
 
-	public static String getMethodName(EntityCls bean) {
-		return "getTableName"+ bean.getName();
+	public static String getMethodName(EntityCls entity) {
+		return "getTableName"+ entity.getName();
 	}
 }

@@ -7,12 +7,12 @@ import cpp.entity.EntityCls;
 
 public class MethodToStringUpdate extends Method{
 
-	EntityCls bean;
+	EntityCls entity;
 	
-	public MethodToStringUpdate(EntityCls bean) {
+	public MethodToStringUpdate(EntityCls entity) {
 		super(Method.Public, Types.QString, "toString");
 		setConstQualifier(true);
-		this.bean = bean;
+		this.entity = entity;
 	}
 
 	@Override

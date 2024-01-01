@@ -22,7 +22,7 @@ import cpp.core.expression.ParenthesesExpression;
 
 public class MethodGetFromRecord extends Method {
 	protected List<Column> columns;
-	protected EntityCls bean;
+	protected EntityCls entity;
 	
 	public static final String getMethodName(EntityCls cls) {
 		return "get"+cls.getName()+ "FromRecord";
@@ -41,7 +41,7 @@ public class MethodGetFromRecord extends Method {
 		addParam(new Param(Types.QSqlRecord.toConstRef(), "record"));
 		addParam(new Param(Types.QString.toConstRef(), "alias"));
 		this.columns = cls.getTbl().getColumns(true);
-		this.bean = cls;
+		this.entity = cls;
 		setStatic(true);
 	}
 
@@ -52,8 +52,8 @@ public class MethodGetFromRecord extends Method {
 	
 	@Override
 	public void addImplementation() {
-		//Var bean = _declareMakeShared(parent, "entity");
-		Var vBean = _declareMakeShared(bean, "entity");
+		//Var entity = _declareMakeShared(parent, "entity");
+		Var vBean = _declareMakeShared(entity, "entity");
 		for(Column col:columns) {
 			try{
 				
@@ -75,7 +75,7 @@ public class MethodGetFromRecord extends Method {
 						addInstr(vBean.callMethodInstruction("set"+col.getUc1stCamelCaseName()+"Internal",EntityCls.getDatabase() instanceof FirebirdDatabase && eValue.getType().equals(CoreTypes.QString) ? eValue.callMethod(ClsQString.trimmed) : eValue));
 					}
 				}
-//					_callMethodInstr(bean, "set"+col.getUc1stCamelCaseName(), getParam("record").callMethod("value", new QStringPlusOperatorExpression(getParam("alias"), QString.fromStringConstant("__"+ col.getName()))).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(col)));
+//					_callMethodInstr(entity, "set"+col.getUc1stCamelCaseName(), getParam("record").callMethod("value", new QStringPlusOperatorExpression(getParam("alias"), QString.fromStringConstant("__"+ col.getName()))).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(col)));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

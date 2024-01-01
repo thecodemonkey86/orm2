@@ -33,17 +33,17 @@ public class MethodFetchList extends Method {
 	//protected List<OneRelation> oneRelations;
 	//protected List<OneToManyRelation> manyRelations;
 	protected PrimaryKey pk;
-	protected EntityCls bean;
+	protected EntityCls entity;
 	protected Param pQuery;
 	protected boolean lazyLoading;
 	
-	public MethodFetchList(EntityCls bean,PrimaryKey pk,boolean lazyLoading) {
-		super(Public, Types.qlist(bean.toSharedPtr()),getMethodName(bean,lazyLoading) );
+	public MethodFetchList(EntityCls entity,PrimaryKey pk,boolean lazyLoading) {
+		super(Public, Types.qlist(entity.toSharedPtr()),getMethodName(entity,lazyLoading) );
 		pQuery = addParam(Types.QSqlQuery, "query");	
 		//this.oneRelations = oneRelations;
 		//this.manyRelations = manyRelations;
 		this.pk = pk;
-		this.bean = bean;
+		this.entity = entity;
 		this.lazyLoading = lazyLoading;
 		setStatic(true);
 	}
@@ -54,22 +54,22 @@ public class MethodFetchList extends Method {
 		
 	@Override
 	public void addImplementation() {
-		List<OneRelation> oneRelations = bean.getOneRelations();
-		PrimaryKey pk=bean.getTbl().getPrimaryKey();
+		List<OneRelation> oneRelations = entity.getOneRelations();
+		PrimaryKey pk=entity.getTbl().getPrimaryKey();
 		
 		Var result = _declare(returnType, "result");
 		Expression query = getExpressionQuery();
 		//int //bCount = 2;
-		Type e1PkType = pk.isMultiColumn() ? bean.getStructPk() : EntityCls.getDatabaseMapper().columnToType( pk.getColumns().get(0));
+		Type e1PkType = pk.isMultiColumn() ? entity.getStructPk() : EntityCls.getDatabaseMapper().columnToType( pk.getColumns().get(0));
 		
 		ArrayList<AbstractRelation> manyRelations = new ArrayList<>();
 		
-		manyRelations.addAll(bean.getOneToManyRelations());
-		manyRelations.addAll(bean.getManyToManyRelations());
+		manyRelations.addAll(entity.getOneToManyRelations());
+		manyRelations.addAll(entity.getManyToManyRelations());
 		
 		IfBlock ifQueryNext = _if(query.callMethod("next"));
 		InstructionBlock ifInstr = ifQueryNext.thenBlock();
-		Var e1Map =  ifInstr._declare((!manyRelations.isEmpty()) ? new ClsQHash(e1PkType, bean.getFetchListHelperCls()) : new ClsQSet(e1PkType), "e1Map");
+		Var e1Map =  ifInstr._declare((!manyRelations.isEmpty()) ? new ClsQHash(e1PkType, entity.getFetchListHelperCls()) : new ClsQSet(e1PkType), "e1Map");
 		
 		DoWhile doWhileQueryNext = ifQueryNext.thenBlock()._doWhile();
 		doWhileQueryNext.setCondition(query.callMethod("next"));
@@ -78,7 +78,7 @@ public class MethodFetchList extends Method {
 		Var e1pk = null;
 		
 		if (pk.isMultiColumn()) {
-			e1pk =doWhileQueryNext._declare( bean.getStructPk(), "e1pk" );
+			e1pk =doWhileQueryNext._declare( entity.getStructPk(), "e1pk" );
 			for(Column colPk:pk.getColumns()) {
 				doWhileQueryNext._assign(e1pk.accessAttr(colPk.getCamelCaseName()), recDoWhile.callMethod("value", QString.fromStringConstant("e1__"+ colPk.getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType())));
 			}
@@ -91,14 +91,14 @@ public class MethodFetchList extends Method {
 		
 		
 		Var e1DoWhile = ifNotE1SetContains.thenBlock()
-				._declare(bean.toSharedPtr(), "e1", parent.callStaticMethod(MethodGetFromRecord.getMethodName(bean), recDoWhile, QString.fromStringConstant("e1")));
+				._declare(entity.toSharedPtr(), "e1", parent.callStaticMethod(MethodGetFromRecord.getMethodName(entity), recDoWhile, QString.fromStringConstant("e1")));
 		
 		if(!this.lazyLoading) {
 		
 			//bCount = 2;
 			if (!manyRelations.isEmpty()) {
 				
-				//Var structHelper = ifInstr._declare(bean.getFetchListHelperCls().toRawPointer(), "structHelper", new NewOperator(bean.getFetchListHelperCls()));
+				//Var structHelper = ifInstr._declare(entity.getFetchListHelperCls().toRawPointer(), "structHelper", new NewOperator(entity.getFetchListHelperCls()));
 	
 	//			for(Relation r:manyRelations) {
 	//				Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
@@ -108,9 +108,9 @@ public class MethodFetchList extends Method {
 	
 				doWhileQueryNext._assignInstruction(recDoWhile, query.callMethod("record"));
 				
-				Var fkHelper = doWhileQueryNext._declare(bean.getFetchListHelperCls().toRef(), "fkHelper",e1Map.arrayIndex(e1pk));
+				Var fkHelper = doWhileQueryNext._declare(entity.getFetchListHelperCls().toRef(), "fkHelper",e1Map.arrayIndex(e1pk));
 				
-				Var structHelperIfNotE1SetContains = ifNotE1SetContains.thenBlock()._declare(bean.getFetchListHelperCls(), "structHelper");
+				Var structHelperIfNotE1SetContains = ifNotE1SetContains.thenBlock()._declare(entity.getFetchListHelperCls(), "structHelper");
 				ifNotE1SetContains.thenBlock()._assign(structHelperIfNotE1SetContains.accessAttr("e1"), e1DoWhile);
 	//			//bCount = 2;
 	//			for(Relation r:manyRelations) {
@@ -170,7 +170,7 @@ public class MethodFetchList extends Method {
 						 ;
 					
 //					for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
-//						if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
+//						if (foreignOneRelation.getDestTable().equals(entity.getTbl())) {
 //							ifRecValueIsNotNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("e1")));
 //						}
 //					}
@@ -200,12 +200,12 @@ public class MethodFetchList extends Method {
 					._callMethodInstr(
 							e1DoWhile ,
 							new MethodAttrSetterInternal(foreignCls,
-									bean.getAttrByName(OrmUtil.getOneRelationDestAttrName(r)))
+									entity.getAttrByName(OrmUtil.getOneRelationDestAttrName(r)))
 							,  foreignBean);
 				
 			
 	//			for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
-	//				if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
+	//				if (foreignOneRelation.getDestTable().equals(entity.getTbl())) {
 	//					ifRelatedBeanIsNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", e1DoWhile));
 	//				}
 	//			}
@@ -228,8 +228,8 @@ public class MethodFetchList extends Method {
 		return super.toString();
 	}
 
-	public static String getMethodName(EntityCls bean,boolean lazyLoading) {
-		return  "fetchList"+bean.getName()+(lazyLoading?"LazyLoading":"");
+	public static String getMethodName(EntityCls entity,boolean lazyLoading) {
+		return  "fetchList"+entity.getName()+(lazyLoading?"LazyLoading":"");
 	}
 
 }

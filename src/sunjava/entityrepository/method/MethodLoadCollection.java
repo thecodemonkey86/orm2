@@ -10,18 +10,18 @@ import sunjava.core.expression.Var;
 import sunjava.entity.EntityCls;
 
 public class MethodLoadCollection extends Method{
-	EntityCls bean;
+	EntityCls entity;
 	
-	public MethodLoadCollection(Param p,EntityCls bean) {
-		super(Public, Types.Void, getMethodName(bean));
+	public MethodLoadCollection(Param p,EntityCls entity) {
+		super(Public, Types.Void, getMethodName(entity));
 //		addParam(new Param(Types.QSqlQuery, "query"));	
 		//addParam(new Param(Types.qset(cls), "collection"));
 		addParam(p);
-		this.bean=bean;
+		this.entity=entity;
 	}
 
-	public static String getMethodName(EntityCls bean) {
-		return "loadCollection"+bean.getName();
+	public static String getMethodName(EntityCls entity) {
+		return "loadCollection"+entity.getName();
 	}
 	
 	protected Var getVarSqlCon() {
@@ -29,21 +29,21 @@ public class MethodLoadCollection extends Method{
 		return parent.getAttrByName("sqlCon");
 	}
 	
-	protected Expression getByRecordExpression(EntityCls bean, Var record, JavaString alias) {
+	protected Expression getByRecordExpression(EntityCls entity, Var record, JavaString alias) {
 		//return new ThisBeanRepositoryExpression((BeanRepository) parent);
-		return bean.callStaticMethod("getByRecord", getVarSqlCon(), record, alias);
+		return entity.callStaticMethod("getByRecord", getVarSqlCon(), record, alias);
 	}
 	
 	@Override
 	public void addImplementation() {
 		_return();
-//		PrimaryKey pk=bean.getTbl().getPrimaryKey();
+//		PrimaryKey pk=entity.getTbl().getPrimaryKey();
 ////		Param query = getParam("query");
 //		Param collection = getParam("collection");
 //		
-//		List<OneRelation> oneRelations = bean.getOneRelations();
-//		List<OneToManyRelation> oneToManyRelations = bean.getOneToManyRelations();
-//		List<ManyRelation> manyToManyRelations = bean.getManyToManyRelations();
+//		List<OneRelation> oneRelations = entity.getOneRelations();
+//		List<OneToManyRelation> oneToManyRelations = entity.getOneToManyRelations();
+//		List<ManyRelation> manyToManyRelations = entity.getManyToManyRelations();
 //		ArrayList<AbstractRelation> manyRelations = new ArrayList<>();
 //		manyRelations.addAll(oneToManyRelations);
 //		manyRelations.addAll(manyToManyRelations);
@@ -53,10 +53,10 @@ public class MethodLoadCollection extends Method{
 //		
 //		Var aSqlCon = getVarSqlCon();
 //		Var sqlQuery = _declare(Types.SqlQuery, "sqlQuery",aSqlCon.callMethod("buildQuery"));
-//		Type e1PkType = pk.isMultiColumn() ? bean.getStructPk() : BeanCls.getTypeMapper().columnToType( pk.getColumns().get(0));
+//		Type e1PkType = pk.isMultiColumn() ? entity.getStructPk() : BeanCls.getTypeMapper().columnToType( pk.getColumns().get(0));
 //		
 //		//ArrayList<Expression> selectFields = new ArrayList<>();
-//		//selectFields.add(bean.callStaticMethod("getSelectFields",JavaString.fromStringConstant("e1")));
+//		//selectFields.add(entity.callStaticMethod("getSelectFields",JavaString.fromStringConstant("e1")));
 //		
 //		List<OneRelation> relations = new ArrayList<>(oneRelations);
 //		relations.addAll(oneRelations);
@@ -67,10 +67,10 @@ public class MethodLoadCollection extends Method{
 ////			//bCount++;
 ////		}
 ////		Expression exprQSqlQuery = sqlQuery.callMethod("select", Expressions.concat(QChar.fromChar(','), selectFields) )
-////									.callMethod("from", JavaString.fromExpression(bean.accessStaticAttribute("TABLENAME")).concat(JavaString.fromStringConstant(" e1")));
+////									.callMethod("from", JavaString.fromExpression(entity.accessStaticAttribute("TABLENAME")).concat(JavaString.fromStringConstant(" e1")));
 //		
-//		Expression exprQSqlQuery = sqlQuery.callMethod("select", bean.callStaticMethod("getAllSelectFields",JavaString.fromStringConstant("e1")))
-//				.callMethod("from", JavaString.fromExpression(bean.callStaticMethod("getTableName")).concat(JavaString.fromStringConstant(" e1")));
+//		Expression exprQSqlQuery = sqlQuery.callMethod("select", entity.callStaticMethod("getAllSelectFields",JavaString.fromStringConstant("e1")))
+//				.callMethod("from", JavaString.fromExpression(entity.callStaticMethod("getTableName")).concat(JavaString.fromStringConstant(" e1")));
 //		
 //		//int //bCount = 2;
 //		
@@ -100,7 +100,7 @@ public class MethodLoadCollection extends Method{
 //		
 //		Var params= _declare(Types.arraylist(Types.SqlParam), "params");
 ////		_callMethodInstr(params, "reserve", collection.callMethod("size"));
-//		Var varForeachBean = new Var(bean, "entity");
+//		Var varForeachBean = new Var(entity, "entity");
 //		ForeachLoop foreach= _foreach(varForeachBean, collection);
 //		for (Column pkCol : pk.getColumns()) {
 //			
@@ -122,7 +122,7 @@ public class MethodLoadCollection extends Method{
 //		
 //		IfBlock ifQueryNext = _if(query.callMethod("next"));
 //		InstructionBlock ifInstr = ifQueryNext.getIfInstr();
-//		Var e1Map =  ifInstr._declare((!manyRelations.isEmpty()) ? new ClsHashmap(e1PkType, bean.getFetchListHelperCls()) : new ClsHashSet(e1PkType), "e1Map");
+//		Var e1Map =  ifInstr._declare((!manyRelations.isEmpty()) ? new ClsHashmap(e1PkType, entity.getFetchListHelperCls()) : new ClsHashSet(e1PkType), "e1Map");
 //		
 //		DoWhile doWhileQueryNext = ifQueryNext.getIfInstr()._doWhile();
 //		doWhileQueryNext.setCondition(query.callMethod("next"));
@@ -130,9 +130,9 @@ public class MethodLoadCollection extends Method{
 //		
 //		Var e1pk = null;
 //		ArrayList<Expression> listForeachPkCompare = new ArrayList<>();
-//		Var varIfNotE1SetContainsForeachBean = new Var(bean, "entity");
+//		Var varIfNotE1SetContainsForeachBean = new Var(entity, "entity");
 //		if (pk.isMultiColumn()) {
-//			e1pk =doWhileQueryNext._declare( bean.getStructPk(), "e1pk" );
+//			e1pk =doWhileQueryNext._declare( entity.getStructPk(), "e1pk" );
 //			for(Column colPk:pk.getColumns()) {
 //				doWhileQueryNext._assign(e1pk.accessAttr(colPk.getCamelCaseName()), recDoWhile.callMethod("value", JavaString.fromStringConstant("e1__"+ colPk.getName())).callMethod(BeanCls.getTypeMapper().getConvertMethod(colPk.getDbType())));
 //				
@@ -188,11 +188,11 @@ public class MethodLoadCollection extends Method{
 //		if (manyRelations.isEmpty()) {
 //			ifForeachPkCompare.getIfInstr()._callMethodInstr(e1Map, "insert", e1pk );
 //		} else {
-//			Var structHelperIfNotE1SetContains = ifForeachPkCompare.getIfInstr()._declare(bean.getFetchListHelperCls(), "structHelper");
+//			Var structHelperIfNotE1SetContains = ifForeachPkCompare.getIfInstr()._declare(entity.getFetchListHelperCls(), "structHelper");
 //			ifForeachPkCompare.getIfInstr()._assign(structHelperIfNotE1SetContains.accessAttr("e1"), varIfNotE1SetContainsForeachBean);
 //			ifForeachPkCompare.getIfInstr()._callMethodInstr(e1Map, "insert", e1pk, structHelperIfNotE1SetContains );
 //			
-//			Var fkHelper = doWhileQueryNext._declare(bean.getFetchListHelperCls(), "fkHelper",e1Map.arrayIndex(e1pk));
+//			Var fkHelper = doWhileQueryNext._declare(entity.getFetchListHelperCls(), "fkHelper",e1Map.arrayIndex(e1pk));
 //			
 //			for(AbstractRelation r:manyRelations) {
 //				Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
@@ -239,7 +239,7 @@ public class MethodLoadCollection extends Method{
 //					 ;
 //				
 //				for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
-//					if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
+//					if (foreignOneRelation.getDestTable().equals(entity.getTbl())) {
 //						ifRecValueIsNotNull.getIfInstr().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("e1")));
 //					}
 //				}
@@ -260,12 +260,12 @@ public class MethodLoadCollection extends Method{
 //				._callMethodInstr(
 //						varForeachBean ,
 //						new MethodAttrSetterInternal(foreignCls,
-//								bean.getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)))
+//								entity.getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)))
 //						,  foreignBean);
 //			
 //		
 //			for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
-//				if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
+//				if (foreignOneRelation.getDestTable().equals(entity.getTbl())) {
 //					ifRelatedBeanIsNull.getIfInstr().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", recDoWhile));
 //				}
 //			}
@@ -276,12 +276,12 @@ public class MethodLoadCollection extends Method{
 //		
 //		foreachIfNotE1SetContains._callMethodInstr(varForeachBean, "setLoaded", BoolExpression.TRUE);
 //				
-//		for(Column col:bean.getTbl().getAllColumns()) {
+//		for(Column col:entity.getTbl().getAllColumns()) {
 //			try{
 //				if (!col.hasOneRelation() && !col.isPartOfPk()) {
 //					ifForeachPkCompare.getIfInstr().addInstr(varIfNotE1SetContainsForeachBean.callMethodInstruction("set"+ col.getUc1stCamelCaseName()+"Internal",recDoWhile.callMethod("value", JavaString.fromStringConstant("e1__"+ col.getName())).callMethod(BeanCls.getTypeMapper().getConvertMethod(col.getDbType()))));
 //				}
-////					_callMethodInstr(bean, "set"+col.getUc1stCamelCaseName(), getParam("record").callMethod("value", new JavaStringPlusOperatorExpression(getParam("alias"), JavaString.fromStringConstant("__"+ col.getName()))).callMethod(BeanCls.getTypeMapper().getConvertMethod(col.getDbType())));
+////					_callMethodInstr(entity, "set"+col.getUc1stCamelCaseName(), getParam("record").callMethod("value", new JavaStringPlusOperatorExpression(getParam("alias"), JavaString.fromStringConstant("__"+ col.getName()))).callMethod(BeanCls.getTypeMapper().getConvertMethod(col.getDbType())));
 //			} catch (Exception e) {
 //				e.printStackTrace();
 //				System.out.println(parent);

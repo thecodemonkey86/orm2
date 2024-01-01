@@ -19,23 +19,23 @@ import sunjava.entity.EntityCls;
 
 public class MethodGetAllSelectFields extends Method  {
 
-	protected EntityCls bean;
-	public MethodGetAllSelectFields(EntityCls bean) {
-		super(Public, Types.String, "getAllSelectFields"+ bean.getName());
+	protected EntityCls entity;
+	public MethodGetAllSelectFields(EntityCls entity) {
+		super(Public, Types.String, "getAllSelectFields"+ entity.getName());
 		setStatic(true);
 		addParam(new Param(Types.String, "alias"));
-		this.bean = bean;
+		this.entity = entity;
 	}
 
 	@Override
 	public void addImplementation() {
-		List<OneRelation> oneRelations =bean.getOneRelations();
-		List<AbstractRelation> relations = new ArrayList<>(bean.getOneToManyRelations().size()+bean.getManyToManyRelations().size());
-		relations.addAll(bean.getOneToManyRelations());
-		relations.addAll(bean.getManyToManyRelations());
+		List<OneRelation> oneRelations =entity.getOneRelations();
+		List<AbstractRelation> relations = new ArrayList<>(entity.getOneToManyRelations().size()+entity.getManyToManyRelations().size());
+		relations.addAll(entity.getOneToManyRelations());
+		relations.addAll(entity.getManyToManyRelations());
 		
 		ArrayList<Expression> l=new ArrayList<>();
-		for(Column col:bean.getTbl().getAllColumns()) {
+		for(Column col:entity.getTbl().getAllColumns()) {
 			JavaStringPlusOperatorExpression e= new JavaStringPlusOperatorExpression(getParam("alias"), JavaString.stringConstant('.' + CodeUtil.sp(col.getEscapedName(),"as ") ));
 			JavaStringPlusOperatorExpression colExpression = e.concat(getParam("alias")).concat(JavaString.stringConstant("__" + col.getName()));
 			if (colExpression.toString().isEmpty()) {

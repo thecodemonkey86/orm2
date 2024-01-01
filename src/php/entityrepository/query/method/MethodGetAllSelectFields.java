@@ -9,16 +9,16 @@ import php.lib.ClsBaseEntityQuery;
 
 public class MethodGetAllSelectFields extends Method {
 	
-	protected EntityCls bean;
+	protected EntityCls entity;
 	
 	public MethodGetAllSelectFields(EntityCls cls) {
 		super(Public, Types.String, "getAllSelectFields" );
-		this.bean = cls;
+		this.entity = cls;
 	}
 
 	@Override
 	public void addImplementation() {
-		_return(Types.EntityRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetAllSelectFields(bean), _this().accessAttr(ClsBaseEntityQuery.mainEntityAlias))); 
+		_return(Types.EntityRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetAllSelectFields(entity), _this().accessAttr(ClsBaseEntityQuery.mainEntityAlias))); 
 	}
 	
 	@Override

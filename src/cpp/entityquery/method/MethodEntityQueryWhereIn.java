@@ -23,13 +23,13 @@ import database.column.Column;
 
 
 public class MethodEntityQueryWhereIn extends Method {
-	EntityCls bean;
+	EntityCls entity;
 	Param pValue ;
 	Column c;
 	EntityQueryType beanQueryType;
-	public MethodEntityQueryWhereIn(Cls query,EntityQueryType beanQueryType, EntityCls bean,Column c, TplCls pValueType) {
+	public MethodEntityQueryWhereIn(Cls query,EntityQueryType beanQueryType, EntityCls entity,Column c, TplCls pValueType) {
 		super(Public, query.toRef(), "where"+c.getUc1stCamelCaseName()+"In");
-		this.bean=bean;
+		this.entity=entity;
 		this.pValue = addParam(pValueType.toConstRef(), "value");
 		this.c = c;
 		this.beanQueryType = beanQueryType;

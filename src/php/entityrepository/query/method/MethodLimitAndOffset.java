@@ -23,22 +23,22 @@ public class MethodLimitAndOffset extends Method {
 
 	Param pJoinTableAlias, pOn, pQueryParams, pCondition;
 	Param pLimit, pOffset;
-	EntityCls bean;
+	EntityCls entity;
 
-	public MethodLimitAndOffset(EntityCls bean, ClsEntityQuery parentType) {
+	public MethodLimitAndOffset(EntityCls entity, ClsEntityQuery parentType) {
 		super(Public, parentType, "limitAndOffset");
 		this.pLimit = addParam(Types.Int, "limit");
 		this.pOffset = addParam(Types.Int, "offset");
 		this.pCondition = addParam(new Param(Types.String, "condition", Expressions.Null));
 		this.pQueryParams = addParam(new Param(Types.Mixed, "params", Expressions.Null));
-		this.bean = bean;
+		this.entity = entity;
 	}
 
 	@Override
 	public void addImplementation() {
 		//Expression aSqlQuery = _this().accessAttr("sqlQuery");
 		
-		PrimaryKey pk = bean.getTbl().getPrimaryKey();
+		PrimaryKey pk = entity.getTbl().getPrimaryKey();
 		//String mainBeanAlias = "e1.";
 		StringBuilder sql = new StringBuilder();
 //		if (pk.isMultiColumn()) {
@@ -54,7 +54,7 @@ public class MethodLimitAndOffset extends Method {
 		for (int i = 1; i < pk.getColumnCount(); i++) {
 			sql.append(',').append(pk.getColumn(i).getEscapedName());
 		}
-		sql.append(" FROM ").append(bean.getTbl().getEscapedName()).append(" WHERE %s");
+		sql.append(" FROM ").append(entity.getTbl().getEscapedName()).append(" WHERE %s");
 
 		Var varSql = _declare(returnType, "sql", PhpFunctions.sprintf.call(new PhpStringLiteral(sql.toString()),
 				new InlineIfExpression(pCondition.isNull(),

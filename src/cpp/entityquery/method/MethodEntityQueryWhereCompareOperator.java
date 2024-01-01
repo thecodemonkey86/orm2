@@ -27,15 +27,15 @@ public class MethodEntityQueryWhereCompareOperator extends Method{
 		return op;
 	}
 	}
-	EntityCls bean;
+	EntityCls entity;
 	Param pValue ;
 	Column c;
 	EntityQueryType beanQueryType;
 	Operator operator;
 	
-	public MethodEntityQueryWhereCompareOperator(Cls query,EntityQueryType beanQueryType, EntityCls bean,Column c,Operator operator) {
+	public MethodEntityQueryWhereCompareOperator(Cls query,EntityQueryType beanQueryType, EntityCls entity,Column c,Operator operator) {
 		super(Public, query.toRef(), "where"+c.getUc1stCamelCaseName()+operator.methodNameSuffix);
-		this.bean=bean;
+		this.entity=entity;
 		Type t = EntityCls.getDatabaseMapper().columnToType(c);
 		pValue = addParam(new Param(t.isPrimitiveType() ? t : t.toConstRef(), "value"));
 		this.c = c;

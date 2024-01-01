@@ -25,9 +25,9 @@ public class MethodSetAutoIncrementId extends Method {
 
 	@Override
 	public void addImplementation() {
-		EntityCls bean = (EntityCls) parent;
-		if( bean.getTbl().getPrimaryKey().isAutoIncrement()) {
-			Attr attrAutoIncrement = bean.getAttrByName( bean.getTbl().getPrimaryKey().getAutoIncrementColumn().getCamelCaseName());
+		EntityCls entity = (EntityCls) parent;
+		if( entity.getTbl().getPrimaryKey().isAutoIncrement()) {
+			Attr attrAutoIncrement = entity.getAttrByName( entity.getTbl().getPrimaryKey().getAutoIncrementColumn().getCamelCaseName());
 			addInstr( _this().accessAttr(attrAutoIncrement).assign( getParam("id")));
 		} else {
 			addInstr(new Instruction() {

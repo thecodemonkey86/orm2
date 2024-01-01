@@ -7,10 +7,10 @@ import java.util.Map;
 import database.table.Table;
 
 public class Entities {
-	private static Map<String,EntityCls> beans;
+	private static Map<String,EntityCls> entities;
 	
 	static {
-		beans = new HashMap<>();
+		entities = new HashMap<>();
 	}
 	
 	public static EntityCls get(Table tbl) {
@@ -18,17 +18,17 @@ public class Entities {
 	}
 	
 	public static EntityCls get(String name) {
-		if (!beans.containsKey(name)) {
+		if (!entities.containsKey(name)) {
 			throw new RuntimeException("Cls not found "+name); 
 		}
-		return beans.get(name);
+		return entities.get(name);
 	}
 	
 	public static void add(EntityCls cls) {
-		beans.put(cls.getName(), cls);
+		entities.put(cls.getName(), cls);
 	}
 	
 	public static Collection<EntityCls> getAllEntities() {
-		return beans.values();
+		return entities.values();
 	}
 }

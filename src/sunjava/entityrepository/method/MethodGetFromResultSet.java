@@ -18,17 +18,17 @@ public class MethodGetFromResultSet extends Method {
 	protected List<Column> columns;
 	protected EntityCls beanCls;
 	
-	public static String getMethodName(EntityCls bean) {
-		return "get"+bean.getName()+ "FromResultSet";
+	public static String getMethodName(EntityCls entity) {
+		return "get"+entity.getName()+ "FromResultSet";
 	}
 	
-	public MethodGetFromResultSet(EntityCls bean) {
-		super(Public, bean, getMethodName(bean));
+	public MethodGetFromResultSet(EntityCls entity) {
+		super(Public, entity, getMethodName(entity));
 		setStatic(true);
 		addParam(new Param(Types.ResultSet, "resultSet"));
 		addParam(new Param(Types.String, "alias"));
-		this.columns = bean.getTbl().getColumns(true);
-		this.beanCls = bean;
+		this.columns = entity.getTbl().getColumns(true);
+		this.beanCls = entity;
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class MethodGetFromResultSet extends Method {
 	@Override
 	public void addImplementation() {
 		addThrowsException(Types.SqlException);
-		Var bean = _declareNew(returnType, "entity", BoolExpression.FALSE);
+		Var entity = _declareNew(returnType, "entity", BoolExpression.FALSE);
 		Param resultSet = getParam("resultSet");
 		Param alias = getParam("alias");
 		for(Column col:columns) {
@@ -50,12 +50,12 @@ public class MethodGetFromResultSet extends Method {
 						Var value = _declare(resultSetValueGetter.getType(), "value"+col.getUc1stCamelCaseName(),resultSetValueGetter );
 						IfBlock ifWasNull = _if(resultSet.callMethod(ClsResultSet.wasNull));
 							ifWasNull.thenBlock()
-							.addInstr(bean.getClassConcreteType().getMethod("set"+col.getUc1stCamelCaseName()+"Internal").call(bean, Expressions.Null).asInstruction());
+							.addInstr(entity.getClassConcreteType().getMethod("set"+col.getUc1stCamelCaseName()+"Internal").call(entity, Expressions.Null).asInstruction());
 							
 							ifWasNull.elseBlock()
-							.addInstr(bean.getClassConcreteType().getMethod("set"+col.getUc1stCamelCaseName()+"Internal").call(bean, value).asInstruction());
+							.addInstr(entity.getClassConcreteType().getMethod("set"+col.getUc1stCamelCaseName()+"Internal").call(entity, value).asInstruction());
 					} else {
-						addInstr(bean.getClassConcreteType().getMethod("set"+col.getUc1stCamelCaseName()+"Internal").call(bean, resultSetValueGetter).asInstruction());
+						addInstr(entity.getClassConcreteType().getMethod("set"+col.getUc1stCamelCaseName()+"Internal").call(entity, resultSetValueGetter).asInstruction());
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -63,8 +63,8 @@ public class MethodGetFromResultSet extends Method {
 				}
 			}
 		}
-		//addInstr(bean.assignAttr("insert",BoolExpression.FALSE));
-		_return(bean);
+		//addInstr(entity.assignAttr("insert",BoolExpression.FALSE));
+		_return(entity);
 	}
 
 }

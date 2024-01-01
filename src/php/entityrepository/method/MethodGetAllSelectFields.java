@@ -14,22 +14,22 @@ import php.entity.EntityCls;
 
 public class MethodGetAllSelectFields extends Method  {
 
-	protected EntityCls bean;
-	public MethodGetAllSelectFields(EntityCls bean) {
-		super(Public, Types.String, "getAllSelectFields"+ bean.getName());
+	protected EntityCls entity;
+	public MethodGetAllSelectFields(EntityCls entity) {
+		super(Public, Types.String, "getAllSelectFields"+ entity.getName());
 		setStatic(true);
 		addParam(new Param(Types.String, "alias", new PhpStringLiteral("e1")));
-		this.bean = bean;
+		this.entity = entity;
 	}
 
 	@Override
 	public void addImplementation() {
-		List<AbstractRelation> relations = new ArrayList<>(bean.getOneRelations().size()+ bean.getOneToManyRelations().size()+bean.getManyToManyRelations().size());
-		relations.addAll(bean.getOneRelations());
-		relations.addAll(bean.getOneToManyRelations());
-		relations.addAll(bean.getManyToManyRelations());
+		List<AbstractRelation> relations = new ArrayList<>(entity.getOneRelations().size()+ entity.getOneToManyRelations().size()+entity.getManyToManyRelations().size());
+		relations.addAll(entity.getOneRelations());
+		relations.addAll(entity.getOneToManyRelations());
+		relations.addAll(entity.getManyToManyRelations());
 		
-		List<Column> cols = bean.getTbl().getAllColumns();
+		List<Column> cols = entity.getTbl().getAllColumns();
 		String sprintfTmpl = (cols.get(0).hasOverrideSelect()?cols.get(0).getOverrideSelect():  "%1$s." + cols.get(0).getEscapedName()) + " as %1$s__" + cols.get(0).getName();
 		for(int i=1;i<cols.size();i++) {
 			sprintfTmpl = sprintfTmpl + "," + (cols.get(i).hasOverrideSelect()?cols.get(i).getOverrideSelect():  "%1$s." + cols.get(i).getEscapedName()) + " as %1$s__" + cols.get(i).getName();

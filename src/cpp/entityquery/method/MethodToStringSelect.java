@@ -16,25 +16,25 @@ import cpp.entityquery.ClsEntityQuerySelect;
 
 public class MethodToStringSelect extends Method{
 
-	EntityCls bean;
+	EntityCls entity;
 	
-	public MethodToStringSelect(EntityCls bean) {
+	public MethodToStringSelect(EntityCls entity) {
 		super(Method.Public, Types.QString, "toString");
 		setConstQualifier(true);
-		this.bean = bean;
+		this.entity = entity;
 	}
 
 	@Override
 	public void addImplementation() {
 		Var mainBeanAlias = _declare(Types.QString, "mainBeanAlias", QString.fromStringConstant("e1"));
-		Expression selectFields = bean.hasRelations() ? new InlineIfExpression(Expressions.not(_this().accessAttr(ClsEntityQuerySelect.lazyLoading)), bean.callStaticMethod(MethodGetAllSelectFields.getMethodName(), mainBeanAlias ), bean.callStaticMethod(MethodGetSelectFields.getMethodName(), mainBeanAlias )) : bean.callStaticMethod(MethodGetSelectFields.getMethodName(), mainBeanAlias );
-		Expression tableExpr = bean.callStaticMethod(MethodGetTableName.getMethodName(), mainBeanAlias );
+		Expression selectFields = entity.hasRelations() ? new InlineIfExpression(Expressions.not(_this().accessAttr(ClsEntityQuerySelect.lazyLoading)), entity.callStaticMethod(MethodGetAllSelectFields.getMethodName(), mainBeanAlias ), entity.callStaticMethod(MethodGetSelectFields.getMethodName(), mainBeanAlias )) : entity.callStaticMethod(MethodGetSelectFields.getMethodName(), mainBeanAlias );
+		Expression tableExpr = entity.callStaticMethod(MethodGetTableName.getMethodName(), mainBeanAlias );
 		addInstr(new Instruction() {
 			@Override
 			public String toString() {
 				
-				//ifNotLazyLoading.thenBlock()._assign(_this().accessAttr(ClsBeanQuerySelect.selectFields),  this.bean.callStaticMethod(MethodGetAllSelectFields.getMethodName(), attrMainBeanAlias ));
-				//ifNotLazyLoading.elseBlock()._assign(_this().accessAttr(ClsBeanQuerySelect.selectFields),  this.bean.callStaticMethod(MethodGetSelectFields.getMethodName(), attrMainBeanAlias ));
+				//ifNotLazyLoading.thenBlock()._assign(_this().accessAttr(ClsBeanQuerySelect.selectFields),  this.entity.callStaticMethod(MethodGetAllSelectFields.getMethodName(), attrMainBeanAlias ));
+				//ifNotLazyLoading.elseBlock()._assign(_this().accessAttr(ClsBeanQuerySelect.selectFields),  this.entity.callStaticMethod(MethodGetSelectFields.getMethodName(), attrMainBeanAlias ));
 				return "QString query = QLatin1String(\"SELECT %1 FROM %2\").arg("+selectFields+", "+tableExpr+");\r\n" +
 						"\r\n" + 
 						"        for(const QString &joinTable:joinTables) {\r\n" + 
@@ -63,9 +63,9 @@ public class MethodToStringSelect extends Method{
 						"        if (limitResults > 0 || resultOffset > -1) {\r\n" + 
 						"            if(!limitOffsetCondition.isEmpty()){ \r\n"+
 						"            if (!conditions.empty()) {\r\n" + 
-						"                query += QLatin1String(\") AND %1\").arg("+  MethodToStringSelect.this.bean.getName() +"::getLimitQueryString(limitResults,resultOffset,limitOffsetCondition));\r\n" + 
+						"                query += QLatin1String(\") AND %1\").arg("+  MethodToStringSelect.this.entity.getName() +"::getLimitQueryString(limitResults,resultOffset,limitOffsetCondition));\r\n" + 
 						"            } else {\r\n" + 
-						"                query += QLatin1String(\" WHERE %1\").arg("+ MethodToStringSelect.this.bean.	getName() +"::getLimitQueryString(limitResults,resultOffset,limitOffsetCondition));\r\n" + 
+						"                query += QLatin1String(\" WHERE %1\").arg("+ MethodToStringSelect.this.entity.	getName() +"::getLimitQueryString(limitResults,resultOffset,limitOffsetCondition));\r\n" + 
 						"            }\r\n" + 
 						"             query += QLatin1String(\" ORDER BY \");\r\n" +
 						"             for(auto order : this->orderByExpressions) {\r\n" + 

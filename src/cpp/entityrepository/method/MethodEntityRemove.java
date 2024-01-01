@@ -16,12 +16,12 @@ import util.CodeUtil2;
 
 public class MethodEntityRemove extends Method {
 
-	protected EntityCls bean;
+	protected EntityCls entity;
 	protected boolean overloadCascadeDeleteRelations;
 	protected Param pBean;
 	protected Param pSqlCon;
 	
-	public MethodEntityRemove(EntityCls bean,
+	public MethodEntityRemove(EntityCls entity,
 			 boolean overloadCascadeDeleteRelations
 			) {
 		super(Public, Types.Void, getMethodName());
@@ -29,9 +29,9 @@ public class MethodEntityRemove extends Method {
 			this.addParam(new Param(Types.Bool, "overloadCascadeDeleteRelations"));
 //		this.setVirtualQualifier(true);
 		this.overloadCascadeDeleteRelations = overloadCascadeDeleteRelations;
-		pBean = addParam(bean.toConstRef(), "entity");
+		pBean = addParam(entity.toConstRef(), "entity");
 		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
-		this.bean = bean;
+		this.entity = entity;
 		setStatic(true);
 	}
 
@@ -42,19 +42,19 @@ public class MethodEntityRemove extends Method {
 				if(!overloadCascadeDeleteRelations) {
 					ArrayList<String> pkCondition = new ArrayList<>();
 					
-					for(Column colPk : bean.getTbl().getPrimaryKey().getColumns()) {
+					for(Column colPk : entity.getTbl().getPrimaryKey().getColumns()) {
 						pkCondition.add(colPk.getEscapedName()+"=?");
 					}
 					
 					
-					String sql = EntityCls.getDatabase().sqlDelete(bean.getTbl(), CodeUtil2.concat(pkCondition, " AND "));
+					String sql = EntityCls.getDatabase().sqlDelete(entity.getTbl(), CodeUtil2.concat(pkCondition, " AND "));
 					Expression varParams = null;
 					
 					if(pkCondition.size() == 1) {
-						varParams = pBean.callAttrGetter(bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName());
+						varParams = pBean.callAttrGetter(entity.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName());
 					} else {
 						varParams = new QListInitList(Types.QVariant);
-						for(Column colPk : bean.getTbl().getPrimaryKey().getColumns()) {
+						for(Column colPk : entity.getTbl().getPrimaryKey().getColumns()) {
 							Expression e = pBean.callAttrGetter(colPk.getCamelCaseName());
 							
 							((QListInitList)varParams).addExpression(e.getType().equals(Types.QVariant) ?e : Types.QVariant.callStaticMethod(ClsQVariant.fromValue,e));

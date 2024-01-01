@@ -20,8 +20,8 @@ public class MethodAddInsertParamForRawExpression extends Method {
 
 	@Override
 	public void addImplementation() {
-		EntityCls bean = (EntityCls) parent;
-		Attr a = bean.getAttrByName("insertParamsForRawExpression"+col.getUc1stCamelCaseName());
+		EntityCls entity = (EntityCls) parent;
+		Attr a = entity.getAttrByName("insertParamsForRawExpression"+col.getUc1stCamelCaseName());
 		addInstr( a.arrayPush(param));
 	}
 

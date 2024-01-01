@@ -32,10 +32,10 @@ public class MethodGetFieldsAsAssocStringArray extends Method {
 
 	@Override
 	public void addImplementation() {
-		EntityCls bean = (EntityCls) parent;
+		EntityCls entity = (EntityCls) parent;
 		IfBlock ifAllColumns = _if(pSpecificColumns.isNull());
 		AssocArrayInitExpression expr = new AssocArrayInitExpression();
-		for(Column col : bean.getTbl().getAllColumns()) {
+		for(Column col : entity.getTbl().getAllColumns()) {
 			if(!col.hasRelation())
 				expr.addElement(new Pair<String, Expression>(col.getName(), EntityCls.getTypeMapper().getConvertFieldToStringExpression(_this().callMethod("get"+col.getUc1stCamelCaseName()), col,pDateTimeFormat,pDateFormat)));
 		}
@@ -43,7 +43,7 @@ public class MethodGetFieldsAsAssocStringArray extends Method {
 		/*Var result = ifAllColumns.elseBlock()._declare(Types.array(Types.String), "result", new ArrayInitExpression());
 		ForeachLoop foreachCols = ifAllColumns.elseBlock()._foreach(new Var(Types.String, "column"), pSpecificColumns);
 		SwitchBlock switchBlock = foreachCols._switch(foreachCols.getVar());
-		for(Column col : bean.getTbl().getAllColumns()) {
+		for(Column col : entity.getTbl().getAllColumns()) {
 			if(!col.hasRelation()) {
 					MethodCall getter = _this().callMethod("get"+col.getUc1stCamelCaseName());
 					Expression convertExpr = BeanCls.getTypeMapper().getConvertFieldToStringExpression(getter, col,pDateTimeFormat,pDateFormat);

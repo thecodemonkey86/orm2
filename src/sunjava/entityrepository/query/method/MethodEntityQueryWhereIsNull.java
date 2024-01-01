@@ -13,11 +13,11 @@ import php.lib.ClsBaseEntityQuery;
 import php.lib.ClsSqlQuery;
 
 public class MethodEntityQueryWhereIsNull extends Method {
-	EntityCls bean;
+	EntityCls entity;
 	Column c;
-	public MethodEntityQueryWhereIsNull(ClsEntityQuery query, EntityCls bean,Column c) {
+	public MethodEntityQueryWhereIsNull(ClsEntityQuery query, EntityCls entity,Column c) {
 		super(Public, query, "where"+c.getUc1stCamelCaseName()+"IsNull");
-		this.bean=bean;
+		this.entity=entity;
 		Type t = EntityCls.getTypeMapper().columnToType(c);
 		
 		if(t == null) {

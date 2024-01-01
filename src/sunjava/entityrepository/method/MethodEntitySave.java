@@ -34,13 +34,13 @@ import sunjava.orm.OrmUtil;
 import util.CodeUtil2;
 
 public class MethodEntitySave extends Method {
-	protected EntityCls bean;
+	protected EntityCls entity;
 	Param pSqlCon;
-	public MethodEntitySave(EntityCls bean) {
+	public MethodEntitySave(EntityCls entity) {
 		super(Public, Types.Void, "save");
 		setStatic(true);
-		this.bean = bean;
-		addParam(new Param(bean, "entity"));
+		this.entity = entity;
+		addParam(new Param(entity, "entity"));
 		pSqlCon =addParam(new Param(Types.Connection, "sqlConnection"));
 	}
 
@@ -60,18 +60,18 @@ public class MethodEntitySave extends Method {
 		
 		ifIsInsertNew.thenBlock()
 		
-			._callMethodInstr(sqlQuery,  ClsSqlQuery.insertInto,parent.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(bean)));
+			._callMethodInstr(sqlQuery,  ClsSqlQuery.insertInto,parent.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(entity)));
 		
 		IfBlock ifHasUpdate = ifIsInsertNew.elseBlock()._if(pBean.callMethod(ClsBaseEntity.METHOD_NAME_HAS_UPDATE));
 		
 		
 //		ifHasUpdate.thenBlock()._callMethodInstr(sqlQuery, ClsSqlQuery.METHOD_NAME_BEGIN_TRANSACTION);
-		ifHasUpdate.thenBlock()._callMethodInstr(sqlQuery,  ClsSqlQuery.update,parent.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(bean)));
+		ifHasUpdate.thenBlock()._callMethodInstr(sqlQuery,  ClsSqlQuery.update,parent.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(entity)));
 		
 		
 		
 		
-		Table tbl = bean.getTbl();
+		Table tbl = entity.getTbl();
 		List<Column> columns = tbl.getColumns(!tbl.getPrimaryKey().isAutoIncrement());
 		for(Column col : columns) {
 			if (col.isNullable()) {
@@ -134,10 +134,10 @@ public class MethodEntitySave extends Method {
 				);
 		*/
 		
-		/*if (bean.isAutoIncrement()) {
+		/*if (entity.isAutoIncrement()) {
 				ResultSet rsAutoIncrement = query.executeAndGetGeneratedKeys();
 				if(rsAutoIncrement.next()) {
-					bean.setAutoIncrementId(rsAutoIncrement.getInt(""));
+					entity.setAutoIncrementId(rsAutoIncrement.getInt(""));
 				}
 			} else {
 				query.execute();
@@ -156,7 +156,7 @@ public class MethodEntitySave extends Method {
 
 
 		
-		List<ManyRelation> manyRelations = bean.getManyToManyRelations();
+		List<ManyRelation> manyRelations = entity.getManyToManyRelations();
 
 		
 		for(ManyRelation r:manyRelations) {
@@ -169,7 +169,7 @@ public class MethodEntitySave extends Method {
 			}
 			
 			// "removed"
-			MethodCall expressionManyToManyRemoved = pBean.callAttrGetter(bean.getAttrByName(OrmUtil.getManyRelationDestAttrName(r)+"Removed" ));
+			MethodCall expressionManyToManyRemoved = pBean.callAttrGetter(entity.getAttrByName(OrmUtil.getManyRelationDestAttrName(r)+"Removed" ));
 			IfBlock ifRemoveBeans = _if(pBean.callMethod(MethodHasRemovedManyToMany.getMethodName(r)));
 		
 			
@@ -225,7 +225,7 @@ public class MethodEntitySave extends Method {
 			}
 			// end of "removed"
 			// "added"
-			MethodCall expressionManyToManyAdded = pBean.callAttrGetter(bean.getAttrByName(OrmUtil.getManyRelationDestAttrName(r)+"Added" ));
+			MethodCall expressionManyToManyAdded = pBean.callAttrGetter(entity.getAttrByName(OrmUtil.getManyRelationDestAttrName(r)+"Added" ));
 			IfBlock ifAddedBeans = _if(pBean.callMethod(MethodHasAddedManyToMany.getMethodName(r)));
 			
 			Expression[] argsInsertMultiRow = new Expression[r.getMappingTable().getPrimaryKey().getColumnCount()+1];
@@ -266,25 +266,25 @@ public class MethodEntitySave extends Method {
 			
 			ifAddedBeans.thenBlock()._callMethodInstr(varAddSql, ClsSqlQuery.execute);
 			ifRemoveBeans.thenBlock()._callMethodInstr(varDeleteSql, ClsSqlQuery.execute);
-			/* example: if (!bean.getEntity1sAdded().isEmpty()){
+			/* example: if (!entity.getEntity1sAdded().isEmpty()){
 			SqlQuery addSqlQuery  = new PgSqlQuery(sqlCon);
 			addSqlQuery.insertMultiRow("e1_e3_mm", "e1_id", "e3_id");
 			addSqlQuery.onConflictDoNothing("e1_id", "e3_id");
 			
-			for (Integer added : bean.getEntity1sAdded()){
-				addSqlQuery.addInsertRow(SqlParam.get(added), SqlParam.get(bean.getId()));
+			for (Integer added : entity.getEntity1sAdded()){
+				addSqlQuery.addInsertRow(SqlParam.get(added), SqlParam.get(entity.getId()));
 				
 			}
 			
 			addSqlQuery.execute();
 		}*/
 			
-			/*if (bean.getTbl().getPrimaryKey().isMultiColumn()) {
-				for(Column col:bean.getTbl().getPrimaryKey().getColumns()) {
+			/*if (entity.getTbl().getPrimaryKey().isMultiColumn()) {
+				for(Column col:entity.getTbl().getPrimaryKey().getColumns()) {
 					foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction("append", _this().accessAttr(  col.getCamelCaseName())));
 				}
 			} else {
-				foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction("append", _this().accessAttr(  bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())));
+				foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction("append", _this().accessAttr(  entity.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())));
 			}
 			if (r.getDestTable().getPrimaryKey().isMultiColumn()) {
 				for(Column col:r.getDestTable().getPrimaryKey().getColumns()) {
