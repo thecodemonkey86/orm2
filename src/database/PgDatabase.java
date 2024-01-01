@@ -119,20 +119,6 @@ public class PgDatabase extends Database {
 		return true;
 	}
 
-	@Override
-	protected void finalize() throws Throwable {
-		super.finalize();
-		if (stColumndata!=null)
-			stColumndata.close();
-	}
-//	@Override
-//	public String getDefaultValue(String string) {
-//		if (string == null||string.startsWith("nextval(")) {
-//			return null;
-//		}
-//		return (string.isEmpty()) ? null : string;
-//	}
-
 
 
 	@Override

@@ -101,13 +101,6 @@ public class FirebirdDatabase extends Database {
 	}
 	
 	@Override
-	protected void finalize() throws Throwable {
-		super.finalize();
-		if (stColumndata!=null)
-			stColumndata.close();
-	}
-
-	@Override
 	public boolean supportsInsertOrIgnore() {
 		return false;
 	}
@@ -153,6 +146,5 @@ public class FirebirdDatabase extends Database {
 	public String sqlInsertMultiRow(AbstractTable tbl, List<Column> columnsInSpecificOrder, String placeholders) {
 		throw new RuntimeException("not implemented");
 	}
-	
 	
 }

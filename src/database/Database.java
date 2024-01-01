@@ -1,5 +1,7 @@
 package database;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -13,7 +15,7 @@ import database.table.Table;
 import util.CodeUtil2;
 
 
-public abstract class Database {
+public abstract class Database implements Closeable{
 	
 	
 	
@@ -82,5 +84,15 @@ public abstract class Database {
 
 	public String getFileLoadFunction() {
 		throw new RuntimeException("not supported");
+	}
+	
+	@Override
+	public void close() throws IOException {
+		if (stColumndata!=null)
+			try {
+				stColumndata.close();
+			} catch (SQLException e) {
+				throw new IOException(e);
+			}
 	}
 }

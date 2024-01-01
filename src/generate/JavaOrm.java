@@ -215,7 +215,7 @@ public class JavaOrm extends OrmGenerator{
 			}
 		}
 		
-		Database database=null; 
+		final Database database; 
 		DbCredentials credentials;
 		
 		if (engine.equals("postgres")) {
@@ -240,51 +240,55 @@ public class JavaOrm extends OrmGenerator{
 			throw new IOException(
 					"Database engine \"" + engine + "\" is currently not supported");
 		}
-		String password = !setPass ? PasswordManager.loadFromFile(credentials) : null;
-		if(password == null && !engine.equals("sqlite")) {
-			JPasswordField jpf = new JPasswordField(24);
-		    JLabel jl = new JLabel("Passwort: ");
-		    Box box = Box.createHorizontalBox();
-		    box.add(jl);
-		    box.add(jpf);
-		    int x = JOptionPane.showConfirmDialog(null, box, "DB Passwort", JOptionPane.OK_CANCEL_OPTION);
-
-		    if (x == JOptionPane.OK_OPTION) {
-		    	password = new String(jpf.getPassword());
-		    }
-			
-			if(password != null && !password.isEmpty()) {
-				PasswordManager.saveToFile(credentials, password);
-			} else {
-				throw new IOException("Password not set");
+		
+		try(database) {
+			String password = !setPass ? PasswordManager.loadFromFile(credentials) : null;
+			if(password == null && !engine.equals("sqlite")) {
+				JPasswordField jpf = new JPasswordField(24);
+			    JLabel jl = new JLabel("Passwort: ");
+			    Box box = Box.createHorizontalBox();
+			    box.add(jl);
+			    box.add(jpf);
+			    int x = JOptionPane.showConfirmDialog(null, box, "DB Passwort", JOptionPane.OK_CANCEL_OPTION);
+	
+			    if (x == JOptionPane.OK_OPTION) {
+			    	password = new String(jpf.getPassword());
+			    }
+				
+				if(password != null && !password.isEmpty()) {
+					PasswordManager.saveToFile(credentials, password);
+				} else {
+					throw new IOException("Password not set");
+				}
 			}
+			credentials.setPassword(password);
+			
+			if(setPass) {
+				PasswordManager.saveToFile(credentials, password);
+			}
+			
+			
+			
+			Properties props = credentials.getProperties();
+			props.setProperty("charSet",charset);
+			
+			// props.setProperty("user", "postgres");
+			
+			Connection conn = DriverManager.getConnection(credentials.getConnectionUrl(), credentials.getProperties());
+		
+		
+			
+			JavaConfigReader cfgReader = new JavaConfigReader(xmlFile.getParent(),conn,database);
+			DefaultXMLReader.read(xmlFile, cfgReader);
+			JavaOrmOutputConfig cfg = cfgReader.getCfg();
+			
+			
+			cfg.setDbEngine(engine);
+			
+			new JavaOrm(cfg).generate();
+		} finally {
+			
 		}
-		credentials.setPassword(password);
-		
-		if(setPass) {
-			PasswordManager.saveToFile(credentials, password);
-		}
-		
-		
-		
-		Properties props = credentials.getProperties();
-		props.setProperty("charSet",charset);
-		
-		// props.setProperty("user", "postgres");
-		
-		Connection conn = DriverManager.getConnection(credentials.getConnectionUrl(), credentials.getProperties());
-	
-	
-		
-		JavaConfigReader cfgReader = new JavaConfigReader(xmlFile.getParent(),conn,database);
-		DefaultXMLReader.read(xmlFile, cfgReader);
-		JavaOrmOutputConfig cfg = cfgReader.getCfg();
-		
-		
-		cfg.setDbEngine(engine);
-		
-		new JavaOrm(cfg).generate();
-
 	}
 
 }

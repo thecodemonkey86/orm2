@@ -77,7 +77,7 @@ public class JsonOrmGenerator {
 			}
 		}
 		
-		Database database=null; 
+		final Database database; 
 		DbCredentials credentials;
 		
 		if(engine==null) {
@@ -108,40 +108,44 @@ public class JsonOrmGenerator {
 			throw new IOException(
 					"Database engine \"" + engine + "\" is currently not supported");
 		}
-		String password =!setPass ? PasswordManager.loadFromFile(credentials) : null; 
-		if(password == null && !engine.equals("sqlite")) {
-			JPasswordField jpf = new JPasswordField(24);
-		    JLabel jl = new JLabel("Passwort: ");
-		    Box box = Box.createHorizontalBox();
-		    box.add(jl);
-		    box.add(jpf);
-		    int x = JOptionPane.showConfirmDialog(null, box, "DB Passwort", JOptionPane.OK_CANCEL_OPTION);
-
-		    if (x == JOptionPane.OK_OPTION) {
-		    	password = new String(jpf.getPassword());
-		    }
-			
-			if(password != null && !password.isEmpty()) {
-				PasswordManager.saveToFile(credentials, password);
-			} else {
-				throw new IOException("Password not set");
+		try(database) {
+			String password =!setPass ? PasswordManager.loadFromFile(credentials) : null; 
+			if(password == null && !engine.equals("sqlite")) {
+				JPasswordField jpf = new JPasswordField(24);
+			    JLabel jl = new JLabel("Passwort: ");
+			    Box box = Box.createHorizontalBox();
+			    box.add(jl);
+			    box.add(jpf);
+			    int x = JOptionPane.showConfirmDialog(null, box, "DB Passwort", JOptionPane.OK_CANCEL_OPTION);
+	
+			    if (x == JOptionPane.OK_OPTION) {
+			    	password = new String(jpf.getPassword());
+			    }
+				
+				if(password != null && !password.isEmpty()) {
+					PasswordManager.saveToFile(credentials, password);
+				} else {
+					throw new IOException("Password not set");
+				}
 			}
+			credentials.setPassword(password);
+			if(setPass) {
+				PasswordManager.saveToFile(credentials, password);
+			}
+			credentials.setPassword(password);
+			
+			Properties props = credentials.getProperties();
+			props.setProperty("charSet",charset);
+			
+			// props.setProperty("user", "postgres");
+			
+			Connection conn = DriverManager.getConnection(credentials.getConnectionUrl(), credentials.getProperties());
+			Pair<OrmGenerator, OrmGenerator> ormGenerators = JsonModeConfigReader.read(xmlFile,conn,engine,database);
+			ormGenerators.getValue1().generate();
+			ormGenerators.getValue2().generate();
+		} finally {
+			
 		}
-		credentials.setPassword(password);
-		if(setPass) {
-			PasswordManager.saveToFile(credentials, password);
-		}
-		credentials.setPassword(password);
-		
-		Properties props = credentials.getProperties();
-		props.setProperty("charSet",charset);
-		
-		// props.setProperty("user", "postgres");
-		
-		Connection conn = DriverManager.getConnection(credentials.getConnectionUrl(), credentials.getProperties());
-		Pair<OrmGenerator, OrmGenerator> ormGenerators = JsonModeConfigReader.read(xmlFile,conn,engine,database);
-		ormGenerators.getValue1().generate();
-		ormGenerators.getValue2().generate();
 	}
 
 }

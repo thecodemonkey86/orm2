@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import sunjava.core.Attr;
 import sunjava.core.JavaString;
 import sunjava.core.Method;
 import sunjava.core.Param;

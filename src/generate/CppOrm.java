@@ -142,7 +142,7 @@ public class CppOrm extends OrmGenerator {
 			System.out.println("Set DB engine");
 			return;
 		}
-		Database database=null; 
+		final Database database; 
 		DbCredentials credentials;
 		
 		if (engine.equals("postgres")) {
@@ -171,54 +171,61 @@ public class CppOrm extends OrmGenerator {
 			throw new IOException(
 					"Database engine \"" + engine + "\" is currently not supported");
 		}
-		boolean setPass= args[0].equals("--setpass");
-		 
-		String password =!setPass ? PasswordManager.loadFromFile(credentials) : null; 
-		if(password == null && !engine.equals("sqlite")) {
-			JPasswordField jpf = new JPasswordField(24);
-		    JLabel jl = new JLabel("Passwort: ");
-		    Box box = Box.createHorizontalBox();
-		    box.add(jl);
-		    box.add(jpf);
-		    int x = JOptionPane.showConfirmDialog(null, box, "DB Passwort", JOptionPane.OK_CANCEL_OPTION);
-
-		    if (x == JOptionPane.OK_OPTION) {
-		    	password = new String(jpf.getPassword());
-		    }
-			
-			if(password != null && !password.isEmpty()) {
-				PasswordManager.saveToFile(credentials, password);
-			} else {
-				throw new IOException("Password not set");
+		
+		try(database) {
+		
+		
+			boolean setPass= args[0].equals("--setpass");
+			 
+			String password =!setPass ? PasswordManager.loadFromFile(credentials) : null; 
+			if(password == null && !engine.equals("sqlite")) {
+				JPasswordField jpf = new JPasswordField(24);
+			    JLabel jl = new JLabel("Passwort: ");
+			    Box box = Box.createHorizontalBox();
+			    box.add(jl);
+			    box.add(jpf);
+			    int x = JOptionPane.showConfirmDialog(null, box, "DB Passwort", JOptionPane.OK_CANCEL_OPTION);
+	
+			    if (x == JOptionPane.OK_OPTION) {
+			    	password = new String(jpf.getPassword());
+			    }
+				
+				if(password != null && !password.isEmpty()) {
+					PasswordManager.saveToFile(credentials, password);
+				} else {
+					throw new IOException("Password not set");
+				}
 			}
+			credentials.setPassword(password);
+			if(setPass) {
+				PasswordManager.saveToFile(credentials, password);
+			}
+		
+			
+			
+			
+			Properties props = credentials.getProperties();
+			props.setProperty("charSet",charset);
+			
+			// props.setProperty("user", "postgres");
+			
+			Connection conn = DriverManager.getConnection(credentials.getConnectionUrl(), credentials.getProperties());
+		
+		
+			
+			CppConfigReader cfgReader = new CppConfigReader(xmlFile.getParent(),conn,database);
+			DefaultXMLReader.read(xmlFile, cfgReader);
+			OrmConfig cfg=cfgReader.getCfg();
+			
+			cfg.setDatabase(database);
+			cfg.setDbEngine(engine);
+			cfg.setEnableStacktrace(enableStackTrace);
+			
+			
+			new CppOrm(cfg).generate();
+		
+		}finally {
 		}
-		credentials.setPassword(password);
-		if(setPass) {
-			PasswordManager.saveToFile(credentials, password);
-		}
-	
-		
-		
-		
-		Properties props = credentials.getProperties();
-		props.setProperty("charSet",charset);
-		
-		// props.setProperty("user", "postgres");
-		
-		Connection conn = DriverManager.getConnection(credentials.getConnectionUrl(), credentials.getProperties());
-	
-	
-		
-		CppConfigReader cfgReader = new CppConfigReader(xmlFile.getParent(),conn,database);
-		DefaultXMLReader.read(xmlFile, cfgReader);
-		OrmConfig cfg=cfgReader.getCfg();
-		
-		cfg.setDatabase(database);
-		cfg.setDbEngine(engine);
-		cfg.setEnableStacktrace(enableStackTrace);
-		
-		
-		new CppOrm(cfg).generate();
 	}
 
 	@Override
