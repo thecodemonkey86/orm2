@@ -9,6 +9,9 @@ public class PgCredentials extends DbCredentials{
 	public PgCredentials(String user, String host,int port, Database db) {
 		super(db);
 		this.user = user;		
+		if(user==null) {
+			throw new RuntimeException("user is missing");
+		}
 		this.host = host;		
 		this.port = port;
 	}
