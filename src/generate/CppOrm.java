@@ -142,7 +142,9 @@ public class CppOrm extends OrmGenerator {
 		
 		Database database=null; 
 		DbCredentials credentials;
-		
+		if(engine==null) {
+			throw new RuntimeException("parameter --engine missing");
+		}
 		if (engine.equals("postgres")) {
 			Class.forName("org.postgresql.Driver");
 			database = new PgDatabase(dbName, dbSchema);
