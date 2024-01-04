@@ -20,7 +20,7 @@ public class MethodJoin2 extends Method{
 		addInstr(new Instruction() {
 			@Override
 			public String toString() {
-				return "this->joinTables.append(QStringLiteral(\" JOIN %1 ON %2\").arg( joinTableAlias,on));\r\n" + 
+				return "this->joinTables.append(QLatin1String(\" JOIN %1 ON %2\").arg( joinTableAlias,on));\r\n" + 
 						"return *this;";
 			}
 		});

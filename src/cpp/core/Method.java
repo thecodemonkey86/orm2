@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import codegen.CodeUtil;
 import cpp.core.expression.Expression;
+import cpp.core.expression.MethodCall;
 import cpp.core.instruction.Comment;
 import cpp.core.instruction.Instruction;
 import cpp.core.instruction.InstructionBlock;
@@ -23,7 +24,7 @@ public abstract class Method extends InstructionBlock{
 	protected String visibility;
 	protected Type returnType;
 	protected String name;
-	
+	protected String ifDef,ifNDef;
 	
 	public static final String Protected = "protected";
 	public static final String Private = "private";
@@ -92,6 +93,15 @@ public abstract class Method extends InstructionBlock{
 	
 	@Override
 	public String toString() {
+		if(ifDef!=null) {
+			return "#ifdef "+ifDef+"\r\n"+srcStr()+"\r\n#endif";
+		} else if(ifNDef!=null) {
+			return "#ifndef "+ifNDef+"\r\n"+srcStr()+"\r\n#endif";
+		}
+		return srcStr();
+	}
+
+	private String srcStr() {
 		ArrayList<String> params=new ArrayList<>();
 		for(Param p:this.params) {
 			params.add(p.toSourceString());
@@ -111,6 +121,15 @@ public abstract class Method extends InstructionBlock{
 	
 
 	public String toHeaderString() {
+		if(ifDef!=null) {
+			return "#ifdef "+ifDef+"\r\n"+hdrStr()+"\r\n#endif";
+		} else if(ifNDef!=null) {
+			return "#ifndef "+ifNDef+"\r\n"+hdrStr()+"\r\n#endif";
+		}
+		return hdrStr();
+	}
+	
+	private String hdrStr()	{
 		ArrayList<String> params=new ArrayList<>();
 		for(Param p:this.params) {
 			params.add(p.toDeclarationString());
@@ -155,7 +174,11 @@ public abstract class Method extends InstructionBlock{
 	public ArrayList<Param> getParams() {
 		return params;
 	}
-
+	public Param[] getParamsAsArray() {
+		Param[] arr = new Param[params.size()];
+		params.toArray(arr);
+		return arr;
+	}
 	public void addParams(ArrayList<Param> p) {
 		params.addAll(p);
 	}
@@ -219,4 +242,20 @@ public abstract class Method extends InstructionBlock{
 		this.noreturnQualifier = noreturnQualifier;
 	}
 	
+	public Method setIfDef(String ifDef) {
+		this.ifDef = ifDef;
+		return this;
+	}
+	
+	public Method setIfNDef(String ifNDef) {
+		this.ifNDef = ifNDef;
+		return this;
+	}
+	
+	public boolean hasIfDef() {
+		return ifDef!=null;
+	}
+	public boolean hasIfNDef() {
+		return ifNDef!=null;
+	}
 }

@@ -28,14 +28,14 @@ public class PgDatabase extends Database {
 	
 	@Override
 	public String getEscapedTableName(AbstractTable tbl) {
-		return String.format("%s.\"%s\"", defaultSchema,tbl.getName());
+		return String.format("\"%s\".\"%s\"", defaultSchema,tbl.getName());
 	}
 
 	@Override
-	public void readColumns(AbstractTable tbl, Connection conn)
+	public void readColumns(AbstractTable tbl, Connection conn,boolean columnsFromConfig)
 			throws SQLException {
 		if (stColumndata==null)
-			stColumndata = conn.prepareStatement("select * from information_schema.columns where table_name = ? and TABLE_CATALOG = ?");
+			stColumndata = conn.prepareStatement("select * from information_schema.columns where table_name = ? and TABLE_CATALOG = ? order by ordinal_position");
 		stColumndata.setString(1, tbl.getName());
 		stColumndata.setString(2, getName());
 		ResultSet rsColumndata = stColumndata.executeQuery();
@@ -65,9 +65,12 @@ public class PgDatabase extends Database {
 		
 		PrimaryKey primaryKey = new PrimaryKey();
 		
-		String sql=String.format("SELECT a.attname as colname , exists(select s.relname as seq, n.nspname as sch, t.relname as tab, a0.attname as col from pg_class s  join pg_depend d on d.objid=s.oid and d.classid='pg_class'::regclass and d.refclassid='pg_class'::regclass  join pg_class t on t.oid=d.refobjid  join pg_namespace n on n.oid=t.relnamespace  join pg_attribute a0 on a0.attrelid=t.oid and a0.attnum=d.refobjsubid where s.relkind='S' and d.deptype='a'and n.nspname = '%s' and a.attname = a0.attname )  as autoincrement FROM   pg_index i JOIN   pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey) WHERE  i.indrelid = '%s.%s'::regclass AND    i.indisprimary;", tbl.getSchema(), tbl.getSchema(), tbl.getName());
+		String sql=String.format("SELECT a.attname as colname , exists(select *\r\n" + 
+				"from information_schema.columns col\r\n" + 
+				"where col.column_default is not null\r\n" + 
+				"      and col.table_schema not in('information_schema', 'pg_catalog')\r\n" + 
+				"and table_schema='%s' and table_name='%s' and column_name=a.attname and column_default like 'nextval(%%')  as autoincrement FROM   pg_index i JOIN   pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey) WHERE  i.indrelid = '%s.%s'::regclass AND    i.indisprimary", tbl.getSchema(),tbl.getName(), tbl.getSchema(), tbl.getName());
 		Statement stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_READ_ONLY  );
-		System.out.println(sql);
 		ResultSet rs = stmt.executeQuery(sql);
 		while(rs.next()) {
 			Column c = tbl.getColumnByName(rs.getString("colname"));
@@ -115,20 +118,6 @@ public class PgDatabase extends Database {
 	public boolean supportsInsertOrIgnore() {
 		return true;
 	}
-
-	@Override
-	protected void finalize() throws Throwable {
-		super.finalize();
-		if (stColumndata!=null)
-			stColumndata.close();
-	}
-//	@Override
-//	public String getDefaultValue(String string) {
-//		if (string == null||string.startsWith("nextval(")) {
-//			return null;
-//		}
-//		return (string.isEmpty()) ? null : string;
-//	}
 
 
 
@@ -195,6 +184,13 @@ public class PgDatabase extends Database {
 				;
 	}
 
-	
+	@Override
+	public boolean supportsLoadingFiles() {
+		return true;
+	}
 
+	@Override
+	public String getFileLoadFunction() {
+		return "bytea_import";
+	}
 }

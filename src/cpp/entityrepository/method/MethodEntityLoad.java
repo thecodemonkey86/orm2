@@ -6,7 +6,6 @@ import java.util.List;
 
 import codegen.CodeUtil;
 import cpp.Types;
-import cpp.core.Attr;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.QString;
@@ -22,9 +21,9 @@ import cpp.entity.EntityCls;
 import cpp.entity.method.MethodAddRelatedEntityInternal;
 import cpp.entity.method.MethodOneRelationAttrSetter;
 import cpp.entity.method.MethodOneRelationEntityIsNull;
-import cpp.entityrepository.ClsEntityRepository;
-import cpp.lib.ClsQSqlQuery;
+import cpp.lib.ClsSqlQuery;
 import cpp.lib.ClsQVariant;
+import cpp.util.ClsDbPool;
 import database.column.Column;
 import database.relation.AbstractRelation;
 import database.relation.ManyRelation;
@@ -39,23 +38,25 @@ public class MethodEntityLoad extends Method {
 	protected List<OneToManyRelation> oneToManyRelations;
 	protected List<ManyRelation> manyRelations;
 	protected PrimaryKey primaryKey;
-	protected EntityCls bean;
-	protected Param pBean;
+	protected EntityCls entity;
+	protected Param pEntity;
+	protected Param pSqlCon;
 	
 	public static String getMethodName() {
 		return "load";
 	}
 	
-	public MethodEntityLoad(EntityCls bean) {
+	public MethodEntityLoad(EntityCls entity) {
 		super(Public, Types.Void, getMethodName());
 		
-		this.oneRelations = bean.getOneRelations();
-		this.oneToManyRelations = bean.getOneToManyRelations();
-		this.manyRelations = bean.getManyRelations();
-		this.primaryKey = bean.getTbl().getPrimaryKey();
-		this.bean = bean;
-		pBean = addParam(bean.toRawPointer(), "entity");
-//		setConstQualifier(true);
+		this.oneRelations = entity.getOneRelations();
+		this.oneToManyRelations = entity.getOneToManyRelations();
+		this.manyRelations = entity.getManyRelations();
+		this.primaryKey = entity.getTbl().getPrimaryKey();
+		this.entity = entity;
+		pEntity = addParam(entity.toRef(), "entity");
+		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
+		setStatic(true);
 	}
 
 	@Override
@@ -65,13 +66,12 @@ public class MethodEntityLoad extends Method {
 	
 	@Override
 	public void addImplementation() {
-		EntityCls bean = this.bean;
+		EntityCls entity = this.entity;
 		
-		Attr aSqlCon = this.parent.getAttrByName(ClsEntityRepository.sqlCon);
-		Var sqlQuery = _declareInitConstructor( EntityCls.getDatabaseMapper().getSqlQueryType(),"query",aSqlCon);
+		Var sqlQuery = _declareInitConstructor( EntityCls.getDatabaseMapper().getSqlQueryType(),"query");
 		
 		ArrayList<Expression> selectFields = new ArrayList<>();
-		selectFields.add(bean.callStaticMethod("getSelectFields",QString.fromStringConstant("e1")));
+		selectFields.add(entity.callStaticMethod("getSelectFields",QString.fromStringConstant("e1")));
 		
 		List<AbstractRelation> allRelations = new ArrayList<>(oneRelations.size()+oneToManyRelations.size()+manyRelations.size());
 		allRelations.addAll(oneRelations);
@@ -84,7 +84,7 @@ public class MethodEntityLoad extends Method {
 			
 		}
 		Expression exprQSqlQuery = sqlQuery.callMethod("select", Expressions.concat(QChar.fromChar(','), selectFields) )
-									.callMethod("from", QString.fromExpression(bean.callStaticMethod("getTableName",QString.fromStringConstant("e1"))));
+									.callMethod("from", QString.fromExpression(entity.callStaticMethod("getTableName",QString.fromStringConstant("e1"))));
 		
 				
 		for(OneRelation r:oneRelations) {
@@ -94,6 +94,10 @@ public class MethodEntityLoad extends Method {
 			}
 			
 			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", QString.fromExpression(Entities.get(r.getDestTable()).callStaticMethod("getTableName")),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
+			
+			if(r.hasAdditionalJoin()) {
+				exprQSqlQuery = exprQSqlQuery.callMethod(ClsSqlQuery.join,QString.fromStringConstant(r.getAdditionalJoin()));
+			}
 		}
 		for(OneToManyRelation r:oneToManyRelations) {
 			ArrayList<String> joinConditions=new ArrayList<>();
@@ -102,6 +106,9 @@ public class MethodEntityLoad extends Method {
 			}
 			
 			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", QString.fromExpression(Entities.get(r.getDestTable()).callStaticMethod("getTableName")),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
+			if(r.hasAdditionalJoin()) {
+				exprQSqlQuery = exprQSqlQuery.callMethod(ClsSqlQuery.join,QString.fromStringConstant(r.getAdditionalJoin()));
+			}
 		}
 		for(ManyRelation r:manyRelations) {
 			ArrayList<String> joinConditionsMappingDest=new ArrayList<>();
@@ -120,7 +127,7 @@ public class MethodEntityLoad extends Method {
 								r.getAlias()+"."+ r.getDestEntityColumn(i).getEscapedName()));
 			}
 			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", 
-					QString.fromStringConstant(r.getMappingTable().getName()),
+					QString.fromStringConstant(r.getMappingTable().getEscapedName()),
 					QString.fromStringConstant(r.getMappingAlias()), 
 					QString.fromStringConstant(CodeUtil2.concat(joinConditionsE1Mapping," AND ")));
 			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", 
@@ -128,15 +135,22 @@ public class MethodEntityLoad extends Method {
 					QString.fromStringConstant(r.getAlias()), 
 					QString.fromStringConstant(CodeUtil2.concat(joinConditionsMappingDest," AND ")));
 			
-			
+			if(r.hasAdditionalJoin()) {
+				exprQSqlQuery = exprQSqlQuery.callMethod(ClsSqlQuery.join,QString.fromStringConstant(r.getAdditionalJoin()));
+			}
 		}
 		
 		for(Column col:primaryKey.getColumns()) {
 			
-			exprQSqlQuery = exprQSqlQuery.callMethod("where", QString.fromStringConstant("e1."+ col.getEscapedName()+"=?"),EntityCls.accessThisAttrGetterByColumn(pBean,col));
+			exprQSqlQuery = exprQSqlQuery.callMethod("where", QString.fromStringConstant("e1."+ col.getEscapedName()+"=?"),EntityCls.accessThisAttrGetterByColumn(pEntity,col));
 					
 		}
-		exprQSqlQuery = exprQSqlQuery.callMethod("execQuery");
+		for(AbstractRelation r:allRelations) {
+			if(r.hasAdditionalOrderBy()) {
+				exprQSqlQuery = exprQSqlQuery.callMethod(ClsSqlQuery.orderBy,QString.fromStringConstant(r.getAdditionalOrderBy()));
+			}
+		}
+		exprQSqlQuery = exprQSqlQuery.callMethod("execQuery",pSqlCon);
 		Var qSqlQuery = _declare(exprQSqlQuery.getType(),
 				"qSqlQuery", exprQSqlQuery
 				);
@@ -189,7 +203,7 @@ public class MethodEntityLoad extends Method {
 //				IfBlock ifNotContains = 
 				ifNotPkForeignIsNull.thenBlock()._if(Expressions.not(pkSet.callMethod("contains", pk)))
 						.addIfInstr(pkSet.callMethodInstruction("insert", pk))
-						.addIfInstr(pBean.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r) , _this().callMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias()))));
+						.addIfInstr(pEntity.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r) , parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias()))));
 				
 			} else {
 				
@@ -197,7 +211,7 @@ public class MethodEntityLoad extends Method {
 				Expression recValueColPk = rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+colPk.getName()));
 				Var pk = doWhileQSqlQueryNext._declare(recValueColPk.getType(), "pk"+r.getAlias(),recValueColPk);
 				
-				IfBlock ifNotPkForeignIsNull= doWhileQSqlQueryNext._if(Expressions.not(recValueColPk.callMethod(ClsQVariant.isNull)));
+				//IfBlock ifNotPkForeignIsNull= doWhileQSqlQueryNext._if(Expressions.not(recValueColPk.callMethod(ClsQVariant.isNull)));
 //				Type type = BeanCls.getDatabaseMapper().columnToType(colPk);
 				
 //				Var pk = doWhileQSqlQueryNext._declare(
@@ -208,13 +222,13 @@ public class MethodEntityLoad extends Method {
 //						);
 				
 				
-				ifNotPkForeignIsNull.thenBlock()._if(
+				doWhileQSqlQueryNext._if(
 						Expressions.and(
-							Expressions.not(pk.callMethod("isNull")),
+								Expressions.not(pk.callMethod(ClsQVariant.isNull)),
 							Expressions.not(pkSet.callMethod("contains", pk.callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk))))
 						))
 							.addIfInstr(pkSet.callMethodInstruction("insert", pk.callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk))))
-							.addIfInstr(pBean.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r) , _this().callMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias()))))
+							.addIfInstr(pEntity.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r) , parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias()))))
 					;
 			}
 			
@@ -238,7 +252,7 @@ public class MethodEntityLoad extends Method {
 //				IfBlock ifNotContains = 
 						doWhileQSqlQueryNext._if(Expressions.not(pkSet.callMethod("contains", pk)))
 						.addIfInstr(pkSet.callMethodInstruction("insert", pk))
-						.addIfInstr(pBean.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r) ,_this().callMethod(MethodGetFromRecord.getMethodName(foreignCls),  rec, QString.fromStringConstant(r.getAlias()))));
+						.addIfInstr(pEntity.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r) ,_this().callMethod(MethodGetFromRecord.getMethodName(foreignCls),  rec, QString.fromStringConstant(r.getAlias()))));
 				
 			} else {
 				
@@ -252,7 +266,7 @@ public class MethodEntityLoad extends Method {
 							Expressions.not(pkSet.callMethod("contains", pk.callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk))))
 						))
 							.addIfInstr(pkSet.callMethodInstruction("insert", pk.callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk))))
-							.addIfInstr(pBean.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r) , _this().callMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias()))))
+							.addIfInstr(pEntity.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r) , parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias()))))
 					;
 			}
 		}
@@ -261,18 +275,18 @@ public class MethodEntityLoad extends Method {
 			try {
 				IfBlock ifBlock= doWhileQSqlQueryNext._if(
 						Expressions.and(
-								pBean.callMethod(MethodOneRelationEntityIsNull.getMethodName(r, true))
+								pEntity.callMethod(MethodOneRelationEntityIsNull.getMethodName(r, true))
 								,
 								Expressions.not( rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getFirstColumn().getName())).callMethod(ClsQVariant.isNull))
 						
 						));
-				ifBlock.thenBlock()._callMethodInstr(pBean, MethodOneRelationAttrSetter.getMethodName(r, true),  _this().callMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias())));
+				ifBlock.thenBlock()._callMethodInstr(pEntity, MethodOneRelationAttrSetter.getMethodName(r, true), parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias())));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			//bCount++;
 		}
-		_callMethodInstr(qSqlQuery, ClsQSqlQuery.clear); 
+//		_callMethodInstr(qSqlQuery, ClsQSqlQuery.clear); 
 	}
 
 }

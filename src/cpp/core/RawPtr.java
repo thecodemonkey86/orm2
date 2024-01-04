@@ -69,4 +69,9 @@ public class RawPtr extends TplCls{
 	public Type toConstRef() {
 		return this;
 	}
+	
+	@Override
+	public Type toPassParamType() {
+		return this;
+	}
 }

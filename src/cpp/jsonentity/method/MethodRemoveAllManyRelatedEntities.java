@@ -10,7 +10,7 @@ import cpp.core.instruction.ForeachLoop;
 import cpp.jsonentity.JsonEntities;
 import cpp.jsonentity.JsonEntity;
 import cpp.jsonentity.ManyAttr;
-import cpp.lib.ClsQVector;
+import cpp.lib.ClsQList;
 import cpp.orm.OrmUtil;
 import database.column.Column;
 import database.relation.IManyRelation;
@@ -66,7 +66,7 @@ public class MethodRemoveAllManyRelatedEntities extends Method {
 		}
 		
 
-		_callMethodInstr(a, ClsQVector.clear);
+		_callMethodInstr(a, ClsQList.clear);
 	}
 
 }

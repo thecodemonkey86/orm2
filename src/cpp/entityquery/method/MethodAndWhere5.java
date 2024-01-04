@@ -25,7 +25,7 @@ public class MethodAndWhere5 extends Method{
 			public String toString() {
 				return "this->params.append(params);\r\n" + 
 						"        if (!conditions.empty()) {\r\n" + 
-						"            this->conditions.append(SqlUtil3::SqlQuery::AND);\r\n" + 
+						"            this->conditions.append(SqlUtil4::SqlQuery::AND);\r\n" + 
 						"        }\r\n" + 
 						"        this->conditions.append(whereCond);\r\n" + 
 						"        return *this;";

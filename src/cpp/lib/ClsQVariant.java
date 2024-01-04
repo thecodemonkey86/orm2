@@ -16,6 +16,7 @@ public class ClsQVariant extends Cls{
 	public ClsQVariant() {
 		super("QVariant");
 		addMethod(new LibMethod(CoreTypes.QString, "toString"));
+		addMethod(new LibMethod(CoreTypes.QStringList, "toStringList"));
 		addMethod(new LibMethod(CoreTypes.QDate, "toDate"));
 		addMethod(new LibMethod(CoreTypes.QDate, "toTime"));
 		addMethod(new LibMethod(CoreTypes.QDateTime, "toDateTime"));
@@ -26,11 +27,11 @@ public class ClsQVariant extends Cls{
 //		addMethod(new LibMethod(CoreTypes.Short, toShort));
 		addMethod(new LibMethod(CoreTypes.Bool, isNull));
 		addMethod(new LibMethod(this, fromValue,true));
-		addMethod(new LibMethod(CoreTypes.LongLong, "toLongLong"));
-		addMethodTemplate(new LibMethodTemplate(new TplSymbol("T"), value) {
+		addMethod(new LibMethod(CoreTypes.Int64, "toLongLong"));
+		addMethodTemplate(new LibMethodTemplate(new TplSymbol("T"), value,false) {
 
 			@Override
-			public TplMethod getConcreteMethod(Type... types) {
+			public TplMethod getConcreteMethodImpl(Type... types) {
 				return new LibTplMethod(this,LibTplMethod.Public, types[0], value,types);
 			}
 			

@@ -1,6 +1,8 @@
 package cpp.entityquery;
 
 import cpp.CoreTypes;
+import cpp.QtCoreTypes;
+import cpp.QtSqlTypes;
 import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.Cls;
@@ -17,7 +19,6 @@ import cpp.entityquery.method.MethodAndWhere3;
 import cpp.entityquery.method.MethodAndWhere4;
 import cpp.entityquery.method.MethodAndWhere5;
 import cpp.entityquery.method.MethodAndWhere6;
-import cpp.entityquery.method.MethodAndWhere7;
 import cpp.entityquery.method.MethodAndWhere8;
 import cpp.entityquery.method.MethodAndWhere9;
 import cpp.entityquery.method.MethodEntityQueryFetch;
@@ -62,10 +63,10 @@ import cpp.entityquery.method.MethodWhere3;
 import cpp.entityquery.method.MethodWhere4;
 import cpp.entityquery.method.MethodWhere5;
 import cpp.entityquery.method.MethodWhere6;
-import cpp.entityquery.method.MethodWhere7;
 import cpp.entityquery.method.MethodWhere8;
 import cpp.entityquery.method.MethodWhere9;
-import cpp.lib.ClsQVector;
+import cpp.lib.ClsQList;
+import cpp.util.ClsDbPool;
 import database.column.Column;
 
 public class ClsEntityQuerySelect extends Cls {
@@ -89,9 +90,8 @@ public class ClsEntityQuerySelect extends Cls {
 			addMethod(new MethodEntityQueryWhereEquals(this,EntityQueryType.Select, cls, c));
 			addMethod(new MethodEntityQueryWhereNotEquals(this,EntityQueryType.Select, cls, c));
 			Type colType = EntityCls.getDatabaseMapper().columnToType(c);
-			addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Select, cls, c,CoreTypes.qvector(colType)));
-			addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Select, cls, c,CoreTypes.qset(colType)));
 			addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Select, cls, c,CoreTypes.qlist(colType)));
+			addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Select, cls, c,CoreTypes.qset(colType)));
 			
 			if(c.isNullable()) {
 				addMethod(new MethodEntityQueryWhereIsNull(this,EntityQueryType.Select, cls, c));
@@ -103,16 +103,19 @@ public class ClsEntityQuerySelect extends Cls {
 			}
 		}
 		
-		addIncludeLib(ClsQVector.CLSNAME);
-		addIncludeHeader(EntityCls.getModelPath() + "entities/"+cls.getIncludeHeader());
-		addIncludeHeader("../"+ Types.EntityRepository.getName().toLowerCase());
-		addIncludeHeader(Types.SqlUtil.getIncludeHeader());
-		addIncludeHeader(Types.SqlQuery.getIncludeHeader());
-//		addIncludeHeader(EnumQueryMode.INSTANCE.getName().toLowerCase());
-		addIncludeLib("QSqlError",true);
-		addIncludeLib("QSqlDriver");
+		addIncludeLib(ClsQList.CLSNAME);
+		addForwardDeclaredClass(cls);
+		addIncludeHeaderInSource(cls.getHeaderInclude());
+		addIncludeHeaderInSource("../"+ Types.EntityRepository.getName().toLowerCase());
+		addIncludeLibInSource(Types.QRegularExpression);
+		addIncludeDefaultHeaderFileName(Types.SqlUtil);
+		addIncludeDefaultHeaderFileName(Types.SqlQuery);
+		addIncludeInSourceDefaultHeaderFileName(QtSqlTypes.QSqlDriver);
+		addIncludeDefaultHeaderFileName(Types.nullable(null));
+		addIncludeHeader(ClsDbPool.instance.getHeaderInclude());
+		addIncludeLibInSource(QtCoreTypes.QDebug,true);
+		addIncludeLibInSource(QtSqlTypes.QSqlError,true);
 		addIncludeLib(Types.QVariant.getName());
-		addAttr(new Attr(Types.EntityRepository.toSharedPtr(), "repository"));
 //		addAttr(new Attr(Types.QString,mainBeanAlias));
 //		addAttr(new Attr(Types.QString,selectFields));
 //		addAttr(new Attr(Types.QString,table));
@@ -127,10 +130,9 @@ public class ClsEntityQuerySelect extends Cls {
 		if(cls.hasRelations())
 			addAttr(new Attr(Types.Bool,lazyLoading));
 		addAttr(new Attr(Types.QVariantList,params));
-		addAttr(new Attr(Types.QSqlDatabase,"sqlCon"));
 //		addAttr(new Attr(EnumQueryMode.INSTANCE,queryMode));
 		
-		addForwardDeclaredClass(Types.EntityRepository);
+		//addForwardDeclaredClass(Types.EntityRepository);
 		
 		addMethod(new MethodToStringSelect(cls));
 		addMethod(new MethodJoin1(this));
@@ -139,7 +141,7 @@ public class ClsEntityQuerySelect extends Cls {
 		addMethod(new MethodJoin4(this));
 		addMethod(new MethodJoin5(this));
 		addMethod(new MethodJoin6(this));
-		addMethod(new MethodJoin7(this).getConcreteMethod(Types.Int64)); // QSet<int64_t>
+		addMethod(new MethodJoin7(this).getConcreteMethodImpl(Types.Int64)); // QSet<int64_t>
 		/*boolean[] booleanValues = new boolean[] {true,false};
 		for(boolean qlatin1Literal1 : booleanValues) {
 			for(boolean qlatin1Literal2 : booleanValues) {
@@ -162,7 +164,6 @@ public class ClsEntityQuerySelect extends Cls {
 		addMethod(new MethodWhere4(this));
 		addMethod(new MethodWhere5(this));
 		addMethod(new MethodWhere6(this));
-		addMethod(new MethodWhere7(this));
 		addMethod(new MethodWhere8(this,true));
 		addMethod(new MethodWhere8(this,false));
 		addMethod(new MethodWhere9(this));
@@ -176,7 +177,6 @@ public class ClsEntityQuerySelect extends Cls {
 		addMethod(new MethodAndWhere4(this));
 		addMethod(new MethodAndWhere5(this));
 		addMethod(new MethodAndWhere6(this));
-		addMethod(new MethodAndWhere7(this));
 		addMethod(new MethodAndWhere8(this));
 		addMethod(new MethodAndWhere9(this));
 		addMethod(new MethodAndWhere10(this));
@@ -185,6 +185,7 @@ public class ClsEntityQuerySelect extends Cls {
 		addMethod(new MethodLimitAndOffset(this,EntityQueryType.Select,null,true));
 		addMethod(new MethodLimitAndOffset(this,EntityQueryType.Select,new Param(Types.QString.toConstRef(), "param"),true));
 		addMethod(new MethodLimitAndOffset(this,EntityQueryType.Select,new Param(Types.Int, "param"),true));
+		addMethod(new MethodLimitAndOffset(this,EntityQueryType.Select,new Param(Types.Int64, "param"),true));
 		addMethod(new MethodLimitAndOffset(this,EntityQueryType.Select,new Param(Types.Bool, "param"),true));
 		addMethod(new MethodLimitAndOffset(this,EntityQueryType.Select,new Param(Types.Double, "param"),true));
 		addMethod(new MethodLimitAndOffset(this,EntityQueryType.Select,new Param(Types.QVariant.toConstRef(), "param"),true));

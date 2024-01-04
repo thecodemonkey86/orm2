@@ -12,7 +12,7 @@ public class ClsQSet extends TplCls{
 		super("QSet", element);
 		addMethod(new LibMethod(CoreTypes.Bool, contains));
 		addMethod(new LibMethod(CoreTypes.Void, "insert"));
-		addMethod(new LibMethod(CoreTypes.Int, "size"));
+		addMethod(new LibMethod(CoreTypes.SizeT, "size"));
 	}
 
 }

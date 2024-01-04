@@ -17,7 +17,7 @@ public class DeclareInitConstructInstruction extends Instruction {
 	
 	@Override
 	public String toString() {
-		return CodeUtil2.sp(var.getType().toUsageString(),var.getName(),CodeUtil2.parentheses(
-				(init instanceof QStringLiteral ? ((QStringLiteral)init).getExpression() : init) ))+';';
+		return CodeUtil2.sp(var.getType().toUsageString(),var.getName(),(init!=null? CodeUtil2.parentheses(
+				(init instanceof QStringLiteral ? ((QStringLiteral)init).getExpression() : init)):null ))+';';
 	}
 }

@@ -7,7 +7,7 @@ public class NotEqualOperator extends Operator {
 
 	public static final NotEqualOperator INSTANCE = new NotEqualOperator();
 
-	public NotEqualOperator() {
+	private NotEqualOperator() {
 		super("!==", Types.Bool, false);
 	}
 

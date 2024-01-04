@@ -16,7 +16,7 @@ public abstract class Column {
 	TypeAttribute dbTypeAttribute;
 	protected boolean autoIncrement;
 	protected boolean nullable;
-	protected boolean enableRawValue;
+	protected boolean enableRawValue,enableFileImport;
 	protected boolean isRelationSourceColumn;
 	protected boolean isRelationDestColumn;
 	protected int position;
@@ -238,5 +238,12 @@ public abstract class Column {
 		this.dbTypeAttribute = dbTypeAttribute;
 	}
 
+	public boolean isFileImportEnabled() {
+		return enableFileImport;
+	}
+	
+	public void setEnableFileImport(boolean enableFileImport) {
+		this.enableFileImport = enableFileImport;
+	}
 	
 }

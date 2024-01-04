@@ -2,6 +2,7 @@ package cpp;
 
 import java.util.HashMap;
 
+import cpp.core.TplCls;
 import cpp.core.Type;
 import cpp.entity.Entities;
 import cpp.entity.EntityCls;
@@ -14,7 +15,7 @@ import cpp.jsonentity.JsonEntities;
 import cpp.jsonentity.JsonEntity;
 import cpp.lib.ClsBaseEntity;
 import cpp.lib.ClsFirebirdSqlQuery;
-import cpp.lib.ClsOrderedSet;
+import cpp.lib.ClsMySqlQuery;
 import cpp.lib.ClsSql;
 import cpp.lib.ClsSqlQuery;
 import cpp.lib.ClsSqlUtil;
@@ -30,6 +31,7 @@ public class Types extends CoreTypes{
 	
 	public static final ClsSqlQuery SqlQuery = 	new ClsSqlQuery();
 	public static final ClsPgSqlQuery PgSqlQuery = 	new ClsPgSqlQuery();
+	public static final ClsMySqlQuery MySqlQuery = 	new ClsMySqlQuery();
 	public static final ClsFirebirdSqlQuery FirebirdSqlQuery = 	new ClsFirebirdSqlQuery();
 	public static final ClsSqliteSqlQuery SqliteSqlQuery = 	new ClsSqliteSqlQuery();
 	public static final ClsSql Sql = 	new ClsSql();
@@ -77,7 +79,7 @@ public class Types extends CoreTypes{
 		return u;
 	}
 	
-	public static Type nullable(Type element) {
+	public static TplCls nullable(Type element) {
 		return new Nullable( element);
 	}
 	
@@ -105,9 +107,6 @@ public class Types extends CoreTypes{
 		
 	}
 	
-	public static ClsOrderedSet orderedSet(Type elementType) {
-		return new ClsOrderedSet(elementType);
-	}
 	
 	
 }

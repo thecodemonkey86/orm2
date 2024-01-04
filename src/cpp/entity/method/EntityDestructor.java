@@ -8,17 +8,17 @@ import database.relation.OneRelation;
 
 public class EntityDestructor extends Destructor {
 
-	EntityCls bean;
+	EntityCls entity;
 	
-	public EntityDestructor(EntityCls bean) {
-		this.bean = bean;
+	public EntityDestructor(EntityCls entity) {
+		this.entity = entity;
 		//setVirtualQualifier(true);
 	}
 
 	@Override
 	public void addImplementation() {
 
-		for(OneRelation r:bean.getOneRelations()) {
+		for(OneRelation r:entity.getOneRelations()) {
 			addInstr(_assignInstruction(_this().accessAttr(OrmUtil.getOneRelationDestAttrName(r)), Expressions.Nullptr));
 		}
 	}

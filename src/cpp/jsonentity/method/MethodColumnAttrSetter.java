@@ -23,6 +23,7 @@ public class MethodColumnAttrSetter extends Method{
 	public MethodColumnAttrSetter( Column col, Attr a) {
 		super(Public, Types.Void, getMethodName(col));
 		this.a=a;
+		assert !col.isPartOfPk();
 		if (col.isNullable()) {
 			TplCls nullable=(TplCls) a.getType();
 			
@@ -46,14 +47,7 @@ public class MethodColumnAttrSetter extends Method{
 		
 	
 		 IfBlock ifNotEquals = _if(cond);
-		if (!col.isPartOfPk())
-			ifNotEquals.thenBlock(). addInstr(_this().assignAttr(a.getName()+"Modified",BoolExpression.TRUE));
-		else {
-			IfBlock ifNotInsert=ifNotEquals.thenBlock()._ifNot(_this().accessAttr("insert"));
-			ifNotInsert.thenBlock().addInstr( _this().assignAttr(col.getCamelCaseName()+"Previous",  _this().accessAttr(a)));
-			ifNotInsert.thenBlock().
-				addInstr(_this().assignAttr("primaryKeyModified",BoolExpression.TRUE));
-		}
+		 ifNotEquals.thenBlock(). addInstr(_this().assignAttr(a.getName()+"Modified",BoolExpression.TRUE));
 		if (col.isNullable()) {
 			ifNotEquals.thenBlock()._assign(_accessThis(a), new CreateObjectExpression(Types.nullable(param.getType().isPrimitiveType() ? param.getType() : ((ConstRef)param.getType()).getBase()), param));
 		} else {

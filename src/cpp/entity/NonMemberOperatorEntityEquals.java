@@ -26,21 +26,21 @@ public class NonMemberOperatorEntityEquals extends NonMemberOperator{
 
 	@Override
 	public void addImplementation() {
-		Param bean1 = getParam("entity1");
-		Param bean2 = getParam("entity2");
+		Param entity1 = getParam("entity1");
+		Param entity2 = getParam("entity2");
 		if (!pk.isMultiColumn()) {
 			_return(new BinaryOperatorExpression(
-					PgCppUtil.getPkGetterExpression(bean1,pk.getFirstColumn()), 
+					PgCppUtil.getPkGetterExpression(entity1,pk.getFirstColumn()), 
 					this,
-					PgCppUtil.getPkGetterExpression(bean2,pk.getFirstColumn()))
+					PgCppUtil.getPkGetterExpression(entity2,pk.getFirstColumn()))
 			);	
 		} else {
 			ArrayList<Expression> expr=new ArrayList<>();
 			for(Column colPk:pk.getColumns()) {
 				expr.add(new BinaryOperatorExpression(
-						PgCppUtil.getPkGetterExpression(bean1,colPk), 
+						PgCppUtil.getPkGetterExpression(entity1,colPk), 
 					this, 
-					PgCppUtil.getPkGetterExpression(bean2,colPk)));
+					PgCppUtil.getPkGetterExpression(entity2,colPk)));
 			}
 			_return(Expressions.and(expr));
 		}

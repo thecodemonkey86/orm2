@@ -9,6 +9,8 @@ public class MethodAttributeGetter extends Method{
 	public MethodAttributeGetter(Attr a) {
 		super(Public, a.getType(), "get"+StringUtil.ucfirst(a.getName()));
 		this.a=a;
+		if(!a.isStatic())
+			setConstQualifier();
 	}
 
 	

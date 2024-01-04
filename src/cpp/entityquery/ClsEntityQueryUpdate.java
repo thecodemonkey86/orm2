@@ -1,6 +1,8 @@
 package cpp.entityquery;
 
 import cpp.CoreTypes;
+import cpp.QtCoreTypes;
+import cpp.QtSqlTypes;
 import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.Cls;
@@ -16,7 +18,6 @@ import cpp.entityquery.method.MethodAndWhere3;
 import cpp.entityquery.method.MethodAndWhere4;
 import cpp.entityquery.method.MethodAndWhere5;
 import cpp.entityquery.method.MethodAndWhere6;
-import cpp.entityquery.method.MethodAndWhere7;
 import cpp.entityquery.method.MethodAndWhere8;
 import cpp.entityquery.method.MethodAndWhere9;
 import cpp.entityquery.method.MethodEntityQueryWhereCompareOperator;
@@ -42,11 +43,10 @@ import cpp.entityquery.method.MethodWhere3;
 import cpp.entityquery.method.MethodWhere4;
 import cpp.entityquery.method.MethodWhere5;
 import cpp.entityquery.method.MethodWhere6;
-import cpp.entityquery.method.MethodWhere7;
 import cpp.entityquery.method.MethodWhere8;
 import cpp.entityquery.method.MethodWhere9;
-import cpp.entityrepository.ClsEntityRepository;
-import cpp.lib.ClsQVector;
+import cpp.lib.ClsQList;
+import cpp.util.ClsDbPool;
 import database.column.Column;
 
 public class ClsEntityQueryUpdate extends Cls {
@@ -67,9 +67,8 @@ public class ClsEntityQueryUpdate extends Cls {
 			addMethod(new MethodEntityQueryWhereEquals(this, EntityQueryType.Update,cls, c));
 			addMethod(new MethodEntityQueryWhereNotEquals(this,EntityQueryType.Update, cls, c));
 			Type colType = EntityCls.getDatabaseMapper().columnToType(c);
-			addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Update, cls, c,CoreTypes.qvector(colType)));
-			addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Update, cls, c,CoreTypes.qset(colType)));
 			addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Update, cls, c,CoreTypes.qlist(colType)));
+			addMethod(new MethodEntityQueryWhereIn(this,EntityQueryType.Update, cls, c,CoreTypes.qset(colType)));
 			
 			if(c.isNullable()) {
 				addMethod(new MethodEntityQueryWhereIsNull(this,EntityQueryType.Update, cls, c));
@@ -82,18 +81,24 @@ public class ClsEntityQueryUpdate extends Cls {
 			
 			addMethod(new MethodUpdateSet(cls,this,c));
 			addMethod(new MethodUpdateSetExpression(cls,this,c));
+			
+			colType.collectIncludes(this,false);
 		}
 		
-		addIncludeLib(ClsQVector.CLSNAME);
-		addIncludeHeader(EntityCls.getModelPath() + "entities/"+cls.getIncludeHeader());
-		addIncludeHeader("../"+ ClsEntityRepository.CLSNAME.toLowerCase());
-		addIncludeHeader(Types.SqlUtil.getIncludeHeader());
-		addIncludeHeader(Types.SqlQuery.getIncludeHeader());
-//		addIncludeHeader(EnumQueryMode.INSTANCE.getName().toLowerCase());
-		addIncludeLib("QSqlError",true);
-		addIncludeLib("QSqlDriver");
+		addIncludeLib(ClsQList.CLSNAME);
+		//addIncludeHeader(EntityCls.getModelPath() + "entities/"+cls.getIncludeHeader());
+		addIncludeHeaderInSource("../"+ Types.EntityRepository.getName().toLowerCase());
+		addIncludeLibInSource(Types.QRegularExpression);
+		addIncludeHeader(Types.nullable(Types.Void).getHeaderInclude());
+		addIncludeInSourceDefaultHeaderFileName(Types.SqlUtil);
+		addIncludeDefaultHeaderFileName(Types.nullable(null));
+		addIncludeLibInSource(Types.qset(Types.Void));
+		addIncludeDefaultHeaderFileName(Types.SqlQuery);
+		addIncludeHeader(ClsDbPool.instance.getHeaderInclude());
+		addIncludeLibInSource(QtCoreTypes.QDebug,true);
+		addIncludeLibInSource(QtSqlTypes.QSqlError,true);
+		//addIncludeLib("QSqlDriver");
 		addIncludeLib(Types.QVariant.getName());
-		addAttr(new Attr(Types.EntityRepository.toSharedPtr(), "repository"));
 		addAttr(new Attr(Types.QString,"mainBeanAlias"));
 		addAttr(new Attr(Types.QString,selectFields));
 		addAttr(new Attr(Types.QString,table));
@@ -103,10 +108,9 @@ public class ClsEntityQueryUpdate extends Cls {
 		addAttr(new Attr(Types.QStringList,updateFields));
 		addAttr(new Attr(Types.Bool,lazyLoading));
 		addAttr(new Attr(Types.QVariantList,params));
-		addAttr(new Attr(Types.QSqlDatabase,"sqlCon"));
 //		addAttr(new Attr(EnumQueryMode.INSTANCE,queryMode));
 		
-		addForwardDeclaredClass(Types.EntityRepository);
+		//addForwardDeclaredClass(Types.EntityRepository);
 		
 		addMethod(new MethodToStringUpdate(cls));
 		/*boolean[] booleanValues = new boolean[] {true,false};
@@ -123,7 +127,6 @@ public class ClsEntityQueryUpdate extends Cls {
 		addMethod(new MethodWhere4(this));
 		addMethod(new MethodWhere5(this));
 		addMethod(new MethodWhere6(this));
-		addMethod(new MethodWhere7(this));
 		addMethod(new MethodWhere8(this,true));
 		addMethod(new MethodWhere8(this,false));
 		addMethod(new MethodWhere9(this));
@@ -137,7 +140,6 @@ public class ClsEntityQueryUpdate extends Cls {
 		addMethod(new MethodAndWhere4(this));
 		addMethod(new MethodAndWhere5(this));
 		addMethod(new MethodAndWhere6(this));
-		addMethod(new MethodAndWhere7(this));
 		addMethod(new MethodAndWhere8(this));
 		addMethod(new MethodAndWhere9(this));
 		addMethod(new MethodAndWhere10(this));

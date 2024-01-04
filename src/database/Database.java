@@ -1,5 +1,7 @@
 package database;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -13,7 +15,7 @@ import database.table.Table;
 import util.CodeUtil2;
 
 
-public abstract class Database {
+public abstract class Database implements Closeable{
 	
 	
 	
@@ -36,7 +38,7 @@ public abstract class Database {
 
 	
 	public abstract String getEscapedTableName(AbstractTable tbl) ;
-	public abstract void readColumns(AbstractTable tbl,Connection conn) throws SQLException;
+	public abstract void readColumns(AbstractTable tbl,Connection conn,boolean columnsFromConfig) throws SQLException;
 	
 	public abstract String sqlInsertOrUpdate(AbstractTable tbl, List<String> matchingColumns);
 	public String sqlInsert(AbstractTable tbl) {
@@ -56,7 +58,9 @@ public abstract class Database {
 	public abstract boolean supportsInsertOrIgnore();
 	public abstract boolean supportsMultiRowInsert();
 
-	
+	public boolean supportsLoadingFiles() {
+		return false;
+	}
 	
 	public Table makeTableInstance( String name) {
 		return new Table(this, name, null);
@@ -70,5 +74,25 @@ public abstract class Database {
 			colNames.add(c.getEscapedName());
 		}
 		return String.format("insert into %s (%s) values (%s)",tbl.getEscapedName(),CodeUtil.commaSep(colNames),CodeUtil2.strMultiply("?", ",", colNames.size()));
+	}
+	
+
+	public boolean supportsDeleteTableAlias() {
+		return true;
+		
+	}
+
+	public String getFileLoadFunction() {
+		throw new RuntimeException("not supported");
+	}
+	
+	@Override
+	public void close() throws IOException {
+		if (stColumndata!=null)
+			try {
+				stColumndata.close();
+			} catch (SQLException e) {
+				throw new IOException(e);
+			}
 	}
 }

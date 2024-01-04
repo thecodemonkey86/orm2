@@ -26,7 +26,7 @@ public class MethodWhere3 extends Method{
 			@Override
 			public String toString() {
 				return "if (!conditions.empty()) {\r\n" + 
-						"            this->conditions.append(SqlUtil3::SqlQuery::AND);\r\n" + 
+						"            this->conditions.append(SqlUtil4::SqlQuery::AND);\r\n" + 
 						"        }\r\n" + 
 						"        this->params.append(QVariant(param1));\r\n" + 
 						"        this->params.append(QVariant(param2));\r\n" + 

@@ -1,6 +1,7 @@
 package cpp.core;
 
 import codegen.CodeUtil;
+import cpp.Types;
 import cpp.core.expression.Expression;
 import cpp.core.expression.Var;
 
@@ -8,7 +9,7 @@ public class Attr extends Var {
 	Expression initValue;
 	boolean isStatic;
 	String visibility;
-	boolean mutableModifier;
+//	boolean mutableModifier;
 	
 	public static final String Protected = "protected";
 	public static final String Private = "private";
@@ -16,6 +17,9 @@ public class Attr extends Var {
 	
 	public Attr(Type type, String name) {
 		this(Protected, type, name, null, false);
+		if(type.equals(Types.QSqlDatabase)) {
+			throw new RuntimeException("QSqlDatabase as class member");
+		}
 	}
 	
 	public Attr(String visibility, Type type, String name, Expression initValue, boolean isStatic ) {
@@ -25,13 +29,13 @@ public class Attr extends Var {
 		this.visibility = visibility;
 	}
 	
-	public void setMutableModifier() {
-		this.mutableModifier = true;
-	}
-	
-	public void setMutableModifier(boolean mutableModifier) {
-		this.mutableModifier = mutableModifier;
-	}
+//	public void setMutableModifier() {
+//		this.mutableModifier = true;
+//	}
+//	
+//	public void setMutableModifier(boolean mutableModifier) {
+//		this.mutableModifier = mutableModifier;
+//	}
 	
 	public boolean isStatic() {
 		return isStatic;
@@ -39,7 +43,12 @@ public class Attr extends Var {
 	
 	@Override
 	public String toDeclarationString() {
-		return CodeUtil.sp(visibility+ ":",isStatic?"static":(mutableModifier?"mutable": ""),type.toDeclarationString(),getName())+";";
+		if(ifDef!=null) {
+			return "#ifdef "+ifDef+"\r\n"+CodeUtil.sp(visibility+ ":",isStatic?"static":null,type.toDeclarationString(),getName())+";\r\n#endif";
+		} else if(ifNDef!=null) {
+			return "#ifndef "+ifNDef+"\r\n"+CodeUtil.sp(visibility+ ":",isStatic?"static":null,type.toDeclarationString(),getName())+";\r\n#endif";
+		}
+		return CodeUtil.sp(visibility+ ":",isStatic?"static":null,type.toDeclarationString(),getName())+";";
 	}
 	
 	public void setStatic(boolean isStatic) {
@@ -64,6 +73,14 @@ public class Attr extends Var {
 	
 	public boolean isPublic() {
 		return visibility.equals(Public);
+	}
+
+	public Attr setIfDef(String ifDef) {
+		return (Attr)super.setIfDef(ifDef);
+	}
+	
+	public Attr setIfNDef(String ifNDef) {
+		return (Attr)super.setIfNDef(ifNDef);
 	}
 	
 }

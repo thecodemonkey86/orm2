@@ -3,10 +3,10 @@ package cpp.core.method;
 import cpp.core.Method;
 import cpp.core.MethodTemplate;
 import cpp.core.Param;
-import cpp.core.TplMethodCall;
 import cpp.core.TplSymbol;
 import cpp.core.Type;
 import cpp.core.expression.Expression;
+import cpp.core.expression.TplMethodCall;
 
 public abstract class TplMethod extends Method{
 

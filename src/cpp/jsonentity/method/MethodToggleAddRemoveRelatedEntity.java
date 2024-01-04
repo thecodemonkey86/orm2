@@ -8,7 +8,7 @@ import cpp.core.Type;
 import cpp.core.expression.Expressions;
 import cpp.core.instruction.IfBlock;
 import cpp.jsonentity.ManyAttr;
-import cpp.lib.ClsQVector;
+import cpp.lib.ClsQList;
 import database.relation.AbstractRelation;
 import database.relation.ManyRelation;
 import database.relation.OneToManyRelation;
@@ -41,15 +41,15 @@ public class MethodToggleAddRemoveRelatedEntity extends Method {
 		Attr aRemoved = parent.getAttrByName(manyAttr.getName()+"Removed");
 		Attr aAdded = parent.getAttrByName(manyAttr.getName()+"Added");
 		IfBlock ifAdd = _if(pAdd);
-		ifAdd.thenBlock()._callMethodInstr(aRemoved, ClsQVector.removeOne, pElement);
+		ifAdd.thenBlock()._callMethodInstr(aRemoved, ClsQList.removeOne, pElement);
 		
-		IfBlock ifNotAddedContains = ifAdd.thenBlock()._if(Expressions.not(aAdded.callMethod(ClsQVector.contains, pElement)));
-		ifNotAddedContains.thenBlock()._callMethodInstr(aAdded, ClsQVector.append, pElement);
+		IfBlock ifNotAddedContains = ifAdd.thenBlock()._if(Expressions.not(aAdded.callMethod(ClsQList.contains, pElement)));
+		ifNotAddedContains.thenBlock()._callMethodInstr(aAdded, ClsQList.append, pElement);
 		
-		ifAdd.elseBlock()._callMethodInstr(aAdded, ClsQVector.removeOne, pElement);
+		ifAdd.elseBlock()._callMethodInstr(aAdded, ClsQList.removeOne, pElement);
 		
-		IfBlock ifNotRemoveContains = ifAdd.elseBlock()._if(Expressions.not(aRemoved.callMethod(ClsQVector.contains, pElement)));
-		ifNotRemoveContains.thenBlock()._callMethodInstr(aRemoved, ClsQVector.append, pElement);
+		IfBlock ifNotRemoveContains = ifAdd.elseBlock()._if(Expressions.not(aRemoved.callMethod(ClsQList.contains, pElement)));
+		ifNotRemoveContains.thenBlock()._callMethodInstr(aRemoved, ClsQList.append, pElement);
 		
 	}
 

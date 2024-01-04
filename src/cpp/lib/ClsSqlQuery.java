@@ -1,5 +1,6 @@
 package cpp.lib;
 
+import cpp.Namespaces;
 import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.Cls;
@@ -7,14 +8,15 @@ import cpp.core.Cls;
 public class ClsSqlQuery extends Cls{
 
 	public static final String orderBy = "orderBy";
+	public static final String join =  "join";
 
 	public ClsSqlQuery() {
 		super("SqlQuery");
-		setUseNamespace("SqlUtil3");
+		setUseNamespace(Namespaces.SqlUtil4);
 		addMethod(new LibMethod(this.toRef(), "select"));
 		addMethod(new LibMethod(this.toRef(), "from"));
 		addMethod(new LibMethod(this.toRef(), "leftJoin"));
-		addMethod(new LibMethod(this.toRef(), "join"));
+		addMethod(new LibMethod(this.toRef(), join));
 		addMethod(new LibMethod(Types.QSqlQuery, "execQuery"));
 		addMethod(new LibMethod(this.toRef(), "where"));
 		addMethod(new LibMethod(this.toRef(), "andWhereIn"));

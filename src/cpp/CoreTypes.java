@@ -8,7 +8,6 @@ import cpp.lib.ClsQByteArray;
 import cpp.lib.ClsQDate;
 import cpp.lib.ClsQDateTime;
 import cpp.lib.ClsQLatin1String;
-import cpp.lib.ClsQList;
 import cpp.lib.ClsQSet;
 import cpp.lib.ClsQSqlDatabase;
 import cpp.lib.ClsQSqlQuery;
@@ -18,7 +17,8 @@ import cpp.lib.ClsQStringList;
 import cpp.lib.ClsQTime;
 import cpp.lib.ClsQVariant;
 import cpp.lib.ClsQVariantList;
-import cpp.lib.ClsQVector;
+import cpp.lib.ClsQList;
+import cpp.lib.ClsQRegularExpression;
 
 public class CoreTypes {
 	public static final PrimitiveType Int32=new PrimitiveType("int32_t");
@@ -31,7 +31,7 @@ public class CoreTypes {
 	public static final PrimitiveType UInt16=new PrimitiveType("uint16_t");
 	public static final PrimitiveType UInt8=new PrimitiveType("uint8_t");
 	public static final PrimitiveType UInt64=new PrimitiveType("uint64_t");
-	public static final PrimitiveType LongLong=new PrimitiveType("long long");
+//	public static final PrimitiveType LongLong=new PrimitiveType("long long");
 	public static final PrimitiveType Short=new PrimitiveType("short");
 	public static final ClsQString QString= new ClsQString();
 	public static final ClsQLatin1String QLatin1String= new ClsQLatin1String();
@@ -52,15 +52,13 @@ public class CoreTypes {
 	public static final ClsQSqlRecord QSqlRecord = new ClsQSqlRecord();
 	public static final ClsQSqlQuery QSqlQuery = new ClsQSqlQuery();
 	public static final ClsQSqlDatabase QSqlDatabase = new ClsQSqlDatabase();
-	public static final PrimitiveType Uint = new PrimitiveType("uint");
+	public static final ClsQRegularExpression QRegularExpression = new ClsQRegularExpression();
+	public static final PrimitiveType SizeT = new PrimitiveType("size_t");
 	
-	public static ClsQVector qvector(Type element) {
-		return new ClsQVector(element);
+	public static ClsQList qlist(Type element) {
+		return new ClsQList(element);
 	}
 	public static TplCls qset(Type element) {
 		return new ClsQSet(element);
-	}
-	public static TplCls qlist(Type element) {
-		return new ClsQList(element);
 	}
 }

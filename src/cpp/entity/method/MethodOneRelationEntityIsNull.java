@@ -26,10 +26,6 @@ public class MethodOneRelationEntityIsNull extends Method{
 
 	@Override
 	public void addImplementation() {
-		//TODO not internal -> load if not loaded
-		if (parent.getName().equals("Track")) {
-			System.out.println("");
-		}
 		_return(
 				new BinaryOperatorExpression(
 						_this().accessAttr(PgCppUtil.getOneRelationDestAttrName(r)),

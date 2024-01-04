@@ -6,10 +6,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
+
+import javax.swing.Box;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+
 import config.OrmConfig;
-import config.SetPassConfigReader;
 import config.cpp.CppConfigReader;
 import config.cpp.CppOrmConfig;
 import cpp.JsonTypes;
@@ -23,12 +31,25 @@ import cpp.entityquery.ClsEntityQueryUpdate;
 import cpp.entityrepository.ClsEntityRepository;
 import cpp.jsonentity.JsonEntities;
 import cpp.jsonentity.JsonEntity;
-import cpp.jsonentityrepository.JsonEntityRepository;
+import cpp.jsonentityquery.ClsJsonEntityQueryDelete;
+import cpp.jsonentityquery.ClsJsonEntityQuerySelect;
+import cpp.jsonentityrepository.ClsJsonEntityRepository;
 import cpp.orm.DatabaseTypeMapper;
 import cpp.orm.FirebirdDatabaseTypeMapper;
 import cpp.orm.MySqlDatabaseMapper;
 import cpp.orm.PgDatabaseTypeMapper;
 import cpp.orm.SqliteDatabaseMapper;
+import cpp.util.ClsDbPool;
+import database.Database;
+import database.DbCredentials;
+import database.FirebirdCredentials;
+import database.FirebirdDatabase;
+import database.MySqlCredentials;
+import database.MySqlDatabase;
+import database.PgCredentials;
+import database.PgDatabase;
+import database.SqliteCredentials;
+import database.SqliteDatabase;
 import database.column.Column;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
@@ -84,23 +105,134 @@ public class CppOrm extends OrmGenerator {
 		
 		Path xmlFile = Paths.get(args[args.length-1]);
 		
-		boolean setPass= args[0].equals("--setpass");
-		if(setPass) {
-			SetPassConfigReader cfgReader = new SetPassConfigReader();
-			DefaultXMLReader.read(xmlFile, cfgReader);
-			PasswordManager.saveToFile(cfgReader.getCredentials(), args[1] );
+		
+		
+		String engine = null;
+		String dbName = null;
+		String dbSchema = null;
+		String dbUser = null;
+		String dbPort = null;
+		String dbHost = null;
+		String dbFile = null;
+		String charset = "utf8" ;
+		boolean enableStackTrace = true;
+		
+		for(int i=0;i<args.length-1;i++) {
+			if(args[i].equals("--engine")) {
+				engine = args[i+1];
+			} else if(args[i].equals("--name")) {
+				dbName = args[i+1];
+			} else if(args[i].equals("--schema")) {
+				dbSchema = args[i+1];
+			} else if(args[i].equals("--host")) {
+				dbHost = args[i+1];
+			} else if(args[i].equals("--port")) {
+				dbPort = args[i+1];
+			} else if(args[i].equals("--user")) {
+				dbUser = args[i+1];
+			} else if(args[i].equals("--dbFile")) {
+				dbFile = args[i+1];	
+			} else if(args[i].equals("--charset")) {
+				charset = args[i+1];
+			} else if(args[i].equals("--disabledebugtrace")) {
+				enableStackTrace = false;
+			}
+		}
+		if(engine == null) {
+			System.out.println("Set DB engine");
 			return;
 		}
-		CppConfigReader cfgReader = new CppConfigReader(xmlFile.getParent());
-		DefaultXMLReader.read(xmlFile, cfgReader);
-		OrmConfig cfg=cfgReader.getCfg();
-		new CppOrm(cfg).generate();
+		final Database database; 
+		DbCredentials credentials;
+		
+		if (engine.equals("postgres")) {
+			Class.forName("org.postgresql.Driver");
+			database = new PgDatabase(dbName, dbSchema);
+			credentials = new PgCredentials(dbUser, dbHost,dbPort != null ? Integer.parseInt(dbPort) : 5432, database);
+			
+		} else if (engine.equals("mysql")) {
+			database = new MySqlDatabase(dbName);
+			credentials = new MySqlCredentials(dbUser, dbHost, dbPort != null ? Integer.parseInt(dbPort) : 3306, database);
+			
+		} else if (engine.equals("firebird")) {
+			Class.forName("org.firebirdsql.jdbc.FBDriver");
+			database = new FirebirdDatabase(dbName);
+			credentials = new FirebirdCredentials(dbUser, dbHost, dbFile,dbPort != null ? Integer.parseInt(dbPort) : 23053, charset  != null ?  charset  : "UTF-8", database);
+		} else if (engine.equals("sqlite")) {
+			if(dbFile == null) {
+				System.out.println("argument --dbFile missing");
+				return;
+			}
+			Class.forName("org.sqlite.JDBC");
+			database = new SqliteDatabase();
+			credentials = new SqliteCredentials(Paths.get(dbFile) , database);
+				
+		} else {
+			throw new IOException(
+					"Database engine \"" + engine + "\" is currently not supported");
+		}
+		
+		try(database) {
+		
+		
+			boolean setPass= args[0].equals("--setpass");
+			 
+			String password =!setPass ? PasswordManager.loadFromFile(credentials) : null; 
+			if(password == null && !engine.equals("sqlite")) {
+				JPasswordField jpf = new JPasswordField(24);
+			    JLabel jl = new JLabel("Passwort: ");
+			    Box box = Box.createHorizontalBox();
+			    box.add(jl);
+			    box.add(jpf);
+			    int x = JOptionPane.showConfirmDialog(null, box, "DB Passwort", JOptionPane.OK_CANCEL_OPTION);
+	
+			    if (x == JOptionPane.OK_OPTION) {
+			    	password = new String(jpf.getPassword());
+			    }
+				
+				if(password != null && !password.isEmpty()) {
+					PasswordManager.saveToFile(credentials, password);
+				} else {
+					throw new IOException("Password not set");
+				}
+			}
+			credentials.setPassword(password);
+			if(setPass) {
+				PasswordManager.saveToFile(credentials, password);
+			}
+		
+			
+			
+			
+			Properties props = credentials.getProperties();
+			props.setProperty("charSet",charset);
+			
+			// props.setProperty("user", "postgres");
+			
+			Connection conn = DriverManager.getConnection(credentials.getConnectionUrl(), credentials.getProperties());
+		
+		
+			
+			CppConfigReader cfgReader = new CppConfigReader(xmlFile.getParent(),conn,database);
+			DefaultXMLReader.read(xmlFile, cfgReader);
+			OrmConfig cfg=cfgReader.getCfg();
+			
+			cfg.setDatabase(database);
+			cfg.setDbEngine(engine);
+			cfg.setEnableStacktrace(enableStackTrace);
+			
+			
+			new CppOrm(cfg).generate();
+		
+		}finally {
+		}
 	}
 
 	@Override
 	public void generate() throws IOException 	{
 		CppOrmConfig cfg = (CppOrmConfig) this.cfg;
 		EntityCls.setCfg(cfg);
+		ClsDbPool.setInstance(new ClsDbPool(cfg.getDbPoolClass(), cfg.getDbPoolHeader()));
 		Charset utf8 = Charset.forName("UTF-8");
 		Instruction.setStackTraceEnabled(cfg.isEnableStacktrace());
 		
@@ -137,19 +269,19 @@ public class CppOrm extends OrmGenerator {
 			if(cfg.hasOverrideRepositoryClassName()) {
 				repo.setName(cfg.getOverrideRepositoryClassName());
 			}
-			repo.addDeclarations(Entities.getAllBeans());
-			for (EntityCls c : Entities.getAllBeans()) {
+			repo.addDeclarations(Entities.getAllEntities());
+			for (EntityCls c : Entities.getAllEntities()) {
 				c.setPrimaryKeyType();
 			}
 			
-			for (EntityCls c : Entities.getAllBeans()) {
+			for (EntityCls c : Entities.getAllEntities()) {
 				c.addDeclarations();
 			}
 	//		for (BeanCls c : Beans.getAllBeans()) {
 	//			c.breakPointerCircles();
 	//		}
 			Path pathBeans = pathModel.resolve("entities");
-			for (EntityCls c : Entities.getAllBeans()) {
+			for (EntityCls c : Entities.getAllEntities()) {
 				Path pathHeader = pathBeans.resolve(c.getName().toLowerCase()+".h");
 				Path pathSrc = pathBeans.resolve(c.getName().toLowerCase()+".cpp");
 				
@@ -194,6 +326,16 @@ public class CppOrm extends OrmGenerator {
 						//c.addMethod(new CustomClassMemberCode(customClassMember, implCode) );
 						c.addCustomSourceCode(implCode);
 					}
+					startSrc = -1;
+					while((startSrc = existingSourceFile.indexOf(EntityCls.BEGIN_CUSTOM_PREPROCESSOR,startSrc+1))>-1) {
+						int endSrc = existingSourceFile.indexOf(EntityCls.END_CUSTOM_PREPROCESSOR,startSrc);
+						if(endSrc == -1) {
+							throw new RuntimeException("Missing custom preprocessor instructions end marker: " + pathHeader);
+						}
+						String customPp = existingSourceFile.substring(startSrc+EntityCls.BEGIN_CUSTOM_PREPROCESSOR.length(), endSrc);
+						c.addCustomPreprocessorCodeInSource(customPp );
+					}
+					
 					startHdr = -1;
 					while((startHdr = existingHeaderFile.indexOf(EntityCls.BEGIN_CUSTOM_PREPROCESSOR,startHdr+1))>-1) {
 						int endHdr = existingHeaderFile.indexOf(EntityCls.END_CUSTOM_PREPROCESSOR,startHdr);
@@ -216,40 +358,14 @@ public class CppOrm extends OrmGenerator {
 			}
 			repo.setExportMacro(cfg.getExportMacro(),cfg.getExportMacroIncludeHeader());
 			repo.addMethodImplementations();
-//			if(cfg.hasNamespace()) {
-//				repo.setUseNamespace(cfg.getNamespace());
-//			}
-	//		List<ManyRelation> list = tableManyRelations.get(getTableByName("artist"));
-	//		System.out.println(list);
-			
 			
 			Path pathRepository = cfg.getRepositoryPath();
 			Path pathRepositoryQuery = pathRepository.resolve("query");
 			Files.createDirectories(pathBeans);
 			Files.createDirectories(pathRepositoryQuery);
 	
-			/*try(DirectoryStream<Path> dsPathBeans = Files.newDirectoryStream(pathBeans)) {
-				for(Path f : dsPathBeans) {
-					if(f.toString().endsWith(".h") || f.toString().endsWith(".cpp")) {
-						Files.delete(f);
-					}
-				}
-			} finally {
-				
-			}
 			
-			try(DirectoryStream<Path> dsPathQuery = Files.newDirectoryStream(pathRepositoryQuery)) {
-				for(Path f : dsPathQuery) {
-					if(f.toString().endsWith(".h") || f.toString().endsWith(".cpp")) {
-						Files.delete(f);
-					}
-				}
-			} finally {
-				
-			}*/
-//			FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(EnumQueryMode.INSTANCE.getName().toLowerCase()+".h"), EnumQueryMode.INSTANCE.toHeaderString().getBytes(utf8), writeOptions);
-			
-			for (EntityCls c : Entities.getAllBeans()) {
+			for (EntityCls c : Entities.getAllEntities()) {
 				
 				FileUtil2.writeFileIfContentChanged(pathBeans.resolve(c.getName().toLowerCase()+".h"), c.toHeaderString().getBytes(utf8), writeOptions);
 				FileUtil2.writeFileIfContentChanged(pathBeans.resolve(c.getName().toLowerCase()+".cpp"), c.toSourceString().getBytes(utf8), writeOptions);
@@ -318,7 +434,7 @@ public class CppOrm extends OrmGenerator {
 			for (JsonEntity c : JsonEntities.getAllEntities()) {
 				c.addDeclarations();
 			}
-			JsonEntityRepository repo = JsonTypes.JsonEntityRepository;
+			ClsJsonEntityRepository repo = JsonTypes.JsonEntityRepository;
 			repo.addDeclarations(JsonEntities.getAllEntities());
 			repo.setExportMacro(cfg.getExportMacro(),cfg.getExportMacroIncludeHeader());
 			repo.addMethodImplementations();
@@ -368,6 +484,15 @@ public class CppOrm extends OrmGenerator {
 						//c.addMethod(new CustomClassMemberCode(customClassMember, implCode) );
 						c.addCustomSourceCode(implCode);
 					}
+					startSrc = -1;
+					while((startSrc = existingSourceFile.indexOf(EntityCls.BEGIN_CUSTOM_PREPROCESSOR,startSrc+1))>-1) {
+						int endSrc = existingSourceFile.indexOf(EntityCls.END_CUSTOM_PREPROCESSOR,startSrc);
+						if(endSrc == -1) {
+							throw new RuntimeException("Missing custom preprocessor instructions end marker: " + pathHeader);
+						}
+						String customPp = existingSourceFile.substring(startSrc+EntityCls.BEGIN_CUSTOM_PREPROCESSOR.length(), endSrc);
+						c.addCustomPreprocessorCodeInSource(customPp );
+					}
 					startHdr = -1;
 					while((startHdr = existingHeaderFile.indexOf(EntityCls.BEGIN_CUSTOM_PREPROCESSOR,startHdr+1))>-1) {
 						int endHdr = existingHeaderFile.indexOf(EntityCls.END_CUSTOM_PREPROCESSOR,startHdr);
@@ -408,8 +533,16 @@ public class CppOrm extends OrmGenerator {
 			}*/
 			
 			for (JsonEntity c : JsonEntities.getAllEntities()) {
+				ClsJsonEntityQuerySelect clsQuery = new ClsJsonEntityQuerySelect(c);
+				ClsJsonEntityQueryDelete clsQueryDelete = new ClsJsonEntityQueryDelete(c);
+				clsQuery.addMethodImplementations();
+				clsQueryDelete.addMethodImplementations();
 				FileUtil2.writeFileIfContentChanged(pathEntities.resolve(c.getName().toLowerCase()+".h"), c.toHeaderString().getBytes(utf8), writeOptions);
 				FileUtil2.writeFileIfContentChanged(pathEntities.resolve(c.getName().toLowerCase()+".cpp"), c.toSourceString().getBytes(utf8), writeOptions);
+				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+".h"), clsQuery.toHeaderString().getBytes(utf8), writeOptions);
+				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsQuery.getName().toLowerCase()+".cpp"), clsQuery.toSourceString().getBytes(utf8), writeOptions);
+				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsQueryDelete.getName().toLowerCase()+".h"), clsQueryDelete.toHeaderString().getBytes(utf8), writeOptions);
+				FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsQueryDelete.getName().toLowerCase()+".cpp"), clsQueryDelete.toSourceString().getBytes(utf8), writeOptions);
 			}
 			FileUtil2.writeFileIfContentChanged(pathRepository.resolve(repo.getName().toLowerCase()+".h"), repo.toHeaderString().getBytes(utf8), writeOptions);
 			FileUtil2.writeFileIfContentChanged(pathRepository.resolve(repo.getName().toLowerCase()+".cpp"), repo.toSourceString().getBytes(utf8), writeOptions);

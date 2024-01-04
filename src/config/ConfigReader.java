@@ -2,19 +2,11 @@ package config;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Properties;
-
-import javax.swing.Box;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
@@ -22,15 +14,6 @@ import org.xml.sax.SAXException;
 
 import cpp.entity.SetterValidator;
 import database.Database;
-import database.DbCredentials;
-import database.FirebirdCredentials;
-import database.FirebirdDatabase;
-import database.MySqlCredentials;
-import database.MySqlDatabase;
-import database.PgDatabase;
-import database.SqliteCredentials;
-import database.SqliteDatabase;
-import database.PgCredentials;
 import database.column.Column;
 import database.relation.AbstractRelation;
 import database.relation.M2MColumns;
@@ -40,10 +23,9 @@ import database.relation.OneToManyRelation;
 import database.relation.PrimaryKey;
 import database.table.MappingTable;
 import database.table.Table;
-import io.PasswordManager;
 import util.Pair;
 
-public class ConfigReader implements ContentHandler {
+public abstract class ConfigReader implements ContentHandler {
 
 	protected Connection conn;
 	protected OrmConfig cfg;
@@ -70,20 +52,23 @@ public class ConfigReader implements ContentHandler {
 	private Path xmlDirectory;
 	private PrimaryKey overrideColsPrimaryKey;
 	private String[] enableRawValueColumns;
+	private String currentTableUpdatePreconditionOnAllColumns;
 	
 	public OrmConfig getCfg() {
 		return cfg;
 	}
 
-	public ConfigReader(Path xmlDirectory) {
+	public ConfigReader(Path xmlDirectory,Connection conn, Database database) {
 		relationQueryNames = new HashMap<>();
 		this.xmlDirectory = xmlDirectory;
 		this.tags = new LinkedList<>();
+		this.conn = conn;
+		createConfig();
+		cfg.setDatabase(database);
 	}
+	
+	protected abstract void createConfig() ;
 
-	protected void createConfig() {
-		cfg = new OrmConfig();
-	}
 
 	protected String checkRelationQueryNameUnique(String tableName, String name) throws IOException {
 		if(!this.relationQueryNames.containsKey(tableName)) {
@@ -141,72 +126,8 @@ public class ConfigReader implements ContentHandler {
 			
 			switch (this.tags.peek()) {
 			case "orm":
-				createConfig();
 				break;
 			case "database":
-				this.cfg.setDbEngine(atts.getValue("engine"));
-				Database database=null; 
-				DbCredentials credentials;
-				
-				if(atts.getValue("password") != null) {
-					throw new IOException("Remove password from XML");
-				}
-				
-				if (cfg.isEnginePostgres()) {
-					Class.forName("org.postgresql.Driver");
-					database = new PgDatabase(atts.getValue("name"), atts.getValue("schema"));
-					credentials = new PgCredentials(atts.getValue("user"), atts.getValue("host"),atts.getValue("port") != null ? Integer.parseInt(atts.getValue("port")) : 5432, database);
-					
-				} else if (cfg.isEngineMysql()) {
-					database = new MySqlDatabase(atts.getValue("name"));
-					credentials = new MySqlCredentials(atts.getValue("user"), atts.getValue("host"), atts.getValue("port") != null ? Integer.parseInt(atts.getValue("port")) : 3306, database);
-					
-				} else if (cfg.isEngineFirebird()) {
-					Class.forName("org.firebirdsql.jdbc.FBDriver");
-					database = new FirebirdDatabase(atts.getValue("name"));
-					credentials = new FirebirdCredentials(atts.getValue("user"), atts.getValue("host"), atts.getValue("file"),atts.getValue("port") != null ? Integer.parseInt(atts.getValue("port")) : 23053, atts.getValue("charSet")  != null ?  atts.getValue("charSet")  : "UTF-8", database);
-				} else if (cfg.isEngineSqlite()) {
-					Class.forName("org.sqlite.JDBC");
-					database = new SqliteDatabase();
-					credentials = new SqliteCredentials(Paths.get(atts.getValue("file")) , database);
-						
-				} else {
-					throw new IOException(
-							"Database engine \"" + atts.getValue("engine") + "\" is currently not supported");
-				}
-				
-			
-				String password = PasswordManager.loadFromFile(credentials);
-				if(password == null && !cfg.isEngineSqlite()) {
-					JPasswordField jpf = new JPasswordField(24);
-				    JLabel jl = new JLabel("Passwort: ");
-				    Box box = Box.createHorizontalBox();
-				    box.add(jl);
-				    box.add(jpf);
-				    int x = JOptionPane.showConfirmDialog(null, box, "DB Passwort", JOptionPane.OK_CANCEL_OPTION);
-
-				    if (x == JOptionPane.OK_OPTION) {
-				    	password = new String(jpf.getPassword());
-				    }
-					
-					if(password != null && !password.isEmpty()) {
-						PasswordManager.saveToFile(credentials, password);
-					} else {
-						throw new IOException("Password not set");
-					}
-				}
-				credentials.setPassword(password);
-				
-				Properties props = credentials.getProperties();
-				props.setProperty("charSet",atts.getValue("charset") == null ? "utf8" :atts.getValue("charset"));
-				
-				// props.setProperty("user", "postgres");
-				
-				conn = DriverManager.getConnection(credentials.getConnectionUrl(), credentials.getProperties());
-			
-				cfg.setDatabase(database);
-				cfg.setCredentials(credentials);
-			
 				
 				break;
 			case "output":
@@ -228,9 +149,11 @@ public class ConfigReader implements ContentHandler {
 					currentEntityTable = cfg.getDatabase().makeTableInstance( atts.getValue("table"));
 					cfg.addEntityTable(currentEntityTable);
 					currentEntityTable.setOverrideColumnsFromConfig(atts.getValue("overrideColumns")!=null && atts.getValue("overrideColumns").equals("true"));
+					currentTableUpdatePreconditionOnAllColumns=atts.getValue("updatePreconditionOnAllColumns");						
+					currentEntityTable.setEnableLoadCollection(atts.getValue("enableLoadCollectionMethod")!=null && atts.getValue("enableLoadCollectionMethod").equals("true"));
 					if(!currentEntityTable.isOverrideColumnsFromConfig()) {
 						overrideColsPrimaryKey = null;
-						cfg.getDatabase().readColumns(currentEntityTable, conn);
+						cfg.getDatabase().readColumns(currentEntityTable, conn,false);
 					
 						if(atts.getValue("overridePrimaryKey")!=null) {
 							String[] pkColNames = atts.getValue("overridePrimaryKey").split(",");
@@ -281,7 +204,29 @@ public class ConfigReader implements ContentHandler {
 					
 					String attEnableGetValueByName = atts.getValue("enableGetValueByName");
 					if(attEnableGetValueByName != null) {
-						cfg.setEnableGetValueByName(attEnableGetValueByName.equals("1") ||attEnableGetValueByName.equals("true"));
+						currentEntityTable.setEnableGetValueByName(attEnableGetValueByName.equals("1") ||attEnableGetValueByName.equals("true"));
+					}
+					String enableLoadCollectionMethod = atts.getValue("enableLoadCollectionMethod");
+					if(enableLoadCollectionMethod!=null) {
+						cfg.setEnableMethodLoadCollection(enableLoadCollectionMethod.equals("1") ||enableLoadCollectionMethod.equals("true") );
+					}
+					
+					String attEnableFileImportColumns = atts.getValue("enableFileImportColumns");
+					if(attEnableFileImportColumns!=null) {
+						String[] fileImportCols =attEnableFileImportColumns.split(",");
+						for(String colName : fileImportCols) {
+							Column col = currentEntityTable.getColumnByName(colName);
+							col.setEnableFileImport(true);
+						}
+					}
+					String strOptionToManuallyOverrideRelatedTableJoins = atts.getValue("enableOverrideRelatedTableJoins");
+					if(strOptionToManuallyOverrideRelatedTableJoins != null) {
+						currentEntityTable.setOptionToManuallyOverrideRelatedTableJoins(strOptionToManuallyOverrideRelatedTableJoins.equals("true")||strOptionToManuallyOverrideRelatedTableJoins.equals("1"));
+					}
+					
+					String attEnableMethodHasUpdate= atts.getValue("enableMethodHasUpdate");
+					if(attEnableMethodHasUpdate !=null) {
+						cfg.enableHasUpdateMethod(currentEntityTable.getUc1stCamelCaseName());
 					}
 				} else {
 					throw new SAXException("Illegal state");
@@ -339,7 +284,7 @@ public class ConfigReader implements ContentHandler {
 					MappingTable mappingTable = new MappingTable(cfg.getDatabase(), mappingTableName, cfg.getDatabase().getDefaultSchema());
 					
 					String overrideMappingTblPk=atts.getValue("mappingTblOverridePK");
-					cfg.getDatabase().readColumns(mappingTable, conn);	
+					cfg.getDatabase().readColumns(mappingTable, conn,false);	
 					if(overrideMappingTblPk!=null) {
 						PrimaryKey mappingTblPk = new PrimaryKey();
 						String[] mappingTblPkParts = overrideMappingTblPk.split(",");
@@ -369,6 +314,14 @@ public class ConfigReader implements ContentHandler {
 							}
 							
 						}
+					}
+					String attrAdditionalJoin=atts.getValue("additionalJoin");
+					if(attrAdditionalJoin!=null) {
+						currentManyToManyRelation.setAdditionalJoin(attrAdditionalJoin);
+					}
+					String attrAdditionalOrderBy=atts.getValue("additionalOrderBy");
+					if(attrAdditionalOrderBy!=null) {
+						currentManyToManyRelation.setAdditionalOrderBy(attrAdditionalOrderBy);
 					}
 					manyToManyAliasCounter++;
 					break;}
@@ -401,6 +354,14 @@ public class ConfigReader implements ContentHandler {
 					}
 					currentOneToManyRelation.setSubstituteNameSingular(substituteNameSingular);
 					currentOneToManyRelation.setSubstituteNamePlural(substituteNamePlural);
+					String attrAdditionalJoin=atts.getValue("additionalJoin");
+					if(attrAdditionalJoin!=null) {
+						currentOneToManyRelation.setAdditionalJoin(attrAdditionalJoin);
+					}
+					String attrAdditionalOrderBy=atts.getValue("additionalOrderBy");
+					if(attrAdditionalOrderBy!=null) {
+						currentOneToManyRelation.setAdditionalOrderBy(attrAdditionalOrderBy);
+					}
 					oneToManyAliasCounter++;
 					break;
 				}
@@ -416,6 +377,14 @@ public class ConfigReader implements ContentHandler {
 					currentOneRelation.setDestTable(currentDestTable);
 					String substituteName = atts.getValue("name");
 					currentOneRelation.setSubstituteNameSingular(substituteName);
+					String attrAdditionalJoin=atts.getValue("additionalJoin");
+					if(attrAdditionalJoin!=null) {
+						currentOneRelation.setAdditionalJoin(attrAdditionalJoin);
+					}
+					String attrAdditionalOrderBy=atts.getValue("additionalOrderBy");
+					if(attrAdditionalOrderBy!=null) {
+						currentOneRelation.setAdditionalOrderBy(attrAdditionalOrderBy);
+					}
 					oneAliasCounter++;
 					break;
 				default:
@@ -552,6 +521,14 @@ public class ConfigReader implements ContentHandler {
 				currentDestTable = null;	
 				break;
 			case "entity":
+				if(currentEntityTable.isOverrideColumnsFromConfig()) {
+					try {
+						cfg.getDatabase().readColumns(currentEntityTable, conn,true);
+					} catch (SQLException e) {
+						e.printStackTrace();
+						throw new SAXException(e);
+					}
+				}
 				if(overrideColsPrimaryKey != null) {
 					currentEntityTable.setPrimaryKey(overrideColsPrimaryKey);
 				}
@@ -559,6 +536,11 @@ public class ConfigReader implements ContentHandler {
 					for(String enableRawValueColumn : enableRawValueColumns) {
 						currentEntityTable.getColumnByName(enableRawValueColumn.trim()).setEnableRawValue(true);
 					}
+				}
+				if(currentTableUpdatePreconditionOnAllColumns != null) {
+					for(Column col:currentEntityTable.getAllColumns())
+					cfg.addValidators(currentEntityTable.getName(),col.getName(),new SetterValidator( currentTableUpdatePreconditionOnAllColumns, 
+							 SetterValidator.OnFailValidateMode.ReturnFalse , null));
 				}
 				break;
 			default:

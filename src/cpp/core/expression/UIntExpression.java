@@ -12,7 +12,7 @@ public class UIntExpression extends Expression{
 	
 	@Override
 	public Type getType() {
-		return Types.Uint;
+		return Types.SizeT;
 	}
 
 	@Override

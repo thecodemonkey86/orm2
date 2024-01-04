@@ -76,6 +76,10 @@ public class Var extends Expression{
 		return new BinaryOperatorExpression(this,  type.getOperator(symbol), arg);
 	}
 	
+	public ArrayAccessExpression arrayIndex(String strLiteral) {
+		return arrayIndex(new PhpStringLiteral(strLiteral));
+	}
+	
 	public ArrayAccessExpression arrayIndex(Expression arrayIndex) {
 		return new ArrayAccessExpression(this, arrayIndex);
 	}

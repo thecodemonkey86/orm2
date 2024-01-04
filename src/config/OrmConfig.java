@@ -4,13 +4,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import cpp.entity.SetterValidator;
 import database.Database;
-import database.DbCredentials;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
@@ -30,11 +31,13 @@ public class OrmConfig {
 	protected Map<Table,List<ManyRelation>> manyToManyRelations;
 	protected Map<String,List<Pair<String, String>>> renameMethods;
 	protected Map<String, Map<String,SetterValidator>> columnValidators;
+	protected Set<String> enableHasUpdateMethods; // class names
 	protected Database database;
-	private DbCredentials credentials;
 	
-	private boolean enableStacktrace = true;
+	private boolean enableStacktrace = false;
 	private boolean enableGetValueByName = false;
+	
+	private boolean enableMethodLoadCollection = false;
 	private JsonMode jsonMode;
 	private String overrideRepositoryClassName;
 	public void setJsonMode(JsonMode jsonMode) {
@@ -200,14 +203,6 @@ public class OrmConfig {
 		return basePath != null;
 	}
 	
-	public DbCredentials getCredentials() {
-		return credentials;
-	}
-	
-	public void setCredentials(DbCredentials credentials) {
-		this.credentials = credentials;
-	}
-	
 	public void addRenameMethod(String cls, String oldname,String newname) {
 		if(renameMethods == null) {
 			renameMethods = new HashMap<>();
@@ -329,5 +324,26 @@ public class OrmConfig {
 	
 	public Map<String, SetterValidator> getValidators(String tableName) {
 		return columnValidators.get(tableName);
+	}
+	public boolean isEnableMethodLoadCollection() {
+		return enableMethodLoadCollection;
+	}
+	
+	public void setEnableMethodLoadCollection(boolean enableMethodLoadCollection) {
+		this.enableMethodLoadCollection = enableMethodLoadCollection;
+	}
+	public void enableHasUpdateMethod(String classname)	{
+		if(enableHasUpdateMethods==null) {
+			enableHasUpdateMethods = new HashSet<>();
+		}
+		enableHasUpdateMethods.add(classname);
+	}
+	
+	public boolean isHasUpdateMethodEnabled(String classname) {
+		return enableHasUpdateMethods!=null && enableHasUpdateMethods.contains(classname);
+	}
+	
+	public void setEnableStacktrace(boolean enableStacktrace) {
+		this.enableStacktrace = enableStacktrace;
 	}
 }

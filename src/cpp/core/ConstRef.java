@@ -8,15 +8,12 @@ public class ConstRef extends Cls {
 	
 	public ConstRef(Type type) {
 		super(null);
-		if (type instanceof RawPtr) {
-			System.out.println();
-		}
 		this.base = type;
 		this.constness = true;
 	}
 	@Override
 	public String toUsageString() {
-		return CodeUtil.sp(constness?"const":"",base.toUsageString(),"&" );
+		return CodeUtil.sp(constness&& !base.constness ?"const":null,base.toUsageString(),"&" );
 	}
 	
 	@Override
@@ -38,7 +35,7 @@ public class ConstRef extends Cls {
 	@Override
 	public String toDeclarationString() {
 		
-		return CodeUtil.sp(constness?"const":"",base.toUsageString(),"&" );
+		return CodeUtil.sp(constness && !base.constness ?"const":null,base.toUsageString(),"&" );
 	}
 	
 	@Override

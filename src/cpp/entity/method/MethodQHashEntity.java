@@ -16,7 +16,7 @@ public class MethodQHashEntity extends NonMemberMethod {
 	EntityCls cls;
 	
 	public MethodQHashEntity(EntityCls cls, PrimaryKey pk) {
-		super(Types.Uint, "qHash");
+		super(Types.SizeT, "qHash");
 		this.pk = pk;
 		addParam(new Param(cls.toRef(), "entity"));
 		this.cls = cls;
@@ -24,7 +24,7 @@ public class MethodQHashEntity extends NonMemberMethod {
 	}
 	
 	public MethodQHashEntity(Struct structPk, PrimaryKey pk) {
-		super(Types.Uint, "qHash");
+		super(Types.SizeT, "qHash");
 		this.pk = pk;
 		addParam(new Param(structPk.toRef(), "pk"));
 //		setInlineQualifier(true);

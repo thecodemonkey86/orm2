@@ -5,7 +5,7 @@ import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.Method;
 import cpp.core.Param;
-import cpp.lib.ClsQVector;
+import cpp.lib.ClsQList;
 import cpp.orm.OrmUtil;
 import database.relation.OneToManyRelation;
 
@@ -27,9 +27,14 @@ public class MethodAddRelatedEntity extends Method {
 //		addInstr(parent.getAttrByName("_added"+StringUtil.ucfirst(a.getName())).callMethod("append",getParam("entity")).asInstruction());
 
 		
-		if(!pBean.getType().getName().startsWith(ClsQVector.CLSNAME)) // TODO overloaded with QVector
+		if(!pBean.getType().getName().startsWith(ClsQList.CLSNAME))
 		for(int i=0;i < rel.getColumnCount(); i++) {
-			addInstr(pBean.callSetterMethodInstruction(rel.getDestMappingColumn(i).getCamelCaseName(), _this().callAttrGetter(rel.getColumns(i).getValue1().getCamelCaseName())));
+			if(!rel.getDestMappingColumn(i).isPartOfPk()) {
+				addInstr(pBean.callSetterMethodInstruction(rel.getDestMappingColumn(i).getCamelCaseName(), _this().callAttrGetter(rel.getColumns(i).getValue1().getCamelCaseName())));
+			} else {
+				addInstr(pBean.callMethodInstruction("set"+ rel.getDestMappingColumn(i).getUc1stCamelCaseName()+"Internal", _this().callAttrGetter(rel.getColumns(i).getValue1().getCamelCaseName())));
+			}
+			
 		}
 	}
 

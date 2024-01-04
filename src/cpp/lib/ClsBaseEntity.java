@@ -1,5 +1,6 @@
 package cpp.lib;
 
+import cpp.Namespaces;
 import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.Cls;
@@ -21,5 +22,7 @@ public class ClsBaseEntity extends Cls{
 		Attr aLoaded = new Attr(Types.Bool, "loaded");
 		addAttr(aLoaded);
 		addMethod(new MethodAttributeSetter(aLoaded));
+		setUseNamespace(Namespaces.ORM2);
+		//addAttr(new Attr(Attr.Public, Types.QLatin1String, "_EMPTYSTRING",null, true));
 	}
 }

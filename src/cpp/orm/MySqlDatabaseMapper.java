@@ -2,6 +2,7 @@ package cpp.orm;
 
 import cpp.Types;
 import cpp.core.Method;
+import cpp.core.MethodTemplate;
 import cpp.core.QString;
 import cpp.core.Type;
 import cpp.CoreTypes;
@@ -105,9 +106,9 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 				case "boolean":
 					return Types.Bool;
 				case "datetime":
+				case "timestamp":
 					return Types.QDateTime;
 				default:
-					System.out.println(dbType);
 					return CoreTypes.QVariant;
 				}
 			} else {
@@ -166,34 +167,30 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 			case "boolean":
 				return BoolExpression.FALSE;
 			case "datetime":
+			case "timestamp":
 				return new CreateObjectExpression(Types.QDateTime);
 			default:
 				return new CreateObjectExpression(CoreTypes.QVariant);
 			}
 		} else {
 			Expression e = getGenericDefaultValueExpression(false, dbType);
-			return new CreateObjectExpression(Types.nullable(e.getType()), e);
+			return new CreateObjectExpression(Types.nullable(e.getType()));
 		}
 	}
 	@Override
-	public Type columnToType(Column col) {
-		return getTypeFromDbDataType(col.getDbType(), col.isNullable());
+	public Type columnToType(Column col,boolean nullable) {
+		return getTypeFromDbDataType(col.getDbType(),nullable);
 	}
 
 	@Override
 	public ClsSqlQuery getSqlQueryType() {
+		return Types.MySqlQuery;
+	}
+
+	@Override
+	public MethodTemplate getInsertOrIgnoreMethod(boolean byref) {
 		throw new RuntimeException("not impl");
 	}
 
-	@Override
-	public String getRepositoryInsertOrIgnoreMethod() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getRepositoryPrepareInsertOrIgnoreMethod() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	 
 }

@@ -10,4 +10,5 @@ public class PrimitiveType extends Type{
 	public boolean isPrimitiveType() {
 		return true;
 	}
+	
 }

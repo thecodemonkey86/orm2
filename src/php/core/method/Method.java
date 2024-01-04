@@ -75,7 +75,7 @@ public abstract class Method extends InstructionBlock{
 		
 		sb.append(" {\n");
 		for(Instruction i:instructions) {
-			if(enableStacktrace)
+			if(Instruction.isStackTraceEnabled)
 				CodeUtil.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
 			CodeUtil.writeLine(sb,i);
 		}

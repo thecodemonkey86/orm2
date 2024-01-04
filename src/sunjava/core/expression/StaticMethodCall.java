@@ -25,7 +25,7 @@ public class StaticMethodCall extends Expression {
 
 	@Override
 	public String toString() {
-		return cls.toDeclarationString()+"."+method.getName()+CodeUtil.parentheses(CodeUtil.commaSep((Object[])args));
+		return cls.toStaticMethodCallString()+"."+method.getName()+CodeUtil.parentheses(CodeUtil.commaSep((Object[])args));
 	}
 
 	@Override

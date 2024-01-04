@@ -6,7 +6,7 @@ import cpp.core.NonMemberMethod;
 public class MethodDefaultQHash extends NonMemberMethod {
 
 	public MethodDefaultQHash() {
-		super(CoreTypes.Uint, "qHash");
+		super(CoreTypes.SizeT, "qHash");
 	}
 
 	@Override

@@ -7,26 +7,43 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.List;
+import java.util.Properties;
+
+import javax.swing.Box;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
 
 import config.OrmConfig;
-import config.SetPassConfigReader;
 import config.php.PhpConfigReader;
 import config.php.PhpOrmConfig;
+import database.Database;
+import database.DbCredentials;
+import database.FirebirdCredentials;
+import database.FirebirdDatabase;
+import database.MySqlCredentials;
+import database.MySqlDatabase;
+import database.PgCredentials;
+import database.PgDatabase;
+import database.SqliteCredentials;
+import database.SqliteDatabase;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
 import database.table.Table;
 import io.PasswordManager;
 import php.Php;
-import php.bean.EntityCls;
-import php.bean.Entities;
-import php.bean.CustomClassMemberCode;
-import php.beanrepository.ClsBeanRepository;
-import php.beanrepository.query.ClsBeanQuery;
 import php.core.PhpCls;
 import php.core.Types;
-import php.core.instruction.InstructionBlock;
+import php.core.instruction.Instruction;
+import php.entity.CustomClassMemberCode;
+import php.entity.Entities;
+import php.entity.EntityCls;
+import php.entityrepository.ClsEntityRepository;
+import php.entityrepository.query.ClsEntityQuery;
 import php.orm.DatabaseTypeMapper;
 import php.orm.FirebirdDatabaseTypeMapper;
 import php.orm.MySqlDatabaseTypeMapper;
@@ -73,10 +90,9 @@ public class PhpOrm extends OrmGenerator {
 	}
 
 	public static void main(String[] args) throws Exception {
-		if (args.length == 0) {
+		if(args.length == 0) {
 			throw new Exception("Please provide xml config file");
 		}
-		
 		PasswordManager.setSuperPassword(new byte[] {
 				0x7,
 				58,
@@ -88,20 +104,116 @@ public class PhpOrm extends OrmGenerator {
 				0x58
 		});
 		
+		
 		Path xmlFile = Paths.get(args[args.length-1]);
 		
 		boolean setPass= args[0].equals("--setpass");
-		if(setPass) {
-			SetPassConfigReader cfgReader = new SetPassConfigReader();
-			DefaultXMLReader.read(xmlFile, cfgReader);
-			PasswordManager.saveToFile(cfgReader.getCredentials(), args[1] );
-			return;
-		}
-		PhpConfigReader cfgReader = new PhpConfigReader(xmlFile.getParent());
-		DefaultXMLReader.read(xmlFile, cfgReader);
-		PhpOrmConfig cfg = cfgReader.getCfg();
-		new PhpOrm(cfg).generate();
 		
+		
+		String engine = null;
+		String dbName = null;
+		String dbSchema = null;
+		String dbUser = null;
+		String dbPort = null;
+		String dbHost = null;
+		String dbFile = null;
+		String charset = "utf8" ;
+		
+		for(int i=0;i<args.length-1;i++) {
+			if(args[i].equals("--engine")) {
+				engine = args[i+1];
+			} else if(args[i].equals("--name")) {
+				dbName = args[i+1];
+			} else if(args[i].equals("--schema")) {
+				dbSchema = args[i+1];
+			} else if(args[i].equals("--host")) {
+				dbHost = args[i+1];
+			} else if(args[i].equals("--port")) {
+				dbPort = args[i+1];
+			} else if(args[i].equals("--host")) {
+				dbPort = args[i+1];
+			} else if(args[i].equals("--dbFile")) {
+				dbFile = args[i+1];	
+			} else if(args[i].equals("--charset")) {
+				charset = args[i+1];
+			}  else if(args[i].equals("--user")) {
+				dbUser = args[i+1];
+			}
+		}
+		
+		final Database database; 
+		DbCredentials credentials;
+		
+		if (engine.equals("postgres")) {
+			Class.forName("org.postgresql.Driver");
+			database = new PgDatabase(dbName, dbSchema);
+			credentials = new PgCredentials(dbUser, dbHost,dbPort != null ? Integer.parseInt(dbPort) : 5432, database);
+			
+		} else if (engine.equals("mysql")) {
+			database = new MySqlDatabase(dbName);
+			credentials = new MySqlCredentials(dbUser, dbHost, dbPort != null ? Integer.parseInt(dbPort) : 3306, database);
+			
+		} else if (engine.equals("firebird")) {
+			Class.forName("org.firebirdsql.jdbc.FBDriver");
+			database = new FirebirdDatabase(dbName);
+			credentials = new FirebirdCredentials(dbUser, dbHost, dbFile,dbPort != null ? Integer.parseInt(dbPort) : 23053, charset  != null ?  charset  : "UTF-8", database);
+		} else if (engine.equals("sqlite")) {
+			Class.forName("org.sqlite.JDBC");
+			database = new SqliteDatabase();
+			credentials = new SqliteCredentials(Paths.get(dbFile) , database);
+				
+		} else {
+			throw new IOException(
+					"Database engine \"" + engine + "\" is currently not supported");
+		}
+		try(database) {
+			String password = !setPass ? PasswordManager.loadFromFile(credentials) : null;
+			if(password == null && !engine.equals("sqlite")) {
+				JPasswordField jpf = new JPasswordField(24);
+			    JLabel jl = new JLabel("Passwort: ");
+			    Box box = Box.createHorizontalBox();
+			    box.add(jl);
+			    box.add(jpf);
+			    int x = JOptionPane.showConfirmDialog(null, box, "DB Passwort", JOptionPane.OK_CANCEL_OPTION);
+	
+			    if (x == JOptionPane.OK_OPTION) {
+			    	password = new String(jpf.getPassword());
+			    }
+				
+				if(password != null && !password.isEmpty()) {
+					PasswordManager.saveToFile(credentials, password);
+				} else {
+					throw new IOException("Password not set");
+				}
+			}
+			credentials.setPassword(password);
+			
+			if(setPass) {
+				PasswordManager.saveToFile(credentials, password);
+			}
+			
+			
+			
+			Properties props = credentials.getProperties();
+			props.setProperty("charSet",charset);
+			
+			// props.setProperty("user", "postgres");
+			
+			Connection conn = DriverManager.getConnection(credentials.getConnectionUrl(), credentials.getProperties());
+		
+		
+			
+			PhpConfigReader cfgReader = new PhpConfigReader(xmlFile.getParent(),conn,database);
+			DefaultXMLReader.read(xmlFile, cfgReader);
+			PhpOrmConfig cfg = cfgReader.getCfg();
+			
+			
+			cfg.setDbEngine(engine);
+	
+			new PhpOrm(cfg).generate(); 
+		} finally {
+			
+		}
 	}
 
 	@Override
@@ -109,15 +221,15 @@ public class PhpOrm extends OrmGenerator {
 		Php.phpVersion = ((PhpOrmConfig) cfg).getPhpversion();
 		EntityCls.setTypeMapper(getTypeMapper(cfg));
 		Charset utf8 = Charset.forName("UTF-8");
-		ClsBeanRepository.setBeanRepositoryNamespace(cfg.getBasePath().relativize(cfg.getRepositoryPath()).toString().replace("/", "\\"));
+		ClsEntityRepository.setBeanRepositoryNamespace(cfg.getBasePath().relativize(cfg.getRepositoryPath()).toString().replace("/", "\\"));
 		EntityCls.setBeanNamespace(cfg.getBasePath().relativize(cfg.getModelPath()).toString().replace("/", "\\")+"\\Entities");
 		EntityCls.setBeanRepoNamespace(cfg.getBasePath().relativize(cfg.getRepositoryPath()).toString().replace("/", "\\"));
-		ClsBeanQuery.setBeanQueryNamespace(ClsBeanRepository.getBeanRepositoryNamespace()+"\\Query");
+		ClsEntityQuery.setBeanQueryNamespace(ClsEntityRepository.getBeanRepositoryNamespace()+"\\Query");
 		
 		EntityCls.setSqlQueryCls(getSqlQueryCls(cfg));
 		EntityCls.setDatabase(cfg.getDatabase());
 	
-		InstructionBlock.setEnableStacktrace(cfg.isEnableStacktrace());
+		Instruction.setStackTraceEnabled(cfg.isEnableStacktrace());
 		
 		Path pathModel = cfg.getModelPath();
 
@@ -133,7 +245,7 @@ public class PhpOrm extends OrmGenerator {
 			Entities.add(cls);
 		}
 
-		ClsBeanRepository repo = Types.BeanRepository;
+		ClsEntityRepository repo = Types.EntityRepository;
 		repo.addDeclarations(Entities.getAllEntities());
 
 		for (EntityCls c : Entities.getAllEntities()) {
@@ -203,7 +315,7 @@ public class PhpOrm extends OrmGenerator {
 			Files.write(pathBeans.resolve(c.getName() + ".php"), c.toSourceString().getBytes(utf8), writeOptions);
 			
 			Files.write(helperPath.resolve(c.getFetchListHelperCls().getName() + ".php"), c.getFetchListHelperCls().toSourceString().getBytes(utf8), writeOptions);
-			ClsBeanQuery clsQuery = new ClsBeanQuery(c);
+			ClsEntityQuery clsQuery = new ClsEntityQuery(c);
 			clsQuery.addMethodImplementations();
 			Files.write(pathRepositoryQuery.resolve(clsQuery.getName() + ".php"),
 					clsQuery.toSourceString().getBytes(utf8), writeOptions);

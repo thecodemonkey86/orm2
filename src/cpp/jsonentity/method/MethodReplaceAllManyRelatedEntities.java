@@ -18,7 +18,7 @@ public class MethodReplaceAllManyRelatedEntities extends Method {
 	Param beans;
 	public MethodReplaceAllManyRelatedEntities(IManyRelation r) {
 		super(Public, Types.Void, "replaceAll"+StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrName(r)));
-		beans = addParam(new Param(Types.qvector(JsonEntities.get(r.getDestTable()).toSharedPtr()).toConstRef(), OrmUtil.getManyRelationDestAttrName(r)));
+		beans = addParam(new Param(Types.qlist(JsonEntities.get(r.getDestTable()).toSharedPtr()).toConstRef(), OrmUtil.getManyRelationDestAttrName(r)));
 		rel=r;
 	}
 
@@ -30,7 +30,7 @@ public class MethodReplaceAllManyRelatedEntities extends Method {
 		if(rel instanceof OneToManyRelation)
 			foreach._callMethodInstr(_this(), MethodAddRelatedBean.getMethodName((OneToManyRelation) rel), foreach.getVar());
 		else if(rel instanceof ManyRelation)
-			foreach._callMethodInstr(_this(), MethodAddManyToManyRelatedBean.getMethodName((ManyRelation) rel), foreach.getVar());
+			foreach._callMethodInstr(_this(), MethodAddManyToManyRelatedEntity.getMethodName((ManyRelation) rel), foreach.getVar());
 	}
 
 }

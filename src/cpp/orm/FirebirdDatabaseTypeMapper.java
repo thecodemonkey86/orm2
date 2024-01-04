@@ -3,6 +3,7 @@ package cpp.orm;
 import cpp.Types;
 import cpp.CoreTypes;
 import cpp.core.Method;
+import cpp.core.MethodTemplate;
 import cpp.core.QString;
 import cpp.core.Type;
 import cpp.core.expression.CreateObjectExpression;
@@ -47,6 +48,10 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 
 	@Override
 	public Type getTypeFromDbDataType(String dbType, boolean nullable) {
+		if(dbType==null) {
+			System.out.println();
+			throw new NullPointerException();
+		}
 /*
 7 = SMALLINT
 8 = INTEGER
@@ -91,7 +96,7 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 				case "8":
 					return Types.nullable(Types.Int);
 				case "16":
-					return Types.nullable(Types.LongLong);
+					return Types.nullable(Types.Int64);
 				case "7":
 					return Types.nullable(Types.Short);
 				case "14":	
@@ -191,8 +196,8 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 	}
 
 	@Override
-	public Type columnToType(Column col) {
-		return getTypeFromDbDataType(col.getDbType(), col.isNullable());
+	public Type columnToType(Column col,boolean nullable) {
+		return getTypeFromDbDataType(col.getDbType(),nullable);
 	}
 
 	@Override
@@ -201,15 +206,9 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 	}
 
 	@Override
-	public String getRepositoryInsertOrIgnoreMethod() {
-		// TODO Auto-generated method stub
-		return null;
+	public MethodTemplate getInsertOrIgnoreMethod(boolean byRef) {
+		throw new RuntimeException("not impl");
 	}
 
-	@Override
-	public String getRepositoryPrepareInsertOrIgnoreMethod() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

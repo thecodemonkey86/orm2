@@ -1,8 +1,11 @@
 package cpp.entity.method;
 
 import cpp.core.Method;
+import cpp.core.QString;
 import cpp.core.Type;
-import cpp.lib.ClsQVector;
+import cpp.core.instruction.ThrowInstruction;
+import cpp.lib.ClsQList;
+import cpp.lib.ClsQtException;
 import cpp.orm.OrmUtil;
 import database.relation.IManyRelation;
 import util.StringUtil;
@@ -18,7 +21,9 @@ public class MethodGetLastItem extends Method{
 
 	@Override
 	public void addImplementation() {
-		_return(_this().accessAttr(OrmUtil.getManyRelationDestAttrName(relation)).callMethod(ClsQVector.last));		
+		_if(_this().accessAttr(OrmUtil.getManyRelationDestAttrName(relation)).callMethod(ClsQList.empty)).thenBlock().addInstr
+		(new ThrowInstruction(new ClsQtException(),QString.fromStringConstant("no items of "+ OrmUtil.getManyRelationDestAttrName(relation)+ " available")));
+		_return(_this().accessAttr(OrmUtil.getManyRelationDestAttrName(relation)).callMethod(ClsQList.last));		
 	}
 
 }

@@ -1,10 +1,6 @@
 package php.orm;
 
 import database.column.Column;
-import php.bean.EntityCls;
-import php.beanrepository.method.MysqliBeanRepositoryBeginTransactionMethod;
-import php.beanrepository.method.MysqliBeanRepositoryCommitTransactionMethod;
-import php.beanrepository.method.MysqliBeanRepositoryRollbackTransactionMethod;
 import php.core.Attr;
 import php.core.Type;
 import php.core.Types;
@@ -17,6 +13,10 @@ import php.core.expression.IntExpression;
 import php.core.expression.NewOperator;
 import php.core.expression.PhpStringLiteral;
 import php.core.method.Method;
+import php.entity.EntityCls;
+import php.entityrepository.method.MysqliEntityRepositoryBeginTransactionMethod;
+import php.entityrepository.method.MysqliEntityRepositoryCommitTransactionMethod;
+import php.entityrepository.method.MysqliEntityRepositoryRollbackTransactionMethod;
 import php.lib.ClsDateTime;
 import php.lib.ClsMysqliResult;
 import php.lib.ClsSqlParam;
@@ -30,6 +30,7 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 		}
 		switch(dbType) {
 		case "int":
+		case "tinyint":
 		case "bigint":
 		case "int_unsigned":
 		case "bigint_unsigned":
@@ -124,13 +125,13 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 	@Override
 	public Expression getConvertTypeExpression(Expression arg,String dbType, boolean nullable) {
 		
+		if(nullable) {
+			return new InlineIfExpression(arg.isNull(), Expressions.Null, getConvertTypeExpression(arg, dbType, false)); 
+		}
 		switch(dbType) {
 		case "date":
 		case "datetime":			
 		case "timestamp":
-			if(nullable) {
-				return new InlineIfExpression(arg.isNull(), Expressions.Null, new NewOperator(Types.DateTime, arg));
-			}
 			return arg.getType().equals(Types.DateTime) ? arg : new NewOperator(Types.DateTime, arg);
 		case "varchar":
 		case "character":	
@@ -206,17 +207,36 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 
 	@Override
 	public Method getBeanRepositoryBeginTransactionMethod() {
-		return new MysqliBeanRepositoryBeginTransactionMethod();
+		return new MysqliEntityRepositoryBeginTransactionMethod();
 	}
 
 	@Override
 	public Method getBeanRepositoryCommitTransactionMethod() {
-		return new MysqliBeanRepositoryCommitTransactionMethod();
+		return new MysqliEntityRepositoryCommitTransactionMethod();
 	}
 
 	@Override
 	public Method getBeanRepositoryRollbackTransactionMethod() {
-		return new MysqliBeanRepositoryRollbackTransactionMethod();
+		return new MysqliEntityRepositoryRollbackTransactionMethod();
+	}
+
+	@Override
+	public Expression getConvertJsonValueToTypedExpression(Expression v, Column col ) {
+		Expression e=v;
+		String dbType = col.getDbType();
+		switch(dbType) {
+		case "date":
+			e = new NewOperator(Types.DateTime, v) ;
+			break;
+		case "datetime":
+		case "timestamp":
+			e = new NewOperator(Types.DateTime, v) ;
+			break;
+		}
+		if(col.isNullable()) {
+			return new InlineIfExpression(v.isNull(), Expressions.Null, e);
+		}
+		return e;
 	}
 
 	

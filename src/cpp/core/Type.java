@@ -7,7 +7,7 @@ import java.util.Objects;
 import codegen.CodeUtil;
 
 
-public class Type {
+public class Type implements Cloneable{
 	protected String type;
 	protected boolean constness;
 	protected List<Operator> operators;
@@ -128,9 +128,25 @@ public class Type {
 	}
 
 	public String getForwardDeclaration() {
-		System.out.println(this);
 		throw new UnsupportedOperationException();
 	}
 	
+	public void collectIncludes(Cls cls,boolean inSourceFile) {
+	}
+
+	public Type toPassParamType() {
+		return this;
+	}
 	
+	@Override
+	public Type clone() {
+		try {
+			return (Type) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+		
+		
+	}
 }

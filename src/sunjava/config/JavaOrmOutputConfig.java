@@ -3,18 +3,18 @@ package sunjava.config;
 import config.OrmConfig;
 
 public class JavaOrmOutputConfig extends OrmConfig{
-	protected String beanPackageName,repositoryPackageName;
+	protected String entityPackageName,repositoryPackageName;
 	
-	public String getBeanPackageName() {
-		return beanPackageName;
+	public String getEntityPackageName() {
+		return entityPackageName;
 	}
 
 	public String getRepositoryPackageName() {
 		return repositoryPackageName;
 	}
 	
-	public void setBeanPackageName(String beanPackageName) {
-		this.beanPackageName = beanPackageName;
+	public void setEntityPackageName(String beanPackageName) {
+		this.entityPackageName = beanPackageName;
 	}
 	
 	public void setRepositoryPackageName(String repositoryPackageName) {

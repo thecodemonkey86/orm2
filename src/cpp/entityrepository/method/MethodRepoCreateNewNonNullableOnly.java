@@ -10,8 +10,8 @@ import cpp.core.expression.BoolExpression;
 import cpp.core.expression.MakeSharedExpression;
 import cpp.core.expression.Var;
 import cpp.entity.EntityCls;
-import cpp.lib.EnableSharedFromThis;
 import database.column.Column;
+import util.StringUtil;
 
 public class MethodRepoCreateNewNonNullableOnly extends Method {
 
@@ -46,16 +46,17 @@ public class MethodRepoCreateNewNonNullableOnly extends Method {
 				
 			
 		}
+		setStatic(true);
 	}
 
 	@Override
 	public void addImplementation() {
-		Var bean = _declare(returnType, "entity", new MakeSharedExpression((SharedPtr) returnType,_this().callMethod(EnableSharedFromThis.SHARED_FROM_THIS)));
+		Var bean = _declare(returnType, "entity", new MakeSharedExpression((SharedPtr) returnType));
 		_callMethodInstr(bean, "setInsertNew");
 		addInstr(bean.callMethodInstruction("setLoaded", BoolExpression.TRUE));
 		
 		for (Param param : initializeFieldsParams) {
-			addInstr(bean.callSetterMethodInstruction(param.getName(),param));
+			addInstr(bean.callMethodInstruction("set" +StringUtil.ucfirst(param.getName())+"Internal",param));
 		}
 		_return(bean);
 		

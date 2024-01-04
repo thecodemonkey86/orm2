@@ -28,11 +28,8 @@ import php.core.method.MethodAttributeSetter;
 public class InstructionBlock extends Instruction implements Iterable<Instruction> {
 	protected ArrayList<Instruction> instructions;
 	protected AbstractPhpCls parent;
-	protected static boolean enableStacktrace;
 	
-	public static void setEnableStacktrace(boolean enableStacktrace) {
-		Method.enableStacktrace = enableStacktrace;
-	}
+	 
 	/*private static int indent=0;
 	
 	public static int getIndent() {

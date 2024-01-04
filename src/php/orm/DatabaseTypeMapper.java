@@ -1,12 +1,12 @@
 package php.orm;
 
 import database.column.Column;
-import php.bean.EntityCls;
 import php.core.Type;
 import php.core.Types;
 import php.core.expression.Expression;
 import php.core.expression.PhpStringLiteral;
 import php.core.method.Method;
+import php.entity.EntityCls;
 import php.lib.ClsSqlParam;
 
 public abstract class DatabaseTypeMapper {
@@ -61,6 +61,8 @@ public abstract class DatabaseTypeMapper {
 		return getConvertFieldToStringExpression(obj, col, new PhpStringLiteral("Y-m-d H:i:s") ,new PhpStringLiteral("Y-m-d"));
 	}
 	public abstract Expression getConvertFieldToStringExpression(Expression obj, Column col,Expression dateTimeFormatExpr,Expression dateFormatExpr) ;
+	
+	public abstract Expression getConvertJsonValueToTypedExpression(Expression obj, Column col) ;
 	public abstract Method getBeanRepositoryBeginTransactionMethod() ;
 	public abstract Method getBeanRepositoryCommitTransactionMethod() ;
 	public abstract Method getBeanRepositoryRollbackTransactionMethod() ;

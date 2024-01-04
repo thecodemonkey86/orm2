@@ -291,4 +291,24 @@ public class JavaCls extends AbstractJavaCls implements IAttributeContainer{
 		}
 	}
 
+	public Expression accessStaticAttributeByName(String name) {
+		for(Attr a:attrs ) {
+			if (a.getName().equals(name)) {
+				if (!a.isStatic()) {
+					throw new RuntimeException("attribute " + a.getName()+" is not static");
+				}
+				return new StaticAccessExpression(this, a);
+			}
+		}
+		if (superclass!=null) {
+			return superclass.accessStaticAttributeByName(name);
+		} else {
+			throw new RuntimeException("no such attribute " + name);
+		}
+	}
+
+	public String toStaticMethodCallString() {
+		return getName();
+	}
+
 }

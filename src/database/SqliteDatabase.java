@@ -62,13 +62,15 @@ public class SqliteDatabase extends Database {
 	}
 
 	@Override
-	public void readColumns(AbstractTable tbl, Connection conn) throws SQLException {
+	public void readColumns(AbstractTable tbl, Connection conn,boolean columnsFromConfig) throws SQLException {
 		if (stColumndata==null)
 			stColumndata = conn.prepareStatement("select * from sqlite_master where tbl_name = ?");
 		stColumndata.setString(1, tbl.getName());
 		ResultSet rsColumndata = stColumndata.executeQuery();
 		PrimaryKey pk = new PrimaryKey();
-		
+		 if(tbl.getName().equals("metadata")) 		 {
+			 System.out.println();
+		 }
 		if(rsColumndata.next()) {
 			String sql = rsColumndata.getString("sql");
 			List<String> l = getTokenList(sql);
@@ -87,6 +89,7 @@ public class SqliteDatabase extends Database {
 				col.setName(filterColName(l.get(index++)));
 				
 				String type = l.get(index++);
+				
 				switch(type.toUpperCase()) {
 				case "VARYING":
 					expectToken(l, index++, "CHARACTER");
@@ -117,12 +120,20 @@ public class SqliteDatabase extends Database {
 					expectToken(l, index++, ")");
 					break;	
 				case "VARCHAR":
-					expectToken(l, index++, "(");
+				case "INT":
+				case "TINYINT":
+					if(isTokenAt(l, index, "(")) {
+						index++;
 					expectInteger(l, index++);
 					expectToken(l, index++, ")");
+					}
 					break;
+				
 				default:
 						break;
+				}
+				if(!type.toUpperCase().matches("[A-Z]+")) {
+					throw new RuntimeException("syntax error");
 				}
 				col.setDbType(type);
 				col.setNullable(!(isTokenAt(l, index, "NOT") && isTokenAt(l, index+1, "NULL")));
@@ -152,6 +163,7 @@ public class SqliteDatabase extends Database {
 						(isTokenAt(l, index, ",") && 
 								(isTokenAt(l, index+1, "FOREIGN")
 										||isTokenAt(l, index+1, "PRIMARY")
+										||isTokenAt(l, index+1, "CONSTRAINT")
 					)))){
 					
 					endOfColumnList = true;
@@ -206,10 +218,45 @@ public class SqliteDatabase extends Database {
 					} else {
 						expectToken(l, index++, ",");
 					}
+				} else if(isTokenAt(l, index, "UNIQUE")) {
+					expectToken(l, ++index, "(");
+					do {
+						++index;
+						if(isTokenAt(l, ++index, ")")) {
+							break;
+						}
+					}while(l.get(index++).equals(","));
+					if(isTokenAt(l, index, ")")) {
+						break;
+					} else {
+						expectToken(l, index++, ",");
+					}
+				} else if(isTokenAt(l, index, "CONSTRAINT")) {
+					String constraintName=filterColName(l.get(++index));
+					if(!constraintName.matches("^([A-Za-z0-9]|_)+$")) {
+						throw new RuntimeException("expected constraint name");
+					}
+					if(isTokenAt(l, ++index, "PRIMARY")) {
+						expectToken(l, ++index, "KEY");
+						expectToken(l, ++index, "(");
+						do {
+							pk.add(tbl.getColumnByName(filterColName(l.get(++index))));
+							
+						} while(l.get(++index).equals(","));
+						
+						if(isTokenAt(l, index, ")")) {
+							break;
+						} else {
+							expectToken(l, index++, ",");
+						}
+					}
 				} else {
 					throw new RuntimeException("unexpected token " + l.get(index));
 				}
 			}
+		} else {
+			System.out.println(stColumndata.getWarnings());
+			throw new SQLException(stColumndata.getWarnings());
 		}
 		
 		
@@ -261,7 +308,7 @@ public class SqliteDatabase extends Database {
 
 	@Override
 	public boolean supportsInsertOrIgnore() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -314,5 +361,11 @@ public class SqliteDatabase extends Database {
 	@Override
 	public String sqlInsertMultiRow(AbstractTable tbl, List<Column> columnsInSpecificOrder, String placeholders) {
 		throw new RuntimeException("not implemented");
+	}
+	
+	@Override
+	public boolean supportsDeleteTableAlias() {
+		return false;
+		
 	}
 }

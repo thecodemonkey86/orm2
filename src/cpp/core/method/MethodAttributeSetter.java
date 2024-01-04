@@ -11,7 +11,7 @@ public class MethodAttributeSetter extends Method{
 	public MethodAttributeSetter(Attr a) {
 		super(Public, CoreTypes.Void,getMethodName(a) );
 		this.attr=a;
-		addParam(new Param(a.getType().isPrimitiveType() ? a.getType() : a.getType().toConstRef() , a.getName()));
+		addParam(new Param(a.getType().toPassParamType() , a.getName()));
 	}
 
 	

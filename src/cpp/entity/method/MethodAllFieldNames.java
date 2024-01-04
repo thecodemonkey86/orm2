@@ -29,6 +29,7 @@ public class MethodAllFieldNames extends Method {
 		}
 		
 		_return(result);
+		setStatic(true);
 
 	}
 

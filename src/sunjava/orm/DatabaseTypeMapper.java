@@ -1,10 +1,10 @@
 package sunjava.orm;
 
 import database.column.Column;
-import sunjava.bean.BeanCls;
 import sunjava.core.Type;
 import sunjava.core.expression.Expression;
 import sunjava.core.expression.Var;
+import sunjava.entity.EntityCls;
 
 public abstract class DatabaseTypeMapper {
 	public abstract Type getTypeFromDbDataType(String dbType, boolean nullable);
@@ -19,6 +19,6 @@ public abstract class DatabaseTypeMapper {
 	protected abstract Expression getResultSetValueGetterInternal(Var resultSet,Column col,Expression identifier);
 	
 	public abstract Type getSqlQueryClass();
-	public abstract Type getBeanQueryClass(BeanCls beanCls);
-	public abstract Type getLibBeanQueryClass(BeanCls beanCls);
+	public abstract Type getBeanQueryClass(EntityCls beanCls);
+	public abstract Type getLibBeanQueryClass(EntityCls beanCls);
 }

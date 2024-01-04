@@ -1,15 +1,15 @@
 package php.orm;
 
 import database.column.Column;
-import php.bean.EntityCls;
-import php.beanrepository.method.PgBeanRepositoryBeginTransactionMethod;
-import php.beanrepository.method.PgBeanRepositoryCommitTransactionMethod;
-import php.beanrepository.method.PgBeanRepositoryRollbackTransactionMethod;
 import php.core.Attr;
 import php.core.Type;
 import php.core.Types;
 import php.core.expression.Expression;
 import php.core.method.Method;
+import php.entity.EntityCls;
+import php.entityrepository.method.PgEntityRepositoryBeginTransactionMethod;
+import php.entityrepository.method.PgEntityRepositoryCommitTransactionMethod;
+import php.entityrepository.method.PgEntityRepositoryRollbackTransactionMethod;
 import php.lib.ClsSqlParam;
 
 public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
@@ -126,17 +126,23 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 
 	@Override
 	public Method getBeanRepositoryBeginTransactionMethod() {
-		return new PgBeanRepositoryBeginTransactionMethod();
+		return new PgEntityRepositoryBeginTransactionMethod();
 	}
 
 	@Override
 	public Method getBeanRepositoryCommitTransactionMethod() {
-		return new PgBeanRepositoryCommitTransactionMethod();
+		return new PgEntityRepositoryCommitTransactionMethod();
 	}
 
 	@Override
 	public Method getBeanRepositoryRollbackTransactionMethod() {
-		return new PgBeanRepositoryRollbackTransactionMethod();
+		return new PgEntityRepositoryRollbackTransactionMethod();
+	}
+
+	@Override
+	public Expression getConvertJsonValueToTypedExpression(Expression obj, Column col) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

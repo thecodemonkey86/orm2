@@ -1,8 +1,6 @@
 package sunjava.orm;
 
 import database.column.Column;
-import sunjava.bean.BeanCls;
-import sunjava.beanrepository.query.ClsBeanQuery;
 import sunjava.core.JavaString;
 import sunjava.core.Type;
 import sunjava.core.Types;
@@ -16,7 +14,9 @@ import sunjava.core.expression.LongExpression;
 import sunjava.core.expression.NewOperator;
 import sunjava.core.expression.ShortExpression;
 import sunjava.core.expression.Var;
-import sunjava.lib.ClsBaseBeanQuery;
+import sunjava.entity.EntityCls;
+import sunjava.entityrepository.query.ClsEntityQuery;
+import sunjava.lib.ClsBaseEntityQuery;
 import sunjava.lib.ClsJavaString;
 import sunjava.lib.ClsLocalDate;
 import sunjava.lib.ClsResultSet;
@@ -220,13 +220,13 @@ public class PgDatabaseMapper extends DatabaseTypeMapper{
 	}
 
 	@Override
-	public Type getBeanQueryClass(BeanCls beanCls) {
-		return new ClsBeanQuery(beanCls);
+	public Type getBeanQueryClass(EntityCls beanCls) {
+		return new ClsEntityQuery(beanCls);
 	}
 	
 	@Override
-	public Type getLibBeanQueryClass(BeanCls beanCls) {
-		return new ClsBaseBeanQuery(beanCls);
+	public Type getLibBeanQueryClass(EntityCls beanCls) {
+		return new ClsBaseEntityQuery(beanCls);
 	}
 
 }

@@ -5,28 +5,34 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.Connection;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
-
 import config.ConfigReader;
 import config.OrmConfig;
 import config.OrmConfig.JsonMode;
 import config.cpp.CppConfigReader;
 import config.php.PhpConfigReader;
+import database.Database;
 import generate.CppOrm;
 import generate.OrmGenerator;
 import generate.PhpOrm;
 import util.Pair;
 
 public class JsonModeConfigReader {
-	public static Pair<OrmGenerator, OrmGenerator> read(Path xmlFile) throws IOException {
+	public static Pair<OrmGenerator, OrmGenerator> read(Path xmlFile,Connection conn,String engine, Database db) throws IOException {
 		
 
 		try(InputStream inputStream = new ByteArrayInputStream(Files.readAllBytes(xmlFile))) {
-			XMLReader xr = XMLReaderFactory.createXMLReader();
-			
+			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+			SAXParser parser = parserFactory.newSAXParser();
+			XMLReader xr = parser.getXMLReader();
 			JsonConfigContentHandler handler = new JsonConfigContentHandler();
 			xr.setContentHandler(handler);
 			xr.parse(new InputSource(inputStream));
@@ -35,9 +41,10 @@ public class JsonModeConfigReader {
 			inputStream.reset();
 			
 			boolean serverIsCpp = serverType.equals("cpp");
-			ConfigReader serverCfgReader = serverIsCpp ? new ConfigReader(xmlFile) : new PhpConfigReader(xmlFile);
+			ConfigReader serverCfgReader = serverIsCpp ? new CppConfigReader(xmlFile,conn,db) : new PhpConfigReader(xmlFile,conn,db);
 			
-			xr = XMLReaderFactory.createXMLReader();
+			parser = parserFactory.newSAXParser();
+			xr = parser.getXMLReader();
 			xr.setContentHandler(serverCfgReader);
 			xr.parse(new InputSource(inputStream));
 			
@@ -49,10 +56,11 @@ public class JsonModeConfigReader {
 			
 			inputStream.reset();
 			boolean clientIsCpp = clientType.equals("cpp");
-			ConfigReader clientCfgReader = clientIsCpp ? new CppConfigReader(xmlFile) : new PhpConfigReader(xmlFile);
+			ConfigReader clientCfgReader = clientIsCpp ? new CppConfigReader(xmlFile,conn,db) : new PhpConfigReader(xmlFile,conn,db);
 			
 		
-			xr = XMLReaderFactory.createXMLReader();
+			parser = parserFactory.newSAXParser();
+			xr = parser.getXMLReader();
 			xr.setContentHandler(clientCfgReader);
 			xr.parse(new InputSource(inputStream));
 			OrmConfig clientConfig = clientCfgReader.getCfg();
@@ -71,10 +79,15 @@ public class JsonModeConfigReader {
 			
 			cfg.setClientConfig(clientConfig);
 			cfg.setServerConfig(serverConfig);
+			
+			serverConfig.setDatabase(db);
+			serverConfig.setDbEngine(engine);
+			clientConfig.setDatabase(db);
+			clientConfig.setDbEngine(engine);
 			OrmGenerator orm1 = serverIsCpp ? new CppOrm(serverConfig) : new PhpOrm(serverConfig);
 			OrmGenerator orm2 = clientIsCpp ? new CppOrm(clientConfig) : new PhpOrm(clientConfig);
 			return new Pair<OrmGenerator, OrmGenerator>(orm1, orm2);
-		} catch (SAXException e) {
+		} catch (SAXException | ParserConfigurationException e) {
 			throw new IOException(e);
 		}
 		

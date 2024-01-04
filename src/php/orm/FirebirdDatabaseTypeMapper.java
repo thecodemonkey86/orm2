@@ -1,10 +1,6 @@
 package php.orm;
 
 import database.column.Column;
-import php.bean.EntityCls;
-import php.beanrepository.method.FirebirdBeanRepositoryBeginTransactionMethod;
-import php.beanrepository.method.FirebirdBeanRepositoryCommitTransactionMethod;
-import php.beanrepository.method.FirebirdBeanRepositoryRollbackTransactionMethod;
 import php.core.Attr;
 import php.core.PhpConstants;
 import php.core.PhpFunctions;
@@ -18,6 +14,10 @@ import php.core.expression.IntExpression;
 import php.core.expression.NewOperator;
 import php.core.expression.PhpStringLiteral;
 import php.core.method.Method;
+import php.entity.EntityCls;
+import php.entityrepository.method.FirebirdEntityRepositoryBeginTransactionMethod;
+import php.entityrepository.method.FirebirdEntityRepositoryCommitTransactionMethod;
+import php.entityrepository.method.FirebirdEntityRepositoryRollbackTransactionMethod;
 import php.lib.ClsDateTime;
 
 public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
@@ -154,7 +154,7 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 			case "7":
 			case "10":
 			case "27":
-				return new InlineIfExpression(expr.isNull(), Expressions.Null, getConvertTypeExpression(expr, dbType, false));
+				return new InlineIfExpression(expr.isNull().binOp("||", expr._equals(new PhpStringLiteral(""))), Expressions.Null, getConvertTypeExpression(expr, dbType, false));
 			default:
 				return new InlineIfExpression(expr.isNull(), Expressions.Null, PhpFunctions.trim.call(expr));
 			}
@@ -255,22 +255,28 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 	}
 	
 	public Method getBeanRepositoryBeginTransactionMethod() {
-		return new FirebirdBeanRepositoryBeginTransactionMethod();
+		return new FirebirdEntityRepositoryBeginTransactionMethod();
 	}
 
 	@Override
 	public Method getBeanRepositoryCommitTransactionMethod() {
-		return new FirebirdBeanRepositoryCommitTransactionMethod();
+		return new FirebirdEntityRepositoryCommitTransactionMethod();
 	}
 
 	@Override
 	public Method getBeanRepositoryRollbackTransactionMethod() {
-		return new FirebirdBeanRepositoryRollbackTransactionMethod();
+		return new FirebirdEntityRepositoryRollbackTransactionMethod();
 	}
 	
 	@Override
 	public boolean hasTransactionHandle() {
 		return true;
+	}
+
+	@Override
+	public Expression getConvertJsonValueToTypedExpression(Expression obj, Column col) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -13,11 +13,11 @@ import cpp.core.QString;
 import cpp.core.expression.Var;
 import cpp.entity.EntityCls;
 import cpp.entity.ManyAttr;
-import cpp.entityrepository.ClsEntityRepository;
 import cpp.lib.ClsQVariantList;
-import cpp.lib.ClsQVector;
+import cpp.lib.ClsQList;
 import cpp.lib.ClsSql;
 import cpp.orm.OrmUtil;
+import cpp.util.ClsDbPool;
 import database.column.Column;
 import database.relation.ManyRelation;
 
@@ -25,6 +25,7 @@ public class MethodRemoveManyToManyRelatedEntity extends Method {
 
 	protected ManyRelation rel;
 	Param pBean;
+	Param pSqlCon;
 	
 	public static String getMethodName(ManyRelation r) {
 		return  "remove"+StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrNameSingular(r));
@@ -34,13 +35,14 @@ public class MethodRemoveManyToManyRelatedEntity extends Method {
 		super(Public, Types.Void,getMethodName(r));
 		pBean = addParam(new ManyAttr(r).getElementType().toConstRef(),"entity");
 		rel=r;
+		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 	}
 
 	@Override
 	public void addImplementation() {
 		EntityCls parent = (EntityCls) this.parent;
 		Attr a=parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
-		addInstr(a.callMethod(ClsQVector.removeOne,pBean).asInstruction());
+		addInstr(a.callMethod(ClsQList.removeOne,pBean).asInstruction());
 		
 		ArrayList<String> columns = new ArrayList<>();
 		Var varParams = _declare(Types.QVariantList, "params");
@@ -59,9 +61,9 @@ public class MethodRemoveManyToManyRelatedEntity extends Method {
 			_callMethodInstr(varParams, ClsQVariantList.append, pBean.callAttrGetter(colPk.getCamelCaseName()));
 		}
 		
-		String sql = String.format("delete from %s where %s", rel.getMappingTable().getEscapedName(), CodeUtil.commaSep(columns));
+		String sql = String.format("delete from %s where %s", rel.getMappingTable().getEscapedName(), CodeUtil.concat(columns," AND "));
 		
-		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, _this().accessAttr(EntityCls.repository).callAttrGetter(ClsEntityRepository.sqlCon),QString.fromStringConstant(sql),varParams).asInstruction());
+		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, pSqlCon,QString.fromStringConstant(sql),varParams).asInstruction());
 		
 		
 		/*EntityCls relationBean = Entities.get( rel.getDestTable());

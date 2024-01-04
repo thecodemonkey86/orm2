@@ -1,11 +1,11 @@
 package sunjava.core;
 
 import database.relation.AbstractRelation;
-import sunjava.bean.BeanCls;
-import sunjava.bean.Beans;
-import sunjava.beanrepository.ClsBeanRepository;
+import sunjava.entity.Entities;
+import sunjava.entity.EntityCls;
+import sunjava.entityrepository.ClsEntityRepository;
 import sunjava.lib.ClsArrayList;
-import sunjava.lib.ClsBaseBean;
+import sunjava.lib.ClsBaseEntity;
 import sunjava.lib.ClsJavaString;
 import sunjava.lib.ClsLinkedHashSet;
 import sunjava.lib.ClsHashSet;
@@ -19,6 +19,7 @@ import sunjava.lib.ClsSqlException;
 import sunjava.lib.ClsSqlParam;
 import sunjava.lib.ClsSqlQuery;
 import sunjava.lib.ClsSqlUtil;
+import sunjava.lib.ClsSupplier;
 import sunjava.lib.ClsTimestamp;
 import sunjava.lib.ClsZonedDateTime;
 import sunjava.lib.StaticLibMethod;
@@ -129,12 +130,11 @@ public class Types {
 	public static final ClsSqlQuery SqlQuery = 	new ClsSqlQuery();
 	public static final ClsPgSqlQuery PgSqlQuery = 	new ClsPgSqlQuery();
 	
-	public static final ClsBaseBean BaseBean = new ClsBaseBean();
-	public static final ClsBeanRepository BeanRepository = new ClsBeanRepository();
+	public static final ClsBaseEntity BaseEntity = new ClsBaseEntity();
+	public static final ClsEntityRepository BeanRepository = new ClsEntityRepository();
 	public static final ClsSqlParam SqlParam = new ClsSqlParam();
 	public static final ClsSqlUtil SqlUtil = new ClsSqlUtil();
 	public static final ClsSqlException SqlException = new ClsSqlException();
-	
 	
 
 	
@@ -157,10 +157,10 @@ public class Types {
 	public static Type getRelationForeignPrimaryKeyType(AbstractRelation r) {
 		Type beanPk = null;
 		if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
-			beanPk = Beans.get(r.getDestTable().getUc1stCamelCaseName()).getPkType();
+			beanPk = Entities.get(r.getDestTable().getUc1stCamelCaseName()).getPkType();
 			
 		} else {
-			beanPk = BeanCls.getTypeMapper().columnToType( r.getDestTable().getPrimaryKey().getColumns().get(0));
+			beanPk = EntityCls.getTypeMapper().columnToType( r.getDestTable().getPrimaryKey().getColumns().get(0));
 		}
 		return beanPk;
 	}
@@ -179,6 +179,11 @@ public class Types {
 		Types.DoubleAutoBoxing.addMethod(new StaticLibMethod(Int, HASH_CODE));
 		Types.CharAutoBoxing.addMethod(new StaticLibMethod(Int, HASH_CODE));
 		Types.ByteAutoBoxing.addMethod(new StaticLibMethod(Int, HASH_CODE));
+	}
+
+
+	public static Type supplier(Type type) {
+		return new ClsSupplier(type);
 	}
 	
 //	public static <T> JavaCls fromReflectionClass(Class<T> cls) {

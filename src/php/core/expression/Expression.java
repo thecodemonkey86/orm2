@@ -3,6 +3,7 @@ package php.core.expression;
 import php.core.AbstractPhpCls;
 import php.core.Attr;
 import php.core.IAttributeContainer;
+import php.core.Operator;
 import php.core.PhpArray;
 import php.core.PhpCls;
 import php.core.PhpFunctions;
@@ -60,7 +61,9 @@ public abstract class Expression {
 	public Expression arrayIndexIsset(Expression arg) {
 		return PhpFunctions.isset.call(this.arrayIndex(arg));
 	}
-	
+	public Expression arrayKeyExists(Expression arg) {
+		return PhpFunctions.array_key_exists.call(arg,this);
+	}
 	public MethodCallInstruction callAttrSetterMethodInstr(String attrName, Expression...args) {
 		Type type = getType();
 		if (type instanceof IAttributeContainer) {
@@ -144,11 +147,33 @@ public abstract class Expression {
 	public Expression equalsOp(Expression e) {
 		return new BinaryOperatorExpression(this, new LibEqualsOperator(), e);
 	}
+	
+	public Expression notEqualsOp(Expression e) {
+		return new BinaryOperatorExpression(this, NotEqualOperator.INSTANCE, e);
+	}
+	
+	public Expression and(Expression e) {
+		return new BinaryOperatorExpression(this, Operators.AND, e);
+	}
 	public Expression binOp(String symbol, Expression arg) {
 		BinaryOperatorExpression e=new BinaryOperatorExpression(this, new LibOperator(symbol, arg.getType(), false), arg);
 		return e ;
 	}
 
+	public Expression binOp(Operator op, Expression arg) {
+		BinaryOperatorExpression e=new BinaryOperatorExpression(this, op, arg);
+		return e ;
+	}
+	
+	public Expression _or(Expression arg) {
+		BinaryOperatorExpression e=new BinaryOperatorExpression(this, Operators.OR, arg);
+		return e ;
+	}
+	
+	public Expression _and(Expression arg) {
+		BinaryOperatorExpression e=new BinaryOperatorExpression(this, Operators.AND, arg);
+		return e ;
+	}
 	
 	public Expression greaterThan(Expression other) {
 		return binOp(">", other);
@@ -156,10 +181,18 @@ public abstract class Expression {
 
 
 	public Expression _equals(Expression other) {
-		if (other.getType().isPrimitiveType() || other.getType().equals(Types.String)) {
+		if (other.getType()==null || other.getType().isPrimitiveType() || other.getType().equals(Types.String)|| other.getType().equals(Types.DateTime)) {
 			return equalsOp(other);
 		} else {
 			return callMethod("equals", other);
+		}
+		
+	}
+	public Expression _notEquals(Expression other) {
+		if (other.getType().isPrimitiveType() || other.getType().equals(Types.String)|| other.getType().equals(Types.DateTime)) {
+			return notEqualsOp(other);
+		} else {
+			return new NotExpression(callMethod("equals", other));
 		}
 		
 	}
@@ -191,7 +224,6 @@ public abstract class Expression {
 		return new Cast(castType, this);
 	}
 
-	
 //	public Expression callMethod(Cls cls, String m) {
 //		return new MethodCall(this, cls.getMethod(m));
 //	}

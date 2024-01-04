@@ -13,15 +13,15 @@ public class MethodWhere13 extends MethodTemplate{
 
 	
 	public MethodWhere13(Cls parentType) {
-		super(Method.Public, parentType.toRef(), "where");
+		super(Method.Public, parentType.toRef(), "where",false);
 		addTplType(new TplSymbol("T"));
 		addParam(Types.QString.toConstRef(),"whereCond");
-		addParam(Types.qvector(tplTypes.get(0)).toConstRef(),"params");
+		addParam(Types.qlist(tplTypes.get(0)).toConstRef(),"params");
 		
 	}
 
 	@Override
-	public TplMethod getConcreteMethod(Type... types) {
+	public TplMethod getConcreteMethodImpl(Type... types) {
 		// TODO Auto-generated method stub
 		TplMethod t= new TplMethod(this,types ) {
 			
@@ -32,7 +32,7 @@ public class MethodWhere13 extends MethodTemplate{
 					public String toString() {
 						return "for(const auto & p : params)\t\r\n this->params.append(p);\r\n" + 
 								"        if (!conditions.empty()) {\r\n" + 
-								"            this->conditions.append(SqlUtil3::SqlQuery::AND);\r\n" + 
+								"            this->conditions.append(SqlUtil4::SqlQuery::AND);\r\n" + 
 								"        }\r\n" + 
 								"        this->conditions.append(whereCond);\r\n" + 
 								"        return *this;";

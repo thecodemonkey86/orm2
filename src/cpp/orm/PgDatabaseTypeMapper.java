@@ -4,9 +4,12 @@ import util.pg.PgCppUtil;
 import cpp.Types;
 import cpp.CoreTypes;
 import cpp.core.Method;
+import cpp.core.MethodTemplate;
 import cpp.core.QString;
+import cpp.core.TplSymbol;
 import cpp.core.Type;
 import cpp.core.expression.BoolExpression;
+import cpp.core.expression.CStringLiteral;
 import cpp.core.expression.CreateObjectExpression;
 import cpp.core.expression.DoubleExpression;
 import cpp.core.expression.Expression;
@@ -14,11 +17,28 @@ import cpp.core.expression.Int64Expression;
 import cpp.core.expression.IntExpression;
 import cpp.core.expression.LongLongExpression;
 import cpp.core.expression.ShortExpression;
-import cpp.lib.ClsBaseRepository;
+import cpp.core.method.TplMethod;
+import cpp.entityrepository.method.MethodInsertOrIgnorePg;
 import cpp.lib.ClsSqlQuery;
 import database.column.Column;
 
 public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
+	private final class MethodTemplateInsertOrIgnorePg extends MethodTemplate {
+		boolean byRef;
+
+		private MethodTemplateInsertOrIgnorePg(String visibility, Type returnType, String name, boolean isStatic,
+				boolean byRef) {
+			super(visibility, returnType, name, isStatic);
+			this.byRef = byRef;
+			addTplType(new TplSymbol("T"));
+		}
+
+		@Override
+		protected TplMethod getConcreteMethodImpl(Type... types) {
+			return new MethodInsertOrIgnorePg(this, byRef,types);
+		}
+	}
+
 	@SuppressWarnings("deprecation")
 	@Override
 	public Method getQVariantConvertMethod(String pgType) {
@@ -105,7 +125,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 				case "character varying":
 				case "character":	
 				case "text":
-					return QString.fromStringConstant("");
+					return new CStringLiteral("");
 				case "date":
 					return new CreateObjectExpression(Types.QDate) ;
 				case "double precision":
@@ -128,7 +148,7 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 				case "integer":
 					return new CreateObjectExpression( Types.nullable(Types.Int));
 				case "bigint":
-					return new CreateObjectExpression(Types.nullable(Types.LongLong));
+					return new CreateObjectExpression(Types.nullable(Types.Int64));
 				case "character varying":
 				case "character":	
 				case "text":
@@ -195,21 +215,27 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 	}
 
 	@Override
-	public Type columnToType(Column col) {
-		return getTypeFromDbDataType(col.getDbType(), col.isNullable());
+	public Type columnToType(Column col,boolean nullable) {
+		return getTypeFromDbDataType(col.getDbType(),nullable);
 	}
+	
 	@Override
 	public ClsSqlQuery getSqlQueryType() {
 		return Types.PgSqlQuery;
 	}
 
 	@Override
-	public String getRepositoryInsertOrIgnoreMethod() {
-		return ClsBaseRepository.insertOrIgnorePg;
+	public MethodTemplate getInsertOrIgnoreMethod(boolean byref) {
+		return new MethodTemplateInsertOrIgnorePg(Method.Public, Types.Void, "insertOrIgnore", true, byref); 
 	}
 
-	@Override
-	public String getRepositoryPrepareInsertOrIgnoreMethod() {
-		return ClsBaseRepository.prepareInsertOrIgnorePg;
-	}
+//	@Override
+//	public String getRepositoryInsertOrIgnoreMethod() {
+//		return ClsBaseRepository.insertOrIgnorePg;
+//	}
+//
+//	@Override
+//	public String getRepositoryPrepareInsertOrIgnoreMethod() {
+//		return ClsBaseRepository.prepareInsertOrIgnorePg;
+//	}
 }

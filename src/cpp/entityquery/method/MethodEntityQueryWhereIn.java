@@ -7,7 +7,6 @@ import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.QString;
 import cpp.core.TplCls;
-import cpp.core.Type;
 import cpp.core.expression.CreateObjectExpression;
 import cpp.core.expression.InlineIfExpression;
 import cpp.core.expression.Var;
@@ -18,7 +17,7 @@ import cpp.entityquery.EntityQueryType;
 import cpp.lib.ClsAbstractBeanQuery;
 import cpp.lib.ClsQVariant;
 import cpp.lib.ClsQVariantList;
-import cpp.lib.ClsQVector;
+import cpp.lib.ClsQList;
 import cpp.lib.ClsSqlUtil;
 import database.column.Column;
 
@@ -29,14 +28,8 @@ public class MethodEntityQueryWhereIn extends Method {
 	Column c;
 	EntityQueryType beanQueryType;
 	public MethodEntityQueryWhereIn(Cls query,EntityQueryType beanQueryType, EntityCls bean,Column c, TplCls pValueType) {
-		super(Public, query, "where"+c.getUc1stCamelCaseName()+"In");
+		super(Public, query.toRef(), "where"+c.getUc1stCamelCaseName()+"In");
 		this.bean=bean;
-		Type t = EntityCls.getDatabaseMapper().columnToType(c);
-		
-		if(t == null) {
-			System.out.println(EntityCls.getDatabaseMapper().columnToType(c));
-		}
-		
 		this.pValue = addParam(pValueType.toConstRef(), "value");
 		this.c = c;
 		this.beanQueryType = beanQueryType;
@@ -55,9 +48,9 @@ public class MethodEntityQueryWhereIn extends Method {
 			
 		}
 		if(beanQueryType == EntityQueryType.Select) {
-			_return( _this().callMethod(ClsAbstractBeanQuery.where,QString.fromStringConstant("e1." + c.getEscapedName()+" in ").concat(Types.SqlUtil.callStaticMethod(ClsSqlUtil.getPlaceholders, pValue.callMethod(ClsQVector.size)))));
+			_return( _this().callMethod(ClsAbstractBeanQuery.where,QString.fromStringConstant("e1." + c.getEscapedName()+" in ").concat(Types.SqlUtil.callStaticMethod(ClsSqlUtil.getPlaceholders, pValue.callMethod(ClsQList.size)))));
 		} else {
-			_return( _this().callMethod(ClsAbstractBeanQuery.where,QString.fromStringConstant(c.getEscapedName()+" in ").concat(Types.SqlUtil.callStaticMethod(ClsSqlUtil.getPlaceholders, pValue.callMethod(ClsQVector.size)))));
+			_return( _this().callMethod(ClsAbstractBeanQuery.where,QString.fromStringConstant(c.getEscapedName()+" in ").concat(Types.SqlUtil.callStaticMethod(ClsSqlUtil.getPlaceholders, pValue.callMethod(ClsQList.size)))));
 		}
 		
 		

@@ -2,10 +2,8 @@ package cpp.entity.method;
 
 import java.util.List;
 
-import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.Constructor;
-import cpp.core.Param;
 import cpp.core.expression.BoolExpression;
 import cpp.core.expression.Expression;
 import cpp.entity.EntityCls;
@@ -20,10 +18,7 @@ public class EntityConstructor extends Constructor{
 		this.autoIncrement = autoIncrement;
 		this.cols = cols;
 		// Shared Pointer due to circular dependency / forward declaration issue 
-		addParam(new Param(Types.EntityRepository.toSharedPtr(), "repository"));
 		try{
-//		addParam(new Param(Types.BeanRepository.toRawPointer(), "repository"));
-//		addPassToSuperConstructor(params.get(0));
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -31,14 +26,11 @@ public class EntityConstructor extends Constructor{
 	
 	@Override
 	public void addImplementation() {
-		_assign(_this().accessAttr("repository"), getParam("repository"));
-		_assign(parent.getAttrByName("loaded"), BoolExpression.FALSE);		
-		_assign(parent.getAttrByName("autoIncrement"), autoIncrement ? BoolExpression.TRUE : BoolExpression.FALSE);
+		addPassToSuperConstructor( autoIncrement ? BoolExpression.TRUE : BoolExpression.FALSE);
 		
 		for(Column col:cols) {
 			 
-			if (!col.isPartOfPk() && !col.hasOneRelation()) {
-				_assign(parent.getAttrByName(col.getCamelCaseName()+ "Modified"), BoolExpression.FALSE);
+			if (!col.isPartOfPk() && !col.hasOneRelation() && !col.isFileImportEnabled()) {
 				
 				Expression defValExpr =  EntityCls.getDatabaseMapper().getColumnDefaultValueExpression(col);
 				if (defValExpr != null) {
@@ -46,6 +38,8 @@ public class EntityConstructor extends Constructor{
 				} else {
 					_assign(parent.getAttrByName(col.getCamelCaseName()), EntityCls.getDatabaseMapper().getGenericDefaultValueExpression(col)); 
 				}
+				
+				_assign(parent.getAttrByName(col.getCamelCaseName()+ "Modified"), BoolExpression.FALSE);
 			}
 			if(col.isRawValueEnabled()) {
 				Attr a = parent.getAttrByName("insertExpression"+col.getUc1stCamelCaseName());
@@ -54,10 +48,10 @@ public class EntityConstructor extends Constructor{
 			}
 		    
 		}
-		EntityCls bean = (EntityCls) parent;
-		for(OneRelation r:bean.getOneRelations()) {
+		EntityCls entity = (EntityCls) parent;
+		for(OneRelation r:entity.getOneRelations()) {
 			if (!r.isPartOfPk()) {
-				_assign(parent.getAttrByName(bean.getOneRelationAttr(r).getName()+ "Modified"), BoolExpression.FALSE);
+				_assign(parent.getAttrByName(entity.getOneRelationAttr(r).getName()+ "Modified"), BoolExpression.FALSE);
 			}
 		}
 	}

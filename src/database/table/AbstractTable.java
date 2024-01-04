@@ -14,6 +14,7 @@ public abstract class AbstractTable {
 	protected PrimaryKey primaryKey;
 	protected Database db;
 	protected boolean overrideColumnsFromConfig;
+	protected boolean enableGetValueByName = false;
 	//protected ArrayList<String> overrideColumnNames;
 	
 	public void setOverrideColumnsFromConfig(boolean overrideColumnsFromConfig) {
@@ -107,4 +108,31 @@ public abstract class AbstractTable {
 		return false;
 	}
 	
+
+
+	public boolean hasColumnWithFileStreamEnabled() {
+		for(Column c : allColumns) {
+			if(c.isFileImportEnabled()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void setEnableGetValueByName(boolean enableGetValueByName) {
+		this.enableGetValueByName = enableGetValueByName;
+	}
+	
+	public boolean isEnableGetValueByName() {
+		return enableGetValueByName;
+	}
+
+	public boolean hasColumn(String colName) {
+		for(Column c:allColumns) {
+			if (c.getName().equals(colName)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
