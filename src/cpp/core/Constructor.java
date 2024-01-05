@@ -30,7 +30,6 @@ public abstract class Constructor extends Method {
 			} else {
 				instructions.add(i);
 			}
-			this.addInstr((AssignInstruction)i);
 		} else {
 			super.addInstr(i);	
 		}
