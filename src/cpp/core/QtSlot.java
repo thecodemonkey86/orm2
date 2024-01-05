@@ -19,7 +19,7 @@ public class QtSlot extends Method{
 	}
 
 	@Override
-	public boolean addInstr(Instruction e) {
+	public void addInstr(Instruction e) {
 		throw new UnsupportedOperationException();
 	}
 	

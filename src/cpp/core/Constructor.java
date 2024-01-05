@@ -7,6 +7,7 @@ import cpp.core.expression.AccessExpression;
 import cpp.core.expression.Expression;
 import cpp.core.expression.ThisExpression;
 import cpp.core.instruction.AssignInstruction;
+import cpp.core.instruction.Instruction;
 
 public abstract class Constructor extends Method {
 	
@@ -29,10 +30,13 @@ public abstract class Constructor extends Method {
 			} else {
 				instructions.add(i);
 			}
+			this.addInstr((AssignInstruction)i);
 		} else {
-			instructions.add(i);
+			super.addInstr(i);	
 		}
+		
 	}
+ 
 	
 	@Override
 	public void _assign(Expression var, Expression value) {

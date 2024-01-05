@@ -28,8 +28,11 @@ public class InstructionBlock extends Instruction implements Iterable<Instructio
 		instructions = new ArrayList<>();
 	}
 
-	public boolean addInstr(Instruction e) {
-		return instructions.add(e);
+	public void addInstr(Instruction i) {
+		if(!instructions.add(i)) {
+			throw new RuntimeException();
+		}
+			
 	}
 	
 	public ForeachLoop _foreach(Var var, Expression collection) {
