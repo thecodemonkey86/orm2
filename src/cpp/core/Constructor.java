@@ -20,9 +20,15 @@ public abstract class Constructor extends Method {
 		
 	}
 	
-	public void addInstr(AssignInstruction i) {
-		if((i.getAssign() instanceof AccessExpression && ((AccessExpression)i.getAssign()).getAccess() instanceof ThisExpression ) || i.getAssign() instanceof Attr) {
-			initializeInstructions.add(i);
+	@Override
+	public void addInstr(Instruction i) {
+		if(i instanceof AssignInstruction) {
+			AssignInstruction a=(AssignInstruction) i;
+			if((a.getAssign() instanceof AccessExpression && ((AccessExpression) a.getAssign()).getAccess() instanceof ThisExpression ) || a.getAssign() instanceof Attr) {
+				initializeInstructions.add(a);
+			} else {
+				instructions.add(i);
+			}
 		} else {
 			instructions.add(i);
 		}
