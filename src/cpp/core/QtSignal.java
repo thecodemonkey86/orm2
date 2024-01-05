@@ -19,7 +19,7 @@ public class QtSignal extends Method{
 	}
 
 	@Override
-	public boolean addInstr(Instruction e) {
+	public void addInstr(Instruction e) {
 		throw new UnsupportedOperationException();
 	}
 	
