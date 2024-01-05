@@ -15,12 +15,12 @@ import php.lib.ClsBaseEntityQuery;
 import php.lib.ClsSqlQuery;
 
 public class MethodEntityQueryWhereEquals extends Method {
-	EntityCls bean;
+	EntityCls entity;
 	Param pValue ;
 	Column c;
-	public MethodEntityQueryWhereEquals(ClsEntityQuery query, EntityCls bean,Column c) {
+	public MethodEntityQueryWhereEquals(ClsEntityQuery query, EntityCls entity,Column c) {
 		super(Public, query, getMethodName(c));
-		this.bean=bean;
+		this.entity=entity;
 		Type t = EntityCls.getTypeMapper().columnToType(c);
 		
 		if(t == null) {

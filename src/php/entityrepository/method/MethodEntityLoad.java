@@ -36,17 +36,17 @@ import database.relation.PrimaryKey;
 public class MethodEntityLoad extends Method {
 
 	protected PrimaryKey primaryKey;
-	protected EntityCls bean;
+	protected EntityCls entity;
 
-	public MethodEntityLoad(EntityCls bean) {
-		super(Public, Types.Void, "load"+bean.getName());
+	public MethodEntityLoad(EntityCls entity) {
+		super(Public, Types.Void, "load"+entity.getName());
 
-		this.primaryKey = bean.getTbl().getPrimaryKey();
+		this.primaryKey = entity.getTbl().getPrimaryKey();
 
 		setStatic(true);
 
-		addParam(new Param(bean, "entity"));
-		this.bean = bean;
+		addParam(new Param(entity, "entity"));
+		this.entity = entity;
 	}
 
 	@Override
@@ -62,9 +62,9 @@ public class MethodEntityLoad extends Method {
 	@Override
 	public void addImplementation() {
 		Param pBean = getParam("entity");
-		List<OneRelation> oneRelations = bean.getOneRelations();
-		List<OneToManyRelation> oneToManyRelations = bean.getOneToManyRelations();
-		List<ManyRelation> manyToManyRelations = bean.getManyToManyRelations();
+		List<OneRelation> oneRelations = entity.getOneRelations();
+		List<OneToManyRelation> oneToManyRelations = entity.getOneToManyRelations();
+		List<ManyRelation> manyToManyRelations = entity.getManyToManyRelations();
 		
 		if(!oneRelations.isEmpty() || !oneToManyRelations.isEmpty() || !manyToManyRelations.isEmpty()) {
 			ClsEntityRepository parent = (ClsEntityRepository) this.parent;
@@ -80,8 +80,8 @@ public class MethodEntityLoad extends Method {
 			allRelations.addAll(oneToManyRelations);
 			allRelations.addAll(manyToManyRelations);
 			
-			Expression exprSqlQuery = sqlQuery.callMethod("select",  parent.callStaticMethod(ClsEntityRepository.getMethodNameGetAllSelectFields(bean)) )
-										.callMethod("from", Types.EntityRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(bean),new PhpStringLiteral("e1")));
+			Expression exprSqlQuery = sqlQuery.callMethod("select",  parent.callStaticMethod(ClsEntityRepository.getMethodNameGetAllSelectFields(entity)) )
+										.callMethod("from", Types.EntityRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(entity),new PhpStringLiteral("e1")));
 			
 			for(OneRelation r:oneRelations) {
 				ArrayList<String> joinConditions=new ArrayList<>();
@@ -127,8 +127,8 @@ public class MethodEntityLoad extends Method {
 			}
 
 			
-			for(Column col:bean.getTbl().getPrimaryKey().getColumns()) {
-				exprSqlQuery = exprSqlQuery.callMethod("where", new PhpStringLiteral("e1."+ col.getEscapedName()+"=?"),pBean.callAttrGetter(bean.getAttrByName(col.getCamelCaseName())));
+			for(Column col:entity.getTbl().getPrimaryKey().getColumns()) {
+				exprSqlQuery = exprSqlQuery.callMethod("where", new PhpStringLiteral("e1."+ col.getEscapedName()+"=?"),pBean.callAttrGetter(entity.getAttrByName(col.getCamelCaseName())));
 						
 			}
 			for(AbstractRelation r:allRelations) {

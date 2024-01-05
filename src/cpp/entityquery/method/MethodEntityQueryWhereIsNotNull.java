@@ -9,12 +9,12 @@ import cpp.lib.ClsAbstractBeanQuery;
 import database.column.Column;
 
 public class MethodEntityQueryWhereIsNotNull extends Method{
-	EntityCls bean;
+	EntityCls entity;
 	EntityQueryType beanQueryType;
 	Column c;
-	public MethodEntityQueryWhereIsNotNull(Cls query,EntityQueryType beanQueryType, EntityCls bean,Column c) {
+	public MethodEntityQueryWhereIsNotNull(Cls query,EntityQueryType beanQueryType, EntityCls entity,Column c) {
 		super(Public, query.toRef(), "where"+c.getUc1stCamelCaseName()+"IsNotNull");
-		this.bean=bean;
+		this.entity=entity;
 		this.c = c;
 		this.beanQueryType = beanQueryType;
 	}

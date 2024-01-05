@@ -14,17 +14,17 @@ import sunjava.entity.method.FetchListHelperConstructor;
 
 public class FetchListHelperClass extends JavaCls{
 
-	public FetchListHelperClass(EntityCls bean) {
-		super(bean.getName()+"FetchListHelper",bean.getPackage()+".helper");
-		Attr e1 = new Attr(bean, "e1");
+	public FetchListHelperClass(EntityCls entity) {
+		super(entity.getName()+"FetchListHelper",entity.getPackage()+".helper");
+		Attr e1 = new Attr(entity, "e1");
 		addAttr(e1);
 
 		addMethod(new MethodAttributeSetter(e1));
 		addMethod(new MethodAttributeGetter(e1));
 		List<AbstractRelation> manyRelations = new ArrayList<>();
-		manyRelations.addAll(bean.getOneToManyRelations());
-		manyRelations.addAll(bean.getManyToManyRelations());
-		addConstructor(new FetchListHelperConstructor(bean));
+		manyRelations.addAll(entity.getOneToManyRelations());
+		manyRelations.addAll(entity.getManyToManyRelations());
+		addConstructor(new FetchListHelperConstructor(entity));
 		for(AbstractRelation r:manyRelations) {
 			Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
 			Attr attrSet = new Attr(Types.hashset(beanPk), r.getAlias()+"Set");

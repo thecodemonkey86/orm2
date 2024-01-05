@@ -7,10 +7,10 @@ import java.util.Map;
 import database.table.Table;
 
 public class JsonEntities {
-private static Map<String,JsonEntity> beans;
+private static Map<String,JsonEntity> entities;
 	
 	static {
-		beans = new HashMap<>();
+		entities = new HashMap<>();
 	}
 	
 	public static JsonEntity get(Table tbl) {
@@ -18,17 +18,17 @@ private static Map<String,JsonEntity> beans;
 	}
 	
 	public static JsonEntity get(String name) {
-		if (!beans.containsKey(name)) {
+		if (!entities.containsKey(name)) {
 			throw new RuntimeException("Cls not found "+name); 
 		}
-		return beans.get(name);
+		return entities.get(name);
 	}
 	
 	public static void add(JsonEntity cls) {
-		beans.put(cls.getName(), cls);
+		entities.put(cls.getName(), cls);
 	}
 	
 	public static Collection<JsonEntity> getAllEntities() {
-		return beans.values();
+		return entities.values();
 	}
 }

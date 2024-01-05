@@ -7,12 +7,12 @@ import cpp.entity.EntityCls;
 
 public class MethodToStringDelete extends Method{
 
-	EntityCls bean;
+	EntityCls entity;
 	
-	public MethodToStringDelete(EntityCls bean) {
+	public MethodToStringDelete(EntityCls entity) {
 		super(Method.Public, Types.QString, "toString");
 		setConstQualifier(true);
-		this.bean = bean;
+		this.entity = entity;
 	}
 
 	@Override

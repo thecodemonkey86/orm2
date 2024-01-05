@@ -10,12 +10,12 @@ import cpp.entityrepository.method.MethodFetchList;
 import cpp.util.ClsDbPool;
 
 public class MethodEntityQueryFetch extends Method{
-	protected EntityCls bean;
+	protected EntityCls entity;
 	protected Param pSqlCon;
 	
-	public MethodEntityQueryFetch(EntityCls bean) {
-		super(Public, Types.qlist(bean.toSharedPtr()), "query");
-		this.bean=bean;
+	public MethodEntityQueryFetch(EntityCls entity) {
+		super(Public, Types.qlist(entity.toSharedPtr()), "query");
+		this.entity=entity;
 		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 	}
 
@@ -27,9 +27,9 @@ public class MethodEntityQueryFetch extends Method{
 //				return "qDebug()<<qu->toString();";
 //			}
 //		});
-		_return(bean.hasRelations() 
-				? new InlineIfExpression(_this().accessAttr(ClsEntityQuerySelect.lazyLoading), Types.EntityRepository.callStaticMethod(MethodFetchList.getMethodName(bean,true),  _this().callMethod(MethodExecQuery.getMethodName(),pSqlCon)),Types.EntityRepository.callStaticMethod(MethodFetchList.getMethodName(bean,false),  _this().callMethod(MethodExecQuery.getMethodName(),pSqlCon)))
-				: Types.EntityRepository.callStaticMethod(MethodFetchList.getMethodName(bean,false),  _this().callMethod(MethodExecQuery.getMethodName(),pSqlCon)));
+		_return(entity.hasRelations() 
+				? new InlineIfExpression(_this().accessAttr(ClsEntityQuerySelect.lazyLoading), Types.EntityRepository.callStaticMethod(MethodFetchList.getMethodName(entity,true),  _this().callMethod(MethodExecQuery.getMethodName(),pSqlCon)),Types.EntityRepository.callStaticMethod(MethodFetchList.getMethodName(entity,false),  _this().callMethod(MethodExecQuery.getMethodName(),pSqlCon)))
+				: Types.EntityRepository.callStaticMethod(MethodFetchList.getMethodName(entity,false),  _this().callMethod(MethodExecQuery.getMethodName(),pSqlCon)));
 	}
 	@Override
 	public boolean includeIfEmpty() {

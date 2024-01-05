@@ -41,8 +41,8 @@ public class Types extends CoreTypes{
 	public static PhpArray array(Type keyType, Type valueType) {
 		return new PhpArray(keyType, valueType) ;
 	}
-	public static ClsEntityQuery beanQuery(EntityCls bean) {
-		return new ClsEntityQuery(bean);
+	public static ClsEntityQuery beanQuery(EntityCls entity) {
+		return new ClsEntityQuery(entity);
 	}
 
 

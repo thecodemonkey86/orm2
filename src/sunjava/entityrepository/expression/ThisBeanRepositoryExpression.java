@@ -13,13 +13,13 @@ public class ThisBeanRepositoryExpression extends ThisExpression{
 		super(parent);
 	}
 
-	public Expression callGetByRecordMethod(EntityCls bean, Var record, JavaString alias) {
-		return bean.callStaticMethod("getByRecord", accessAttr("sqlCon"), record, alias);
+	public Expression callGetByRecordMethod(EntityCls entity, Var record, JavaString alias) {
+		return entity.callStaticMethod("getByRecord", accessAttr("sqlCon"), record, alias);
 	}
 	
-//	public MethodCall callGetByRecordMethod(BeanCls bean, Expression...args) {
+//	public MethodCall callGetByRecordMethod(BeanCls entity, Expression...args) {
 //		try{
-//			return new MethodCall(this, ((Cls)getType()).getMethod("get"+bean.getName()+"ByRecord"),args);
+//			return new MethodCall(this, ((Cls)getType()).getMethod("get"+entity.getName()+"ByRecord"),args);
 //		} catch (Exception e) {
 //			System.out.println(e);
 //			throw e;

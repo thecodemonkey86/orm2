@@ -46,10 +46,10 @@ public class EntityConstructor extends Constructor{
 					_assign(a, a.getInitValue());
 			}
 		}
-		EntityCls bean = (EntityCls) parent;
-		for(OneRelation r:bean.getOneRelations()) {
+		EntityCls entity = (EntityCls) parent;
+		for(OneRelation r:entity.getOneRelations()) {
 			if (!r.isPartOfPk()) {
-				_assign(parent.getAttrByName(bean.getOneRelationAttr(r).getName()+ "Modified"), BoolExpression.FALSE);
+				_assign(parent.getAttrByName(entity.getOneRelationAttr(r).getName()+ "Modified"), BoolExpression.FALSE);
 			}
 		}
 	}

@@ -31,11 +31,11 @@ import util.StringUtil;
 import util.pg.PgCppUtil;
 
 public class MethodEntityQueryFetchOne extends Method{
-	EntityCls bean;
+	EntityCls entity;
 	
-	public MethodEntityQueryFetchOne(EntityCls bean) {
-		super(Public, bean.toNullable(), getMethodName());
-		this.bean=bean;
+	public MethodEntityQueryFetchOne(EntityCls entity) {
+		super(Public, entity.toNullable(), getMethodName());
+		this.entity=entity;
 	}
 
 	public static String getMethodName() {
@@ -50,9 +50,9 @@ public class MethodEntityQueryFetchOne extends Method{
 	@Override
 	public void addImplementation() {
 
-		List<OneRelation> oneRelations = bean.getOneRelations();
-		List<OneToManyRelation> oneToManyRelations = bean.getOneToManyRelations();
-		List<ManyRelation> manyToManyRelations = bean.getManyToManyRelations();
+		List<OneRelation> oneRelations = entity.getOneRelations();
+		List<OneToManyRelation> oneToManyRelations = entity.getOneToManyRelations();
+		List<ManyRelation> manyToManyRelations = entity.getManyToManyRelations();
 		
 		Var e1 = _declare(returnType, "e1", Expressions.Null);
 		Var res =_declare(EntityCls.getTypeMapper().getDatabaseResultType() , "res",_this().accessAttr("sqlQuery").callMethod(ClsSqlQuery.query) );
@@ -63,7 +63,7 @@ public class MethodEntityQueryFetchOne extends Method{
 				
 
 					.setIfInstr(
-							e1.assign(Types.EntityRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(bean),  row, new PhpStringLiteral("e1")))
+							e1.assign(Types.EntityRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(entity),  row, new PhpStringLiteral("e1")))
 							,
 							e1.callAttrSetterMethodInstr("loaded", BoolExpression.TRUE)//_assignInstruction(e1.accessAttr("loaded"), BoolExpression.TRUE)
 							)
@@ -124,7 +124,7 @@ public class MethodEntityQueryFetchOne extends Method{
 		
 		ArrayList<Expression> condExpressions = new ArrayList<>();
 		condExpressions.add(ifRowNotNull.getCondition());
-		for(Column colPk :  bean.getTbl().getPrimaryKey()) {
+		for(Column colPk :  entity.getTbl().getPrimaryKey()) {
 			condExpressions.add(row.arrayIndex(new PhpStringLiteral(EntityCls.getTypeMapper().filterFetchAssocArrayKey("e1__" + colPk.getName()))).cast(EntityCls.getTypeMapper().columnToType(colPk))._equals(e1.callAttrGetter(colPk.getCamelCaseName())));
 		}
 		

@@ -27,21 +27,21 @@ public class MethodGetByRecordStatic extends Method {
 	
 	@Override
 	public void addImplementation() {
-	/*	Var bean = _declare(parent, "entity", getParam("sqlCon"));
-//		Var bean = _declareNewRaw(returnType, "entity", parent.getAttrByName("sqlCon"));
+	/*	Var entity = _declare(parent, "entity", getParam("sqlCon"));
+//		Var entity = _declareNewRaw(returnType, "entity", parent.getAttrByName("sqlCon"));
 		for(Column col:columns) {
 			try{
 //				if (!col.hasOneRelation()) {
-					addInstr(bean.assignAttr(col.getCamelCaseName(),getParam("record").callMethod("value", new JavaStringPlusOperatorExpression(getParam("alias"), JavaString.fromStringConstant("__"+ col.getName()))).callMethod(BeanCls.getTypeMapper().getConvertMethod(col.getDbType()))));
+					addInstr(entity.assignAttr(col.getCamelCaseName(),getParam("record").callMethod("value", new JavaStringPlusOperatorExpression(getParam("alias"), JavaString.fromStringConstant("__"+ col.getName()))).callMethod(BeanCls.getTypeMapper().getConvertMethod(col.getDbType()))));
 //				}
-//					_callMethodInstr(bean, "set"+col.getUc1stCamelCaseName(), getParam("record").callMethod("value", new JavaStringPlusOperatorExpression(getParam("alias"), JavaString.fromStringConstant("__"+ col.getName()))).callMethod(BeanCls.getTypeMapper().getConvertMethod(col.getDbType())));
+//					_callMethodInstr(entity, "set"+col.getUc1stCamelCaseName(), getParam("record").callMethod("value", new JavaStringPlusOperatorExpression(getParam("alias"), JavaString.fromStringConstant("__"+ col.getName()))).callMethod(BeanCls.getTypeMapper().getConvertMethod(col.getDbType())));
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println(parent);
 			}
 		}
-		addInstr(bean.assignAttr("insert",BoolExpression.FALSE));
-		_return(bean);*/
+		addInstr(entity.assignAttr("insert",BoolExpression.FALSE));
+		_return(entity);*/
 	}
 
 }

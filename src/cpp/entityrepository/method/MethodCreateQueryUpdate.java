@@ -7,19 +7,19 @@ import cpp.core.expression.CreateObjectExpression;
 import cpp.entity.EntityCls;
 
 public class MethodCreateQueryUpdate extends Method {
-	EntityCls bean;
+	EntityCls entity;
 	
 	public MethodCreateQueryUpdate(EntityCls cls) {
 		//super(Public, new ClsBeanQuery(cls).toUniquePointer(), "createQuery"+cls.getName());
 		super(Public, Types.beanQueryUpdate(cls),getMethodName(cls)
 				);
 		setStatic(true);
-		this.bean=cls;
+		this.entity=cls;
 	}
 
 	@Override
 	public void addImplementation() {
-		_return(new CreateObjectExpression(returnType,QString.fromStringConstant(bean.getTbl().getEscapedName()) ));
+		_return(new CreateObjectExpression(returnType,QString.fromStringConstant(entity.getTbl().getEscapedName()) ));
 	}
 
 	public static String getMethodName(EntityCls cls) {

@@ -15,13 +15,13 @@ import cpp.lib.ClsQList;
 import database.column.Column;
 
 public class MethodUpdateSet extends Method{
-	EntityCls bean;
+	EntityCls entity;
 	Column col;
 	Param pValue;
 	
-	public MethodUpdateSet(EntityCls bean,Cls parentType,Column col) {
+	public MethodUpdateSet(EntityCls entity,Cls parentType,Column col) {
 		super(Public, parentType.toRef(), "set"+col.getUc1stCamelCaseName());
-		this.bean = bean;
+		this.entity = entity;
 		this.col = col;
 		Type t = EntityCls.getDatabaseMapper().columnToType(col);
 		pValue = addParam(new Param(t.isPrimitiveType() ? t : t.toConstRef(), "value"));

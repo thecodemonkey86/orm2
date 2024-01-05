@@ -131,7 +131,7 @@ public class MethodGetById extends Method {
 		IfBlock ifQSqlQueryNext =
 				_if(resultSet.callMethod(ClsResultSet.METHOD_NAME_NEXT))
 				
-//		for(Column col:bean.getTbl().getPrimaryKey().getColumns()) {		
+//		for(Column col:entity.getTbl().getPrimaryKey().getColumns()) {		
 //		OrmUtil.addAssignValueFromResultSetInstructions(resultSet, ifQSqlQueryNext.getIfInstr(), e1, col, "e1");
 //		}
 					.setIfInstr(

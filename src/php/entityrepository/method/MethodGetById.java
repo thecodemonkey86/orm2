@@ -38,7 +38,7 @@ import util.pg.PgCppUtil;
 
 public class MethodGetById extends Method {
 
-	protected EntityCls bean;
+	protected EntityCls entity;
 	Param pTransactionHandle ;
 	
 	public MethodGetById(EntityCls cls) {
@@ -54,7 +54,7 @@ public class MethodGetById extends Method {
 		
 		}
 		setStatic(true);
-		this.bean=cls;
+		this.entity=cls;
 	}
 
 	public static String getMethodName(EntityCls cls) {
@@ -76,9 +76,9 @@ public class MethodGetById extends Method {
 		//		StringBuilder sbSql = new StringBuilder(CodeUtil.sp("select");
 		ClsEntityRepository parent = (ClsEntityRepository) this.parent;
 		
-		List<OneRelation> oneRelations = bean.getOneRelations();
-		List<OneToManyRelation> oneToManyRelations = bean.getOneToManyRelations();
-		List<ManyRelation> manyToManyRelations = bean.getManyToManyRelations();
+		List<OneRelation> oneRelations = entity.getOneRelations();
+		List<OneToManyRelation> oneToManyRelations = entity.getOneToManyRelations();
+		List<ManyRelation> manyToManyRelations = entity.getManyToManyRelations();
 		
 		Attr aSqlCon = parent.getAttrByName("sqlCon");
 		//Method mBuildQuery = aSqlCon.getClassType().getMethod("buildQuery");
@@ -90,8 +90,8 @@ public class MethodGetById extends Method {
 		allRelations.addAll(oneToManyRelations);
 		allRelations.addAll(manyToManyRelations);
 		
-		Expression exprSqlQuery = sqlQuery.callMethod("select",  parent.callStaticMethod(ClsEntityRepository.getMethodNameGetAllSelectFields(bean),e1Alias) )
-									.callMethod("from", Types.EntityRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(bean),e1Alias));
+		Expression exprSqlQuery = sqlQuery.callMethod("select",  parent.callStaticMethod(ClsEntityRepository.getMethodNameGetAllSelectFields(entity),e1Alias) )
+									.callMethod("from", Types.EntityRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(entity),e1Alias));
 		
 		for(OneRelation r:oneRelations) {
 			ArrayList<String> joinConditions=new ArrayList<>();
@@ -127,7 +127,7 @@ public class MethodGetById extends Method {
 		}
 
 		
-		for(Column col:bean.getTbl().getPrimaryKey().getColumns()) {
+		for(Column col:entity.getTbl().getPrimaryKey().getColumns()) {
 			exprSqlQuery = exprSqlQuery.callMethod("where", new PhpStringLiteral("e1."+ col.getEscapedName()+"=?"),getParam(col.getCamelCaseName()));
 					
 		}
@@ -147,7 +147,7 @@ public class MethodGetById extends Method {
 				
 
 					.setIfInstr(
-							e1.assign(Types.EntityRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(bean),  row, new PhpStringLiteral("e1")))
+							e1.assign(Types.EntityRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(entity),  row, new PhpStringLiteral("e1")))
 							,
 							e1.callAttrSetterMethodInstr("loaded", BoolExpression.TRUE)//_assignInstruction(e1.accessAttr("loaded"), BoolExpression.TRUE)
 							)

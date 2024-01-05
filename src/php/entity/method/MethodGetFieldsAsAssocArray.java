@@ -22,10 +22,10 @@ public class MethodGetFieldsAsAssocArray extends Method {
 	Param pDateTimeFormat;
 	Param pSpecificColumns;
 	
-	public MethodGetFieldsAsAssocArray(EntityCls bean) {
+	public MethodGetFieldsAsAssocArray(EntityCls entity) {
 		super(Public, Types.array(Types.String), METHOD_NAME);
 		pSpecificColumns = addParam(new Param(Types.array(Types.String), "columns",Expressions.Null));
-		for(Column col : bean.getTbl().getAllColumns()) {
+		for(Column col : entity.getTbl().getAllColumns()) {
 			if(!col.isRelationDestColumn() || col.isPartOfPk()) {
 				if(EntityCls.getTypeMapper().columnToType(col).equals(Types.DateTime)) {
 					pDateTimeFormat = addParam(new Param(Types.String, "dateTimeFormat",new PhpStringLiteral("Y-m-d H:i:s")));
@@ -41,10 +41,10 @@ public class MethodGetFieldsAsAssocArray extends Method {
 
 	@Override
 	public void addImplementation() {
-		EntityCls bean = (EntityCls) parent;
+		EntityCls entity = (EntityCls) parent;
 		IfBlock ifAllColumns = _if(pSpecificColumns.isNull());
 		AssocArrayInitExpression expr = new AssocArrayInitExpression();
-		for(Column col : bean.getTbl().getAllColumns()) {
+		for(Column col : entity.getTbl().getAllColumns()) {
 			if(!col.isRelationDestColumn() || col.isPartOfPk()) {
 				Expression e = _this().callMethod("get"+col.getUc1stCamelCaseName());
 				expr.addElement(new Pair<String, Expression>(col.getName(),e.getType().equals(Types.DateTime) ? EntityCls.getTypeMapper().getConvertFieldToStringExpression(e, col,pDateTimeFormat,pDateFormat):e) );
@@ -55,7 +55,7 @@ public class MethodGetFieldsAsAssocArray extends Method {
 		/*Var result = ifAllColumns.elseBlock()._declare(Types.array(Types.String), "result", new ArrayInitExpression());
 		ForeachLoop foreachCols = ifAllColumns.elseBlock()._foreach(new Var(Types.String, "column"), pSpecificColumns);
 		SwitchBlock switchBlock = foreachCols._switch(foreachCols.getVar());
-		for(Column col : bean.getTbl().getAllColumns()) {
+		for(Column col : entity.getTbl().getAllColumns()) {
 			if(!col.hasRelation()) {
 					MethodCall getter = _this().callMethod("get"+col.getUc1stCamelCaseName());
 					Expression convertExpr = BeanCls.getTypeMapper().getConvertFieldToStringExpression(getter, col,pDateTimeFormat,pDateFormat);

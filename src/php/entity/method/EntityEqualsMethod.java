@@ -25,19 +25,19 @@ public class EntityEqualsMethod extends Method {
 	@Override
 	public void addImplementation() {
 		EntityCls parent=(EntityCls) this.parent;
-		Param bean = getParam("entity");
-		IfBlock ifInstanceOf = _if(bean._instanceof(parent));
+		Param entity = getParam("entity");
+		IfBlock ifInstanceOf = _if(entity._instanceof(parent));
 		
 		if (!pk.isMultiColumn()) {
 			ifInstanceOf.thenBlock()._return(parent.accessThisAttrByColumn(
-				  pk.getFirstColumn())._equals( EntityCls.getPkExpression(bean,pk.getFirstColumn()))
+				  pk.getFirstColumn())._equals( EntityCls.getPkExpression(entity,pk.getFirstColumn()))
 			);	
 		} else {
 			ArrayList<Expression> expr=new ArrayList<>();
 			for(Column colPk:pk.getColumns()) {
 				expr.add(parent.accessThisAttrByColumn(colPk)._equals(  
 					
-					EntityCls.getPkExpression(bean,colPk)));
+					EntityCls.getPkExpression(entity,colPk)));
 			}
 			ifInstanceOf.thenBlock()._return(Expressions.and(expr));
 		}

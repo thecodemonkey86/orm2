@@ -20,8 +20,8 @@ public class MethodOneRelationAttrSetter extends MethodAttributeSetter {
 
 	protected boolean internal; 
 	
-	public MethodOneRelationAttrSetter(JsonEntity bean, OneRelation r, boolean internal) {
-		super(bean.getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)));
+	public MethodOneRelationAttrSetter(JsonEntity entity, OneRelation r, boolean internal) {
+		super(entity.getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)));
 		this.internal = internal;
 		if (internal ) {
 			this.name = this.name + "Internal";

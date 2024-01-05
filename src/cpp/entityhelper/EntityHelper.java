@@ -9,12 +9,12 @@ import cpp.entityhelper.method.MethodFillFromForm;
 
 public class EntityHelper extends Cls{
 
-	public EntityHelper(Collection<EntityCls> beans) {
+	public EntityHelper(Collection<EntityCls> entities) {
 		super("EntityHelper");
-		for(EntityCls bean:beans) {
-			addMethod(new MethodFillFromForm(bean));
-			addMethod(new MethodFillFromForm(bean, true));
-			addIncludeHeader(bean.getHeaderInclude());
+		for(EntityCls entity:entities) {
+			addMethod(new MethodFillFromForm(entity));
+			addMethod(new MethodFillFromForm(entity, true));
+			addIncludeHeader(entity.getHeaderInclude());
 		}
 		addIncludeHeader("form/form");
 		addIncludeLib("memory");

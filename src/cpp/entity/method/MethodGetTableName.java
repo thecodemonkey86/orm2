@@ -15,8 +15,8 @@ public class MethodGetTableName extends Method{
 
 	@Override
 	public void addImplementation() {
-		EntityCls bean=(EntityCls) parent;
-		_return(QString.fromStringConstant(bean.getTbl().getEscapedName()));
+		EntityCls entity=(EntityCls) parent;
+		_return(QString.fromStringConstant(entity.getTbl().getEscapedName()));
 	}
 
 	public static String getMethodName() {

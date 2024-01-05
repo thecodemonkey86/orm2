@@ -43,46 +43,46 @@ public class ClsEntityRepository extends JavaCls{
 		addImport("sql.orm.BeanQuery");
 	}*/
 	
-	public void addDeclarations(Collection<EntityCls> beans) {
+	public void addDeclarations(Collection<EntityCls> entities) {
 		addConstructor(new ConstructorEntityRepository());
 //		addMethod(new MethodInit());
-		for(EntityCls bean:beans) {
-			addImport(bean.getPackage()+"."+bean.getName());
-//			addAttr(new Attr(new ClsQHash(bean.getPkType(), bean), "loadedBeans"+bean.getName()));
-			addMethod(new MethodGetById(bean));
-			addMethod(new MethodGetFromResultSet(bean));
-//			addMethod(new MethodFetchList(bean.getOneRelations(), bean.getOneToManyRelations(), bean, bean.getTbl().getPrimaryKey()));
-//			addMethod(new MethodFetchListStatic(bean));
-//			addMethod(new MethodFetchOne(bean.getOneRelations(),bean.getOneToManyRelations(), bean, null));
-//			addMethod(new MethodFetchOneStatic(bean));
-//			beanQueryClasses.add(new ClsBeanQuery(bean));
-//			addMethod(new MethodLoadCollection(new Param(Types.qset(bean), "collection")));
-			addMethod(new MethodLoadCollection(new Param(Types.linkedHashSet(bean),  "collection"), bean));
-			addMethod(new MethodCreateQuery(bean));
-			addMethod(new MethodEntityLoad(bean));
-			addMethod(new MethodEntitySave(bean));
-			addMethod(new MethodGetSelectFields(bean));
-			addMethod(new MethodGetAllSelectFields(bean));
-			addMethod(new MethodGetTableNameAlias(bean));
-			addMethod(new MethodGetTableName(bean));
+		for(EntityCls entity:entities) {
+			addImport(entity.getPackage()+"."+entity.getName());
+//			addAttr(new Attr(new ClsQHash(entity.getPkType(), entity), "loadedBeans"+entity.getName()));
+			addMethod(new MethodGetById(entity));
+			addMethod(new MethodGetFromResultSet(entity));
+//			addMethod(new MethodFetchList(entity.getOneRelations(), entity.getOneToManyRelations(), entity, entity.getTbl().getPrimaryKey()));
+//			addMethod(new MethodFetchListStatic(entity));
+//			addMethod(new MethodFetchOne(entity.getOneRelations(),entity.getOneToManyRelations(), entity, null));
+//			addMethod(new MethodFetchOneStatic(entity));
+//			beanQueryClasses.add(new ClsBeanQuery(entity));
+//			addMethod(new MethodLoadCollection(new Param(Types.qset(entity), "collection")));
+			addMethod(new MethodLoadCollection(new Param(Types.linkedHashSet(entity),  "collection"), entity));
+			addMethod(new MethodCreateQuery(entity));
+			addMethod(new MethodEntityLoad(entity));
+			addMethod(new MethodEntitySave(entity));
+			addMethod(new MethodGetSelectFields(entity));
+			addMethod(new MethodGetAllSelectFields(entity));
+			addMethod(new MethodGetTableNameAlias(entity));
+			addMethod(new MethodGetTableName(entity));
 		}
 		
 //		addImports();
 	}
 
-	public static String getMethodNameGetTableName(EntityCls bean) {
+	public static String getMethodNameGetTableName(EntityCls entity) {
 		// TODO Auto-generated method stub
-		return "getTableName"+bean.getName();
+		return "getTableName"+entity.getName();
 	}
 
-	public static String getMethodNameGetSelectFields(EntityCls bean) {
+	public static String getMethodNameGetSelectFields(EntityCls entity) {
 		// TODO Auto-generated method stub
-		return "getSelectFields"+bean.getName();
+		return "getSelectFields"+entity.getName();
 	}
 	
-	public static String getMethodNameGetAllSelectFields(EntityCls bean) {
+	public static String getMethodNameGetAllSelectFields(EntityCls entity) {
 		// TODO Auto-generated method stub
-		return "getAllSelectFields"+bean.getName();
+		return "getAllSelectFields"+entity.getName();
 	}
 	
 //	@Override

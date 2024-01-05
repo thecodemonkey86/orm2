@@ -15,8 +15,8 @@ public class MethodGetTableNameInternal extends Method{
 	@Override
 	public void addImplementation() {
 		//_return(QString.fromExpression(aTableName));
-		EntityCls bean=(EntityCls) parent;
-		_return(QString.fromStringConstant(bean.getTbl().getEscapedName()));
+		EntityCls entity=(EntityCls) parent;
+		_return(QString.fromStringConstant(entity.getTbl().getEscapedName()));
 	}
 
 }

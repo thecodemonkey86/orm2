@@ -32,41 +32,41 @@ import sunjava.lib.ClsSqlQuery;
 import sunjava.orm.OrmUtil;
 
 public class MethodBeanQueryFetch extends Method{
-	EntityCls bean;
+	EntityCls entity;
 	
-	public MethodBeanQueryFetch(EntityCls bean) {
-		super(Public, Types.arraylist(bean), "fetch");
-		this.bean=bean;
+	public MethodBeanQueryFetch(EntityCls entity) {
+		super(Public, Types.arraylist(entity), "fetch");
+		this.entity=entity;
 	}
 
 	@Override
 	public void addImplementation() {
 		addThrowsException(Types.SqlException);
 //		Expression aSqlCon = _this().accessAttr("sqlCon");
-//		_return(Types.BeanRepository.callStaticMethod(MethodFetchListStatic.getMethodName(bean), aSqlCon, _this().callMethod("execQuery")));
+//		_return(Types.BeanRepository.callStaticMethod(MethodFetchListStatic.getMethodName(entity), aSqlCon, _this().callMethod("execQuery")));
 //		_return(_null());
 		
 		
-//		_return(parent.callStaticMethod("fetchList"+bean.getName()+"Static", _this().accessAttr("sqlCon"), getParam("query")));
+//		_return(parent.callStaticMethod("fetchList"+entity.getName()+"Static", _this().accessAttr("sqlCon"), getParam("query")));
 //		_return(_null());
 		//BeanCls cls = (BeanCls) parent;
-		List<OneRelation> oneRelations = bean.getOneRelations();
-		PrimaryKey pk=bean.getTbl().getPrimaryKey();
+		List<OneRelation> oneRelations = entity.getOneRelations();
+		PrimaryKey pk=entity.getTbl().getPrimaryKey();
 		
 		Var result = _declareNew(returnType, "result");
 		Var resultSet =_declare(Types.ResultSet, "resultSet",_this().callMethod(ClsSqlQuery.query) );
 		
 		//int //bCount = 2;
-		Type e1PkType = pk.isMultiColumn() ? bean.getPkType() : EntityCls.getTypeMapper().columnToType(pk.getFirstColumn());
+		Type e1PkType = pk.isMultiColumn() ? entity.getPkType() : EntityCls.getTypeMapper().columnToType(pk.getFirstColumn());
 		
 		ArrayList<AbstractRelation> manyRelations = new ArrayList<>();
 		
-		manyRelations.addAll(bean.getOneToManyRelations());
-		manyRelations.addAll(bean.getManyToManyRelations());
+		manyRelations.addAll(entity.getOneToManyRelations());
+		manyRelations.addAll(entity.getManyToManyRelations());
 		
 		IfBlock ifQueryNext = _if(resultSet.callMethod("next"));
 		InstructionBlock ifInstr = ifQueryNext.thenBlock();
-		Var e1Map =  ifInstr._declareNew((!manyRelations.isEmpty()) ? new ClsHashMap(e1PkType, bean.getFetchListHelperCls()) : new ClsHashSet(e1PkType), "e1Map");
+		Var e1Map =  ifInstr._declareNew((!manyRelations.isEmpty()) ? new ClsHashMap(e1PkType, entity.getFetchListHelperCls()) : new ClsHashSet(e1PkType), "e1Map");
 		
 		DoWhile doWhileQueryNext = ifQueryNext.thenBlock()._doWhile();
 		doWhileQueryNext.setCondition(resultSet.callMethod("next"));
@@ -80,7 +80,7 @@ public class MethodBeanQueryFetch extends Method{
 				e1pkConstructorArgs[i] = EntityCls.getTypeMapper().getResultSetValueGetter(resultSet, colPk, "e1");
 			}
 			
-			e1pk =doWhileQueryNext._declareNew( bean.getPkType(), "e1pk", e1pkConstructorArgs );
+			e1pk =doWhileQueryNext._declareNew( entity.getPkType(), "e1pk", e1pkConstructorArgs );
 			
 		} else {
 			e1pk =doWhileQueryNext._declare( EntityCls.getTypeMapper().columnToType( pk.getFirstColumn()), "e1pk", EntityCls.getTypeMapper().getResultSetValueGetter(resultSet, pk.getFirstColumn(),"e1"));
@@ -90,11 +90,11 @@ public class MethodBeanQueryFetch extends Method{
 		
 		
 		Var e1DoWhile = ifNotE1SetContains.thenBlock()
-				._declare(bean, "e1", Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(bean), resultSet,  JavaString.stringConstant("e1")));
+				._declare(entity, "e1", Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(entity), resultSet,  JavaString.stringConstant("e1")));
 		//bCount = 2;
 		if (!manyRelations.isEmpty()) {
 			
-			//Var structHelper = ifInstr._declare(bean.getFetchListHelperCls(), "structHelper", new NewOperator(bean.getFetchListHelperCls()));
+			//Var structHelper = ifInstr._declare(entity.getFetchListHelperCls(), "structHelper", new NewOperator(entity.getFetchListHelperCls()));
 
 //			for(Relation r:manyRelations) {
 //				Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
@@ -104,9 +104,9 @@ public class MethodBeanQueryFetch extends Method{
 
 		//	doWhileQueryNext._assignInstruction(resultSet, query.callMethod("record"));
 			
-			Var fkHelper = doWhileQueryNext._declare(bean.getFetchListHelperCls(), "fkHelper",e1Map.callMethod(  ClsHashMap.get,e1pk));
+			Var fkHelper = doWhileQueryNext._declare(entity.getFetchListHelperCls(), "fkHelper",e1Map.callMethod(  ClsHashMap.get,e1pk));
 			
-			Var fetchHelperIfNotE1SetContains = ifNotE1SetContains.thenBlock()._declareNew(bean.getFetchListHelperCls(), "fetchListHelper");
+			Var fetchHelperIfNotE1SetContains = ifNotE1SetContains.thenBlock()._declareNew(entity.getFetchListHelperCls(), "fetchListHelper");
 			ifNotE1SetContains.thenBlock().addInstr(fetchHelperIfNotE1SetContains.callAttrSetterMethodInstr("e1", e1DoWhile));
 //			//bCount = 2;
 //			for(Relation r:manyRelations) {
@@ -167,7 +167,7 @@ public class MethodBeanQueryFetch extends Method{
 					 ;
 				
 				for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
-					if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
+					if (foreignOneRelation.getDestTable().equals(entity.getTbl())) {
 						ifRecValueIsNotNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("e1")));
 					}
 				}
@@ -194,12 +194,12 @@ public class MethodBeanQueryFetch extends Method{
 				._callMethodInstr(
 						e1DoWhile ,
 						new MethodAttrSetterInternal(foreignCls,
-								bean.getAttrByName(OrmUtil.getOneRelationDestAttrName(r)))
+								entity.getAttrByName(OrmUtil.getOneRelationDestAttrName(r)))
 						,  foreignBean);
 			
 		
 			for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
-				if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
+				if (foreignOneRelation.getDestTable().equals(entity.getTbl())) {
 					ifRelatedBeanIsNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", e1DoWhile));
 				}
 			}

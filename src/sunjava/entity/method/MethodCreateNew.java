@@ -18,11 +18,11 @@ public class MethodCreateNew extends Method {
 
 	@Override
 	public void addImplementation() {
-		Var bean = _declare(returnType, "entity", new NewOperator(cls
+		Var entity = _declare(returnType, "entity", new NewOperator(cls
 				));
-		_callMethodInstr(bean, "setInsertNew");
-		_assign(bean.accessAttr("loaded"), BoolExpression.TRUE);
-		_return(bean);
+		_callMethodInstr(entity, "setInsertNew");
+		_assign(entity.accessAttr("loaded"), BoolExpression.TRUE);
+		_return(entity);
 		
 	}
 

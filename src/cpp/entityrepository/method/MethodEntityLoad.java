@@ -286,7 +286,6 @@ public class MethodEntityLoad extends Method {
 			}
 			//bCount++;
 		}
-//		_callMethodInstr(qSqlQuery, ClsQSqlQuery.clear); 
 	}
 
 }

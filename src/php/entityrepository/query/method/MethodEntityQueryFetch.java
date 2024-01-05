@@ -32,11 +32,11 @@ import php.orm.OrmUtil;
 import util.StringUtil;
 
 public class MethodEntityQueryFetch extends Method{
-	EntityCls bean;
+	EntityCls entity;
 	
-	public MethodEntityQueryFetch(EntityCls bean) {
-		super(Public, Types.array(bean).toNullable(), getMethodName());
-		this.bean=bean;
+	public MethodEntityQueryFetch(EntityCls entity) {
+		super(Public, Types.array(entity).toNullable(), getMethodName());
+		this.entity=entity;
 	}
 
 	public static String getMethodName() {
@@ -51,33 +51,33 @@ public class MethodEntityQueryFetch extends Method{
 	@Override
 	public void addImplementation() {
 
-		List<OneRelation> oneRelations = bean.getOneRelations();
-		PrimaryKey pk=bean.getTbl().getPrimaryKey();
+		List<OneRelation> oneRelations = entity.getOneRelations();
+		PrimaryKey pk=entity.getTbl().getPrimaryKey();
 		
 		Var result = _declareNewArray( "result");
 		Var res =_declare(Types.mysqli_result, "res",_this().accessAttr("sqlQuery").callMethod(ClsSqlQuery.query) );
 		
-		Type e1PkType = pk.isMultiColumn() ? bean.getPkType() : EntityCls.getTypeMapper().columnToType( pk.getFirstColumn());
+		Type e1PkType = pk.isMultiColumn() ? entity.getPkType() : EntityCls.getTypeMapper().columnToType( pk.getFirstColumn());
 
 		
 		ArrayList<AbstractRelation> manyRelations = new ArrayList<>();
 		
-		manyRelations.addAll(bean.getOneToManyRelations());
-		manyRelations.addAll(bean.getManyToManyRelations());
+		manyRelations.addAll(entity.getOneToManyRelations());
+		manyRelations.addAll(entity.getManyToManyRelations());
 		
 		Var row = _declare(Types.array(Types.Mixed), "row", getFetchExpression(res) );
 		IfBlock ifRowNotNull =	_if(row);
 		InstructionBlock ifInstr = ifRowNotNull.thenBlock();
-		Var e1Map =  ifInstr._declareNewArray((!manyRelations.isEmpty()) ? Types.array(e1PkType, bean.getFetchListHelperCls()) : Types.array(e1PkType), "e1Map");
+		Var e1Map =  ifInstr._declareNewArray((!manyRelations.isEmpty()) ? Types.array(e1PkType, entity.getFetchListHelperCls()) : Types.array(e1PkType), "e1Map");
 		
 		DoWhile doWhileQueryNext = ifRowNotNull.thenBlock()._doWhile();
 		doWhileQueryNext.setCondition(ifRowNotNull.getCondition());
 		
 		Var fetchListHelper = null;
 		if (!manyRelations.isEmpty()) {
-			fetchListHelper = doWhileQueryNext._declare(bean.getFetchListHelperCls(), "fetchListHelper", Expressions.Null);
+			fetchListHelper = doWhileQueryNext._declare(entity.getFetchListHelperCls(), "fetchListHelper", Expressions.Null);
 		}
-		Var e1DoWhile = doWhileQueryNext._declare(bean, "e1", Expressions.Null);
+		Var e1DoWhile = doWhileQueryNext._declare(entity, "e1", Expressions.Null);
 		Expression e1ArrayIndexExpression = null;
 		if (pk.isMultiColumn()) {
 			
@@ -87,7 +87,7 @@ public class MethodEntityQueryFetch extends Method{
 				e1PkArgs[i] = row.arrayIndex(new PhpStringLiteral(EntityCls.getTypeMapper().filterFetchAssocArrayKey("e1__" + pk.getColumn(i).getName())));
 			}
 			
-			Var e1Pk = doWhileQueryNext._declareNew(bean.getPkType(), "e1pk", e1PkArgs);
+			Var e1Pk = doWhileQueryNext._declareNew(entity.getPkType(), "e1pk", e1PkArgs);
 			Var vMd5=doWhileQueryNext._declare(Types.String,"_md5", e1Pk.callMethod(MethodPkHash.getMethodName()) );
 			e1ArrayIndexExpression = vMd5;
 			//throw new RuntimeException("not implemented");
@@ -100,7 +100,7 @@ public class MethodEntityQueryFetch extends Method{
 		
 	
 		
-		ifNotE1SetContains.thenBlock()._assign(e1DoWhile, Types.EntityRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(bean), row,  new PhpStringLiteral("e1")));
+		ifNotE1SetContains.thenBlock()._assign(e1DoWhile, Types.EntityRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(entity), row,  new PhpStringLiteral("e1")));
 		
 		if (!manyRelations.isEmpty()) {
 			
@@ -180,12 +180,12 @@ public class MethodEntityQueryFetch extends Method{
 				._callMethodInstr(
 						e1DoWhile ,
 						new MethodAttrSetterInternal(foreignCls,
-								bean.getAttrByName(OrmUtil.getOneRelationDestAttrName(r)))
+								entity.getAttrByName(OrmUtil.getOneRelationDestAttrName(r)))
 						,  foreignBean);
 			
 		// FIXME bidirectional relations
 //			for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
-//				if (foreignOneRelation.getDestTable().equals(bean.getTbl())) {
+//				if (foreignOneRelation.getDestTable().equals(entity.getTbl())) {
 //					ifRelatedBeanIsNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", e1DoWhile));
 //				}
 //			}

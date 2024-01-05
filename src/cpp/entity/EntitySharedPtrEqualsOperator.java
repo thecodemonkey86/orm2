@@ -24,11 +24,11 @@ public class EntitySharedPtrEqualsOperator extends EqualOperator {
 	@Override
 	public void addImplementation() {
 		EntityCls parent=(EntityCls) this.parent;
-		Param bean = getParam("entity");
+		Param entity = getParam("entity");
 		if (!pk.isMultiColumn()) {
 			_return(new BinaryOperatorExpression(parent.accessThisAttrGetterByColumn(pk.getFirstColumn()), 
 					this,
-					PgCppUtil.getPkExpression(bean,pk.getFirstColumn()))
+					PgCppUtil.getPkExpression(entity,pk.getFirstColumn()))
 			);	
 		} else {
 			ArrayList<Expression> expr=new ArrayList<>();
@@ -36,7 +36,7 @@ public class EntitySharedPtrEqualsOperator extends EqualOperator {
 				expr.add(new BinaryOperatorExpression(
 						parent.accessThisAttrGetterByColumn(colPk), 
 					this, 
-					PgCppUtil.getPkExpression(bean,colPk)));
+					PgCppUtil.getPkExpression(entity,colPk)));
 			}
 			_return(Expressions.and(expr));
 		}

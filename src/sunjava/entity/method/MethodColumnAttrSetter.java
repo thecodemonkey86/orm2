@@ -16,7 +16,7 @@ public class MethodColumnAttrSetter extends Method {
 
 	Attr a;
 	Column col;
-	EntityCls bean;
+	EntityCls entity;
 	
 	public MethodColumnAttrSetter(EntityCls cls, Column col, Attr a) {
 		super(Public, cls, "set" + StringUtil.ucfirst(a.getName()));
@@ -29,7 +29,7 @@ public class MethodColumnAttrSetter extends Method {
 			addParam(new Param(a.getType(), a.getName()));
 		}
 		this.col = col;
-		this.bean = cls;
+		this.entity = cls;
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class MethodColumnAttrSetter extends Method {
 					BoolExpression.TRUE));
 			_assign(_accessThis(a), param);
 		} else {
-			for(Column colPk : bean.getTbl().getPrimaryKey().getColumns()) {
+			for(Column colPk : entity.getTbl().getPrimaryKey().getColumns()) {
 				Expression prev = EntityCls.accessColumnAttrOrEntityPrevious(_this(), colPk);
 				if(colPk.hasOneRelation()) {
 					IfBlock ifNotNull = _if(_not(EntityCls.accessColumnAttrOrEntity(_this(), colPk).isNull()));

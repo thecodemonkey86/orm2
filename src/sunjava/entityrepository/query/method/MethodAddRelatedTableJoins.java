@@ -18,13 +18,13 @@ import util.CodeUtil2;
 
 public class MethodAddRelatedTableJoins extends Method {
 	
-	protected EntityCls bean;
+	protected EntityCls entity;
 	
 	public MethodAddRelatedTableJoins(EntityCls cls) {
 		super(Public, Types.Void, "addRelatedTableJoins");
 //		addParam(new Param(Types.beanQuery(cls), "query"));
 //		setStatic(true);
-		this.bean = cls;
+		this.entity = cls;
 		setOverrideAnnotation(true);
 	}
 
@@ -33,7 +33,7 @@ public class MethodAddRelatedTableJoins extends Method {
 //		Expression query = getParam("query");
 		Expression query = _this();
 			
-		for(OneRelation r:bean.getOneRelations()) {
+		for(OneRelation r:entity.getOneRelations()) {
 			//parent.addImport(Beans.get(r.getDestTable()).getImport());
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getColumnCount();i++) {
@@ -42,7 +42,7 @@ public class MethodAddRelatedTableJoins extends Method {
 			
 			query = query.callMethod("leftJoin", Types.BeanRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(Entities.get(r.getDestTable()))),JavaString.stringConstant(r.getAlias()), JavaString.stringConstant(CodeUtil2.concat(joinConditions," AND ")));
 		}
-		for(OneToManyRelation r:bean.getOneToManyRelations()) {
+		for(OneToManyRelation r:entity.getOneToManyRelations()) {
 			//parent.addImport(Beans.get(r.getDestTable()).getImport());
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getColumnCount();i++) {
@@ -51,7 +51,7 @@ public class MethodAddRelatedTableJoins extends Method {
 			
 			query = query.callMethod("leftJoin", Types.BeanRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(Entities.get(r.getDestTable()))),JavaString.stringConstant(r.getAlias()), JavaString.stringConstant(CodeUtil2.concat(joinConditions," AND ")));
 		}
-		for(ManyRelation r:bean.getManyRelations()) {
+		for(ManyRelation r:entity.getManyRelations()) {
 			//parent.addImport(Beans.get(r.getDestTable()).getImport());
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getSourceColumnCount();i++) {
@@ -69,7 +69,7 @@ public class MethodAddRelatedTableJoins extends Method {
 			
 		}
 		
-		if (!bean.getOneRelations().isEmpty() || !bean.getOneToManyRelations().isEmpty() || !bean.getManyRelations().isEmpty()) {
+		if (!entity.getOneRelations().isEmpty() || !entity.getOneToManyRelations().isEmpty() || !entity.getManyRelations().isEmpty()) {
 			addInstr(query.asInstruction());
 		}
 		

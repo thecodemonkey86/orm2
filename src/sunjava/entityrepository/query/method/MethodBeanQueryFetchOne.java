@@ -29,20 +29,20 @@ import sunjava.lib.ClsSqlQuery;
 import util.pg.PgCppUtil;
 
 public class MethodBeanQueryFetchOne extends Method{
-	EntityCls bean;
+	EntityCls entity;
 	
-	public MethodBeanQueryFetchOne(EntityCls bean) {
-		super(Public, bean, "fetchOne");
-		this.bean=bean;
+	public MethodBeanQueryFetchOne(EntityCls entity) {
+		super(Public, entity, "fetchOne");
+		this.entity=entity;
 	}
 
 	@Override
 	public void addImplementation() {
 		addThrowsException(Types.SqlException);
 
-		List<OneRelation> oneRelations = bean.getOneRelations();
-		List<OneToManyRelation> oneToManyRelations = bean.getOneToManyRelations();
-		List<ManyRelation> manyToManyRelations = bean.getManyToManyRelations();
+		List<OneRelation> oneRelations = entity.getOneRelations();
+		List<OneToManyRelation> oneToManyRelations = entity.getOneToManyRelations();
+		List<ManyRelation> manyToManyRelations = entity.getManyToManyRelations();
 		
 		
 		Var resultSet =_declare(Types.ResultSet, "resultSet",_this().callMethod(ClsSqlQuery.query) );
@@ -51,11 +51,11 @@ public class MethodBeanQueryFetchOne extends Method{
 		IfBlock ifQSqlQueryNext =
 				_if(resultSet.callMethod(ClsResultSet.METHOD_NAME_NEXT))
 				
-//		for(Column col:bean.getTbl().getPrimaryKey().getColumns()) {		
+//		for(Column col:entity.getTbl().getPrimaryKey().getColumns()) {		
 //		OrmUtil.addAssignValueFromResultSetInstructions(resultSet, ifQSqlQueryNext.getIfInstr(), e1, col, "e1");
 //		}
 					.setIfInstr(
-							e1.assign(Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(bean),  resultSet, JavaString.stringConstant("e1")))
+							e1.assign(Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(entity),  resultSet, JavaString.stringConstant("e1")))
 							,
 							e1.callAttrSetterMethodInstr("loaded", BoolExpression.TRUE)//_assignInstruction(e1.accessAttr("loaded"), BoolExpression.TRUE)
 							)

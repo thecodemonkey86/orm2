@@ -13,13 +13,13 @@ import cpp.entityquery.ClsEntityQuerySelect;
 
 public class ConstructorEntityQuerySelect extends Constructor {
 	Param pLazy;
-	EntityCls bean;
+	EntityCls entity;
 	
-	public ConstructorEntityQuerySelect(EntityCls bean) {
+	public ConstructorEntityQuerySelect(EntityCls entity) {
 		super();
-		this.bean = bean;
+		this.entity = entity;
 //		pTable = addParam(new Param(Types.QString.toConstRef(), "table"));
-		if(bean.hasRelations())
+		if(entity.hasRelations())
 			pLazy = addParam(new Param(Types.Bool, "loadLazy",BoolExpression.FALSE));
 	}
 
@@ -32,13 +32,13 @@ public class ConstructorEntityQuerySelect extends Constructor {
 		//Expression attrMainBeanAlias =  _this().accessAttr(ClsBeanQuerySelect.mainBeanAlias);
 		
 		
-		if(bean.hasRelations()) {
+		if(entity.hasRelations()) {
 			_assign(_this().accessAttr(ClsEntityQuerySelect.lazyLoading),pLazy);
 			IfBlock ifNotLazyLoading = _ifNot(pLazy);
 			
-			//ifNotLazyLoading.thenBlock()._assign(_this().accessAttr(ClsBeanQuerySelect.selectFields),  this.bean.callStaticMethod(MethodGetAllSelectFields.getMethodName(), attrMainBeanAlias ));
-			//ifNotLazyLoading.elseBlock()._assign(_this().accessAttr(ClsBeanQuerySelect.selectFields),  this.bean.callStaticMethod(MethodGetSelectFields.getMethodName(), attrMainBeanAlias ));
-			ifNotLazyLoading.thenBlock().addInstr(new StaticMethodCall(bean,bean.getMethod(MethodAddRelatedTableJoins.getMethodName()), _this().dereference()).asInstruction());
+			//ifNotLazyLoading.thenBlock()._assign(_this().accessAttr(ClsBeanQuerySelect.selectFields),  this.entity.callStaticMethod(MethodGetAllSelectFields.getMethodName(), attrMainBeanAlias ));
+			//ifNotLazyLoading.elseBlock()._assign(_this().accessAttr(ClsBeanQuerySelect.selectFields),  this.entity.callStaticMethod(MethodGetSelectFields.getMethodName(), attrMainBeanAlias ));
+			ifNotLazyLoading.thenBlock().addInstr(new StaticMethodCall(entity,entity.getMethod(MethodAddRelatedTableJoins.getMethodName()), _this().dereference()).asInstruction());
 
 		}
 	}

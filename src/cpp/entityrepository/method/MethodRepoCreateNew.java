@@ -80,9 +80,9 @@ public class MethodRepoCreateNew extends Method {
 
 	@Override
 	public void addImplementation() {
-		Var bean = _declare(returnType, "entity", new MakeSharedExpression((SharedPtr) returnType));
-		_callMethodInstr(bean, ClsBaseJsonEntity.setInsertNew);
-		addInstr(bean.callMethodInstruction("setLoaded", BoolExpression.TRUE));
+		Var entity = _declare(returnType, "entity", new MakeSharedExpression((SharedPtr) returnType));
+		_callMethodInstr(entity, ClsBaseJsonEntity.setInsertNew);
+		addInstr(entity.callMethodInstruction("setLoaded", BoolExpression.TRUE));
 		
 		if(initializeFields) {
 			if(this.initializeFieldsWithNullable) {
@@ -93,10 +93,10 @@ public class MethodRepoCreateNew extends Method {
 					Param param = initializeFieldsParams.get(i);
 					if(pkCol.isNullable()) {
 						IfBlock ifIsNull= _if(param.callMethod(Nullable.isNull));
-						ifIsNull.thenBlock().addInstr(bean.callMethodInstruction(MethodColumnAttrSetNull.getMethodName(bean.getClassType().getAttrByName(param.getName()))));
-						ifIsNull.elseBlock().addInstr(bean.callMethodInstruction("set" +StringUtil.ucfirst(param.getName())+"Internal",param.callMethod(Nullable.val)));
+						ifIsNull.thenBlock().addInstr(entity.callMethodInstruction(MethodColumnAttrSetNull.getMethodName(entity.getClassType().getAttrByName(param.getName()))));
+						ifIsNull.elseBlock().addInstr(entity.callMethodInstruction("set" +StringUtil.ucfirst(param.getName())+"Internal",param.callMethod(Nullable.val)));
 					} else {
-						addInstr(bean.callMethodInstruction("set" +StringUtil.ucfirst(param.getName())+"Internal",param));
+						addInstr(entity.callMethodInstruction("set" +StringUtil.ucfirst(param.getName())+"Internal",param));
 					}
 				}
 				}
@@ -105,21 +105,21 @@ public class MethodRepoCreateNew extends Method {
 						Param param = initializeFieldsParams.get(i++);
 						if(col.isNullable()) {
 							IfBlock ifIsNull= _if(param.callMethod(Nullable.isNull));
-							ifIsNull.thenBlock().addInstr(bean.callMethodInstruction(MethodColumnAttrSetNull.getMethodName(bean.getClassType().getAttrByName(param.getName()))));
-							ifIsNull.elseBlock().addInstr(bean.callSetterMethodInstruction(param.getName(),param.callMethod(Nullable.val)));
+							ifIsNull.thenBlock().addInstr(entity.callMethodInstruction(MethodColumnAttrSetNull.getMethodName(entity.getClassType().getAttrByName(param.getName()))));
+							ifIsNull.elseBlock().addInstr(entity.callSetterMethodInstruction(param.getName(),param.callMethod(Nullable.val)));
 						} else {
-							addInstr(bean.callSetterMethodInstruction(param.getName(),param));
+							addInstr(entity.callSetterMethodInstruction(param.getName(),param));
 						}
 					}
 				}
 			} else {
 				for (Param param : initializeFieldsParams) {
-					addInstr(bean.callMethodInstruction("set" +StringUtil.ucfirst(param.getName())+"Internal",param));
+					addInstr(entity.callMethodInstruction("set" +StringUtil.ucfirst(param.getName())+"Internal",param));
 				}
 			}
 			
 		}
-		_return(bean);
+		_return(entity);
 		
 	}
 

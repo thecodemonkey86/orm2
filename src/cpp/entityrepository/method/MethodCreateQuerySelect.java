@@ -8,7 +8,7 @@ import cpp.core.expression.CreateObjectExpression;
 import cpp.entity.EntityCls;
 
 public class MethodCreateQuerySelect extends Method {
-	EntityCls bean;
+	EntityCls entity;
 	Param pLazy;
 	
 	public MethodCreateQuerySelect(EntityCls cls) {
@@ -21,14 +21,14 @@ public class MethodCreateQuerySelect extends Method {
 		}
 		
 		setStatic(true);
-		this.bean=cls;
+		this.entity=cls;
 	}
 
 	@Override
 	public void addImplementation() {
-		//_return(new StdMoveExpression(new CreateObjectExpression(returnType, new NewOperator(new ClsBeanQuery(bean), parent.getAttrByName("sqlCon")) )));
+		//_return(new StdMoveExpression(new CreateObjectExpression(returnType, new NewOperator(new ClsBeanQuery(entity), parent.getAttrByName("sqlCon")) )));
 		//_return(new MakeSharedExpression((SharedPtr)returnType, parent.getStaticAttribute("sqlCon").callMethod("buildQuery")));
-		if(bean.hasRelations()) {
+		if(entity.hasRelations()) {
 			_return(new CreateObjectExpression(returnType, pLazy ));
 		} else {
 			_return(new CreateObjectExpression(returnType));

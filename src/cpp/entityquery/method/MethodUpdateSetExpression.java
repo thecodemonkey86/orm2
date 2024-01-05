@@ -12,14 +12,14 @@ import cpp.lib.ClsQList;
 import database.column.Column;
 
 public class MethodUpdateSetExpression extends Method{
-	EntityCls bean;
+	EntityCls entity;
 	Column col;
 	Param pExpression;
 	Param pValue;
 	
-	public MethodUpdateSetExpression(EntityCls bean,Cls parentType,Column col) {
+	public MethodUpdateSetExpression(EntityCls entity,Cls parentType,Column col) {
 		super(Public, parentType.toRef(), "set"+col.getUc1stCamelCaseName());
-		this.bean = bean;
+		this.entity = entity;
 		this.col = col;
 		pExpression = addParam(Types.QString.toConstRef(), "expression");
 		pValue = addParam(Types.QVariant.toConstRef(), "param");

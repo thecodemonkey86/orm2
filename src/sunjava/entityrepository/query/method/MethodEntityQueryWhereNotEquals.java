@@ -15,12 +15,12 @@ import php.lib.ClsBaseEntityQuery;
 import php.lib.ClsSqlQuery;
 
 public class MethodEntityQueryWhereNotEquals extends Method {
-	EntityCls bean;
+	EntityCls entity;
 	Param pValue ;
 	Column c;
-	public MethodEntityQueryWhereNotEquals(ClsEntityQuery query, EntityCls bean,Column c) {
+	public MethodEntityQueryWhereNotEquals(ClsEntityQuery query, EntityCls entity,Column c) {
 		super(Public, query, "where"+c.getUc1stCamelCaseName()+"NotEquals");
-		this.bean=bean;
+		this.entity=entity;
 		Type t = EntityCls.getTypeMapper().columnToType(c);
 		
 		if(t == null) {

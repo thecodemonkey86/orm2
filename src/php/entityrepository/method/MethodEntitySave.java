@@ -51,8 +51,8 @@ public class MethodEntitySave extends Method {
 		}
 	}
 
-	public static String getMethodName(EntityCls bean) {
-		return "save"+bean.getName();
+	public static String getMethodName(EntityCls entity) {
+		return "save"+entity.getName();
 	}
 
 	@Override
@@ -268,25 +268,25 @@ public class MethodEntitySave extends Method {
 			ifRemoveBeans.thenBlock()._callMethodInstr(varDeleteSql, ClsSqlQuery.execute);
 
 			_callMethodInstr(pBean, MethodClearModified.getMethodName());
-			/* example: if (!bean.getEntity1sAdded().isEmpty()){
+			/* example: if (!entity.getEntity1sAdded().isEmpty()){
 			SqlQuery addSqlQuery  = new PgSqlQuery(sqlCon);
 			addSqlQuery.insertMultiRow("e1_e3_mm", "e1_id", "e3_id");
 			addSqlQuery.onConflictDoNothing("e1_id", "e3_id");
 			
-			for (Integer added : bean.getEntity1sAdded()){
-				addSqlQuery.addInsertRow(SqlParam.get(added), SqlParam.get(bean.getId()));
+			for (Integer added : entity.getEntity1sAdded()){
+				addSqlQuery.addInsertRow(SqlParam.get(added), SqlParam.get(entity.getId()));
 				
 			}
 			
 			addSqlQuery.execute();
 		}*/
 			
-			/*if (bean.getTbl().getPrimaryKey().isMultiColumn()) {
-				for(Column col:bean.getTbl().getPrimaryKey().getColumns()) {
+			/*if (entity.getTbl().getPrimaryKey().isMultiColumn()) {
+				for(Column col:entity.getTbl().getPrimaryKey().getColumns()) {
 					foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction("append", _this().accessAttr(  col.getCamelCaseName())));
 				}
 			} else {
-				foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction("append", _this().accessAttr(  bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())));
+				foreachAttrAdd.addInstr(varParamsForeachAdd.callMethodInstruction("append", _this().accessAttr(  entity.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())));
 			}
 			if (r.getDestTable().getPrimaryKey().isMultiColumn()) {
 				for(Column col:r.getDestTable().getPrimaryKey().getColumns()) {

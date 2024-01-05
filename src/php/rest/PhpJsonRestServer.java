@@ -13,13 +13,13 @@ import php.rest.method.RestMethodSave;
 
 public class PhpJsonRestServer extends PhpCls {
 	
-	public PhpJsonRestServer(Collection<EntityCls> beans) {
+	public PhpJsonRestServer(Collection<EntityCls> entities) {
 		super("PhpJsonRestServer", null);
-		addMethod(new RestMethodGetList(beans));
-		addMethod(new RestMethodGetOne(beans));
-		addMethod(new RestMethodGetById(beans));
-		addMethod(new RestMethodSave(beans));
-		addMethod(new RestMethodDelete(beans));
+		addMethod(new RestMethodGetList(entities));
+		addMethod(new RestMethodGetOne(entities));
+		addMethod(new RestMethodGetById(entities));
+		addMethod(new RestMethodSave(entities));
+		addMethod(new RestMethodDelete(entities));
 		setConstructor(new Constructor() {
 			
 			@Override

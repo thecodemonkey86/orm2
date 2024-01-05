@@ -28,7 +28,7 @@ public class MethodGetLimitQueryString extends Method {
 	@Override
 	public void addImplementation() {
 		String mainBeanAlias = "e1.";
-		EntityCls bean = (EntityCls) parent;
+		EntityCls entity = (EntityCls) parent;
 		StringBuilder sql = new StringBuilder();
 		if (pk.isMultiColumn()) {
 			sql.append('(').append(mainBeanAlias).append(pk.getFirstColumn().getEscapedName());
@@ -43,7 +43,7 @@ public class MethodGetLimitQueryString extends Method {
 		for(int i=1;i<pk.getColumnCount();i++) {
 			sql.append(',').append(pk.getColumn(i).getEscapedName());
 		}
-		sql.append(" FROM ").append(bean.getTbl().getEscapedName()).append(" WHERE %1" );
+		sql.append(" FROM ").append(entity.getTbl().getEscapedName()).append(" WHERE %1" );
 		
 		Var varSql  = _declare(returnType, "sql", 
 				Types.String.callStaticMethod(ClsJavaString.format, JavaString.stringConstant(sql.toString()), new InlineIfExpression(getParam("condition").callMethod("length").equalsOp(new IntExpression(0)), JavaString.stringConstant(EntityCls.getDatabase().getBooleanExpressionTrue()), getParam("condition")) ));

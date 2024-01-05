@@ -14,7 +14,7 @@ public class MethodAndWhere6 extends Method{
 	public MethodAndWhere6(Cls parentType) {
 		super(Public, parentType.toRef(), "andWhere");
 		pWhereCond = addParam(Types.QString.toConstRef(),"whereCond");
-		pParams = addParam(Types.QStringList,"params");
+		pParams = addParam(Types.QStringList.toConstRef(),"params");
 		
 	}
 

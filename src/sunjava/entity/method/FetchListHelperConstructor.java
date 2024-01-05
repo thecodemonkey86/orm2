@@ -12,17 +12,17 @@ import sunjava.entity.EntityCls;
 
 public class FetchListHelperConstructor extends Constructor{
 
-	EntityCls bean;
+	EntityCls entity;
 	
-	public FetchListHelperConstructor(EntityCls bean) {
-		this.bean = bean;
+	public FetchListHelperConstructor(EntityCls entity) {
+		this.entity = entity;
 	}
 	
 	@Override
 	public void addImplementation() {
 		List<AbstractRelation> manyRelations = new ArrayList<>();
-		manyRelations.addAll(bean.getOneToManyRelations());
-		manyRelations.addAll(bean.getManyToManyRelations());
+		manyRelations.addAll(entity.getOneToManyRelations());
+		manyRelations.addAll(entity.getManyToManyRelations());
 		
 		for(AbstractRelation r:manyRelations) {	
 			Attr a = ((JavaCls)parent).getAttrByName(r.getAlias()+"Set"); 

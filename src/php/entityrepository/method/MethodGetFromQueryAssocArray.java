@@ -20,17 +20,17 @@ public class MethodGetFromQueryAssocArray extends Method{
 	protected List<Column> columns;
 	protected EntityCls beanCls;
 	
-	public static String getMethodName(EntityCls bean) {
-		return "get"+bean.getName()+ "FromQueryAssocArray";
+	public static String getMethodName(EntityCls entity) {
+		return "get"+entity.getName()+ "FromQueryAssocArray";
 	}
 	
-	public MethodGetFromQueryAssocArray(EntityCls bean) {
-		super(Public, bean.toNullable(), getMethodName(bean));
+	public MethodGetFromQueryAssocArray(EntityCls entity) {
+		super(Public, entity.toNullable(), getMethodName(entity));
 		setStatic(true);
 		addParam(new Param(Types.array(Types.String).toRef(), "array"));
 		addParam(new Param(Types.String, "alias"));
-		this.columns = bean.getTbl().getColumns(true);
-		this.beanCls = bean;
+		this.columns = entity.getTbl().getColumns(true);
+		this.beanCls = entity;
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class MethodGetFromQueryAssocArray extends Method{
 			pkExprArrayIndex = PhpFunctions.substr.call(pkExprArrayIndex,new IntExpression(0),new IntExpression(31));
 		}
 		_if(array.arrayIndex(pkExprArrayIndex).isNull()).thenBlock()._return(Expressions.Null); 
-		Var bean = _declareNew(returnType, "entity", BoolExpression.FALSE);
+		Var entity = _declareNew(returnType, "entity", BoolExpression.FALSE);
 		
 		for(Column col:columns) {
 			if (!col.isRelationDestColumn() || col.hasOneRelation() || col.isPartOfPk()) {
@@ -59,10 +59,10 @@ public class MethodGetFromQueryAssocArray extends Method{
 						Var value = _declare(resultSetValueGetter.getType(), "value"+col.getUc1stCamelCaseName(),resultSetValueGetter );
 						IfBlock ifWasNull = _if(resultSet.callMethod(ClsResultSet.wasNull));
 							ifWasNull.thenBlock()
-							.addInstr(bean.getClassConcreteType().getMethod("set"+col.getUc1stCamelCaseName()+"Internal").call(bean, Expressions.Null).asInstruction());
+							.addInstr(entity.getClassConcreteType().getMethod("set"+col.getUc1stCamelCaseName()+"Internal").call(entity, Expressions.Null).asInstruction());
 							
 							ifWasNull.elseBlock()
-							.addInstr(bean.getClassConcreteType().getMethod("set"+col.getUc1stCamelCaseName()+"Internal").call(bean, value).asInstruction());
+							.addInstr(entity.getClassConcreteType().getMethod("set"+col.getUc1stCamelCaseName()+"Internal").call(entity, value).asInstruction());
 					} else {
 						
 					}*/
@@ -75,14 +75,14 @@ public class MethodGetFromQueryAssocArray extends Method{
 					Var val = _declare(Types.Mixed, "_val"+col.getUc1stCamelCaseName(),array.arrayIndex(exprArrayIndex));
 					Expression convertTypeExpression = EntityCls.getTypeMapper().getConvertTypeExpression(val ,col);
 					
-					addInstr(bean.getClassConcreteType().getMethod("set"+col.getUc1stCamelCaseName()+"Internal").call(bean, convertTypeExpression).asInstruction());
+					addInstr(entity.getClassConcreteType().getMethod("set"+col.getUc1stCamelCaseName()+"Internal").call(entity, convertTypeExpression).asInstruction());
 				} catch (Exception e) {
 					e.printStackTrace();
 					System.out.println(parent);
 				}
 			}
 		}
-		//addInstr(bean.assignAttr("insert",BoolExpression.FALSE));
-		_return(bean);
+		//addInstr(entity.assignAttr("insert",BoolExpression.FALSE));
+		_return(entity);
 	}
 }

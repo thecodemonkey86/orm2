@@ -14,18 +14,18 @@ import database.column.Column;
 
 public class MethodFillFromForm extends Method{
 
-	protected EntityCls bean;
+	protected EntityCls entity;
 	protected boolean prefix;
-	public MethodFillFromForm(EntityCls bean) {
-		this(bean,false);
+	public MethodFillFromForm(EntityCls entity) {
+		this(entity,false);
 	}
-	public MethodFillFromForm(EntityCls bean, boolean prefix) {
-		super(Method.Public, Types.Void, "fill"+StringUtil.ucfirst(bean.getName())+"FormData");
+	public MethodFillFromForm(EntityCls entity, boolean prefix) {
+		super(Method.Public, Types.Void, "fill"+StringUtil.ucfirst(entity.getName())+"FormData");
 		setStatic(true);
-		addParam(new Param(bean.toSharedPtr().toConstRef(),"entity"));
+		addParam(new Param(entity.toSharedPtr().toConstRef(),"entity"));
 		addParam(new Param(new ClsWebAppCommonForm().toConstRef(), "form"));
 		
-		this.bean = bean;
+		this.entity = entity;
 		this.prefix = prefix;
 		
 		if (prefix) {
@@ -61,20 +61,20 @@ public class MethodFillFromForm extends Method{
 	@Override
 	public void addImplementation() {
 		if (prefix) {
-			for(Column col:bean.getTbl().getColumnsWithoutPrimaryKey()) {
+			for(Column col:entity.getTbl().getColumnsWithoutPrimaryKey()) {
 				if (!col.hasOneRelation()) {
 					String formGetterMethod = getFormGetterMethod(col);
 					if(formGetterMethod!=null)
-						addInstr( getParam("entity").callMethod("set"+ col.getUc1stCamelCaseName(), getParam("form").callMethod(formGetterMethod,QString.fromStringConstant("%1_%2").callMethod("arg", getParam("prefix"), bean.callStaticMethod(MethodGetFieldName.getMethodName(col))))).asInstruction());
+						addInstr( getParam("entity").callMethod("set"+ col.getUc1stCamelCaseName(), getParam("form").callMethod(formGetterMethod,QString.fromStringConstant("%1_%2").callMethod("arg", getParam("prefix"), entity.callStaticMethod(MethodGetFieldName.getMethodName(col))))).asInstruction());
 				}
 						
 			}
 		} else {
-			for(Column col:bean.getTbl().getColumnsWithoutPrimaryKey()) {
+			for(Column col:entity.getTbl().getColumnsWithoutPrimaryKey()) {
 				if (!col.hasOneRelation()) {
 					String formGetterMethod = getFormGetterMethod(col);
 					if(formGetterMethod!=null)
-						addInstr( getParam("entity").callMethod("set"+ col.getUc1stCamelCaseName(), getParam("form").callMethod(formGetterMethod,bean.callStaticMethod(MethodGetFieldName.getMethodName(col)))).asInstruction());
+						addInstr( getParam("entity").callMethod("set"+ col.getUc1stCamelCaseName(), getParam("form").callMethod(formGetterMethod,entity.callStaticMethod(MethodGetFieldName.getMethodName(col)))).asInstruction());
 				}
 						
 			}

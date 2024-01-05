@@ -22,10 +22,10 @@ public class MethodSetValue extends Method {
 
 	@Override
 	public void addImplementation() {
-		EntityCls bean = (EntityCls) parent;
+		EntityCls entity = (EntityCls) parent;
 		SwitchBlock switchBlock = _switch(pName);
 		
-		for(Column col : bean.getTbl().getAllColumns()) {
+		for(Column col : entity.getTbl().getAllColumns()) {
 			if(!col.hasRelation()) {
 				CaseBlock caseBlock = switchBlock._case(new PhpStringLiteral(col.getName()));
 				caseBlock.addInstr(caseBlock._this().assignAttr(col.getCamelCaseName(), EntityCls.getTypeMapper().getConvertTypeExpression(pValue, col)));

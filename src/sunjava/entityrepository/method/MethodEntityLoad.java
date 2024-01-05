@@ -40,21 +40,21 @@ public class MethodEntityLoad extends Method {
 	protected List<OneToManyRelation> oneToManyRelations;
 	protected List<ManyRelation> manyToManyRelations;
 	protected PrimaryKey primaryKey;
-	protected EntityCls bean;
+	protected EntityCls entity;
 	protected Param pSqlCon;
-	public MethodEntityLoad(EntityCls bean) {
-		super(Public, Types.Void, "load"+bean.getName());
+	public MethodEntityLoad(EntityCls entity) {
+		super(Public, Types.Void, "load"+entity.getName());
 
-		this.oneRelations =bean.getOneRelations();
-		this.oneToManyRelations =bean.getOneToManyRelations();
-		this.manyToManyRelations = bean.getManyRelations();
-		this.primaryKey = bean.getTbl().getPrimaryKey();
+		this.oneRelations =entity.getOneRelations();
+		this.oneToManyRelations =entity.getOneToManyRelations();
+		this.manyToManyRelations = entity.getManyRelations();
+		this.primaryKey = entity.getTbl().getPrimaryKey();
 
 		setStatic(true);
 
-		addParam(new Param(bean, "entity"));
+		addParam(new Param(entity, "entity"));
 		pSqlCon =addParam(new Param(Types.Connection, "sqlConnection"));
-		this.bean = bean;
+		this.entity = entity;
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class MethodEntityLoad extends Method {
 			Var sqlQuery =  _declare(Types.SqlQuery, "query",EntityCls.getSqlQueryCls().newInstance(pSqlCon));
 
 			ArrayList<Expression> selectFields = new ArrayList<>();
-			selectFields.add(parent.callStaticMethod(MethodGetSelectFields.getMethodName(bean),JavaString.stringConstant("e1")));
+			selectFields.add(parent.callStaticMethod(MethodGetSelectFields.getMethodName(entity),JavaString.stringConstant("e1")));
 
 			List<AbstractRelation> allRelations = new ArrayList<>(oneRelations.size()+oneToManyRelations.size()+manyToManyRelations.size());
 			allRelations.addAll(oneRelations);
@@ -88,7 +88,7 @@ public class MethodEntityLoad extends Method {
 
 			}
 			Expression exprQSqlQuery = sqlQuery.callMethod("select", Expressions.concat(CharExpression.fromChar(','), selectFields) )
-					.callMethod("from", parent.callStaticMethod(MethodGetTableName.getMethodName(bean),JavaString.stringConstant("e1")));
+					.callMethod("from", parent.callStaticMethod(MethodGetTableName.getMethodName(entity),JavaString.stringConstant("e1")));
 
 
 			for(OneRelation r:oneRelations) {

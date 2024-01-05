@@ -16,12 +16,7 @@ public class EntityConstructor extends Constructor{
 	
 	public EntityConstructor(boolean autoIncrement, List<Column> cols) {
 		this.autoIncrement = autoIncrement;
-		this.cols = cols;
-		// Shared Pointer due to circular dependency / forward declaration issue 
-		try{
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
+		this.cols = cols;		
 	}
 	
 	@Override
@@ -30,7 +25,7 @@ public class EntityConstructor extends Constructor{
 		
 		for(Column col:cols) {
 			 
-			if (!col.isPartOfPk() && !col.hasOneRelation() && !col.isFileImportEnabled()) {
+			if (!col.hasOneRelation() && !col.isFileImportEnabled()) {
 				
 				Expression defValExpr =  EntityCls.getDatabaseMapper().getColumnDefaultValueExpression(col);
 				if (defValExpr != null) {
@@ -38,8 +33,15 @@ public class EntityConstructor extends Constructor{
 				} else {
 					_assign(parent.getAttrByName(col.getCamelCaseName()), EntityCls.getDatabaseMapper().getGenericDefaultValueExpression(col)); 
 				}
-				
-				_assign(parent.getAttrByName(col.getCamelCaseName()+ "Modified"), BoolExpression.FALSE);
+				if (!col.isPartOfPk()) {
+					_assign(parent.getAttrByName(col.getCamelCaseName()+ "Modified"), BoolExpression.FALSE);
+				} else {
+					if (defValExpr != null) {
+						_assign(parent.getAttrByName(col.getCamelCaseName()+"Previous"),  defValExpr);
+					} else {
+						_assign(parent.getAttrByName(col.getCamelCaseName()+"Previous"), EntityCls.getDatabaseMapper().getGenericDefaultValueExpression(col)); 
+					}
+				}
 			}
 			if(col.isRawValueEnabled()) {
 				Attr a = parent.getAttrByName("insertExpression"+col.getUc1stCamelCaseName());

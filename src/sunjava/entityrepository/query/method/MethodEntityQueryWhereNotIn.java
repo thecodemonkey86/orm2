@@ -17,12 +17,12 @@ import php.lib.ClsSqlQuery;
 import php.lib.ClsSqlUtil;
 
 public class MethodEntityQueryWhereNotIn extends Method {
-	EntityCls bean;
+	EntityCls entity;
 	Param pValue ;
 	Column c;
-	public MethodEntityQueryWhereNotIn(ClsEntityQuery query, EntityCls bean,Column c) {
+	public MethodEntityQueryWhereNotIn(ClsEntityQuery query, EntityCls entity,Column c) {
 		super(Public, query, "where"+c.getUc1stCamelCaseName()+"NotIn");
-		this.bean=bean;
+		this.entity=entity;
 		Type t = EntityCls.getTypeMapper().columnToType(c);
 		
 		if(t == null) {
