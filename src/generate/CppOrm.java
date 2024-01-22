@@ -17,6 +17,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
+import org.json.JSONObject;
+
 import config.OrmConfig;
 import config.SetPassConfigReader;
 import config.cpp.CppConfigReader;
@@ -63,7 +65,8 @@ public class CppOrm extends OrmGenerator {
 			StandardOpenOption.WRITE,StandardOpenOption.CREATE,StandardOpenOption.TRUNCATE_EXISTING
 			 
 	};
-
+	String jsTarget;
+	
 	private DatabaseTypeMapper getTypeMapper(OrmConfig cfg) {
 		if(cfg.isEngineFirebird()) {
 			return new FirebirdDatabaseTypeMapper();
@@ -78,8 +81,13 @@ public class CppOrm extends OrmGenerator {
 		}
 	}
 	
+	
 	public CppOrm(OrmConfig cfg) {
+		this(cfg,null);
+	}
+	public CppOrm(OrmConfig cfg, String jsTarget) {
 		super(cfg);
+		this.jsTarget = jsTarget;
 		HashSet<String> reservedNames = new HashSet<String>();
 		reservedNames.add("private");
 		Column.setReservedNames(reservedNames);
@@ -119,7 +127,7 @@ public class CppOrm extends OrmGenerator {
 		String dbHost = null;
 		String dbFile = null;
 		String charset = "utf8" ;
-		
+		String jsTarget=null;
 		for(int i=0;i<args.length-1;i++) {
 			if(args[i].equals("--engine")) {
 				engine = args[i+1];
@@ -137,6 +145,8 @@ public class CppOrm extends OrmGenerator {
 				dbFile = args[i+1];	
 			} else if(args[i].equals("--charset")) {
 				charset = args[i+1];
+			} else if(args[i].equals("--js")) {
+				jsTarget = args[i+1];
 			}
 		}
 		
@@ -210,7 +220,7 @@ public class CppOrm extends OrmGenerator {
 		
 		
 		
-		new CppOrm(cfg).generate();
+		new CppOrm(cfg,jsTarget).generate();
 	}
 
 	@Override
@@ -264,6 +274,8 @@ public class CppOrm extends OrmGenerator {
 	//		for (BeanCls c : Beans.getAllBeans()) {
 	//			c.breakPointerCircles();
 	//		}
+			boolean jsEnabled=jsTarget!=null;
+			
 			Path pathBeans = pathModel.resolve("entities");
 			for (EntityCls c : Entities.getAllBeans()) {
 				Path pathHeader = pathBeans.resolve(c.getName().toLowerCase()+".h");
@@ -384,6 +396,19 @@ public class CppOrm extends OrmGenerator {
 					FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsUpdate.getName().toLowerCase()+".h"), clsUpdate.toHeaderString().getBytes(utf8), writeOptions);
 					FileUtil2.writeFileIfContentChanged(pathRepositoryQuery.resolve(clsUpdate.getName().toLowerCase()+".cpp"), clsUpdate.toSourceString().getBytes(utf8), writeOptions);
 				}
+			}
+			
+			if(jsEnabled) {
+				JSONObject json= new JSONObject();
+				for (EntityCls c : Entities.getAllBeans()) {
+					JSONObject entityJson=new JSONObject();
+					for(Column col: c.getTbl().getAllColumns()) {
+						entityJson.put(col.getCamelCaseName(), col.getName());
+					}
+					
+					json.put(c.getName(), entityJson);
+				}
+				Files.write(Paths.get(jsTarget),json.toString().getBytes(utf8), writeOptions);
 			}
 			
 			FileUtil2.writeFileIfContentChanged(pathRepository.resolve(repo.getName().toLowerCase()+ ".h"), repo.toHeaderString().getBytes(utf8), writeOptions);
