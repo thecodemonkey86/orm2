@@ -81,7 +81,7 @@ public class ClsEntityQueryDelete extends Cls {
 		
 		addIncludeLib(ClsQList.CLSNAME);
 		addIncludeHeader(EntityCls.getModelPath() + "entities/"+cls.getIncludeHeader());
-		addIncludeHeader("../"+ ClsEntityRepository.CLSNAME.toLowerCase());
+//		addIncludeHeader("../"+ ClsEntityRepository.CLSNAME.toLowerCase());
 		addIncludeHeader(Types.SqlUtil.getIncludeHeader());
 		addIncludeHeader(Types.SqlQuery.getIncludeHeader());
 //		addIncludeHeader(EnumQueryMode.INSTANCE.getName().toLowerCase());

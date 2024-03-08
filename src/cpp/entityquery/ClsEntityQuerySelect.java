@@ -107,7 +107,7 @@ public class ClsEntityQuerySelect extends Cls {
 		addForwardDeclaredClass(cls);
 		addForwardDeclaredClass(Types.nullable(null));
 		addIncludeHeaderInSource(EntityCls.getModelPath() + "entities/"+cls.getIncludeHeader());
-		addIncludeHeaderInSource("../"+ Types.EntityRepository.getName().toLowerCase());
+//		addIncludeHeaderInSource("../"+ Types.EntityRepository.getName().toLowerCase());
 		addIncludeHeaderInSource(Types.SqlUtil.getIncludeHeader());
 		addIncludeHeader(Types.SqlQuery.getIncludeHeader());
 //		addIncludeHeader(EnumQueryMode.INSTANCE.getName().toLowerCase());

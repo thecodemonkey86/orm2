@@ -196,13 +196,15 @@ public class EntityCls extends Cls {
 	
 	private void addAttributes(List<Column> allColumns) {
 		addForwardDeclaredClass(Types.beanQuerySelect(this));
-		
-		if(this.getTbl().hasQueryType(Table.QueryType.Update))
+		addIncludeHeaderInSource("repository/query/"+ Types.beanQuerySelect(this).getIncludeHeader());
+		if(this.getTbl().hasQueryType(Table.QueryType.Update)) {
 			addForwardDeclaredClass(Types.beanQueryUpdate(this));
-//		
-		if(this.getTbl().hasQueryType(Table.QueryType.Delete))
+			addIncludeHeaderInSource("repository/query/"+ Types.beanQueryUpdate(this).getIncludeHeader());
+		}		
+		if(this.getTbl().hasQueryType(Table.QueryType.Delete)) {
 			addForwardDeclaredClass(Types.beanQueryDelete(this));
-
+			addIncludeHeaderInSource("repository/query/"+ Types.beanQueryDelete(this).getIncludeHeader());
+		}
 		addIncludeLibInSource(Types.QString.toConstRef());
 		
 		addAttr(new RepositoryAttr());
@@ -253,8 +255,10 @@ public class EntityCls extends Cls {
 		for(ManyRelation r:manyRelations) {
 			ManyAttr attr = new ManyAttr(r);
 			addAttr(attr);
-			addIncludeHeader(attr.getClassType().getIncludeHeader());
-			addForwardDeclaredClass( (Cls) ((TplCls) (Cls) attr.getElementType()).getElementType());
+			if(!Entities.get(r.getDestTable()).equals(this)) {
+				addIncludeHeader(attr.getClassType().getIncludeHeader());
+				addForwardDeclaredClass( (Cls) ((TplCls) (Cls) attr.getElementType()).getElementType());
+			}
 			addMethod(new MethodManyAttrGetter(attr));
 //			Attr attrManyToManyAdded = new Attr(Types.qlist(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Added");
 //			addAttr(attrManyToManyAdded);
