@@ -175,6 +175,12 @@ public abstract class ConfigReader implements ContentHandler {
 					} else if(atts.getValue("autoIncrement")!=null) {
 						currentEntityTable.getPrimaryKey().getFirstColumn().setAutoIncrement(atts.getValue("autoIncrement").equals("true"));
 					}
+					if("true".equals(atts.getValue("overrideNotNullAllCols"))) {
+						for(Column col:currentEntityTable.getAllColumns()) {
+							col.setNullable(false);
+						}
+					}
+					
 					String strQueryTypes = atts.getValue("queryTypes");
 					if(strQueryTypes!=null) {
 						String[] strArrQueryTypes = strQueryTypes.split(",");
