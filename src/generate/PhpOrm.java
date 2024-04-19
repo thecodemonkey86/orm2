@@ -206,7 +206,7 @@ public class PhpOrm extends OrmGenerator {
 			PhpConfigReader cfgReader = new PhpConfigReader(xmlFile.getParent(),conn,database);
 			DefaultXMLReader.read(xmlFile, cfgReader);
 			PhpOrmConfig cfg = cfgReader.getCfg();
-			
+			cfg.setEnableStacktrace(true);
 			
 			cfg.setDbEngine(engine);
 	

@@ -6,6 +6,7 @@ import php.core.Param;
 import php.core.Types;
 import php.core.expression.BoolExpression;
 import php.core.expression.Expressions;
+import php.core.instruction.IfBlock;
 import php.core.method.Method;
 import php.entity.EntityCls;
 import util.StringUtil;
@@ -32,10 +33,10 @@ public class MethodColumnAttrSetter extends Method {
 	public void addImplementation() {
 		//addThrowsException(Types.SqlException);
 		Param param = getParam(a.getName());
-		
-		addInstr(_this().assignAttr(a.getName() + "Modified",
+		IfBlock ifNotEq=_if(_this().accessAttr(a.getName())._notEquals(param));
+		ifNotEq.thenBlock(). addInstr(_this().assignAttr(a.getName() + "Modified",
 				BoolExpression.TRUE));
-		_assign(_accessThis(a), param);
+		ifNotEq.thenBlock(). _assign(_accessThis(a), param);
 		//_return(_this());
 
 	}

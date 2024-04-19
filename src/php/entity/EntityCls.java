@@ -62,7 +62,7 @@ public class EntityCls extends PhpCls {
 	static PhpCls sqlQueryCls;
 	protected static String beanNamespace;
 	protected static String beanRepoNamespace;
-	public final static String API_LEVEL="2.2.0";
+	public final static String API_LEVEL="2.3.0";
 	
 	public static void setBeanRepoNamespace(String beanRepoClsNamespace) {
 		EntityCls.beanRepoNamespace = beanRepoClsNamespace;

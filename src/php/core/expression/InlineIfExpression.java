@@ -29,7 +29,7 @@ public class InlineIfExpression extends Expression {
 
 	@Override
 	public String toString() {
-		return CodeUtil2.sp(condition,'?',ifExpression,':',elseExpression);
+		return CodeUtil2.parentheses(CodeUtil2.sp(condition,'?',ifExpression,':',elseExpression));
 	}
 
 	@Override

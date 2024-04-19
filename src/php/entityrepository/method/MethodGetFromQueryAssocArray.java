@@ -72,6 +72,9 @@ public class MethodGetFromQueryAssocArray extends Method{
 					if(EntityCls.getDatabase() instanceof FirebirdDatabase) {
 						exprArrayIndex = PhpFunctions.substr.call(exprArrayIndex,new IntExpression(0),new IntExpression(31));
 					}
+					if(col.getUc1stCamelCaseName().equals("ZSaStartTimeCustomer")) {
+						System.out.println();
+					}
 					Var val = _declare(Types.Mixed, "_val"+col.getUc1stCamelCaseName(),array.arrayIndex(exprArrayIndex));
 					Expression convertTypeExpression = EntityCls.getTypeMapper().getConvertTypeExpression(val ,col);
 					
