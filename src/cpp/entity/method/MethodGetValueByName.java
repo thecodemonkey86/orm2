@@ -101,16 +101,19 @@ public class MethodGetValueByName extends Method {
 		}
 		DefaultCaseBlock defaultCaseBlock = switchBlock._default();*/
 		IfBlock ifblock = null;
+		int counter=0;
 		for (Column c : columns) {
 			if(!c.isFileImportEnabled()) {
 				Expression ret = Types.QVariant.callStaticMethod(ClsQVariant.fromValue, c.isNullable() ? new InlineIfExpression(Expressions.not(_this().callAttrGetter(c.getCamelCaseName()).callMethod(Nullable.isNull)),_this().callAttrGetter(c.getCamelCaseName()).callMethod(Nullable.val),new CreateObjectExpression(EntityCls.getDatabaseMapper().columnToType(c,false))) : _this().callAttrGetter(c.getCamelCaseName()));
 				Expression cond = pName._equals(new CStringLiteral(c.getName()));
-				if (ifblock == null) {
+				if (ifblock == null ||counter==100) {
+					counter=0;
 					ifblock = _if(cond);
 					ifblock.thenBlock()._return(ret);
 				} else {
 					ifblock.addElseIf(cond, new ReturnInstruction(ret));
 				}
+				++counter;
 			}
 		}
 		// ifblock.elseBlock().addInstr(new ThrowInstruction(new ClsQtException()));
