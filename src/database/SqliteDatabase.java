@@ -125,6 +125,8 @@ public class SqliteDatabase extends Database {
 						break;
 				}
 				col.setDbType(type);
+				System.out.println(type);
+				System.out.println(sql);
 				col.setNullable(!(isTokenAt(l, index, "NOT") && isTokenAt(l, index+1, "NULL")));
 				if(!col.isNullable()) {
 					index += 2;
@@ -152,6 +154,7 @@ public class SqliteDatabase extends Database {
 						(isTokenAt(l, index, ",") && 
 								(isTokenAt(l, index+1, "FOREIGN")
 										||isTokenAt(l, index+1, "PRIMARY")
+										||isTokenAt(l, index+1, "CONSTRAINT")
 					)))){
 					
 					endOfColumnList = true;
@@ -205,7 +208,34 @@ public class SqliteDatabase extends Database {
 						break;
 					} else {
 						expectToken(l, index++, ",");
+					}	
+				} else if(isTokenAt(l, index, "UNIQUE")) {
+					expectToken(l, ++index, "(");
+					do {
+						index+=2;
+					} while(l.get(index).equals(","));
+					expectToken(l, ++index, ")");
+					++index;
+				} else if(isTokenAt(l, index, "CONSTRAINT")) {
+					++index;
+					if(isTokenAt(l, ++index, "PRIMARY")) {
+						index++;
+						expectToken(l, index++, "KEY");
+						expectToken(l, index++, "(");
+						do {
+							pk.add(tbl.getColumnByName(filterColName(l.get(index++))));
+							
+						} while(l.get(index++).equals(","));
+						
+						if(isTokenAt(l, index, ")")) {
+							break;
+						} else {
+							expectToken(l, index++, ",");
+						}
+					} else {
+						throw new RuntimeException("unexpected token " + l.get(index));
 					}
+					continue;
 				} else {
 					throw new RuntimeException("unexpected token " + l.get(index));
 				}

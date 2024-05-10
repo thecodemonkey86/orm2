@@ -56,6 +56,8 @@ public abstract class Column {
 	}
 	
 	public void setDbType(String dbType) {
+		if(dbType.contains("_"))
+			throw new IllegalArgumentException();
 		this.dbType = dbType;
 	}
 	
