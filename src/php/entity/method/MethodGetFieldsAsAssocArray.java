@@ -7,6 +7,7 @@ import php.core.expression.ArrayInitExpression;
 import php.core.expression.AssocArrayInitExpression;
 import php.core.expression.Expression;
 import php.core.expression.Expressions;
+import php.core.expression.InlineIfExpression;
 import php.core.expression.PhpStringLiteral;
 import php.core.expression.Var;
 import php.core.instruction.ForeachLoop;
@@ -47,7 +48,12 @@ public class MethodGetFieldsAsAssocArray extends Method {
 		for(Column col : entity.getTbl().getAllColumns()) {
 			if(!col.isRelationDestColumn() || col.isPartOfPk()) {
 				Expression e = _this().callMethod("get"+col.getUc1stCamelCaseName());
-				expr.addElement(new Pair<String, Expression>(col.getName(),e.getType().equals(Types.DateTime) ? EntityCls.getTypeMapper().getConvertFieldToStringExpression(e, col,pDateTimeFormat,pDateFormat):e) );
+				expr.addElement(new Pair<String, Expression>(col.getName(),
+						col.isNullable() ? new InlineIfExpression(e.isNull(), Expressions.Null, (e.getType().equals(Types.DateTime)
+							? EntityCls.getTypeMapper().getConvertFieldToStringExpression(e, col,pDateTimeFormat,pDateFormat)
+							:e)) : (e.getType().equals(Types.DateTime)
+							? EntityCls.getTypeMapper().getConvertFieldToStringExpression(e, col,pDateTimeFormat,pDateFormat)
+							:e) ));
 				
 			}
 		}

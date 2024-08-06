@@ -10,6 +10,7 @@ import php.core.Types;
 import php.core.expression.BoolExpression;
 import php.core.expression.Expression;
 import php.core.expression.Expressions;
+import php.core.expression.InlineIfExpression;
 import php.core.expression.PhpStringLiteral;
 import php.core.expression.Var;
 import php.core.method.Method;
@@ -75,7 +76,7 @@ public class MethodGetFromQueryAssocArray extends Method{
 					if(col.getUc1stCamelCaseName().equals("ZSaStartTimeCustomer")) {
 						System.out.println();
 					}
-					Var val = _declare(Types.Mixed, "_val"+col.getUc1stCamelCaseName(),array.arrayIndex(exprArrayIndex));
+					Var val = col.isNullable() ?  _declare( Types.Mixed,"_val"+col.getUc1stCamelCaseName(), new InlineIfExpression(exprArrayIndex.isNull(), Expressions.Null,array.arrayIndex(exprArrayIndex))) : _declare(Types.Mixed, "_val"+col.getUc1stCamelCaseName(),array.arrayIndex(exprArrayIndex));
 					Expression convertTypeExpression = EntityCls.getTypeMapper().getConvertTypeExpression(val ,col);
 					
 					addInstr(entity.getClassConcreteType().getMethod("set"+col.getUc1stCamelCaseName()+"Internal").call(entity, convertTypeExpression).asInstruction());

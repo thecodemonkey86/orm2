@@ -211,6 +211,8 @@ public class PhpOrm extends OrmGenerator {
 			cfg.setDbEngine(engine);
 	
 			new PhpOrm(cfg).generate(); 
+		} catch (Exception e) {
+			e.printStackTrace();
 		} finally {
 			
 		}

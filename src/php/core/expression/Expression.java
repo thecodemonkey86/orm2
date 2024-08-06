@@ -3,6 +3,7 @@ package php.core.expression;
 import php.core.AbstractPhpCls;
 import php.core.Attr;
 import php.core.IAttributeContainer;
+import php.core.NullableType;
 import php.core.Operator;
 import php.core.PhpArray;
 import php.core.PhpCls;
@@ -189,7 +190,7 @@ public abstract class Expression {
 		
 	}
 	public Expression _notEquals(Expression other) {
-		if (other.getType().isPrimitiveType() || other.getType().equals(Types.String)|| other.getType().equals(Types.DateTime)) {
+		if (other.getType().isPrimitiveType() || (other.getType() instanceof NullableType && ((NullableType)other.getType()).getElementType().isPrimitiveType() ) || other.getType().equals(Types.String)|| other.getType().equals(Types.DateTime)) {
 			return notEqualsOp(other);
 		} else {
 			return new NotExpression(callMethod("equals", other));

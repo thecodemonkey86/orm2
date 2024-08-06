@@ -26,6 +26,9 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 	
 	@Override
 	public Type getTypeFromDbDataType(String dbType,boolean nullable) {
+		if(dbType==null) {
+			throw new IllegalArgumentException();
+		}
 		if(nullable) {
 			return getTypeFromDbDataType(dbType, false).toNullable();
 		}
@@ -171,7 +174,7 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 				return new InlineIfExpression(expr.isNull(), new PhpStringLiteral(""), PhpFunctions.trim.call(expr));
 			case "12":
 				if(!expr.getType().equals(Types.DateTime)) {
-					return new NewOperator(Types.DateTime,PhpFunctions.trim.call(expr), new NewOperator(Types.DateTimeZone,new PhpStringLiteral("UTC"))) ;
+					return new NewOperator(Types.DateTime,PhpFunctions.trim.call(expr)) ;
 				} else {
 					return expr;
 				}
@@ -183,7 +186,7 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 				return expr;
 			case "35":
 				if(!expr.getType().equals(Types.DateTime)) {
-					return new NewOperator(Types.DateTime,PhpFunctions.trim.call(expr), new NewOperator(Types.DateTimeZone,new PhpStringLiteral("UTC"))) ;
+					return new NewOperator(Types.DateTime,PhpFunctions.trim.call(expr)) ;
 				} else {
 					return expr;
 				}

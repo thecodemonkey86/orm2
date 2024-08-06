@@ -12,6 +12,9 @@ import php.lib.ClsSqlParam;
 public abstract class DatabaseTypeMapper {
 	public abstract Type getTypeFromDbDataType(String dbType,boolean nullable);
 	public Type getTypeFromDbDataType(Column col) {
+		if(col.getDbType()==null) {
+			System.out.println(col.getName());
+		}
 		return getTypeFromDbDataType(col.getDbType(), col.isNullable());
 	}
 	public abstract Expression getColumnDefaultValueExpression(Column col);
