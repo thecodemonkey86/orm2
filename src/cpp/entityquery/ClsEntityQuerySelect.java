@@ -134,7 +134,7 @@ public class ClsEntityQuerySelect extends Cls {
 		
 		//addForwardDeclaredClass(Types.EntityRepository);
 		
-		addMethod(new MethodToStringSelect(cls));
+		addMethod(EntityCls.getDatabaseMapper().getSelectToStringMethod(cls));
 		addMethod(new MethodJoin1(this));
 		addMethod(new MethodJoin2(this));
 		addMethod(new MethodJoin3(this));

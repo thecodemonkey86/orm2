@@ -12,6 +12,8 @@ import cpp.core.expression.Expression;
 import cpp.core.expression.IntExpression;
 import cpp.core.expression.LongLongExpression;
 import cpp.core.expression.ShortExpression;
+import cpp.entity.EntityCls;
+import cpp.entityquery.method.MethodToStringSelectFirebird;
 import cpp.lib.ClsQVariant;
 import cpp.lib.ClsSqlQuery;
 import database.column.Column;
@@ -210,5 +212,9 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 		throw new RuntimeException("not impl");
 	}
 
+	@Override
+	public Method getSelectToStringMethod(EntityCls cls) {
+		return  new MethodToStringSelectFirebird(cls);
+	}
 
 }

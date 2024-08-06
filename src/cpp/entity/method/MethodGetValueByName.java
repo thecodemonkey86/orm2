@@ -104,7 +104,8 @@ public class MethodGetValueByName extends Method {
 		int counter=0;
 		for (Column c : columns) {
 			if(!c.isFileImportEnabled()) {
-				Expression ret = Types.QVariant.callStaticMethod(ClsQVariant.fromValue, c.isNullable() ? new InlineIfExpression(Expressions.not(_this().callAttrGetter(c.getCamelCaseName()).callMethod(Nullable.isNull)),_this().callAttrGetter(c.getCamelCaseName()).callMethod(Nullable.val),new CreateObjectExpression(EntityCls.getDatabaseMapper().columnToType(c,false))) : _this().callAttrGetter(c.getCamelCaseName()));
+				Expression ret = c.isNullable() 
+						? new InlineIfExpression(Expressions.not(_this().callAttrGetter(c.getCamelCaseName()).callMethod(Nullable.isNull)), Types.QVariant.callStaticMethod(ClsQVariant.fromValue, _this().callAttrGetter(c.getCamelCaseName()).callMethod(Nullable.val)),new CreateObjectExpression(Types.QVariant)) : Types.QVariant.callStaticMethod(ClsQVariant.fromValue, _this().callAttrGetter(c.getCamelCaseName()));
 				Expression cond = pName._equals(new CStringLiteral(c.getName()));
 				if (ifblock == null ||counter==100) {
 					counter=0;

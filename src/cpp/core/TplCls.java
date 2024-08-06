@@ -18,7 +18,7 @@ public class TplCls extends Cls {
 	
 	@Override
 	public String toUsageString() {
-		String str= constness ? CodeUtil.sp("const",type,isPtr()?"*":"") : isPtr()?type+ CodeUtil.abr(element.toUsageString())+"*":type+ CodeUtil.abr(element.toUsageString());
+		String str= constness ? CodeUtil.sp("const",type+ CodeUtil.abr(element.toUsageString()),isPtr()?"*":"") : isPtr()?type+ CodeUtil.abr(element.toUsageString())+"*":type+ CodeUtil.abr(element.toUsageString());
 		return (useNamespace != null) ? useNamespace+"::"+ str : str;
 		
 	}
