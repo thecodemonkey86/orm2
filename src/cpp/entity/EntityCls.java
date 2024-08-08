@@ -196,14 +196,14 @@ public class EntityCls extends Cls {
 	
 	private void addAttributes(List<Column> allColumns) {
 		addForwardDeclaredClass(Types.beanQuerySelect(this));
-		addIncludeHeaderInSource("repository/query/"+ Types.beanQuerySelect(this).getIncludeHeader());
+		addIncludeHeaderInSource(getRepositoryPath() + "query/"+ Types.beanQuerySelect(this).getIncludeHeader());
 		if(this.getTbl().hasQueryType(Table.QueryType.Update)) {
 			addForwardDeclaredClass(Types.beanQueryUpdate(this));
-			addIncludeHeaderInSource("repository/query/"+ Types.beanQueryUpdate(this).getIncludeHeader());
+			addIncludeHeaderInSource(getRepositoryPath()+ "query/"+ Types.beanQueryUpdate(this).getIncludeHeader());
 		}		
 		if(this.getTbl().hasQueryType(Table.QueryType.Delete)) {
 			addForwardDeclaredClass(Types.beanQueryDelete(this));
-			addIncludeHeaderInSource("repository/query/"+ Types.beanQueryDelete(this).getIncludeHeader());
+			addIncludeHeaderInSource(getRepositoryPath()+"query/"+ Types.beanQueryDelete(this).getIncludeHeader());
 		}
 		addIncludeLibInSource(Types.QString.toConstRef());
 		
