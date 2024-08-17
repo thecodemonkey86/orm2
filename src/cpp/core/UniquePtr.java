@@ -2,13 +2,17 @@ package cpp.core;
 
 import codegen.CodeUtil;
 import cpp.Namespaces;
+import cpp.lib.LibMethod;
 import util.CodeUtil2;
 
 public class UniquePtr extends TplCls{
 
+	public static final String get="get";
+	
 	public UniquePtr(Cls element) {
 		super("unique_ptr", element);
 		setUseNamespace(Namespaces.std);
+		addMethod(new LibMethod(element.toRawPointer(),get));
 	}
 
 	@Override

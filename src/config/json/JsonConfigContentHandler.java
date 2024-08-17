@@ -33,8 +33,7 @@ public class JsonConfigContentHandler implements ContentHandler {
 	
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
-		String lowercase = localName.toLowerCase();
-		
+		String lowercase = qName.toLowerCase();
 		switch (lowercase) {
 		case "server":
 			this.serverType = atts.getValue("type");

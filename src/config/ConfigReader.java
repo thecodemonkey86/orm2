@@ -122,7 +122,7 @@ public abstract class ConfigReader implements ContentHandler {
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
 		try {
-			this.tags.push(localName);
+			this.tags.push(qName);
 			
 			switch (this.tags.peek()) {
 			case "orm":

@@ -4,6 +4,7 @@ import cpp.core.ConstRef;
 import cpp.core.RawPtr;
 import cpp.core.SharedPtr;
 import cpp.core.Type;
+import cpp.core.UniquePtr;
 
 public class DereferenceExpression extends Expression{
 	Expression e;
@@ -16,11 +17,11 @@ public class DereferenceExpression extends Expression{
 	public Type getType() {
 		if (e.getType() instanceof RawPtr) {
 			return ((RawPtr)e.getType()).getElementType();
-		}
-		if (e.getType() instanceof SharedPtr) {
+		} else if (e.getType() instanceof SharedPtr) {
 			return ((SharedPtr)e.getType()).getElementType();
-		}
-		if (e.getType() instanceof ConstRef) {
+		} else if (e.getType() instanceof UniquePtr) {
+			return ((UniquePtr)e.getType()).getElementType();
+		} else if (e.getType() instanceof ConstRef) {
 			ConstRef cr=(ConstRef) e.getType();
 			return ((SharedPtr)cr.getBase()).getElementType();
 		}

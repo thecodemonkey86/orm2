@@ -39,7 +39,7 @@ public class JsonModeConfigReader {
 			String serverType= handler.getServerType();
 			String clientType= handler.getClientType();
 			inputStream.reset();
-			
+			if(serverType==null) throw new IOException("Server type missing");
 			boolean serverIsCpp = serverType.equals("cpp");
 			ConfigReader serverCfgReader = serverIsCpp ? new CppConfigReader(xmlFile,conn,db) : new PhpConfigReader(xmlFile,conn,db);
 			

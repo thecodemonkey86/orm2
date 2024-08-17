@@ -474,7 +474,7 @@ public class Cls extends Type implements IAttributeContainer{
 		return sharedPtr(this);
 	}
 	
-	public Type toUniquePointer() {
+	public UniquePtr toUniquePointer() {
 		return new UniquePtr(this);
 	}
 	public Expression callStaticMethod(TplMethod method,Type concreteType,Expression...args) {

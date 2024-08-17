@@ -167,7 +167,7 @@ public abstract class Expression {
 
 
 	public DereferenceExpression dereference() {
-		if(this.getType() instanceof RawPtr) {
+		if(this.getType().isPtr()) {
 			return new DereferenceExpression(this);
 		} else {
 			throw new RuntimeException("type is not a raw pointer");
