@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import database.table.Table;
+import util.StringUtil;
 
 public class AbstractRelation {
 	public static enum RelationSqlOptions{disableOnConflictDoNothing};
@@ -102,5 +103,9 @@ public class AbstractRelation {
 
 	public boolean hasAdditionalOrderBy() {
 		return additionalOrderBy!=null;
+	}
+
+	public String getIdentifier() {
+		return destTable.getCamelCaseName()+StringUtil.ucfirst(alias);
 	}
 }

@@ -34,9 +34,7 @@ import util.CodeUtil2;
 
 public class MethodEntityLoad extends Method {
 
-	protected List<OneRelation> oneRelations;
-	protected List<OneToManyRelation> oneToManyRelations;
-	protected List<ManyRelation> manyRelations;
+	protected AbstractRelation relation;
 	protected PrimaryKey primaryKey;
 	protected EntityCls entity;
 	protected Param pEntity;
@@ -46,12 +44,10 @@ public class MethodEntityLoad extends Method {
 		return "load";
 	}
 	
-	public MethodEntityLoad(EntityCls entity) {
+	public MethodEntityLoad(EntityCls entity, AbstractRelation r) {
 		super(Public, Types.Void, getMethodName());
 		
-		this.oneRelations = entity.getOneRelations();
-		this.oneToManyRelations = entity.getOneToManyRelations();
-		this.manyRelations = entity.getManyRelations();
+		this.relation =r;
 		this.primaryKey = entity.getTbl().getPrimaryKey();
 		this.entity = entity;
 		pEntity = addParam(entity.toRef(), "entity");
@@ -73,21 +69,14 @@ public class MethodEntityLoad extends Method {
 		ArrayList<Expression> selectFields = new ArrayList<>();
 		selectFields.add(entity.callStaticMethod("getSelectFields",QString.fromStringConstant("e1")));
 		
-		List<AbstractRelation> allRelations = new ArrayList<>(oneRelations.size()+oneToManyRelations.size()+manyRelations.size());
-		allRelations.addAll(oneRelations);
-		allRelations.addAll(oneToManyRelations);
-		allRelations.addAll(manyRelations);
-		
-		
-		for(AbstractRelation r:allRelations) {
-			selectFields.add(Entities.get(r.getDestTable()).callStaticMethod("getSelectFields", QString.fromStringConstant(r.getAlias())));
+			selectFields.add(Entities.get(relation.getDestTable()).callStaticMethod("getSelectFields", QString.fromStringConstant(relation.getAlias())));
 			
-		}
 		Expression exprQSqlQuery = sqlQuery.callMethod("select", Expressions.concat(QChar.fromChar(','), selectFields) )
 									.callMethod("from", QString.fromExpression(entity.callStaticMethod("getTableName",QString.fromStringConstant("e1"))));
 		
 				
-		for(OneRelation r:oneRelations) {
+		if(relation instanceof OneRelation) {
+			OneRelation r= (OneRelation)relation;
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getColumnCount();i++) {
 				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
@@ -98,8 +87,8 @@ public class MethodEntityLoad extends Method {
 			if(r.hasAdditionalJoin()) {
 				exprQSqlQuery = exprQSqlQuery.callMethod(ClsSqlQuery.join,QString.fromStringConstant(r.getAdditionalJoin()));
 			}
-		}
-		for(OneToManyRelation r:oneToManyRelations) {
+		} else 	if(relation instanceof OneToManyRelation) {
+			OneToManyRelation r= (OneToManyRelation)relation;
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getColumnCount();i++) {
 				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
@@ -109,8 +98,8 @@ public class MethodEntityLoad extends Method {
 			if(r.hasAdditionalJoin()) {
 				exprQSqlQuery = exprQSqlQuery.callMethod(ClsSqlQuery.join,QString.fromStringConstant(r.getAdditionalJoin()));
 			}
-		}
-		for(ManyRelation r:manyRelations) {
+		} else	if(relation instanceof ManyRelation) {
+			ManyRelation r= (ManyRelation)relation;
 			ArrayList<String> joinConditionsMappingDest=new ArrayList<>();
 			ArrayList<String> joinConditionsE1Mapping=new ArrayList<>();
 			for(int i=0;i<r.getSourceColumnCount();i++) {
@@ -145,10 +134,8 @@ public class MethodEntityLoad extends Method {
 			exprQSqlQuery = exprQSqlQuery.callMethod("where", QString.fromStringConstant("e1."+ col.getEscapedName()+"=?"),EntityCls.accessThisAttrGetterByColumn(pEntity,col));
 					
 		}
-		for(AbstractRelation r:allRelations) {
-			if(r.hasAdditionalOrderBy()) {
-				exprQSqlQuery = exprQSqlQuery.callMethod(ClsSqlQuery.orderBy,QString.fromStringConstant(r.getAdditionalOrderBy()));
-			}
+		if(relation.hasAdditionalOrderBy()) {
+			exprQSqlQuery = exprQSqlQuery.callMethod(ClsSqlQuery.orderBy,QString.fromStringConstant(relation.getAdditionalOrderBy()));
 		}
 		exprQSqlQuery = exprQSqlQuery.callMethod("execQuery",pSqlCon);
 		Var qSqlQuery = _declare(exprQSqlQuery.getType(),
@@ -157,7 +144,8 @@ public class MethodEntityLoad extends Method {
 		
 		//bCount = 2;
 		HashMap<String, Var> pkSets=new HashMap<>();
-		for(OneToManyRelation r:oneToManyRelations) {
+		if(relation instanceof OneToManyRelation) {
+			OneToManyRelation r= (OneToManyRelation)relation;
 			EntityCls foreignCls = Entities.get(r.getDestTable()); 
 			if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
 				Var pkSet = _declare(Types.qset(foreignCls.getStructPk()), "pkSetB"+r.getAlias());
@@ -168,8 +156,8 @@ public class MethodEntityLoad extends Method {
 				Var pkSet = _declare(Types.qset(type), "pkSetB"+r.getAlias());
 				pkSets.put(r.getAlias(), pkSet);
 			}
-		}
-		for(ManyRelation r:manyRelations) {
+		} else	if(relation instanceof ManyRelation) {
+			ManyRelation r= (ManyRelation)relation;
 			EntityCls foreignCls = Entities.get(r.getDestTable()); 
 			if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
 				Var pkSet = _declare(Types.qset(foreignCls.getStructPk()), "pkSetB"+r.getAlias());
@@ -185,7 +173,8 @@ public class MethodEntityLoad extends Method {
 		While doWhileQSqlQueryNext = _while(qSqlQuery.callMethod("next"));
 		Var rec = doWhileQSqlQueryNext._declare(Types.QSqlRecord, "rec",qSqlQuery.callMethod("record") );
 		//bCount = 2;
-		for(OneToManyRelation r:oneToManyRelations) {
+		if(relation instanceof OneToManyRelation) {
+			OneToManyRelation r= (OneToManyRelation)relation;
 			Var pkSet=pkSets.get(r.getAlias());
 			EntityCls foreignCls = Entities.get(r.getDestTable()); 
 			
@@ -236,7 +225,8 @@ public class MethodEntityLoad extends Method {
 //			doWhileQSqlQueryNext._foreach(var, collection);
 			//bCount++;
 		}
-		for(ManyRelation r:manyRelations) {
+		if(relation instanceof ManyRelation) {
+			ManyRelation r= (ManyRelation)relation;
 			Var pkSet=pkSets.get(r.getAlias());
 			EntityCls foreignCls = Entities.get(r.getDestTable()); 
 			if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
@@ -270,7 +260,8 @@ public class MethodEntityLoad extends Method {
 					;
 			}
 		}
-		for(OneRelation r:oneRelations) {
+		if(relation instanceof OneRelation) {
+			OneRelation r= (OneRelation)relation;
 			EntityCls foreignCls = Entities.get(r.getDestTable()); 
 			try {
 				IfBlock ifBlock= doWhileQSqlQueryNext._if(

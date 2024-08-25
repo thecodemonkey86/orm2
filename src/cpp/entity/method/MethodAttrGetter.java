@@ -11,6 +11,7 @@ import cpp.core.expression.Expressions;
 import cpp.core.instruction.IfBlock;
 import cpp.entityrepository.method.MethodEntityLoad;
 import cpp.util.ClsDbPool;
+import database.relation.AbstractRelation;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
@@ -18,18 +19,18 @@ import database.relation.OneToManyRelation;
 public class MethodAttrGetter extends Method{
 
 	protected Attr a;
-	protected boolean loadIfNotLoaded;
+	protected AbstractRelation relation;
 	protected Param pSqlCon;
 	
-	public MethodAttrGetter(Attr a,boolean loadIfNotLoaded) {
+	public MethodAttrGetter(Attr a,AbstractRelation relation) {
 		super(Public, 
 				a.getType()
 //				a.getType().isPrimitiveType() ? a.getType()	: a.getType().toRef()
 						, getMethodName(a));
 		this.a=a;
-		setConstQualifier(!loadIfNotLoaded);
-		this.loadIfNotLoaded= loadIfNotLoaded;
-		if ( loadIfNotLoaded) {
+		setConstQualifier(relation==null);
+		this.relation= relation;
+		if ( relation!=null) {
 			pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 		}
 //		if (loadIfNotLoaded) {
@@ -39,9 +40,9 @@ public class MethodAttrGetter extends Method{
 
 	@Override
 	public void addImplementation() {
-		if ( loadIfNotLoaded) {
+		if ( relation!=null) {
 			IfBlock ifNotLoaded = _if(Expressions.and(
-					Expressions.not(parent.getAttrByName("loaded"))
+					Expressions.not(parent.getAttrByName("loaded"+relation.getIdentifier()))
 //					Expressions.not(paramByName("noLoading"))
 				)
 					

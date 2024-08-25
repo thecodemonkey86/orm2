@@ -52,7 +52,6 @@ import cpp.entityquery.method.MethodOrderBy;
 import cpp.entityquery.method.MethodOrderByPrimaryKey;
 import cpp.entityquery.method.MethodPrintQDebug;
 import cpp.entityquery.method.MethodSqlFieldEquals;
-import cpp.entityquery.method.MethodToStringSelect;
 import cpp.entityquery.method.MethodWhere1;
 import cpp.entityquery.method.MethodWhere10;
 import cpp.entityquery.method.MethodWhere11;

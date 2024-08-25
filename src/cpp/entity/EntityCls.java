@@ -203,9 +203,10 @@ public class EntityCls extends Cls {
 		for(OneRelation r:oneRelations) {
 			OneAttr attr = new OneAttr(r);
 				addAttr(attr);
+				addAttr(new Attr(CoreTypes.Bool, "loaded"+r.getIdentifier()));
 				addIncludeHeaderInSource(attr.getElementType().getName().toLowerCase());
 				addForwardDeclaredClass( (Cls) ((TplCls)attr.getClassType()).getElementType());
-				addMethod(new MethodAttrGetter(attr,true));	
+				addMethod(new MethodAttrGetter(attr,r));	
 				addMethod(new MethodOneRelationEntityIsNull(r,true));
 				addMethod(new MethodOneRelationEntityIsNull(r,false));
 //				addMethod(new MethodAttrSetterInternal(this, attr)); 
@@ -286,7 +287,7 @@ public class EntityCls extends Cls {
 				Attr attr = new Attr(EntityCls.getDatabaseMapper().getTypeFromDbDataType(col.getDbType(), col.isNullable()), col.getCamelCaseName());
 				addAttr(attr);
 				
-				addMethod(new MethodAttrGetter(attr,false));	
+				addMethod(new MethodAttrGetter(attr,null));	
 				if(!col.isPartOfPk() || singleColPk) {
 					addMethod(new MethodColumnAttrSetter(col,attr));
 					if (col.isNullable()) {
@@ -322,7 +323,7 @@ public class EntityCls extends Cls {
 			} else {
 				Attr attr = new Attr(EntityCls.getDatabaseMapper().getTypeFromDbDataType(col.getDbType(), col.isNullable()), col.getCamelCaseName());
 				addAttr(attr);
-				addMethod(new MethodAttrGetter(attr,false));	
+				addMethod(new MethodAttrGetter(attr,null));	
 			}
 			
 //			if (col.isPartOfPk()) {
