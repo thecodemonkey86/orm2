@@ -368,6 +368,10 @@ public abstract class ConfigReader implements ContentHandler {
 					if(attrAdditionalOrderBy!=null) {
 						currentOneToManyRelation.setAdditionalOrderBy(attrAdditionalOrderBy);
 					}
+					String attrComposition=atts.getValue("composition");
+					if(attrComposition!=null) {
+						currentOneToManyRelation.setComposition(attrComposition.equals("true") || attrComposition.equals("1"));
+					}
 					oneToManyAliasCounter++;
 					break;
 				}
