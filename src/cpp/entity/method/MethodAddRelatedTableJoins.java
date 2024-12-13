@@ -26,11 +26,11 @@ public class MethodAddRelatedTableJoins extends Method {
 
 	@Override
 	public void addImplementation() {
-		EntityCls bean=(EntityCls)parent;
+		EntityCls entity=(EntityCls)parent;
 		Expression query = getParam("query");
 		
 			
-		for(OneRelation r:bean.getOneRelations()) {
+		for(OneRelation r:entity.getOneRelations()) {
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getColumnCount();i++) {
 				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
@@ -38,15 +38,15 @@ public class MethodAddRelatedTableJoins extends Method {
 			
 			query = query.callMethod("leftJoin", Entities.get(r.getDestTable()).callStaticMethod("getTableName"),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
 		}
-		for(OneToManyRelation r:bean.getOneToManyRelations()) {
+		for(OneToManyRelation r:entity.getOneToManyRelations()) {
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getColumnCount();i++) {
 				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
 			}
 			
-			query = query.callMethod("leftJoin", Entities.get(r.getDestTable()).callStaticMethod("getTableName"),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
+			query = query.callMethod(r.isComposition() ? "join": "leftJoin", Entities.get(r.getDestTable()).callStaticMethod("getTableName"),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
 		}
-		for(ManyRelation r:bean.getManyRelations()) {
+		for(ManyRelation r:entity.getManyRelations()) {
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getSourceColumnCount();i++) {
 				joinConditions.add(CodeUtil.sp("e1."+r.getSourceEntityColumn(i).getEscapedName(),'=',r.getAlias("mapping")+"."+ r.getSourceMappingColumn(i).getEscapedName()));
@@ -63,7 +63,7 @@ public class MethodAddRelatedTableJoins extends Method {
 			
 		}
 		
-		if (!bean.getOneRelations().isEmpty() || !bean.getOneToManyRelations().isEmpty() || !bean.getManyRelations().isEmpty()) {
+		if (!entity.getOneRelations().isEmpty() || !entity.getOneToManyRelations().isEmpty() || !entity.getManyRelations().isEmpty()) {
 			addInstr(query.asInstruction());
 		}
 		

@@ -37,19 +37,13 @@ public class MethodExecQuery extends Method{
 						"            }\r\n" + 
 						"            if (!q.exec()) {\r\n" + 
 						"                QString msg=q.lastError().text();\r\n" +
-						"				 #ifdef QT_DEBUG\r\n	"+
-						"                qDebug()<<msg;\r\n" + 
-						"                qDebug()<<q.driver()->lastError().text();\r\n"+ 
-						"				 #endif	\r\n" + 
-						"                throw SqlUtil3::SqlException(sqlCon.lastError().nativeErrorCode(), sqlCon.driver()->lastError().text(),toString());\r\n" + 
+						"                throwSqlExceptionWithLine(q.lastError().nativeErrorCode(),!msg.isEmpty() ? msg : sqlCon.driver()->lastError().text(),q.lastQuery());\r\n"	+		
 						"            }\r\n" + 
 						"            return q;\r\n" + 
 						"\r\n" + 
 						"        } else {\r\n" + 
 						"            QString msg=q.lastError().text();\r\n" + 
-						"            #ifdef QT_DEBUG\r\nqDebug()<<msg;\r\n"
-						+ "			 #endif\r\n" + 
-						"            throw SqlUtil3::SqlException(sqlCon.lastError().nativeErrorCode(), sqlCon.driver()->lastError().text(),toString());\r\n" + 
+						"            throwSqlExceptionWithLine(q.lastError().nativeErrorCode(),!msg.isEmpty() ? msg : sqlCon.driver()->lastError().text(),q.lastQuery());\r\n"	+
 						"        }",pRewriteSql==null?"toString()": pRewriteSql );
 			}
 		});

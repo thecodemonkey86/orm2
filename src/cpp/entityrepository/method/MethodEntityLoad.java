@@ -105,7 +105,7 @@ public class MethodEntityLoad extends Method {
 				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
 			}
 			
-			exprQSqlQuery = exprQSqlQuery.callMethod("leftJoin", QString.fromExpression(Entities.get(r.getDestTable()).callStaticMethod("getTableName")),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
+			exprQSqlQuery = exprQSqlQuery.callMethod(r.isComposition() ? "join" : "leftJoin", QString.fromExpression(Entities.get(r.getDestTable()).callStaticMethod("getTableName")),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
 			if(r.hasAdditionalJoin()) {
 				exprQSqlQuery = exprQSqlQuery.callMethod(ClsSqlQuery.join,QString.fromStringConstant(r.getAdditionalJoin()));
 			}
