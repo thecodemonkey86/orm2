@@ -96,8 +96,8 @@ public class ClsEntityRepository extends Cls{
 			if(entity.getTbl().hasQueryType(Table.QueryType.Update))
 				addMethod(new MethodCreateQueryUpdate(entity));
 			
-			if(entity.hasRelations())
-				addMethod(new MethodEntityLoad(entity));
+			//if(entity.hasRelations())
+				//addMethod(new MethodEntityLoad(entity));
 //			if(EntityCls.getDatabase().supportsInsertOrIgnore()) {
 //				addMethod(new MethodPrepareUpsertPg(entity));
 //				addMethod(new MethodInsertOrIgnorePg(entity));

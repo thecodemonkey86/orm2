@@ -19,6 +19,6 @@ public interface IManyRelation {
 
 	String getSubstituteNameSingular();
 	String getSubstituteNamePlural();
-
+	public String getIdentifier();
 
 }

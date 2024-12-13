@@ -90,7 +90,7 @@ public class EntityCls extends Cls {
 	public static final String END_CUSTOM_CLASS_MEMBERS = "/*END_CUSTOM_CLASS_MEMBERS*/";
 	public static final String BEGIN_CUSTOM_PREPROCESSOR = "/*BEGIN_CUSTOM_PREPROCESSOR*/";
 	public static final String END_CUSTOM_PREPROCESSOR = "/*END_CUSTOM_PREPROCESSOR*/";
-	public static final String APILEVEL = "4.3.1";
+	public static final String APILEVEL = "5.0.0";
 	
 	static Database database;
 	static DatabaseTypeMapper mapper;
@@ -204,6 +204,8 @@ public class EntityCls extends Cls {
 			OneAttr attr = new OneAttr(r);
 				addAttr(attr);
 				addAttr(new Attr(CoreTypes.Bool, "loaded"+r.getIdentifier()));
+				addAttr(new Attr(Types.Optional, BEAN_PARAM_NAME));
+				
 				addIncludeHeaderInSource(attr.getElementType().getName().toLowerCase());
 				addForwardDeclaredClass( (Cls) ((TplCls)attr.getClassType()).getElementType());
 				addMethod(new MethodAttrGetter(attr,r));	
