@@ -91,11 +91,11 @@ public class MethodFetchList extends Method {
 		if (pk.isMultiColumn()) {
 			e1pk =doWhileQueryNext._declare( bean.getStructPk(), "e1pk" );
 			for(Column colPk:pk.getColumns()) {
-				doWhileQueryNext._assign(e1pk.accessAttr(colPk.getCamelCaseName()), recDoWhile.callMethod("value", QString.fromStringConstant("e1__"+ colPk.getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType())));
+				doWhileQueryNext._assign(e1pk.accessAttr(colPk.getCamelCaseName()), EntityCls.getDatabaseMapper().getQVariantConvertExpression(recDoWhile.callMethod("value", QString.fromStringConstant("e1__"+ colPk.getName())),colPk.getDbType()));
 			}
 			
 		} else {
-			e1pk =doWhileQueryNext._declare( EntityCls.getDatabaseMapper().columnToType(pk.getFirstColumn()), "e1pk", recDoWhile.callMethod("value", QString.fromStringConstant("e1__"+ pk.getFirstColumn().getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(pk.getFirstColumn().getDbType())));
+			e1pk =doWhileQueryNext._declare( EntityCls.getDatabaseMapper().columnToType(pk.getFirstColumn()), "e1pk", EntityCls.getDatabaseMapper().getQVariantConvertExpression(recDoWhile.callMethod("value", QString.fromStringConstant("e1__"+ pk.getFirstColumn().getName())),pk.getFirstColumn().getDbType()));
 		}
 		
 		IfBlock ifNotE1SetContains = doWhileQueryNext._if(Expressions.not(e1Map.callMethod("contains", e1pk)));
@@ -149,13 +149,13 @@ public class MethodFetchList extends Method {
 						for(Column colPk:r.getDestTable().getPrimaryKey().getColumns()) {
 							ifNotPkForeignIsNull.thenBlock()._assign(
 									pkForeign.accessAttr(colPk.getCamelCaseName()), 
-									recDoWhile.callMethod("value",
-											QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType()))
+									EntityCls.getDatabaseMapper().getQVariantConvertExpression(recDoWhile.callMethod("value",
+											QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())),colPk.getDbType())
 									);
 						}
 					} else {
 						Column colPk=r.getDestTable().getPrimaryKey().getFirstColumn();
-						pkForeign = ifNotPkForeignIsNull.thenBlock()._declare(beanPk, "pkForeignB"+r.getAlias(),recDoWhile.callMethod("value",QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType())));
+						pkForeign = ifNotPkForeignIsNull.thenBlock()._declare(beanPk, "pkForeignB"+r.getAlias(),EntityCls.getDatabaseMapper().getQVariantConvertExpression(recDoWhile.callMethod("value",QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())),colPk.getDbType()));
 					}
 					IfBlock ifRecValueIsNotNull = ifNotPkForeignIsNull.thenBlock()._if(
 							Expressions.not(fkHelper

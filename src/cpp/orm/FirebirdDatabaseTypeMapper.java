@@ -2,7 +2,6 @@ package cpp.orm;
 
 import cpp.Types;
 import cpp.CoreTypes;
-import cpp.core.Method;
 import cpp.core.QString;
 import cpp.core.Type;
 import cpp.core.expression.CreateObjectExpression;
@@ -18,28 +17,28 @@ import database.column.Column;
 public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 
 	@Override
-	public Method getQVariantConvertMethod(String dbType) {
+	public Expression getQVariantConvertExpression(Expression e, String dbType) {
 		switch(dbType) {
 		case "8":
-			return CoreTypes.QVariant.getMethod("toInt");
+			return e.callMethod(CoreTypes.QVariant.getMethod("toInt"));
 		case "16":
-			return CoreTypes.QVariant.getMethod("toLongLong");
+			return e.callMethod(CoreTypes.QVariant.getMethod("toLongLong"));
 		case "7":
-			return CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value,CoreTypes.Int16);
+			return e.callMethod(CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value,CoreTypes.Int16));
 		case "14":	
 		case "37":
-			return CoreTypes.QVariant.getMethod("toString");
+			return e.callMethod(CoreTypes.QVariant.getMethod("toString"));
 		case "12":
-			return CoreTypes.QVariant.getMethod("toDate");
+			return e.callMethod(CoreTypes.QVariant.getMethod("toDate"));
 		case "35":
-			return CoreTypes.QVariant.getMethod("toDateTime");
+			return e.callMethod(CoreTypes.QVariant.getMethod("toDateTime"));
 		case "13":
-			return CoreTypes.QVariant.getMethod("toTime");
+			return e.callMethod(CoreTypes.QVariant.getMethod("toTime"));
 		case "10":
 		case "27":
-			return CoreTypes.QVariant.getMethod("toDouble");
+			return e.callMethod(CoreTypes.QVariant.getMethod("toDouble"));
 		case "261":
-			return CoreTypes.QVariant.getMethod("toByteArray");
+			return e.callMethod(CoreTypes.QVariant.getMethod("toByteArray"));
 		default:
 			throw new RuntimeException("type " + dbType+" not implemented");
 		}

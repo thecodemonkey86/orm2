@@ -1,7 +1,6 @@
 package cpp.orm;
 
 import cpp.Types;
-import cpp.core.Method;
 import cpp.core.QString;
 import cpp.core.Type;
 import cpp.CoreTypes;
@@ -19,46 +18,46 @@ import database.column.Column;
 
 public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 	@Override
-	public Method getQVariantConvertMethod(String pgType) {
+	public Expression getQVariantConvertExpression(Expression e, String pgType) {
 		switch(pgType) {
 		case "int":
-			return CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.Int32);
+			return e.callMethod(CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.Int32));
 		case "bigint":
-			return CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.Int64);
+			return e.callMethod(CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.Int64));
 		case "smallint":
-			return CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.Int16);
+			return e.callMethod(CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.Int16));
 		case "tinyint":
-			return CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.Int8);
+			return e.callMethod(CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.Int8));
 		case "int_unsigned":
-			return CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.UInt32);
+			return e.callMethod(CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.UInt32));
 		case "bigint_unsigned":
-			return CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.UInt64);
+			return e.callMethod(CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.UInt64));
 		case "smallint_unsigned":
-			return CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.UInt16);
+			return e.callMethod(CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.UInt16));
 		case "tinyint_unsigned":
-			return CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.UInt8);
+			return e.callMethod(CoreTypes.QVariant.getTemplateMethod(ClsQVariant.value, Types.UInt8));
 		case "varchar":
 		case "character":	
 		case "char":	
 		case "text":
-			return CoreTypes.QVariant.getMethod("toString");
+			return e.callMethod(CoreTypes.QVariant.getMethod("toString"));
 		case "date":
-			return CoreTypes.QVariant.getMethod("toDate");
+			return e.callMethod(CoreTypes.QVariant.getMethod("toDate"));
 		case "timestamp":
 		case "datetime":
-			return CoreTypes.QVariant.getMethod("toDateTime");
+			return e.callMethod(CoreTypes.QVariant.getMethod("toDateTime"));
 		case "double precision":
 		case "decimal":
-			return CoreTypes.QVariant.getMethod("toDouble");
+			return e.callMethod(CoreTypes.QVariant.getMethod("toDouble"));
 		case "blob":
 		case "mediumblob":
 		case "longblob":
 		case "tinyblob":
 		case "binary":
 		case "varbinary":
-			return CoreTypes.QVariant.getMethod("toByteArray");
+			return e.callMethod(CoreTypes.QVariant.getMethod("toByteArray"));
 		case "boolean":
-			return CoreTypes.QVariant.getMethod("toBool");
+			return e.callMethod(CoreTypes.QVariant.getMethod("toBool"));
 		default:
 			return null;
 			//throw new RuntimeException("type " + pgType+" not implemented");

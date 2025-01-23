@@ -1,16 +1,15 @@
 package cpp.orm;
 
-import cpp.core.Method;
 import cpp.core.Type;
 import cpp.core.expression.Expression;
 import cpp.lib.ClsSqlQuery;
 import database.column.Column;
 
 public abstract class DatabaseTypeMapper {
-	public Method getQVariantConvertMethod(Column col) {
-		return getQVariantConvertMethod(col.getDbType());
-	}
-	public abstract Method getQVariantConvertMethod(String pgType);
+	public Expression getQVariantConvertExpression(Expression e, Column col) {
+		return getQVariantConvertExpression(e, col.getDbType());
+	} 
+	public abstract Expression getQVariantConvertExpression(Expression e, String pgType);
 	public abstract Type getTypeFromDbDataType(String dbType, boolean nullable);
 	
 	public abstract Expression getColumnDefaultValueExpression(Column col);

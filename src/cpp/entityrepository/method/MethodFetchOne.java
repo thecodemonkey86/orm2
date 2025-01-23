@@ -82,7 +82,7 @@ protected Expression getExpressionQuery() {
 			DoWhile doWhileQueryNext = ifInstr._doWhile();
 			Var recDoWhile =doWhileQueryNext._declare(Types.QSqlRecord, "rec" ,query.callMethod(ClsQSqlQuery.record) );
 			
-			IfBlock ifNotCurrentPrimaryKeyMatches = doWhileQueryNext._if(recDoWhile.callMethod(ClsQSqlRecord.value, QString.fromStringConstant("e1__" + bean.getTbl().getPrimaryKey().getFirstColumn().getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(bean.getTbl().getPrimaryKey().getFirstColumn()))._notEquals(e1.callAttrGetter(bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())) );
+			IfBlock ifNotCurrentPrimaryKeyMatches = doWhileQueryNext._if(EntityCls.getDatabaseMapper().getQVariantConvertExpression(recDoWhile.callMethod(ClsQSqlRecord.value, QString.fromStringConstant("e1__" + bean.getTbl().getPrimaryKey().getFirstColumn().getName())),bean.getTbl().getPrimaryKey().getFirstColumn())._notEquals(e1.callAttrGetter(bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())) );
 			ifNotCurrentPrimaryKeyMatches.thenBlock().addInstr(new BreakInstruction());
 			doWhileQueryNext.setCondition(ifQueryNext.getCondition());
 			
@@ -124,7 +124,7 @@ protected Expression getExpressionQuery() {
 				DoWhile doWhileQueryNext = ifInstr._doWhile();
 				Var recDoWhile =doWhileQueryNext._declare(Types.QSqlRecord, "rec" ,query.callMethod(ClsQSqlQuery.record) );
 				
-				IfBlock ifNotCurrentPrimaryKeyMatches = doWhileQueryNext._if(recDoWhile.callMethod(ClsQSqlRecord.value, QString.fromStringConstant("e1__" + bean.getTbl().getPrimaryKey().getFirstColumn().getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(bean.getTbl().getPrimaryKey().getFirstColumn()))._notEquals(e1.callAttrGetter(bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())) );
+				IfBlock ifNotCurrentPrimaryKeyMatches = doWhileQueryNext._if(EntityCls.getDatabaseMapper().getQVariantConvertExpression(recDoWhile.callMethod(ClsQSqlRecord.value, QString.fromStringConstant("e1__" + bean.getTbl().getPrimaryKey().getFirstColumn().getName())),bean.getTbl().getPrimaryKey().getFirstColumn())._notEquals(e1.callAttrGetter(bean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())) );
 				ifNotCurrentPrimaryKeyMatches.thenBlock().addInstr(new BreakInstruction());
 				doWhileQueryNext.setCondition(ifQueryNext.getCondition());
 				
@@ -150,13 +150,13 @@ protected Expression getExpressionQuery() {
 						for(Column colPk:r.getDestTable().getPrimaryKey().getColumns()) {
 							ifNotPkForeignIsNull.thenBlock()._assign(
 									pkForeign.accessAttr(colPk.getCamelCaseName()), 
-									recDoWhile.callMethod("value",
-											QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk))
+									EntityCls.getDatabaseMapper().getQVariantConvertExpression(recDoWhile.callMethod("value",
+											QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())),colPk)
 									);
 						}
 					} else {
 						Column colPk=r.getDestTable().getPrimaryKey().getFirstColumn();
-						pkForeign = ifNotPkForeignIsNull.thenBlock()._declare(beanPk, "pkForeignB"+r.getAlias(),recDoWhile.callMethod("value",QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk)));
+						pkForeign = ifNotPkForeignIsNull.thenBlock()._declare(beanPk, "pkForeignB"+r.getAlias(),EntityCls.getDatabaseMapper().getQVariantConvertExpression(recDoWhile.callMethod("value",QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())),colPk));
 					}
 					IfBlock ifRecValueIsNotNull = ifNotPkForeignIsNull.thenBlock()._if(
 							Expressions.not(fkHelper

@@ -197,7 +197,7 @@ public class MethodEntityLoad extends Method {
 					ifNotPkForeignIsNull.thenBlock()._assign(
 							pk.accessAttr(colPk.getCamelCaseName()), 
 							
-							rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk)));
+							EntityCls.getDatabaseMapper().getQVariantConvertExpression(rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())),colPk));
 				}
 				
 //				IfBlock ifNotContains = 
@@ -225,9 +225,9 @@ public class MethodEntityLoad extends Method {
 				ifNotPkForeignIsNull.thenBlock()._if(
 						Expressions.and(
 								Expressions.not(pk.callMethod(ClsQVariant.isNull)),
-							Expressions.not(pkSet.callMethod("contains", pk.callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk))))
+							Expressions.not(pkSet.callMethod("contains", EntityCls.getDatabaseMapper().getQVariantConvertExpression(pk,colPk)))
 						))
-							.addIfInstr(pkSet.callMethodInstruction("insert", pk.callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk))))
+							.addIfInstr(pkSet.callMethodInstruction("insert", EntityCls.getDatabaseMapper().getQVariantConvertExpression(pk,colPk)))
 							.addIfInstr(pEntity.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r) , _this().callMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias()))))
 					;
 			}
@@ -246,7 +246,7 @@ public class MethodEntityLoad extends Method {
 					doWhileQSqlQueryNext._assign(
 							pk.accessAttr(colPk.getCamelCaseName()), 
 							
-							rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk)));
+							EntityCls.getDatabaseMapper().getQVariantConvertExpression(rec.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())),colPk));
 				}
 				
 //				IfBlock ifNotContains = 
@@ -263,9 +263,9 @@ public class MethodEntityLoad extends Method {
 				doWhileQSqlQueryNext._if(
 						Expressions.and(
 							Expressions.not(pk.callMethod("isNull")),
-							Expressions.not(pkSet.callMethod("contains", pk.callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk))))
+							Expressions.not(pkSet.callMethod("contains", EntityCls.getDatabaseMapper().getQVariantConvertExpression(pk,colPk)))
 						))
-							.addIfInstr(pkSet.callMethodInstruction("insert", pk.callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk))))
+							.addIfInstr(pkSet.callMethodInstruction("insert", EntityCls.getDatabaseMapper().getQVariantConvertExpression(pk,colPk)))
 							.addIfInstr(pEntity.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r) , _this().callMethod(MethodGetFromRecord.getMethodName(foreignCls), rec, QString.fromStringConstant(r.getAlias()))))
 					;
 			}

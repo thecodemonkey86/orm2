@@ -1,9 +1,7 @@
 package util.pg;
 
-import cpp.CoreTypes;
 import cpp.core.Attr;
 import cpp.core.ConstRef;
-import cpp.core.Method;
 import cpp.core.MethodCall;
 import cpp.core.Ref;
 import cpp.core.SharedPtr;
@@ -16,45 +14,6 @@ import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
 
 public class PgCppUtil {
-	@Deprecated
-	public static Method pgToQVariantConvertMethod(String pgType) {
-		switch(pgType) {
-		case "integer":
-			return CoreTypes.QVariant.getMethod("toInt");
-		case "bigint":
-		case "xid":
-		case "oid":
-			return CoreTypes.QVariant.getMethod("toLongLong");
-		case "smallint":
-			return CoreTypes.QVariant.getTemplateMethod("value",CoreTypes.Short);
-		case "character varying":
-		case "character":	
-		case "text":
-		case "name":
-			return CoreTypes.QVariant.getMethod("toString");
-		case "date":
-			return CoreTypes.QVariant.getMethod("toDate");
-		case "timestamp with time zone":
-		case "timestamp without time zone":
-			return CoreTypes.QVariant.getMethod("toDateTime");
-		case "time with time zone":
-		case "time without time zone":
-			return CoreTypes.QVariant.getMethod("toTime");
-		case "double precision":
-		case "numeric":
-		case "real":
-			return CoreTypes.QVariant.getMethod("toDouble");
-		case "bytea":
-		case "ARRAY":
-			return CoreTypes.QVariant.getMethod("toByteArray");
-		case "boolean":
-			return CoreTypes.QVariant.getMethod("toBool");
-		default:
-			return null;
-			//throw new RuntimeException("type " + pgType+" not implemented");
-		}
-	}
-	
 	
 	public static String getOneRelationDestAttrName(OneRelation relation) {
 		return OrmUtil.getOneRelationDestAttrName(relation);

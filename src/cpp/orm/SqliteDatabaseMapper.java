@@ -1,7 +1,6 @@
 package cpp.orm;
 
 import cpp.Types;
-import cpp.core.Method;
 import cpp.core.QString;
 import cpp.core.Type;
 import cpp.core.expression.BoolExpression;
@@ -16,18 +15,18 @@ import database.column.Column;
 
 public class SqliteDatabaseMapper extends DatabaseTypeMapper {
 	@Override
-	public Method getQVariantConvertMethod(String dbType) {
+	public Expression getQVariantConvertExpression(Expression e, String dbType) {
 		switch (dbType.toUpperCase()) {
 		case "INT":
 		case "INTEGER":
 		case "MEDIUMINT":
-			return Types.QVariant.getTemplateMethod("value", Types.Int32);
+			return e.callMethod(Types.QVariant.getTemplateMethod("value", Types.Int32));
 		case "BIGINT":
-			return Types.QVariant.getTemplateMethod("value", Types.Int64);
+			return e.callMethod(Types.QVariant.getTemplateMethod("value", Types.Int64));
 		case "SMALLINT":
-			return Types.QVariant.getTemplateMethod("value", Types.Int16);
+			return e.callMethod(Types.QVariant.getTemplateMethod("value", Types.Int16));
 		case "TINYINT":
-			return Types.QVariant.getTemplateMethod("value", Types.Int8);
+			return e.callMethod(Types.QVariant.getTemplateMethod("value", Types.Int8));
 		case "CHARACTER":
 		case "VARCHAR":
 		case "VARYING CHARACTER":
@@ -35,23 +34,23 @@ public class SqliteDatabaseMapper extends DatabaseTypeMapper {
 		case "NATIVE CHARACTER":
 		case "NVARCHAR":
 		case "TEXT":
-			return Types.QVariant.getMethod("toString");
+			return e.callMethod(Types.QVariant.getMethod("toString"));
 		case "DATE":
-			return Types.QVariant.getMethod("toDate");
+			return e.callMethod(Types.QVariant.getMethod("toDate"));
 		case "DATETIME":
 		case "TIMESTAMP":
-			return Types.QVariant.getMethod("toDateTime");
+			return e.callMethod(Types.QVariant.getMethod("toDateTime"));
 		case "NUMERIC":
 		case "DECIMAL":
 		 case "REAL":
 		 case "DOUBLE":
 		 case "DOUBLE PRECISION":
 		 case "FLOAT":
-			return Types.QVariant.getMethod("toDouble");
+			return e.callMethod(Types.QVariant.getMethod("toDouble"));
 		case "BLOB":
-			return Types.QVariant.getMethod("toByteArray");
+			return e.callMethod(Types.QVariant.getMethod("toByteArray"));
 		case "BOOLEAN":
-			return Types.QVariant.getMethod("toBool");
+			return e.callMethod(Types.QVariant.getMethod("toBool"));
 		default:
 			throw new RuntimeException("type" + dbType + " not implemented");
 		}

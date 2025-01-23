@@ -404,16 +404,13 @@ public class MethodLoad2Levels extends Method {
 							._assign(
 									pk.accessAttr(colPk.getCamelCaseName()),
 
-									rec.callMethod(
+									EntityCls.getDatabaseMapper().getQVariantConvertExpression(rec.callMethod(
 											"value",
 											QString.fromStringConstant(r
 													.getAlias()
 													+ "__"
-													+ colPk.getName()))
-											.callMethod(
-													EntityCls.getDatabaseMapper()
-															.getQVariantConvertMethod(
-																	colPk)));
+													+ colPk.getName())),
+																	colPk));
 				}
 
 				doWhileQSqlQueryNext
@@ -445,15 +442,12 @@ public class MethodLoad2Levels extends Method {
 				doWhileQSqlQueryNext
 						._if(Expressions.and(Expressions.not(pk
 								.callMethod("isNull")), Expressions.not(pkSet
-								.callMethod("contains", pk.callMethod(EntityCls
-										.getDatabaseMapper()
-										.getQVariantConvertMethod(
-												colPk))))))
+								.callMethod("contains", EntityCls.getDatabaseMapper().getQVariantConvertExpression(pk,
+												colPk)))))
 						.addIfInstr(
-								pkSet.callMethodInstruction("insert", pk
-										.callMethod(EntityCls.getDatabaseMapper()
-												.getQVariantConvertMethod(
-														colPk))))
+								pkSet.callMethodInstruction("insert", EntityCls.getDatabaseMapper().getQVariantConvertExpression(pk
+										,
+														colPk)))
 						.addIfInstr(
 								_this.accessAttr(
 										CodeUtil2.plural(r.getDestTable()
@@ -482,16 +476,13 @@ public class MethodLoad2Levels extends Method {
 							._assign(
 									pk.accessAttr(colPk.getCamelCaseName()),
 
-									rec.callMethod(
+									EntityCls.getDatabaseMapper().getQVariantConvertExpression(rec.callMethod(
 											"value",
 											QString.fromStringConstant(r
 													.getAlias()
 													+ "__"
 													+ colPk.getName()))
-											.callMethod(
-													EntityCls.getDatabaseMapper()
-															.getQVariantConvertMethod(
-																	colPk)));
+											,colPk));
 				}
 
 				doWhileQSqlQueryNext
@@ -523,15 +514,11 @@ public class MethodLoad2Levels extends Method {
 				doWhileQSqlQueryNext
 						._if(Expressions.and(Expressions.not(pk
 								.callMethod("isNull")), Expressions.not(pkSet
-								.callMethod("contains", pk.callMethod(EntityCls
-										.getDatabaseMapper()
-										.getQVariantConvertMethod(
-												colPk))))))
+								.callMethod("contains", EntityCls.getDatabaseMapper().getQVariantConvertExpression(pk,
+												colPk)))))
 						.addIfInstr(
-								pkSet.callMethodInstruction("insert", pk
-										.callMethod(EntityCls.getDatabaseMapper()
-												.getQVariantConvertMethod(
-														colPk))))
+								pkSet.callMethodInstruction("insert", EntityCls.getDatabaseMapper().getQVariantConvertExpression(pk
+										,colPk)))
 						.addIfInstr(
 								_this.accessAttr(
 										CodeUtil2.plural(r.getDestTable()
@@ -607,13 +594,10 @@ public class MethodLoad2Levels extends Method {
 					ArrayList<Expression> checkLevel1PkExpressions = new ArrayList<>();
 					
 					for(Column colPk : r.getDestTable().getPrimaryKey().getColumns()) {
-						Expression recValueColPkLevel1 = rec.callMethod(
+						Expression recValueColPkLevel1 = EntityCls.getDatabaseMapper().getQVariantConvertExpression(rec.callMethod(
 								"value",
 								QString.fromStringConstant(r.getAlias() + "__"
-										+ colPk.getName())).callMethod(
-												EntityCls.getDatabaseMapper()
-												.getQVariantConvertMethod(
-														colPk));
+										+ colPk.getName())),colPk);
 						checkLevel1PkExpressions.add(foreachLevel1Relation.getVar().callMethod(EntityCls.getAccessMethodNameByColumn(colPk))._equals(recValueColPkLevel1));
 					}
 					IfBlock ifBlockForeachLevel1Relation = foreachLevel1Relation.
@@ -637,13 +621,10 @@ public class MethodLoad2Levels extends Method {
 					ArrayList<Expression> checkLevel1PkExpressions = new ArrayList<>();
 					
 					for(Column colPk : r.getDestTable().getPrimaryKey().getColumns()) {
-						Expression recValueColPkLevel1 = rec.callMethod(
+						Expression recValueColPkLevel1 = EntityCls.getDatabaseMapper().getQVariantConvertExpression(rec.callMethod(
 								"value",
 								QString.fromStringConstant(r.getAlias() + "__"
-										+ colPk.getName())).callMethod(
-												EntityCls.getDatabaseMapper()
-												.getQVariantConvertMethod(
-														colPk));
+										+ colPk.getName())),colPk);
 						checkLevel1PkExpressions.add(foreachLevel1Relation.getVar().callMethod(EntityCls.getAccessMethodNameByColumn(colPk))._equals(recValueColPkLevel1));
 					}
 					IfBlock ifBlockForeachLevel1Relation = foreachLevel1Relation.
@@ -679,13 +660,10 @@ public class MethodLoad2Levels extends Method {
 					ArrayList<Expression> checkLevel2PkExpressions = new ArrayList<>();
 					
 					for(Column colPk : r.getDestTable().getPrimaryKey().getColumns()) {
-						Expression recValueColPkLevel2 = rec.callMethod(
+						Expression recValueColPkLevel2 = EntityCls.getDatabaseMapper().getQVariantConvertExpression(rec.callMethod(
 								"value",
 								QString.fromStringConstant(r2ndLevel.getAlias("l2") + "__"
-										+ colPk.getName())).callMethod(
-												EntityCls.getDatabaseMapper()
-												.getQVariantConvertMethod(
-														colPk));
+										+ colPk.getName())),colPk);
 						checkLevel2PkExpressions.add(foreachLevel2Relation.getVar().callMethod(EntityCls.getAccessMethodNameByColumn(colPk))._equals(recValueColPkLevel2));
 					}
 					
@@ -715,13 +693,10 @@ public class MethodLoad2Levels extends Method {
 					ArrayList<Expression> checkLevel2PkExpressions = new ArrayList<>();
 					
 					for(Column colPk : r.getDestTable().getPrimaryKey().getColumns()) {
-						Expression recValueColPkLevel1 = rec.callMethod(
+						Expression recValueColPkLevel1 = EntityCls.getDatabaseMapper().getQVariantConvertExpression(rec.callMethod(
 								"value",
 								QString.fromStringConstant(r.getAlias() + "__"
-										+ colPk.getName())).callMethod(
-												EntityCls.getDatabaseMapper()
-												.getQVariantConvertMethod(
-														colPk));
+										+ colPk.getName())),colPk);
 						checkLevel1PkExpressions.add(foreachLevel1Relation.getVar().callMethod(EntityCls.getAccessMethodNameByColumn(colPk))._equals(recValueColPkLevel1));
 					}
 					
@@ -733,13 +708,10 @@ public class MethodLoad2Levels extends Method {
 					ForeachLoop foreachLevel2Relation = ifBlockLevel1.thenBlock()._foreach(new Var(destBean2ndLevel.toSharedPtr(), CodeUtil2.camelCase(destBean2ndLevel.getName())), accLevel2);
 					
 					for(Column colPk : r2ndLevel.getDestTable().getPrimaryKey().getColumns()) {
-						Expression recValueColPkLevel2 = rec.callMethod(
+						Expression recValueColPkLevel2 = EntityCls.getDatabaseMapper().getQVariantConvertExpression(rec.callMethod(
 								"value",
 								QString.fromStringConstant(r2ndLevel.getAlias("l2") + "__"
-										+ colPk.getName())).callMethod(
-												EntityCls.getDatabaseMapper()
-												.getQVariantConvertMethod(
-														colPk));
+										+ colPk.getName())),colPk);
 						checkLevel2PkExpressions.add(foreachLevel2Relation.getVar().callMethod(EntityCls.getAccessMethodNameByColumn(colPk))._equals(recValueColPkLevel2));
 					}
 					IfBlock ifBlockLevel2 = foreachLevel2Relation._if(Expressions.and(checkLevel2PkExpressions));
@@ -778,13 +750,10 @@ public class MethodLoad2Levels extends Method {
 					ArrayList<Expression> checkLevel2PkExpressions = new ArrayList<>();
 					
 					for(Column colPk : r.getDestTable().getPrimaryKey().getColumns()) {
-						Expression recValueColPkLevel2 = rec.callMethod(
+						Expression recValueColPkLevel2 = EntityCls.getDatabaseMapper().getQVariantConvertExpression(rec.callMethod(
 								"value",
 								QString.fromStringConstant(r2ndLevel.getAlias("l2") + "__"
-										+ colPk.getName())).callMethod(
-												EntityCls.getDatabaseMapper()
-												.getQVariantConvertMethod(
-														colPk));
+										+ colPk.getName())),colPk);
 						checkLevel2PkExpressions.add(foreachLevel2Relation.getVar().callMethod(EntityCls.getAccessMethodNameByColumn(colPk))._equals(recValueColPkLevel2));
 					}
 					
@@ -817,13 +786,10 @@ public class MethodLoad2Levels extends Method {
 					ArrayList<Expression> checkLevel2PkExpressions = new ArrayList<>();
 					
 					for(Column colPk : r.getDestTable().getPrimaryKey().getColumns()) {
-						Expression recValueColPkLevel1 = rec.callMethod(
+						Expression recValueColPkLevel1 = EntityCls.getDatabaseMapper().getQVariantConvertExpression(rec.callMethod(
 								"value",
 								QString.fromStringConstant(r.getAlias() + "__"
-										+ colPk.getName())).callMethod(
-												EntityCls.getDatabaseMapper()
-												.getQVariantConvertMethod(
-														colPk));
+										+ colPk.getName())),colPk);
 						checkLevel1PkExpressions.add(foreachLevel1Relation.getVar().callMethod(EntityCls.getAccessMethodNameByColumn(colPk))._equals(recValueColPkLevel1));
 					}
 					
@@ -835,13 +801,10 @@ public class MethodLoad2Levels extends Method {
 					ForeachLoop foreachLevel2Relation = ifBlockLevel1.thenBlock()._foreach(new Var(destBean2ndLevel.toSharedPtr(), CodeUtil2.camelCase(destBean2ndLevel.getName())), accLevel2);
 					
 					for(Column colPk : r2ndLevel.getDestTable().getPrimaryKey().getColumns()) {
-						Expression recValueColPkLevel2 = rec.callMethod(
+						Expression recValueColPkLevel2 = EntityCls.getDatabaseMapper().getQVariantConvertExpression(rec.callMethod(
 								"value",
 								QString.fromStringConstant(r2ndLevel.getAlias("l2") + "__"
-										+ colPk.getName())).callMethod(
-												EntityCls.getDatabaseMapper()
-												.getQVariantConvertMethod(
-														colPk));
+										+ colPk.getName())),colPk);
 						checkLevel2PkExpressions.add(foreachLevel2Relation.getVar().callMethod(EntityCls.getAccessMethodNameByColumn(colPk))._equals(recValueColPkLevel2));
 					}
 					IfBlock ifBlockLevel2 = foreachLevel2Relation._if(Expressions.and(checkLevel2PkExpressions));
@@ -873,13 +836,10 @@ public class MethodLoad2Levels extends Method {
 					ArrayList<Expression> checkLevel2PkExpressions = new ArrayList<>();
 					
 					for(Column colPk : r.getDestTable().getPrimaryKey().getColumns()) {
-						Expression recValueColPkLevel1 = rec.callMethod(
+						Expression recValueColPkLevel1 = EntityCls.getDatabaseMapper().getQVariantConvertExpression(rec.callMethod(
 								"value",
 								QString.fromStringConstant(r.getAlias() + "__"
-										+ colPk.getName())).callMethod(
-												EntityCls.getDatabaseMapper()
-												.getQVariantConvertMethod(
-														colPk ));
+										+ colPk.getName())),colPk );
 						checkLevel1PkExpressions.add(foreachLevel1Relation.getVar().callMethod(EntityCls.getAccessMethodNameByColumn(colPk))._equals(recValueColPkLevel1));
 					}
 					
@@ -891,13 +851,10 @@ public class MethodLoad2Levels extends Method {
 					ForeachLoop foreachLevel2Relation = ifBlockLevel1.thenBlock()._foreach(new Var(destBean2ndLevel.toSharedPtr(), CodeUtil2.camelCase(destBean2ndLevel.getName())), accLevel2);
 					
 					for(Column colPk : r2ndLevel.getDestTable().getPrimaryKey().getColumns()) {
-						Expression recValueColPkLevel2 = rec.callMethod(
+						Expression recValueColPkLevel2 = EntityCls.getDatabaseMapper().getQVariantConvertExpression(rec.callMethod(
 								"value",
 								QString.fromStringConstant(r2ndLevel.getAlias("l2") + "__"
-										+ colPk.getName())).callMethod(
-												EntityCls.getDatabaseMapper()
-												.getQVariantConvertMethod(
-														colPk));
+										+ colPk.getName())),colPk);
 						checkLevel2PkExpressions.add(foreachLevel2Relation.getVar().callMethod(EntityCls.getAccessMethodNameByColumn(colPk))._equals(recValueColPkLevel2));
 					}
 					IfBlock ifBlockLevel2 = foreachLevel2Relation._if(Expressions.and(checkLevel2PkExpressions));

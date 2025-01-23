@@ -182,7 +182,8 @@ public class MethodLoadCollection extends Method{
 		if (pk.isMultiColumn()) {
 			e1pk =doWhileQueryNext._declare( bean.getStructPk(), "e1pk" );
 			for(Column colPk:pk.getColumns()) {
-				doWhileQueryNext._assign(e1pk.accessAttr(colPk.getCamelCaseName()), recDoWhile.callMethod("value", QString.fromStringConstant("e1__"+ colPk.getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk)));
+				doWhileQueryNext._assign(e1pk.accessAttr(colPk.getCamelCaseName()), EntityCls.getDatabaseMapper().getQVariantConvertExpression(recDoWhile.callMethod("value", QString.fromStringConstant("e1__"+ colPk.getName()))
+						,colPk));
 				
 				listForeachPkCompare.add(
 						new BinaryOperatorExpression(
@@ -204,7 +205,7 @@ public class MethodLoadCollection extends Method{
 			
 		} else {
 			Column colPk=pk.getFirstColumn();
-			e1pk =doWhileQueryNext._declare( EntityCls.getDatabaseMapper().columnToType(pk.getFirstColumn()), "e1pk", recDoWhile.callMethod("value", QString.fromStringConstant("e1__"+ pk.getFirstColumn().getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(pk.getFirstColumn())));
+			e1pk =doWhileQueryNext._declare( EntityCls.getDatabaseMapper().columnToType(pk.getFirstColumn()), "e1pk", EntityCls.getDatabaseMapper().getQVariantConvertExpression(recDoWhile.callMethod("value", QString.fromStringConstant("e1__"+ pk.getFirstColumn().getName())),pk.getFirstColumn()));
 			listForeachPkCompare.add(
 					new BinaryOperatorExpression(
 							varIfNotE1SetContainsForeachBean.callMethod("get"+colPk.getUc1stCamelCaseName()),
@@ -258,11 +259,11 @@ public class MethodLoadCollection extends Method{
 					for(Column colPk:r.getDestTable().getPrimaryKey().getColumns()) {
 						ifNotPkForeignIsNull.thenBlock()._assign(
 								pkForeign.accessAttr(colPk.getCamelCaseName()), 
-								recDoWhile.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk)));
+								EntityCls.getDatabaseMapper().getQVariantConvertExpression(recDoWhile.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())),colPk));
 					}
 				} else {
 					Column colPk=r.getDestTable().getPrimaryKey().getFirstColumn();
-					pkForeign = ifNotPkForeignIsNull.thenBlock()._declare(beanPk, "pkForeignB"+r.getAlias(),recDoWhile.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getFirstColumn().getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk)));
+					pkForeign = ifNotPkForeignIsNull.thenBlock()._declare(beanPk, "pkForeignB"+r.getAlias(),EntityCls.getDatabaseMapper().getQVariantConvertExpression(recDoWhile.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getFirstColumn().getName())),colPk));
 				}
 				IfBlock ifRecValueIsNotNull = ifNotPkForeignIsNull.thenBlock()._if(
 						Expressions.not(fkHelper
@@ -327,7 +328,7 @@ public class MethodLoadCollection extends Method{
 		for(Column col:bean.getTbl().getAllColumns()) {
 			try{
 				if (!col.hasOneRelation() && !col.isPartOfPk() && !col.isFileImportEnabled()) {
-					ifForeachPkCompare.thenBlock().addInstr(varIfNotE1SetContainsForeachBean.callMethodInstruction("set"+ col.getUc1stCamelCaseName()+"Internal",recDoWhile.callMethod("value", QString.fromStringConstant("e1__"+ col.getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(col))));
+					ifForeachPkCompare.thenBlock().addInstr(varIfNotE1SetContainsForeachBean.callMethodInstruction("set"+ col.getUc1stCamelCaseName()+"Internal",EntityCls.getDatabaseMapper().getQVariantConvertExpression(recDoWhile.callMethod("value", QString.fromStringConstant("e1__"+ col.getName())),col)));
 				}
 //					_callMethodInstr(bean, "set"+col.getUc1stCamelCaseName(), getParam("record").callMethod("value", new QStringPlusOperatorExpression(getParam("alias"), QString.fromStringConstant("__"+ col.getName()))).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(col)));
 			} catch (Exception e) {

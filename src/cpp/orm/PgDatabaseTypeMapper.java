@@ -1,9 +1,7 @@
 package cpp.orm;
 
-import util.pg.PgCppUtil;
 import cpp.Types;
 import cpp.CoreTypes;
-import cpp.core.Method;
 import cpp.core.QString;
 import cpp.core.Type;
 import cpp.core.expression.BoolExpression;
@@ -16,14 +14,49 @@ import cpp.core.expression.IntExpression;
 import cpp.core.expression.LongLongExpression;
 import cpp.core.expression.ShortExpression;
 import cpp.lib.ClsBaseRepository;
+import cpp.lib.ClsQDateTime;
 import cpp.lib.ClsSqlQuery;
 import database.column.Column;
 
 public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
-	@SuppressWarnings("deprecation")
 	@Override
-	public Method getQVariantConvertMethod(String pgType) {
-		return PgCppUtil.pgToQVariantConvertMethod(pgType);
+	public Expression getQVariantConvertExpression(Expression e, String pgType) {
+		switch(pgType) {
+		case "integer":
+			return e.callMethod(CoreTypes.QVariant.getMethod("toInt"));
+		case "bigint":
+		case "xid":
+		case "oid":
+			return e.callMethod(CoreTypes.QVariant.getMethod("toLongLong"));
+		case "smallint":
+			return e.callMethod(CoreTypes.QVariant.getTemplateMethod("value",CoreTypes.Short));
+		case "character varying":
+		case "character":	
+		case "text":
+		case "name":
+			return e.callMethod(CoreTypes.QVariant.getMethod("toString"));
+		case "date":
+			return e.callMethod(CoreTypes.QVariant.getMethod("toDate"));
+		case "timestamp with time zone":
+			return e.callMethod(CoreTypes.QVariant.getMethod("toDateTime")).callMethod(CoreTypes.QDateTime.getMethod(ClsQDateTime.toLocalTime));
+		case "timestamp without time zone":
+			return e.callMethod(CoreTypes.QVariant.getMethod("toDateTime"));
+		case "time with time zone":
+		case "time without time zone":
+			return e.callMethod(CoreTypes.QVariant.getMethod("toTime"));
+		case "double precision":
+		case "numeric":
+		case "real":
+			return e.callMethod(CoreTypes.QVariant.getMethod("toDouble"));
+		case "bytea":
+		case "ARRAY":
+			return e.callMethod(CoreTypes.QVariant.getMethod("toByteArray"));
+		case "boolean":
+			return e.callMethod(CoreTypes.QVariant.getMethod("toBool"));
+		default:
+			return null;
+			//throw new RuntimeException("type " + pgType+" not implemented");
+		}
 	}
 	
 	@Override
