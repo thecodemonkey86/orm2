@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import codegen.CodeUtil;
 import cpp.core.instruction.Instruction;
+import util.CodeUtil2;
 
 public abstract class NonMemberMethod extends Method {
 
@@ -41,7 +42,7 @@ public abstract class NonMemberMethod extends Method {
 		
 		StringBuilder sb=new StringBuilder( CodeUtil.sp((inlineQualifier?"inline":null),getReturnType().toDeclarationString(),getName(),CodeUtil.parentheses(CodeUtil.commaSep(params)),"{\n"));
 		for(Instruction i:instructions) {
-			CodeUtil.writeLine(sb,i);
+			CodeUtil2.writeLine(sb,i);
 		}
 		sb.append("}");
 		

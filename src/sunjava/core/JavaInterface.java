@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import codegen.CodeUtil;
+import util.CodeUtil2;
 
 public class JavaInterface extends AbstractJavaCls {
 
@@ -17,11 +18,11 @@ public class JavaInterface extends AbstractJavaCls {
 		StringBuilder sb=new StringBuilder();
 		
 		if (pkg != null && pkg.length() > 0) {
-			CodeUtil.writeLine(sb , CodeUtil.sp("package",pkg)+";");
+			CodeUtil2.writeLine(sb , CodeUtil.sp("package",pkg)+";");
 		}
-		sb.append('\n');
+		sb.append(CodeUtil2.NEWLINE);
 		for(String imp:imports) {
-			CodeUtil.writeLine(sb, CodeUtil.sp("import",imp+";"));
+			CodeUtil2.writeLine(sb, CodeUtil.sp("import",imp+";"));
 		}
 		
 		sb.append(CodeUtil.sp("public", "interface",type)).append(' ');
@@ -42,8 +43,8 @@ public class JavaInterface extends AbstractJavaCls {
 				throw new RuntimeException("method is not abstract: " + m.getName());
 			}
 			if (m.getInstructions().size()>0 || m.includeIfEmpty()) {
-				CodeUtil.writeLine(sb, m);
-				sb.append('\n');
+				CodeUtil2.writeLine(sb, m);
+				sb.append(CodeUtil2.NEWLINE);
 			}
 		}
 		

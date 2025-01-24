@@ -53,27 +53,27 @@ public class FetchListHelperClass extends Struct{
 		
 //		addSourceCode(sb);
 //		for(Constructor c:constructors) {
-//			CodeUtil.writeLine(sb, c);
+//			CodeUtil2.writeLine(sb, c);
 //		}
 //		if (destructor !=null)
-//			CodeUtil.writeLine(sb, destructor);
+//			CodeUtil2.writeLine(sb, destructor);
 //		
 //		for(Method m:methods) {
-//			CodeUtil.writeLine(sb, m);
+//			CodeUtil2.writeLine(sb, m);
 //		}
 		
 		for(Attr a:attrs) {
 			if (a.isStatic())
-				CodeUtil.writeLine(sb, CodeUtil.sp(a.getType(),getName()+"::"+a.getName(),"=",a.getInitValue(),";"));
+				CodeUtil2.writeLine(sb, CodeUtil.sp(a.getType(),getName()+"::"+a.getName(),"=",a.getInitValue(),";"));
 		}
 //		if (nonMemberMethods!=null) {
 //			for(Method m:nonMemberMethods) {
-//				CodeUtil.writeLine(sb, m.toString());
+//				CodeUtil2.writeLine(sb, m.toString());
 //			}
 //		} 
 //		if (nonMemberOperators!=null) {
 //			for(Operator op:nonMemberOperators) {
-//				CodeUtil.writeLine(sb, op.toString());
+//				CodeUtil2.writeLine(sb, op.toString());
 //			}
 //		}
 		return sb.toString();

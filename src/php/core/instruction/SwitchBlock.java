@@ -7,6 +7,7 @@ import java.util.List;
 import codegen.CodeUtil;
 import php.core.AbstractPhpCls;
 import php.core.expression.Expression;
+import util.CodeUtil2;
 
 public class SwitchBlock extends Instruction{
 	private List<CaseBlock> cases;
@@ -41,11 +42,11 @@ public class SwitchBlock extends Instruction{
 		sb.append(CodeUtil.parentheses(switchExpression))
 		.append(" {\n");
 		for (CaseBlock caseBlock : cases) {
-			CodeUtil.writeLine(sb, caseBlock);
+			CodeUtil2.writeLine(sb, caseBlock);
 		}
 		if(defaultCase != null)
-			CodeUtil.writeLine(sb, defaultCase);
-		CodeUtil.writeLine(sb, "}");
+			CodeUtil2.writeLine(sb, defaultCase);
+		CodeUtil2.writeLine(sb, "}");
 		return sb.toString();
 	}
 	

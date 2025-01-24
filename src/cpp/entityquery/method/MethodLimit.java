@@ -7,6 +7,7 @@ import cpp.core.Param;
 import cpp.core.QString;
 import cpp.core.instruction.Instruction;
 import cpp.entityquery.EntityQueryType;
+import util.CodeUtil2;
 
 public class MethodLimit extends Method{
 
@@ -30,14 +31,14 @@ public class MethodLimit extends Method{
 			@Override
 			public String toString() {
 				if(beanQueryType == EntityQueryType.Select) {
-					return "this->limitResults = limit;\r\n" + 
-							"        this->resultOffset = 0;\r\n" + 
-							"        this->limitOffsetCondition = condition;\r\n" + 
-							"        this->limitOffsetOrderBy = orderBy;\r\n" + 
+					return "this->limitResults = limit;" + CodeUtil2.NEWLINE + 
+							"        this->resultOffset = 0;" + CodeUtil2.NEWLINE + 
+							"        this->limitOffsetCondition = condition;" + CodeUtil2.NEWLINE + 
+							"        this->limitOffsetOrderBy = orderBy;" + CodeUtil2.NEWLINE + 
 							"        return *this;";
 				} else {
-					return "this->limitResults = limit;\r\n" + 
-							"        this->resultOffset = 0;\r\n" + 
+					return "this->limitResults = limit;" + CodeUtil2.NEWLINE + 
+							"        this->resultOffset = 0;" + CodeUtil2.NEWLINE + 
 							"        return *this;";
 				}
 				

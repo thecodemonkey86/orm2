@@ -9,6 +9,7 @@ import sunjava.core.expression.NewOperator;
 import sunjava.core.expression.StaticAccessExpression;
 import sunjava.core.expression.StaticMethodCall;
 import sunjava.lib.LibMethod;
+import util.CodeUtil2;
 
 
 public class JavaCls extends AbstractJavaCls implements IAttributeContainer{
@@ -97,11 +98,11 @@ public class JavaCls extends AbstractJavaCls implements IAttributeContainer{
 		StringBuilder sb=new StringBuilder();
 		
 		if (pkg != null && pkg.length() > 0) {
-			CodeUtil.writeLine(sb , CodeUtil.sp("package",pkg)+";");
+			CodeUtil2.writeLine(sb , CodeUtil.sp("package",pkg)+";");
 		}
-		sb.append('\n');
+		sb.append(CodeUtil2.NEWLINE);
 		for(String imp:imports) {
-			CodeUtil.writeLine(sb, CodeUtil.sp("import",imp)+";");
+			CodeUtil2.writeLine(sb, CodeUtil.sp("import",imp)+";");
 		}
 		
 		sb.append(CodeUtil.sp("public", "class",getName())).append(' ');
@@ -121,17 +122,17 @@ public class JavaCls extends AbstractJavaCls implements IAttributeContainer{
 		sb.append("{\n");
 		
 		for(Attr a:attrs) {
-			CodeUtil.writeLine(sb, a.toDeclarationString());
+			CodeUtil2.writeLine(sb, a.toDeclarationString());
 		}
 		
 		for(Constructor c:constructors) {
-			CodeUtil.writeLine(sb, c);
+			CodeUtil2.writeLine(sb, c);
 		}
 		
 		for(Method m:methods) {
 			if (m.getInstructions().size()>0 || m.includeIfEmpty()) {
-				CodeUtil.writeLine(sb, m);
-				sb.append('\n');
+				CodeUtil2.writeLine(sb, m);
+				sb.append(CodeUtil2.NEWLINE);
 			}
 		}
 		

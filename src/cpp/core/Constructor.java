@@ -8,6 +8,7 @@ import cpp.core.expression.Expression;
 import cpp.core.expression.ThisExpression;
 import cpp.core.instruction.AssignInstruction;
 import cpp.core.instruction.Instruction;
+import util.CodeUtil2;
 
 public abstract class Constructor extends Method {
 	
@@ -71,7 +72,7 @@ public abstract class Constructor extends Method {
 		}
 		sb.append("{\n");
 		for(Object i:instructions) {
-			CodeUtil.writeLine(sb,i);
+			CodeUtil2.writeLine(sb,i);
 		}
 		sb.append("}");
 		

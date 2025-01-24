@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import codegen.CodeUtil;
 import config.cpp.CppOrmConfig;
 import util.CodeUtil2;
 import util.StringUtil;
@@ -147,7 +146,7 @@ public class EntityCls extends Cls {
 	//protected Struct structPk;
 	protected Type pkType;
 	protected Struct fetchListHelper;
-	private static final char NEWLINE='\n';
+	
 	
 	public Struct getFetchListHelperCls() {
 		return fetchListHelper;
@@ -183,7 +182,7 @@ public class EntityCls extends Cls {
 	@Override
 	protected void addBeforeSourceCode(StringBuilder sb) {
 		super.addBeforeSourceCode(sb);
-		sb.append(BEGIN_CUSTOM_PREPROCESSOR).append('\n');
+		sb.append(BEGIN_CUSTOM_PREPROCESSOR).append(CodeUtil2.NEWLINE);
 		if(customPreprocessorCodeInSource != null) {
 			
 			for(String cc : customPreprocessorCodeInSource) {
@@ -191,7 +190,7 @@ public class EntityCls extends Cls {
 			}
 			
 		}
-		sb.append('\n').append(END_CUSTOM_PREPROCESSOR).append('\n').append('\n');
+		sb.append(CodeUtil2.NEWLINE).append(END_CUSTOM_PREPROCESSOR).append(CodeUtil2.NEWLINE).append(CodeUtil2.NEWLINE);
 	}
 	
 	private void addAttributes(List<Column> allColumns) {
@@ -482,7 +481,7 @@ public class EntityCls extends Cls {
 	@Override
 	protected void addHeaderCodeBeforeClassDeclaration(StringBuilder sb) {
 		super.addHeaderCodeBeforeClassDeclaration(sb);
-		sb.append('\n').append(BEGIN_CUSTOM_PREPROCESSOR).append('\n');
+		sb.append(CodeUtil2.NEWLINE).append(BEGIN_CUSTOM_PREPROCESSOR).append(CodeUtil2.NEWLINE);
 		if(customPreprocessorCode != null) {
 			
 			for(String cc : customPreprocessorCode) {
@@ -490,15 +489,15 @@ public class EntityCls extends Cls {
 			}
 			
 		}
-		sb.append('\n').append(END_CUSTOM_PREPROCESSOR).append('\n');
+		sb.append(CodeUtil2.NEWLINE).append(END_CUSTOM_PREPROCESSOR).append(CodeUtil2.NEWLINE);
 		if (tbl.getPrimaryKey().isMultiColumn()) {
-			sb.append(getStructPk().toSourceString()).append('\n');
+			sb.append(getStructPk().toSourceString()).append(CodeUtil2.NEWLINE);
 		}
 //		if (fetchListHelper!=null) {
-//			sb.append(fetchListHelper.toHeaderString()).append('\n').append('\n');
+//			sb.append(fetchListHelper.toHeaderString()).append(CodeUtil2.NEWLINE).append(CodeUtil2.NEWLINE);
 //		}
 		if (fetchListHelper!=null) {
-			sb.append(fetchListHelper.toSourceString()).append('\n').append('\n');
+			sb.append(fetchListHelper.toSourceString()).append(CodeUtil2.NEWLINE).append(CodeUtil2.NEWLINE);
 		}
 		
 		
@@ -506,7 +505,7 @@ public class EntityCls extends Cls {
 
 	@Override
 	protected void addAfterSourceCode(StringBuilder sb) {
-		sb.append('\n').append(BEGIN_CUSTOM_CLASS_MEMBERS).append('\n');
+		sb.append(CodeUtil2.NEWLINE).append(BEGIN_CUSTOM_CLASS_MEMBERS).append(CodeUtil2.NEWLINE);
 		if(customSourceCode != null) {
 			
 			for(String cc : customSourceCode) {
@@ -514,7 +513,7 @@ public class EntityCls extends Cls {
 			}
 			
 		}
-		sb.append('\n').append(END_CUSTOM_CLASS_MEMBERS).append('\n');
+		sb.append(CodeUtil2.NEWLINE).append(END_CUSTOM_CLASS_MEMBERS).append(CodeUtil2.NEWLINE);
 	}
 	
 	public Attr getManyRelationAttr(OneRelation r) {
@@ -611,13 +610,13 @@ public class EntityCls extends Cls {
 	@Override
 	protected void addClassHeaderCode(StringBuilder sb) {
 		super.addClassHeaderCode(sb);
-		sb.append(NEWLINE).append(BEGIN_CUSTOM_CLASS_MEMBERS).append(NEWLINE);
+		sb.append(CodeUtil2.NEWLINE).append(BEGIN_CUSTOM_CLASS_MEMBERS).append(CodeUtil2.NEWLINE);
 		if(customHeaderCode != null) {
 			for(String cc : customHeaderCode) {
-				sb.append(cc.trim()).append(NEWLINE);
+				sb.append(cc.trim()).append(CodeUtil2.NEWLINE);
 			}
 		}
-		sb.append(NEWLINE).append(END_CUSTOM_CLASS_MEMBERS).append(NEWLINE);
+		sb.append(CodeUtil2.NEWLINE).append(END_CUSTOM_CLASS_MEMBERS).append(CodeUtil2.NEWLINE);
 
 	}
 	
@@ -662,11 +661,11 @@ public class EntityCls extends Cls {
 	
 	@Override
 	protected void addBeforeHeader(StringBuilder sb) {
-		CodeUtil.writeLine(sb, "/*DO NOT MODIFY OUTSIDE CUSTOM MEMBERS SECTIONS (DELIMITED BY COMMENTS BEGIN_CUSTOM_CLASS_MEMBERS AND END_CUSTOM_CLASS_MEMBERS + BEGIN_CUSTOM_PREPROCESSOR AND END_CUSTOM_PREPROCESSOR). ALL OTHER MODIFICATIONS WILL BE LOST ON REBUILDING ORM CLASSES*/");
-		CodeUtil.writeLine(sb, "/*Dies ist eine automatisch generierte Datei des C++ ORM Systems https://github.com/thecodemonkey86/orm2*/");
-		CodeUtil.writeLine(sb, "/*Generator (Java-basiert): https://github.com/thecodemonkey86/orm2*/");
-		CodeUtil.writeLine(sb, "/*Abhängigkeiten (C++ libraries): https://github.com/thecodemonkey86/libcpporm, https://github.com/thecodemonkey86/QtCommonLibs2, https://github.com/thecodemonkey86/SqlUtil3*/");
-		CodeUtil.writeLine(sb, "/*API Level " + APILEVEL + "*/\n");
+		CodeUtil2.writeLine(sb, "/*DO NOT MODIFY OUTSIDE CUSTOM MEMBERS SECTIONS (DELIMITED BY COMMENTS BEGIN_CUSTOM_CLASS_MEMBERS AND END_CUSTOM_CLASS_MEMBERS + BEGIN_CUSTOM_PREPROCESSOR AND END_CUSTOM_PREPROCESSOR). ALL OTHER MODIFICATIONS WILL BE LOST ON REBUILDING ORM CLASSES*/");
+		CodeUtil2.writeLine(sb, "/*Dies ist eine automatisch generierte Datei des C++ ORM Systems https://github.com/thecodemonkey86/orm2*/");
+		CodeUtil2.writeLine(sb, "/*Generator (Java-basiert): https://github.com/thecodemonkey86/orm2*/");
+		CodeUtil2.writeLine(sb, "/*Abhängigkeiten (C++ libraries): https://github.com/thecodemonkey86/libcpporm, https://github.com/thecodemonkey86/QtCommonLibs2, https://github.com/thecodemonkey86/SqlUtil3*/");
+		CodeUtil2.writeLine(sb, "/*API Level " + APILEVEL + "*/\n");
 		
 	}
 	

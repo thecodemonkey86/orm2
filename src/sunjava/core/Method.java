@@ -81,7 +81,7 @@ public abstract class Method extends InstructionBlock{
 		StringBuilder sb=new StringBuilder();
 		
 		if(overrideAnnotation) {
-			CodeUtil.writeLine(sb,"@Override");
+			CodeUtil2.writeLine(sb,"@Override");
 		}
 		sb.append(CodeUtil.sp(visibility,(isStatic() ? "static" : null), retType(),name,CodeUtil.parentheses(CodeUtil.commaSep(params))));
 		
@@ -93,8 +93,8 @@ public abstract class Method extends InstructionBlock{
 		}
 		sb.append(" {\n");
 		for(Instruction i:instructions) {
-			CodeUtil.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
-			CodeUtil.writeLine(sb,i);
+			CodeUtil2.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
+			CodeUtil2.writeLine(sb,i);
 		}
 		sb.append('}');
 		

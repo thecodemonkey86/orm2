@@ -50,8 +50,8 @@ public class LambdaExpression extends InstructionBlock{
 		
 		for(Instruction i : instructions) {
 			if(Instruction.isStackTraceEnabled())
-				CodeUtil.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
-			CodeUtil.writeLine(sb,i);
+				CodeUtil2.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
+			CodeUtil2.writeLine(sb,i);
 		}
 		sb.append("}");
 		return sb.toString();

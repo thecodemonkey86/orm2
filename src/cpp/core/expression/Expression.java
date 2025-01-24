@@ -12,7 +12,6 @@ import cpp.core.Method;
 import cpp.core.MethodCall;
 import cpp.core.Operator;
 import cpp.core.Param;
-import cpp.core.RawPtr;
 import cpp.core.SharedPtr;
 import cpp.core.Type;
 import cpp.core.instruction.AssignInstruction;
@@ -167,10 +166,10 @@ public abstract class Expression {
 
 
 	public DereferenceExpression dereference() {
-		if(this.getType() instanceof RawPtr) {
+		if(this.getType().supportsDereference()) {
 			return new DereferenceExpression(this);
 		} else {
-			throw new RuntimeException("type is not a raw pointer");
+			throw new RuntimeException("type does not have a dereference operator");
 		}
 	}
 

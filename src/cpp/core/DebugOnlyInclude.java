@@ -1,5 +1,7 @@
 package cpp.core;
 
+import util.CodeUtil2;
+
 public class DebugOnlyInclude extends Include {
 	
 	Include i;
@@ -10,6 +12,6 @@ public class DebugOnlyInclude extends Include {
 	
 	@Override
 	public String toString() {
-		return "#ifdef QT_DEBUG\r\n" + i + "\r\n#endif";
+		return "#ifdef QT_DEBUG" + CodeUtil2.NEWLINE + i + CodeUtil2.NEWLINE + "#endif";
 	}
 }

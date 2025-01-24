@@ -5,6 +5,7 @@ import cpp.core.Cls;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.instruction.Instruction;
+import util.CodeUtil2;
 
 public class MethodLeftJoin6 extends Method{
 
@@ -20,7 +21,7 @@ public class MethodLeftJoin6 extends Method{
         addInstr(new Instruction() {
 			@Override
 			public String toString() {
-				return "this->params.append(params);\r\n" + 
+				return "this->params.append(params);" + CodeUtil2.NEWLINE + 
 						"return leftJoin(joinTableAlias,on);";
 			}
 		});

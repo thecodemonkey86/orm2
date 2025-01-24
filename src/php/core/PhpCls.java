@@ -11,6 +11,7 @@ import php.core.expression.StaticAccessExpression;
 import php.core.expression.StaticMethodCall;
 import php.core.expression.ThisExpression;
 import php.core.method.Method;
+import util.CodeUtil2;
 
 
 public class PhpCls extends AbstractPhpCls implements IAttributeContainer{
@@ -94,9 +95,9 @@ public class PhpCls extends AbstractPhpCls implements IAttributeContainer{
 		StringBuilder sb=new StringBuilder("<?php\n");
 		
 		if (namespace != null && namespace.length() > 0) {
-			CodeUtil.writeLine(sb , CodeUtil.sp("namespace",namespace.substring(1))+";");
+			CodeUtil2.writeLine(sb , CodeUtil.sp("namespace",namespace.substring(1))+";");
 		}
-		sb.append('\n');
+		sb.append(CodeUtil2.NEWLINE);
 		sb.append(CodeUtil.sp("class",getName())).append(' ');
 		
 		if (superclass != null) {
@@ -113,20 +114,20 @@ public class PhpCls extends AbstractPhpCls implements IAttributeContainer{
 		sb.append("{\n");
 		
 		for(Attr a:attrs) {
-			CodeUtil.writeLine(sb, a.toDeclarationString());
+			CodeUtil2.writeLine(sb, a.toDeclarationString());
 		}
 		
 		if(constants!=null)
 		for(ClassConstant c:constants) {
-			CodeUtil.writeLine(sb, c.toDeclarationString());
+			CodeUtil2.writeLine(sb, c.toDeclarationString());
 		}
 		
-		CodeUtil.writeLine(sb, constructor);
+		CodeUtil2.writeLine(sb, constructor);
 		
 		for(Method m:methods) {
 			if (m.getInstructions().size()>0 || m.includeIfEmpty()) {
-				CodeUtil.writeLine(sb, m);
-				sb.append('\n');
+				CodeUtil2.writeLine(sb, m);
+				sb.append(CodeUtil2.NEWLINE);
 			}
 		}
 		sb.append('}');

@@ -13,6 +13,7 @@ import cpp.entity.method.MethodGetAllSelectFields;
 import cpp.entity.method.MethodGetSelectFields;
 import cpp.entity.method.MethodGetTableName;
 import cpp.entityquery.ClsEntityQuerySelect;
+import util.CodeUtil2;
 
 public class MethodToStringSelect extends Method{
 
@@ -35,58 +36,58 @@ public class MethodToStringSelect extends Method{
 				
 				//ifNotLazyLoading.thenBlock()._assign(_this().accessAttr(ClsBeanQuerySelect.selectFields),  this.bean.callStaticMethod(MethodGetAllSelectFields.getMethodName(), attrMainBeanAlias ));
 				//ifNotLazyLoading.elseBlock()._assign(_this().accessAttr(ClsBeanQuerySelect.selectFields),  this.bean.callStaticMethod(MethodGetSelectFields.getMethodName(), attrMainBeanAlias ));
-				return "QString query = QStringLiteral(\"SELECT %1 FROM %2\").arg("+selectFields+", "+tableExpr+");\r\n" +
-						"\r\n" + 
-						"        for(const QString &joinTable:joinTables) {\r\n" + 
-						"            query+=joinTable;\r\n" + 
-						"        }\r\n" + 
-						"\r\n" + 
-						"        if (!conditions.empty()) {\r\n" + 
-						"\r\n" + 
-						"            if (!limitOffsetCondition.isEmpty() && (limitResults > 0 || resultOffset > -1)) {\r\n" + 
-						"                query += QStringLiteral(\" WHERE (\");\r\n" + 
-						"            } else {\r\n" + 
-						"                query += QStringLiteral(\" WHERE \");\r\n" + 
-						"            }\r\n" + 
-						"\r\n" + 
-						"            for(const QString &cond: conditions) {\r\n" + 
-						"                query += cond;\r\n" + 
-						"            }\r\n" + 
-						"        }\r\n" + 
-						"\r\n" + 
-						"        if (group.size()>0) {\r\n" + 
-						"            query += QStringLiteral(\" GROUP BY %1\").arg(group.at(0));\r\n" + 
-						"            for(int i=1;i<group.size();i++) {\r\n" + 
-						"                query += QStringLiteral(\", %1\").arg(group.at(i));\r\n" + 
-						"            }\r\n" + 
-						"        }\r\n" + 
-						"        if (limitResults > 0 || resultOffset > -1) {\r\n" + 
-						"            if(!limitOffsetCondition.isEmpty()){ \r\n"+
-						"            if (!conditions.empty()) {\r\n" + 
-						"                query += QStringLiteral(\") AND %1\").arg("+  MethodToStringSelect.this.bean.getName() +"::getLimitQueryString(limitResults,resultOffset,limitOffsetCondition));\r\n" + 
-						"            } else {\r\n" + 
-						"                query += QStringLiteral(\" WHERE %1\").arg("+ MethodToStringSelect.this.bean.	getName() +"::getLimitQueryString(limitResults,resultOffset,limitOffsetCondition));\r\n" + 
-						"            }\r\n" + 
-						"             query += QStringLiteral(\" ORDER BY \");\r\n" +
-						"             for(auto order : this->orderByExpressions) {\r\n" + 
-						"               query += QStringLiteral(\"%1,\").arg(order);\r\n" + 
-						"             }\r\n" + 				
-						"             query += this->orderByPrimaryKey();\r\n" +
-						"            } else {\r\n" +
-						"             query += QStringLiteral(\" ORDER BY \");\r\n" +
-						"             for(auto order : this->orderByExpressions) {\r\n" + 
-						"               query += QStringLiteral(\"%1,\").arg(order);\r\n" + 
-						"             }\r\n" + 				
-						"             query += this->orderByPrimaryKey();\r\n" +
-						"             query += QStringLiteral(\" LIMIT %1 OFFSET %2\").arg(QString::number(limitResults), QString::number(resultOffset));\r\n"+	
-						"            }\r\n" + 
-						"        } else {\r\n" + 
-						"             query += QStringLiteral(\" ORDER BY \");\r\n" +
-						"             for(auto order : this->orderByExpressions) {\r\n" + 
-						"               query += QStringLiteral(\"%1,\").arg(order);\r\n" + 
-						"             }\r\n" + 				
-						"             query += this->orderByPrimaryKey();\r\n" +
-						"            }\r\n" +	
+				return "QString query = QStringLiteral(\"SELECT %1 FROM %2\").arg("+selectFields+", "+tableExpr+");" + CodeUtil2.NEWLINE +
+						CodeUtil2.NEWLINE + 
+						"        for(const QString &joinTable:joinTables) {" + CodeUtil2.NEWLINE + 
+						"            query+=joinTable;" + CodeUtil2.NEWLINE + 
+						"        }" + CodeUtil2.NEWLINE + 
+						CodeUtil2.NEWLINE + 
+						"        if (!conditions.empty()) {" + CodeUtil2.NEWLINE + 
+						CodeUtil2.NEWLINE + 
+						"            if (!limitOffsetCondition.isEmpty() && (limitResults > 0 || resultOffset > -1)) {" + CodeUtil2.NEWLINE + 
+						"                query += QStringLiteral(\" WHERE (\");" + CodeUtil2.NEWLINE + 
+						"            } else {" + CodeUtil2.NEWLINE + 
+						"                query += QStringLiteral(\" WHERE \");" + CodeUtil2.NEWLINE + 
+						"            }" + CodeUtil2.NEWLINE + 
+						CodeUtil2.NEWLINE + 
+						"            for(const QString &cond: conditions) {" + CodeUtil2.NEWLINE + 
+						"                query += cond;" + CodeUtil2.NEWLINE + 
+						"            }" + CodeUtil2.NEWLINE + 
+						"        }" + CodeUtil2.NEWLINE + 
+						CodeUtil2.NEWLINE + 
+						"        if (group.size()>0) {" + CodeUtil2.NEWLINE + 
+						"            query += QStringLiteral(\" GROUP BY %1\").arg(group.at(0));" + CodeUtil2.NEWLINE + 
+						"            for(int i=1;i<group.size();i++) {" + CodeUtil2.NEWLINE + 
+						"                query += QStringLiteral(\", %1\").arg(group.at(i));" + CodeUtil2.NEWLINE + 
+						"            }" + CodeUtil2.NEWLINE + 
+						"        }" + CodeUtil2.NEWLINE + 
+						"        if (limitResults > 0 || resultOffset > -1) {" + CodeUtil2.NEWLINE + 
+						"            if(!limitOffsetCondition.isEmpty()){ " + CodeUtil2.NEWLINE +
+						"            if (!conditions.empty()) {" + CodeUtil2.NEWLINE + 
+						"                query += QStringLiteral(\") AND %1\").arg("+  MethodToStringSelect.this.bean.getName() +"::getLimitQueryString(limitResults,resultOffset,limitOffsetCondition));" + CodeUtil2.NEWLINE + 
+						"            } else {" + CodeUtil2.NEWLINE + 
+						"                query += QStringLiteral(\" WHERE %1\").arg("+ MethodToStringSelect.this.bean.	getName() +"::getLimitQueryString(limitResults,resultOffset,limitOffsetCondition));" + CodeUtil2.NEWLINE + 
+						"            }" + CodeUtil2.NEWLINE + 
+						"             query += QStringLiteral(\" ORDER BY \");" + CodeUtil2.NEWLINE +
+						"             for(auto order : this->orderByExpressions) {" + CodeUtil2.NEWLINE + 
+						"               query += QStringLiteral(\"%1,\").arg(order);" + CodeUtil2.NEWLINE + 
+						"             }" + CodeUtil2.NEWLINE + 				
+						"             query += this->orderByPrimaryKey();" + CodeUtil2.NEWLINE +
+						"            } else {" + CodeUtil2.NEWLINE +
+						"             query += QStringLiteral(\" ORDER BY \");" + CodeUtil2.NEWLINE +
+						"             for(auto order : this->orderByExpressions) {" + CodeUtil2.NEWLINE + 
+						"               query += QStringLiteral(\"%1,\").arg(order);" + CodeUtil2.NEWLINE + 
+						"             }" + CodeUtil2.NEWLINE + 				
+						"             query += this->orderByPrimaryKey();" + CodeUtil2.NEWLINE +
+						"             query += QStringLiteral(\" LIMIT %1 OFFSET %2\").arg(QString::number(limitResults), QString::number(resultOffset));" + CodeUtil2.NEWLINE +	
+						"            }" + CodeUtil2.NEWLINE + 
+						"        } else {" + CodeUtil2.NEWLINE + 
+						"             query += QStringLiteral(\" ORDER BY \");" + CodeUtil2.NEWLINE +
+						"             for(auto order : this->orderByExpressions) {" + CodeUtil2.NEWLINE + 
+						"               query += QStringLiteral(\"%1,\").arg(order);" + CodeUtil2.NEWLINE + 
+						"             }" + CodeUtil2.NEWLINE + 				
+						"             query += this->orderByPrimaryKey();" + CodeUtil2.NEWLINE +
+						"            }" + CodeUtil2.NEWLINE +	
 						
 						"        return query;";
 			}

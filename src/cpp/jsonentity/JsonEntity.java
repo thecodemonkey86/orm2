@@ -3,7 +3,6 @@ package cpp.jsonentity;
 import java.util.ArrayList;
 import java.util.List;
 
-import codegen.CodeUtil;
 import cpp.CoreTypes;
 import cpp.JsonTypes;
 import cpp.Types;
@@ -334,17 +333,17 @@ public class JsonEntity extends Cls {
 	protected void addHeaderCodeBeforeClassDeclaration(StringBuilder sb) {
 		super.addHeaderCodeBeforeClassDeclaration(sb);
 		if(customPreprocessorCode != null) {
-			sb.append('\n').append(BEGIN_CUSTOM_PREPROCESSOR).append('\n');
+			sb.append(CodeUtil2.NEWLINE).append(BEGIN_CUSTOM_PREPROCESSOR).append(CodeUtil2.NEWLINE);
 			for(String cc : customPreprocessorCode) {
 				sb.append(cc.trim());
 			}
-			sb.append('\n').append(END_CUSTOM_PREPROCESSOR).append('\n');
+			sb.append(CodeUtil2.NEWLINE).append(END_CUSTOM_PREPROCESSOR).append(CodeUtil2.NEWLINE);
 		}
 		if (tbl.getPrimaryKey().isMultiColumn()) {
-			sb.append(getStructPk().toSourceString()).append('\n');
+			sb.append(getStructPk().toSourceString()).append(CodeUtil2.NEWLINE);
 		}
 //		if (fetchListHelper!=null) {
-//			sb.append(fetchListHelper.toHeaderString()).append('\n').append('\n');
+//			sb.append(fetchListHelper.toHeaderString()).append(CodeUtil2.NEWLINE).append(CodeUtil2.NEWLINE);
 //		}
 		
 		
@@ -353,11 +352,11 @@ public class JsonEntity extends Cls {
 	@Override
 	protected void addAfterSourceCode(StringBuilder sb) {
 		if(customSourceCode != null) {
-			sb.append('\n').append(BEGIN_CUSTOM_CLASS_MEMBERS).append('\n');
+			sb.append(CodeUtil2.NEWLINE).append(BEGIN_CUSTOM_CLASS_MEMBERS).append(CodeUtil2.NEWLINE);
 			for(String cc : customSourceCode) {
 				sb.append(cc.trim());
 			}
-			sb.append('\n').append(END_CUSTOM_CLASS_MEMBERS).append('\n');
+			sb.append(CodeUtil2.NEWLINE).append(END_CUSTOM_CLASS_MEMBERS).append(CodeUtil2.NEWLINE);
 		}
 	}
 	
@@ -452,11 +451,11 @@ public class JsonEntity extends Cls {
 	protected void addClassHeaderCode(StringBuilder sb) {
 		super.addClassHeaderCode(sb);
 		if(customHeaderCode != null) {
-			sb.append('\n').append(BEGIN_CUSTOM_CLASS_MEMBERS).append('\n');
+			sb.append(CodeUtil2.NEWLINE).append(BEGIN_CUSTOM_CLASS_MEMBERS).append(CodeUtil2.NEWLINE);
 			for(String cc : customHeaderCode) {
 				sb.append(cc.trim());
 			}
-			sb.append('\n').append(END_CUSTOM_CLASS_MEMBERS).append('\n');
+			sb.append(CodeUtil2.NEWLINE).append(END_CUSTOM_CLASS_MEMBERS).append(CodeUtil2.NEWLINE);
 		}
 
 	}
@@ -502,10 +501,10 @@ public class JsonEntity extends Cls {
 	
 	@Override
 	protected void addBeforeHeader(StringBuilder sb) {
-		CodeUtil.writeLine(sb, "/*Dies ist eine automatisch generierte Datei des C++ ORM Systems https://github.com/thecodemonkey86/orm2*/");
-		CodeUtil.writeLine(sb, "/*Generator (Java-basiert): https://github.com/thecodemonkey86/orm2*/");
-		CodeUtil.writeLine(sb, "/*Abhängigkeiten (C++ libraries): https://github.com/thecodemonkey86/libcpporm, https://github.com/thecodemonkey86/QtCommonLibs2, https://github.com/thecodemonkey86/SqlUtil2*/");
-		CodeUtil.writeLine(sb, "/*API Level " + APILEVEL + "*/\n");
+		CodeUtil2.writeLine(sb, "/*Dies ist eine automatisch generierte Datei des C++ ORM Systems https://github.com/thecodemonkey86/orm2*/");
+		CodeUtil2.writeLine(sb, "/*Generator (Java-basiert): https://github.com/thecodemonkey86/orm2*/");
+		CodeUtil2.writeLine(sb, "/*Abhängigkeiten (C++ libraries): https://github.com/thecodemonkey86/libcpporm, https://github.com/thecodemonkey86/QtCommonLibs2, https://github.com/thecodemonkey86/SqlUtil2*/");
+		CodeUtil2.writeLine(sb, "/*API Level " + APILEVEL + "*/\n");
 		
 	}
 

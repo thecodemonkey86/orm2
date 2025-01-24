@@ -6,6 +6,7 @@ import java.util.List;
 import codegen.CodeUtil;
 import php.core.expression.Var;
 import php.lib.ClsException;
+import util.CodeUtil2;
 
 public class TryCatchBlock extends Instruction{
 	protected InstructionBlock tryBlock;
@@ -62,16 +63,16 @@ public class TryCatchBlock extends Instruction{
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		CodeUtil.writeLine(sb, "try {");
+		CodeUtil2.writeLine(sb, "try {");
 		for(Instruction i : tryBlock) {
-			CodeUtil.writeLine(sb, i);
+			CodeUtil2.writeLine(sb, i);
 		}
 		sb.append("}");
 		for(CatchBlock c : catchBlocks) {
-			CodeUtil.writeLine(sb, CodeUtil.sp("catch", CodeUtil.parentheses(c.getVar().toDeclarationString()),"{" ));
+			CodeUtil2.writeLine(sb, CodeUtil.sp("catch", CodeUtil.parentheses(c.getVar().toDeclarationString()),"{" ));
 			
 			for(Instruction i : c) {
-				CodeUtil.writeLine(sb, i);
+				CodeUtil2.writeLine(sb, i);
 			}
 			sb.append("}");
 			
@@ -79,9 +80,9 @@ public class TryCatchBlock extends Instruction{
 		if (finallyBlock != null && !finallyBlock.isEmpty()) {
 			sb.append("finally {\n");
 			for(Instruction i : finallyBlock) {
-				CodeUtil.writeLine(sb, i);
+				CodeUtil2.writeLine(sb, i);
 			}
-			CodeUtil.writeLine(sb, "}");
+			CodeUtil2.writeLine(sb, "}");
 		} else {
 			sb.append("\n");
 		}

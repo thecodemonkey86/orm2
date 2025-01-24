@@ -93,12 +93,12 @@ public abstract class MethodTemplate {
 		concreteMethod.setParent(parent);
 		concreteMethod.addImplementation();
 		StringBuilder sb=new StringBuilder(CodeUtil.sp(getVisibility()+":","template"+CodeUtil.abr(CodeUtil.commaSep(tplTypes, "typename ")))+ CodeUtil.sp((inlineQualifier?"inline":null), getReturnType().toDeclarationString(),getName(),CodeUtil.parentheses(CodeUtil.commaSep(params)),(constQualifier?"const":null)));
-		CodeUtil.writeLine(sb, "{");
+		CodeUtil2.writeLine(sb, "{");
 	
 		for(Instruction i:concreteMethod.getInstructions()) {
 			if(Instruction.isStackTraceEnabled())
-				CodeUtil.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
-			CodeUtil.writeLine(sb,i);
+				CodeUtil2.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
+			CodeUtil2.writeLine(sb,i);
 		}
 		sb.append("}");
 		return sb.toString();

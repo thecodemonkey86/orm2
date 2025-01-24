@@ -26,13 +26,13 @@ public class CaseBlock extends InstructionBlock{
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (Expression cond : conditions) {
-			CodeUtil.writeLine(sb, CodeUtil.sp("case",cond+":"));
+			CodeUtil2.writeLine(sb, CodeUtil.sp("case",cond+":"));
 		}
 		for(Instruction i:instructions) {
 			if(InstructionBlock.isStackTraceEnabled())
-				CodeUtil.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
+				CodeUtil2.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
 			sb.append(i);
-			sb.append('\n');
+			sb.append(CodeUtil2.NEWLINE);
 		}
 		return sb.toString();
 	}

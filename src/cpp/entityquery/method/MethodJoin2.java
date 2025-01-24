@@ -5,6 +5,7 @@ import cpp.core.Cls;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.instruction.Instruction;
+import util.CodeUtil2;
 
 public class MethodJoin2 extends Method{
 
@@ -20,7 +21,7 @@ public class MethodJoin2 extends Method{
 		addInstr(new Instruction() {
 			@Override
 			public String toString() {
-				return "this->joinTables.append(QLatin1String(\" JOIN %1 ON %2\").arg( joinTableAlias,on));\r\n" + 
+				return "this->joinTables.append(QLatin1String(\" JOIN %1 ON %2\").arg( joinTableAlias,on));" + CodeUtil2.NEWLINE + 
 						"return *this;";
 			}
 		});

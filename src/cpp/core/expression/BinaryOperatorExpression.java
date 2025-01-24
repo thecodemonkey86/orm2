@@ -14,6 +14,9 @@ public class BinaryOperatorExpression extends Expression {
 		this.expression = expression;
 		this.arg = arg;
 		this.op = op;
+		if(arg==null) {
+			throw new NullPointerException();
+		}
 	}
 	
 	@Override

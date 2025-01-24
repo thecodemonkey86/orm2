@@ -9,12 +9,12 @@ public class DefaultCaseBlock extends InstructionBlock {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		CodeUtil.writeLine(sb, CodeUtil.sp("default:"));
+		CodeUtil2.writeLine(sb, CodeUtil.sp("default:"));
 		for(Instruction i:instructions) {
 			if(InstructionBlock.enableStacktrace)
-				CodeUtil.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
+				CodeUtil2.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
 			sb.append(i);
-			sb.append('\n');
+			sb.append(CodeUtil2.NEWLINE);
 		}
 		return sb.toString();
 	}

@@ -3,6 +3,7 @@ package cpp.core.instruction;
 import codegen.CodeUtil;
 import cpp.core.expression.Expression;
 import cpp.core.expression.Var;
+import util.CodeUtil2;
 
 public class While extends InstructionBlock{
 	Expression condition;
@@ -32,7 +33,7 @@ public class While extends InstructionBlock{
 		sb.append("{\n");
 		for(Instruction i:instructions) {
 			sb.append(i);
-			sb.append('\n');
+			sb.append(CodeUtil2.NEWLINE);
 		}
 		sb.append("}");
 		return sb.toString();

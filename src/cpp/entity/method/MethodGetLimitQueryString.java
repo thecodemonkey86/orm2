@@ -46,10 +46,6 @@ public class MethodGetLimitQueryString extends Method {
 		}
 		sql.append(" FROM ").append(bean.getTbl().getEscapedName()).append(' ').append("e1_limit").append(" WHERE %1" );
 		
-		/*if (!limitOffsetOrderBy.isEmpty()) {\r\n" + 
-						"                query += QStringLiteral(\" ORDER BY %1\").arg(limitOffsetOrderBy);\r\n" + 
-						"            }\r\n" +*/
-		
 		
 		Var varSql  = _declareInitConstructor(returnType, "sql", QString.fromStringConstant(sql.toString()).callMethod("arg", new InlineIfExpression(getParam("condition").callMethod("isEmpty"), QString.fromStringConstant(EntityCls.getDatabase().getBooleanExpressionTrue()), getParam("condition")) ));
 		Param paramLimit = getParam("limit");

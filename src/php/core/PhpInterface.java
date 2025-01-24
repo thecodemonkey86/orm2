@@ -5,6 +5,7 @@ import java.util.List;
 
 import codegen.CodeUtil;
 import php.core.method.Method;
+import util.CodeUtil2;
 
 public class PhpInterface extends AbstractPhpCls {
 
@@ -18,9 +19,9 @@ public class PhpInterface extends AbstractPhpCls {
 		StringBuilder sb=new StringBuilder();
 		
 		if (namespace != null && namespace.length() > 0) {
-			CodeUtil.writeLine(sb , CodeUtil.sp("package",namespace)+";");
+			CodeUtil2.writeLine(sb , CodeUtil.sp("package",namespace)+";");
 		}
-		sb.append('\n');
+		sb.append(CodeUtil2.NEWLINE);
 		
 		sb.append(CodeUtil.sp("interface",type)).append(' ');
 		
@@ -40,8 +41,8 @@ public class PhpInterface extends AbstractPhpCls {
 				throw new RuntimeException("method is not abstract: " + m.getName());
 			}
 			if (m.getInstructions().size()>0 || m.includeIfEmpty()) {
-				CodeUtil.writeLine(sb, m);
-				sb.append('\n');
+				CodeUtil2.writeLine(sb, m);
+				sb.append(CodeUtil2.NEWLINE);
 			}
 		}
 		

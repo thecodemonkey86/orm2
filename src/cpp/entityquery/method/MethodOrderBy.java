@@ -6,6 +6,7 @@ import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.instruction.Instruction;
 import cpp.lib.EnumSqlQueryOrderDirection;
+import util.CodeUtil2;
 
 public class MethodOrderBy extends Method{
 
@@ -25,7 +26,7 @@ public class MethodOrderBy extends Method{
         addInstr(new Instruction() {
 			@Override
 			public String toString() {
-				return "this->orderByExpressions.append(QLatin1String(\"%1 %2\").arg(order, (direction == SqlUtil3::SqlQuery::ORDER_ASC ? QLatin1String(\"asc\") : QLatin1String(\"desc\")) ));\r\n" + 
+				return "this->orderByExpressions.append(QLatin1String(\"%1 %2\").arg(order, (direction == SqlUtil3::SqlQuery::ORDER_ASC ? QLatin1String(\"asc\") : QLatin1String(\"desc\")) ));" + CodeUtil2.NEWLINE + 
 						"return *this;";
 			}
 		});

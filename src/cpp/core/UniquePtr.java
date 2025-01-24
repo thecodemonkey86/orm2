@@ -38,4 +38,5 @@ public class UniquePtr extends TplCls{
 	public boolean isPtr() {
 		return true;
 	}
+	
 }

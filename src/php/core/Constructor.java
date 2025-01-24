@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import codegen.CodeUtil;
 import php.core.expression.Expression;
 import php.core.method.Method;
+import util.CodeUtil2;
 
 public abstract class Constructor extends Method {
 	
@@ -40,11 +41,11 @@ public abstract class Constructor extends Method {
 			
 if (passToSuperConstructor!=null) {
 				
-	CodeUtil.writeLine(sb,"parent::__construct" + CodeUtil.parentheses(CodeUtil.commaSep(passToSuperConstructor))+";");
+	CodeUtil2.writeLine(sb,"parent::__construct" + CodeUtil.parentheses(CodeUtil.commaSep(passToSuperConstructor))+";");
 			}
 		for(Object i:instructions) {
 			
-			CodeUtil.writeLine(sb,i);
+			CodeUtil2.writeLine(sb,i);
 		}
 		sb.append("}");
 		

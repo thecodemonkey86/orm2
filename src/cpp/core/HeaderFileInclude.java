@@ -14,7 +14,7 @@ public class HeaderFileInclude extends Include{
 
 	@Override
 	public String toString() {
-		return "#include " + CodeUtil.quote(file) + "";
+		return "#include " + CodeUtil.quote(file) ;
 	}
 	
 	@Override

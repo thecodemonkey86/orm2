@@ -231,13 +231,13 @@ public class Cls extends Type implements IAttributeContainer{
 	}
 	
 	protected void addBeforeSourceCode(StringBuilder sb){
-		CodeUtil.writeLine(sb, "#include "+CodeUtil.quote(type.toLowerCase()+".h"));
+		CodeUtil2.writeLine(sb, "#include "+CodeUtil.quote(type.toLowerCase()+".h"));
 		if(includesInSourceFile!=null) {
 			for(Include i:includesInSourceFile) {
-				CodeUtil.writeLine(sb,i.toString());
+				CodeUtil2.writeLine(sb,i.toString());
 			}
 		}
-		sb.append('\n');
+		sb.append(CodeUtil2.NEWLINE);
 	}
 	
 	protected void addAfterSourceCode(StringBuilder sb){
@@ -251,24 +251,24 @@ public class Cls extends Type implements IAttributeContainer{
 	public String toHeaderString() {
 		StringBuilder sb=new StringBuilder();
 		addBeforeHeader(sb);
-		CodeUtil.writeLine(sb, "#pragma once");
+		CodeUtil2.writeLine(sb, "#pragma once");
 		if(useNamespace !=null) {
-			CodeUtil.writeLine(sb, CodeUtil.sp("namespace",useNamespace,"{"));
+			CodeUtil2.writeLine(sb, CodeUtil.sp("namespace",useNamespace,"{"));
 		}
 		for(Type predef:forwardDeclaredTypes) {
-			CodeUtil.writeLine(sb, predef.getForwardDeclaration());
+			CodeUtil2.writeLine(sb, predef.getForwardDeclaration());
 		}
 		for(Include incl:includes) {
-			CodeUtil.writeLine(sb, incl);
+			CodeUtil2.writeLine(sb, incl);
 		}
 		if (this.preprocessorInstructions != null) {
 			for(String pp:this.preprocessorInstructions) {
-				CodeUtil.writeLine(sb, pp);
+				CodeUtil2.writeLine(sb, pp);
 			}
 		}
 		addHeaderCodeBeforeClassDeclaration(sb);
 		if(classDocumentation != null) {
-			CodeUtil.writeLine(sb,classDocumentation);
+			CodeUtil2.writeLine(sb,classDocumentation);
 		}
 		
 		sb.append(CodeUtil.sp("class",exportMacro,type));
@@ -290,48 +290,48 @@ public class Cls extends Type implements IAttributeContainer{
 		sb.append("{\n");
 		if(enums != null) {
 			for(Enum e : enums) {
-				CodeUtil.writeLine(sb, e.toDefinitionString());
+				CodeUtil2.writeLine(sb, e.toDefinitionString());
 			}
 			sb.append(CodeUtil2.NL);
 		}
 		for(Attr a:attrs) {
-			CodeUtil.writeLine(sb, a.toDeclarationString());
+			CodeUtil2.writeLine(sb, a.toDeclarationString());
 		}
 		for(Constructor c:constructors) {
 			if(c.hasOutputHeaderCode()) {
-				CodeUtil.writeLine(sb, c.toHeaderString());
+				CodeUtil2.writeLine(sb, c.toHeaderString());
 			}
 		}
 		if (destructor !=null)
-			CodeUtil.writeLine(sb, destructor.toHeaderString());
+			CodeUtil2.writeLine(sb, destructor.toHeaderString());
 		for(Method m:methods) {
 			if(m.hasOutputHeaderCode()) {
 				if (m.getInstructions().size()>0 || m.includeIfEmpty()) {
-					CodeUtil.writeLine(sb, m.toHeaderString());
+					CodeUtil2.writeLine(sb, m.toHeaderString());
 				}
 			}
 		}
 		if(methodTemplates!=null)
 		for(MethodTemplate m:methodTemplates) {
-			CodeUtil.writeLine(sb, m.toHeaderString());
+			CodeUtil2.writeLine(sb, m.toHeaderString());
 		}
 		for(Operator o:operators) {
-			CodeUtil.writeLine(sb, o.toHeaderString());
+			CodeUtil2.writeLine(sb, o.toHeaderString());
 		}
 		
 		addClassHeaderCode(sb);
-		CodeUtil.writeLine(sb, "};");
+		CodeUtil2.writeLine(sb, "};");
 		if(useNamespace !=null) {
-			CodeUtil.writeLine(sb, "}");
+			CodeUtil2.writeLine(sb, "}");
 		}
 		if (nonMemberMethods!=null) {
 			for(Method m:nonMemberMethods) {
-				CodeUtil.writeLine(sb, m.toHeaderString());
+				CodeUtil2.writeLine(sb, m.toHeaderString());
 			}
 		} 
 		if (nonMemberOperators!=null) {
 			for(Operator op:nonMemberOperators) {
-				CodeUtil.writeLine(sb, op.toHeaderString());
+				CodeUtil2.writeLine(sb, op.toHeaderString());
 			}
 		}
 		
@@ -346,39 +346,39 @@ public class Cls extends Type implements IAttributeContainer{
 		addBeforeSourceCode(sb);
 		for(Constructor c:constructors) {
 			if(c.hasOutputSourceCode()) {
-				CodeUtil.writeLine(sb, c);
+				CodeUtil2.writeLine(sb, c);
 			}
 		}
 		if (destructor !=null)
-			CodeUtil.writeLine(sb, destructor);
+			CodeUtil2.writeLine(sb, destructor);
 		
 		for(Method m:methods) {
 			if(m.hasOutputSourceCode()) {
 				if (m.getInstructions().size()>0 || m.includeIfEmpty()) {
-					CodeUtil.writeLine(sb, m);
-					sb.append('\n');
+					CodeUtil2.writeLine(sb, m);
+					sb.append(CodeUtil2.NEWLINE);
 				}
 			}
 		}
 		
 		for(Operator o:operators) {
 			if(o.hasOutputSourceCode()) {
-				CodeUtil.writeLine(sb, o);
+				CodeUtil2.writeLine(sb, o);
 			}
 		}
 		
 		for(Attr a:attrs) {
 			if (a.isStatic())
-				CodeUtil.writeLine(sb, CodeUtil.sp(a.getType().toDeclarationString(),getName()+"::"+a.getName(),a.getInitValue()!=null?"="+a.getInitValue():null,";"));
+				CodeUtil2.writeLine(sb, CodeUtil.sp(a.getType().toDeclarationString(),getName()+"::"+a.getName(),a.getInitValue()!=null?"="+a.getInitValue():null,";"));
 		}
 		if (nonMemberMethods!=null) {
 			for(Method m:nonMemberMethods) {
-				CodeUtil.writeLine(sb, m.toString());
+				CodeUtil2.writeLine(sb, m.toString());
 			}
 		} 
 		if (nonMemberOperators!=null) {
 			for(Operator op:nonMemberOperators) {
-				CodeUtil.writeLine(sb, op.toString());
+				CodeUtil2.writeLine(sb, op.toString());
 			}
 		}
 		addAfterSourceCode(sb);

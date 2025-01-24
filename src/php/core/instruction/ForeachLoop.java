@@ -21,8 +21,8 @@ public class ForeachLoop extends InstructionBlock{
 		sb.append("{\n");
 		for(Instruction i: instructions) {
 			if(enableStacktrace)
-				CodeUtil.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
-			sb.append(i.toString()).append('\n');
+				CodeUtil2.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
+			sb.append(i.toString()).append(CodeUtil2.NEWLINE);
 		}
 		return sb.append('}').toString();
 	}

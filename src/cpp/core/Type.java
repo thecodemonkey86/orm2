@@ -136,6 +136,10 @@ public class Type {
 	public String getForwardDeclaration() {
 		throw new UnsupportedOperationException();
 	}
+
+	public boolean supportsDereference() {
+		return isPtr();
+	}
 	
 	
 }

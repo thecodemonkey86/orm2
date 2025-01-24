@@ -8,6 +8,7 @@ import cpp.core.TplSymbol;
 import cpp.core.Type;
 import cpp.core.instruction.Instruction;
 import cpp.core.method.TplMethod;
+import util.CodeUtil2;
 
 public class MethodJoin7 extends MethodTemplate{
 
@@ -30,7 +31,7 @@ public class MethodJoin7 extends MethodTemplate{
 						addInstr(new Instruction() {
 							@Override
 							public String toString() {
-								return "this->params.append(params);\r\n" + 
+								return "this->params.append(params);" + CodeUtil2.NEWLINE + 
 										"return join(joinTableAlias,on);";
 							}
 						});

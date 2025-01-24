@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import codegen.CodeUtil;
 import cpp.core.instruction.Instruction;
+import util.CodeUtil2;
 
 public abstract class Operator extends Method{
 	String symbol;
@@ -27,7 +28,7 @@ public abstract class Operator extends Method{
 		}
 		StringBuilder sb=new StringBuilder(CodeUtil.sp(returnType,(getParent()!=null?getParent().getName()+"::operator":"operator"),symbol,CodeUtil.parentheses(CodeUtil.commaSep(params)),(constQualifier?"const":""),"{\n"));
 		for(Instruction i:instructions) {
-			CodeUtil.writeLine(sb,i);
+			CodeUtil2.writeLine(sb,i);
 		}
 		sb.append("}");
 		

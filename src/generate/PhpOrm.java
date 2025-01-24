@@ -50,6 +50,7 @@ import php.orm.FirebirdDatabaseTypeMapper;
 import php.orm.MySqlDatabaseTypeMapper;
 import php.orm.PgDatabaseTypeMapper;
 import php.rest.PhpJsonRestServer;
+import util.CodeUtil2;
 import util.StringUtil;
 import xml.reader.DefaultXMLReader;
 
@@ -296,7 +297,7 @@ public class PhpOrm extends OrmGenerator {
 					String implCode = existingSourceFile.substring(startSrc,
 							endSrc + BEGIN_CUSTOM_CLASS_MEMBERS.length() - 1);
 					c.addMethod(new CustomClassMemberCode(implCode));
-					sbSrc.append(implCode).append('\n');
+					sbSrc.append(implCode).append(CodeUtil2.NEWLINE);
 				}
 				if (sbSrc.length() > 0)
 					Files.write(Paths.get("bak_custom_class_members", pathSrc.getFileName().toString()),

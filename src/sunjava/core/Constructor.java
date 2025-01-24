@@ -6,6 +6,7 @@ import codegen.CodeUtil;
 import sunjava.core.expression.Expression;
 import sunjava.core.instruction.Instruction;
 import sunjava.lib.ClsException;
+import util.CodeUtil2;
 
 public abstract class Constructor extends Method {
 	
@@ -55,11 +56,11 @@ public abstract class Constructor extends Method {
 			
 if (passToSuperConstructor!=null) {
 				
-	CodeUtil.writeLine(sb,"super" + CodeUtil.parentheses(CodeUtil.commaSep(passToSuperConstructor))+";");
+	CodeUtil2.writeLine(sb,"super" + CodeUtil.parentheses(CodeUtil.commaSep(passToSuperConstructor))+";");
 			}
 		for(Object i:instructions) {
 			
-			CodeUtil.writeLine(sb,i);
+			CodeUtil2.writeLine(sb,i);
 		}
 		sb.append("}");
 		

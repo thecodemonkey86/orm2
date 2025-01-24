@@ -3,6 +3,8 @@ package util;
 import codegen.CodeUtil;
 
 public class CodeUtil2 extends CodeUtil {
+	public static final String NEWLINE="\r\n";
+	
 	public static String uc1stCamelCase(String s) {
 		String[] parts = s.split("_");
 		String name="";
@@ -57,5 +59,17 @@ public class CodeUtil2 extends CodeUtil {
 			sb.append(" | ");
 		}
 		return sb.toString();
+	}
+	
+	public static void writeLine(StringBuilder sb, Object token) {
+		writeLine(sb, token, 0);
+	}
+	
+	public static void writeLine(StringBuilder sb, Object token, int indent) {
+		for(int i=0;i<indent;i++) {
+			sb.append('\t');
+		}
+		sb.append(token);
+		sb.append(CodeUtil2.NEWLINE);
 	}
 }

@@ -65,9 +65,9 @@ public class IfBlock extends Instruction{
 		sb.append("{\n");
 		for(Instruction i:ifInstr) {
 			if(InstructionBlock.enableStacktrace)
-				CodeUtil.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
+				CodeUtil2.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
 			sb.append(i);
-			sb.append('\n');
+			sb.append(CodeUtil2.NEWLINE);
 		}
 		sb.append("}");
 		if (elseifCondition!=null) {
@@ -78,7 +78,7 @@ public class IfBlock extends Instruction{
 				sb.append("{\n");
 				for(Instruction instr:elifInstr) {
 					if(InstructionBlock.enableStacktrace)
-					CodeUtil.writeLine(sb,new Comment(CodeUtil2.traceComment(instr.getStackTrace())));
+					CodeUtil2.writeLine(sb,new Comment(CodeUtil2.traceComment(instr.getStackTrace())));
 					sb.append(instr);
 					sb.append("\n");
 				}
@@ -90,7 +90,7 @@ public class IfBlock extends Instruction{
 			sb.append(" else {\n");
 			for(Instruction instr:elseInstr) {
 				if(InstructionBlock.enableStacktrace)
-					CodeUtil.writeLine(sb,new Comment(CodeUtil2.traceComment(instr.getStackTrace())));
+					CodeUtil2.writeLine(sb,new Comment(CodeUtil2.traceComment(instr.getStackTrace())));
 				sb.append(instr);
 				sb.append("\n");
 			}

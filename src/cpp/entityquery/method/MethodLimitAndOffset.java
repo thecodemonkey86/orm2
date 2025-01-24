@@ -7,6 +7,7 @@ import cpp.core.Param;
 import cpp.core.instruction.Instruction;
 import cpp.entityquery.EntityQueryType;
 import cpp.lib.ClsQVariant;
+import util.CodeUtil2;
 
 public class MethodLimitAndOffset extends Method{
 
@@ -34,16 +35,16 @@ public class MethodLimitAndOffset extends Method{
 			@Override
 			public String toString() {
 				
-				String str=(pQueryParams!=null)? "this->params.append("+ (Types.QVariant.toConstRef().equals(pQueryParams.getType()) ||(Types.QVariantList.toConstRef().equals(pQueryParams.getType())) ? pQueryParams.getReadAccessString() : Types.QVariant.callStaticMethod(ClsQVariant.fromValue, pQueryParams )) +");\r\n" : "";
+				String str=(pQueryParams!=null)? "this->params.append("+ (Types.QVariant.toConstRef().equals(pQueryParams.getType()) ||(Types.QVariantList.toConstRef().equals(pQueryParams.getType())) ? pQueryParams.getReadAccessString() : Types.QVariant.callStaticMethod(ClsQVariant.fromValue, pQueryParams )) +");" + CodeUtil2.NEWLINE  : "";
 				
-				   str+="	this->limitResults = limit;\r\n" + 
-						"	this->resultOffset = offset;\r\n";
+				   str+="	this->limitResults = limit;" + CodeUtil2.NEWLINE + 
+						"	this->resultOffset = offset;" + CodeUtil2.NEWLINE ;
 				   
 				   if(beanQueryType == EntityQueryType.Select) {
 						 if(MethodLimitAndOffset.this.withConditionParameter) {
-							 str+="	this->limitOffsetCondition = condition;\r\n";
+							 str+="	this->limitOffsetCondition = condition;" + CodeUtil2.NEWLINE ;
 						// } else {
-							// str+="	this->limitOffsetCondition = QLatin1Literal(\""+EntityCls.getDatabase().getBooleanExpressionTrue()+ "\");\r\n";
+							// str+="	this->limitOffsetCondition = QLatin1Literal(\""+EntityCls.getDatabase().getBooleanExpressionTrue()+ "\");" + CodeUtil2.NEWLINE ;
 						 }
 				   }
 				 str+="	return *this;";

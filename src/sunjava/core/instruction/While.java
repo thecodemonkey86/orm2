@@ -4,6 +4,7 @@ import codegen.CodeUtil;
 import sunjava.core.AbstractJavaCls;
 import sunjava.core.expression.Expression;
 import sunjava.core.expression.Var;
+import util.CodeUtil2;
 
 public class While extends InstructionBlock{
 	Expression condition;
@@ -33,7 +34,7 @@ public class While extends InstructionBlock{
 		sb.append("{\n");
 		for(Instruction i:instructions) {
 			sb.append(i);
-			sb.append('\n');
+			sb.append(CodeUtil2.NEWLINE);
 		}
 		sb.append("}");
 		return sb.toString();

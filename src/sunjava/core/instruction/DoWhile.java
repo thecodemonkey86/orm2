@@ -34,9 +34,9 @@ public class DoWhile extends InstructionBlock {
 		StringBuilder sb=new StringBuilder("do {\n");
 		
 		for(Instruction i:instructions) {
-			CodeUtil.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
+			CodeUtil2.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
 			sb.append(i.toString())
-				.append('\n');
+				.append(CodeUtil2.NEWLINE);
 		}
 		sb.append("} while")
 			.append(CodeUtil.parentheses(condition))

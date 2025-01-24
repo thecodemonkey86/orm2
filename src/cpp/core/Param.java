@@ -7,7 +7,7 @@ import cpp.core.expression.Var;
 public class Param extends Var{
 
 	Expression defaultValue;
-	
+	boolean maybeUnused;
 	public Param(Type type, String name) {
 		super(type,name);
 	}
@@ -15,6 +15,12 @@ public class Param extends Var{
 		super(type,name);
 		this.defaultValue=defaultValue;
 	}
+	
+	public Param setMaybeUnused() {
+		maybeUnused  =true;
+		return this;
+	}
+	
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
@@ -22,13 +28,13 @@ public class Param extends Var{
 	}
 	
 	public String toSourceString() {
-		return CodeUtil.sp(type.toDeclarationString(),name);
+		return CodeUtil.sp(maybeUnused?"[[maybe_unused]]":null, type.toDeclarationString(),name);
 		
 	}
 	
 	@Override
 	public String toDeclarationString() {
-		return defaultValue == null? CodeUtil.sp(type.toDeclarationString(),name):CodeUtil.sp(type.toDeclarationString(),name,'=',defaultValue);
+		return defaultValue == null? CodeUtil.sp( type.toDeclarationString(),name):CodeUtil.sp(type.toDeclarationString(),name,'=',defaultValue);
 	}
 	
 }

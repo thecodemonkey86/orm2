@@ -3,6 +3,7 @@ package cpp.core;
 import java.util.ArrayList;
 
 import codegen.CodeUtil;
+import util.CodeUtil2;
 
 public class Destructor extends Method{
 	
@@ -18,7 +19,7 @@ public class Destructor extends Method{
 	public String toString() {
 		StringBuilder sb=new StringBuilder(CodeUtil.sp(parent.getName()+"::~"+parent.getName(),"()","{\n"));
 		for(Object i:instructions) {
-			CodeUtil.writeLine(sb,i);
+			CodeUtil2.writeLine(sb,i);
 		}
 		sb.append("}");
 		

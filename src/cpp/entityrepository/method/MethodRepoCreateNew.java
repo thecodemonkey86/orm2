@@ -26,8 +26,12 @@ public class MethodRepoCreateNew extends Method {
 		this(cls,false,false);
 	}
 	
+	public static String getMethodName(EntityCls entity) {
+		return "createNew" + entity.getName();
+	}
+	
 	public MethodRepoCreateNew(EntityCls cls,boolean initializeFields,boolean initializeFieldsWithNullable) {
-		super(Public, cls.toSharedPtr(), "createNew" + cls.getName());
+		super(Public, cls.toSharedPtr(), getMethodName(cls));
 		this.cls=cls;
 		this.initializeFields = initializeFields;
 		this.initializeFieldsWithNullable = initializeFieldsWithNullable;
