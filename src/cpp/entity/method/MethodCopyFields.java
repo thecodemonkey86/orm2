@@ -114,11 +114,11 @@ public class MethodCopyFields extends Method{
 		if(entity.hasRelations()) {
 			ArrayList<Expression> exprHasRelation = new ArrayList<>();
 			Expression thisRepository = _accessThis(parent.getAttrByName("repository"));
-			IfBlock ifHasRelation = _if(null);
+			IfBlock ifHasManyToXRelation = entity.hasManyToXRelation() ? _if(null) : null;
 			
 			for(OneRelation r : entity.getOneRelations()) {
 				IfBlock ifCopyRelations = _if(getParam("copyRelation"+r.getDestTable().getUc1stCamelCaseName()+StringUtil.ucfirst(r.getAlias())));
-				exprHasRelation.add(ifCopyRelations.getCondition());
+				//exprHasRelation.add(ifCopyRelations.getCondition());
 				ifCopyRelations.thenBlock()._callMethodInstr(_this(), MethodAttributeSetter.getMethodName(entity.getAttrByName(OrmUtil.getOneRelationDestAttrName(r))), pSrc.callAttrGetter(entity.getAttrByName(OrmUtil.getOneRelationDestAttrName(r))));
 			}
 			for(OneToManyRelation r : entity.getOneToManyRelations()) {
@@ -137,8 +137,10 @@ public class MethodCopyFields extends Method{
 				foreachRelationEntity._callMethodInstr(_this(), MethodAddManyToManyRelatedEntity.getMethodName(r), foreachRelationEntity.getVar());
 			}
 			
-			ifHasRelation.setCondition(Expressions.and(_this().accessAttr(ClsBaseEntity.insert),new ParenthesesExpression( Expressions.or(exprHasRelation))));
-			ifHasRelation.thenBlock().addInstr(thisRepository.callMethodInstruction(ClsBaseRepository.save, _this().dereference()));
+			if(ifHasManyToXRelation!=null) {
+				ifHasManyToXRelation.setCondition(Expressions.and(_this().accessAttr(ClsBaseEntity.insert),new ParenthesesExpression( Expressions.or(exprHasRelation))));
+				ifHasManyToXRelation.thenBlock().addInstr(thisRepository.callMethodInstruction(ClsBaseRepository.save, _this().dereference()));
+			}
 		}
 	}
 

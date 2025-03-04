@@ -86,7 +86,7 @@ public class EntityCls extends Cls {
 	public static final String END_CUSTOM_CLASS_MEMBERS = "/*END_CUSTOM_CLASS_MEMBERS*/";
 	public static final String BEGIN_CUSTOM_PREPROCESSOR = "/*BEGIN_CUSTOM_PREPROCESSOR*/";
 	public static final String END_CUSTOM_PREPROCESSOR = "/*END_CUSTOM_PREPROCESSOR*/";
-	public static final String APILEVEL = "3.12.0";
+	public static final String APILEVEL = "3.12.1";
 	
 	static Database database;
 	static DatabaseTypeMapper mapper;
@@ -679,6 +679,10 @@ public class EntityCls extends Cls {
 	
 	public boolean hasColumnValidator(String col) {
 		return columnValidators != null && columnValidators.containsKey(col);
+	}
+
+	public boolean hasManyToXRelation() {
+		return oneToManyRelations.size() > 0 || manyRelations.size()>0;
 	}
 
 }
