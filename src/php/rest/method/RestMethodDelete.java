@@ -43,12 +43,12 @@ public class RestMethodDelete extends Method {
 		
 		
 		for(EntityCls entity : entities) {
-			CaseBlock caseBeanType = switchEntityType._case(new PhpStringLiteral(entity.getName()));
-			Var vQueryDelete = caseBeanType._declare(Types.beanQuery(entity), "_queryDelete", Types.EntityRepository.callStaticMethod(MethodCreateQuery.getMethodName(entity)));
-			caseBeanType.addInstr(vQueryDelete.callMethodInstruction(ClsBaseEntityQuery.delete));
+			CaseBlock caseEntityType = switchEntityType._case(new PhpStringLiteral(entity.getName()));
+			Var vQueryDelete = caseEntityType._declare(Types.entityQuery(entity), "_queryDelete", Types.EntityRepository.callStaticMethod(MethodCreateQuery.getMethodName(entity)));
+			caseEntityType.addInstr(vQueryDelete.callMethodInstruction(ClsBaseEntityQuery.delete));
 				
-			Var vCondJson = caseBeanType._declare(Types.array(Types.Mixed), "_condJson",vQueryJson.arrayIndex("conditions") );
-			ForeachLoop forCond= caseBeanType._foreach(new Var(Types.Mixed, "_c"), vCondJson);
+			Var vCondJson = caseEntityType._declare(Types.array(Types.Mixed), "_condJson",vQueryJson.arrayIndex("conditions") );
+			ForeachLoop forCond= caseEntityType._foreach(new Var(Types.Mixed, "_c"), vCondJson);
 			Var vSqlCond =  forCond._declare(Types.String, "_sqlCond", forCond.getVar().arrayIndex("cond"));
 			
 			forCond._if(PhpFunctions.str_contains.call(vSqlCond,new PhpStringLiteral("\'"))
@@ -60,8 +60,8 @@ public class RestMethodDelete extends Method {
 			addInstr(new ThrowInstruction(Types.Exception, new PhpStringLiteral("invalid SQL")));
 			
 			forCond.addInstr(new MethodCallInstruction(vQueryDelete.callMethod(ClsBaseEntityQuery.where,vSqlCond,  forCond.getVar().arrayIndex(new PhpStringLiteral("params")))));
-			caseBeanType.addInstr(vQueryDelete.callMethodInstruction(ClsBaseEntityQuery.execute));
-			caseBeanType._break();
+			caseEntityType.addInstr(vQueryDelete.callMethodInstruction(ClsBaseEntityQuery.execute));
+			caseEntityType._break();
 			
 		}
 		Var vExc = new Var(Types.Exception, "_ex");

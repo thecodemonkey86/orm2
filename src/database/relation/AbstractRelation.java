@@ -106,6 +106,6 @@ public class AbstractRelation {
 	}
 
 	public String getIdentifier() {
-		return destTable.getCamelCaseName()+StringUtil.ucfirst(alias);
+		return destTable.getUc1stCamelCaseName()+StringUtil.ucfirst(alias);
 	}
 }

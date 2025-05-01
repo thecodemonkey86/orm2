@@ -11,11 +11,11 @@ import sunjava.lib.ClsArrayList;
 import sunjava.orm.OrmUtil;
 import util.StringUtil;
 
-public class MethodAddManyToManyRelatedBeanInternal extends Method {
+public class MethodAddManyToManyRelatedEntityInternal extends Method {
 
 	protected ManyRelation rel;
 	
-	public MethodAddManyToManyRelatedBeanInternal(ManyRelation r, Param p) {
+	public MethodAddManyToManyRelatedEntityInternal(ManyRelation r, Param p) {
 		super(Public, Types.Void, 
 				"add"+StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrNameSingular(r))+ "Internal");
 		addParam(p);

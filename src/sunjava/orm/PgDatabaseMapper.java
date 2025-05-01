@@ -220,13 +220,13 @@ public class PgDatabaseMapper extends DatabaseTypeMapper{
 	}
 
 	@Override
-	public Type getBeanQueryClass(EntityCls beanCls) {
-		return new ClsEntityQuery(beanCls);
+	public Type getEntityQueryClass(EntityCls entityCls) {
+		return new ClsEntityQuery(entityCls);
 	}
 	
 	@Override
-	public Type getLibBeanQueryClass(EntityCls beanCls) {
-		return new ClsBaseEntityQuery(beanCls);
+	public Type getLibEntityQueryClass(EntityCls entityCls) {
+		return new ClsBaseEntityQuery(entityCls);
 	}
 
 }

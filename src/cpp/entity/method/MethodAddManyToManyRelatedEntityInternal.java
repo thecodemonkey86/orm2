@@ -23,15 +23,6 @@ public class MethodAddManyToManyRelatedEntityInternal extends Method {
 	public void addImplementation() {
 		Attr a=parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
 		addInstr(a.callMethod("append",getParam("entity")).asInstruction());
-//		BeanCls entity=(BeanCls) parent;
-//		BeanCls relationBean = Beans.get( rel.getDestTable());
-//		if (entity.getTbl().getPrimaryKey().isMultiColumn()) {
-//			throw new RuntimeException("no impl");
-//		} else {
-//				addInstr(parent.getAttrByName(a.getName()+"Added").callMethod("append",getParam("entity").callAttrGetter(relationBean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())).asInstruction());	
-//		}
-//		
-		
 	}
 	
 	

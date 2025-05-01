@@ -12,10 +12,10 @@ import database.relation.ManyRelation;
 public class MethodAddManyToManyRelatedEntityInternal extends Method {
 
 	protected ManyRelation rel;
-	Param pBean; 
+	Param pEntity; 
 	public MethodAddManyToManyRelatedEntityInternal(ManyRelation r, Param p) {
 		super(Public, Types.Void, getMethodName(r) );
-		pBean = addParam(p);
+		pEntity = addParam(p);
 		rel=r;
 	}
 	
@@ -39,7 +39,7 @@ public class MethodAddManyToManyRelatedEntityInternal extends Method {
 	@Override
 	public void addImplementation() {
 		Attr a=parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
-		addInstr(a.callMethod(ClsQList.append,pBean).asInstruction());
+		addInstr(a.callMethod(ClsQList.append,pEntity).asInstruction());
 //		addInstr(parent.getAttrByName("_added"+StringUtil.ucfirst(a.getName())).callMethod("append",getParam("entity")).asInstruction());
 	}
 	

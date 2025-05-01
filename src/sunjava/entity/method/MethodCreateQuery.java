@@ -9,7 +9,7 @@ import sunjava.entity.EntityCls;
 public class MethodCreateQuery extends Method {
 
 	public MethodCreateQuery(EntityCls cls) {
-		super(Public, EntityCls.getTypeMapper().getBeanQueryClass(cls), "createQuery");
+		super(Public, EntityCls.getTypeMapper().getEntityQueryClass(cls), "createQuery");
 		setStatic(true);
 	}
 

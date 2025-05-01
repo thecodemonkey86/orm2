@@ -25,7 +25,7 @@ public class ClsJsonEntityQueryDelete extends Cls{
 		addSuperclass(JsonTypes.BaseJsonEntityDeleteQuery);
 		addIncludeDefaultHeaderFileName(getSuperclass());
 		if(entity.getTbl().hasNullableColumn()) {
-			addIncludeDefaultHeaderFileName(Types.nullable(null)) ;
+			addIncludeDefaultHeaderFileName(Types.optional(null)) ;
 		}
 		
 		for(Column c : entity.getTbl().getAllColumns()) {

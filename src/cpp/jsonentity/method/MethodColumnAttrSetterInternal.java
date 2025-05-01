@@ -36,7 +36,7 @@ public class MethodColumnAttrSetterInternal extends Method{
 	public void addImplementation() {
 		Param param = getParam(a.getName());
 		if (col.isNullable()) {
-			_assign(_accessThis(a), new CreateObjectExpression(Types.nullable(param.getType().isPrimitiveType() ? param.getType() : ((ConstRef)param.getType()).getBase()), param));
+			_assign(_accessThis(a), new CreateObjectExpression(Types.optional(param.getType().isPrimitiveType() ? param.getType() : ((ConstRef)param.getType()).getBase()), param));
 		} else {
 			_assign(_accessThis(a), param);
 		}

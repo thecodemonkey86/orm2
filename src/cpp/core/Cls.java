@@ -81,9 +81,9 @@ public class Cls extends Type implements IAttributeContainer{
 		this.includes=new LinkedHashSet<>();
 		this.operators = new ArrayList<>(); 
 		this.forwardDeclaredTypes = new LinkedHashSet<>();
-		if(name !=null && copyConstructor) {
-			addConstructor(new CopyConstructor(this));
-			addOperator(new CopyAssignOperator(this));
+		if(name !=null) {
+			addConstructor(new CopyConstructor(this,!copyConstructor));
+			addOperator(new CopyAssignOperator(this,!copyConstructor));
 		}
 	}
 	
@@ -189,6 +189,11 @@ public class Cls extends Type implements IAttributeContainer{
 		c.setParent(this);
 	}
 	public void addAttr(Attr a) {
+		for(Attr attr:attrs ) {
+			if (attr.getName().equals(a.getName())) {
+				throw new IllegalArgumentException("duplicate "+a.getName());
+			}
+		}
 		attrs.add(a);
 	}
 	

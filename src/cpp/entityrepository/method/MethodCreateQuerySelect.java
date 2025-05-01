@@ -12,8 +12,7 @@ public class MethodCreateQuerySelect extends Method {
 	Param pLazy;
 	
 	public MethodCreateQuerySelect(EntityCls cls) {
-		//super(Public, new ClsBeanQuery(cls).toUniquePointer(), "createQuery"+cls.getName());
-		super(Public, Types.beanQuerySelect(cls),getMethodName(cls)
+		super(Public, Types.entityQuerySelect(cls),getMethodName(cls)
 				);
 		
 		if(cls.hasRelations()) {
@@ -26,8 +25,6 @@ public class MethodCreateQuerySelect extends Method {
 
 	@Override
 	public void addImplementation() {
-		//_return(new StdMoveExpression(new CreateObjectExpression(returnType, new NewOperator(new ClsBeanQuery(entity), parent.getAttrByName("sqlCon")) )));
-		//_return(new MakeSharedExpression((SharedPtr)returnType, parent.getStaticAttribute("sqlCon").callMethod("buildQuery")));
 		if(entity.hasRelations()) {
 			_return(new CreateObjectExpression(returnType, pLazy ));
 		} else {
@@ -36,7 +33,6 @@ public class MethodCreateQuerySelect extends Method {
 	}
 
 	public static String getMethodName(EntityCls cls) {
-		// TODO Auto-generated method stub
 		return "select"+cls.getName();
 	}
 

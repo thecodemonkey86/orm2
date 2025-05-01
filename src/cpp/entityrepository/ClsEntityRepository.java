@@ -7,7 +7,6 @@ import cpp.core.Cls;
 import cpp.core.Param;
 import cpp.core.SharedPtr;
 import cpp.entity.EntityCls;
-import cpp.entityrepository.method.MethodEntityLoad;
 import cpp.entityrepository.method.MethodEntityRemove;
 import cpp.entityrepository.method.MethodEntitySharedPtrRemove;
 import cpp.entityrepository.method.MethodCreateQueryDelete;
@@ -29,20 +28,18 @@ import database.relation.IManyRelation;
 import database.table.Table;
 
 public class ClsEntityRepository extends Cls{
-//	protected ArrayList<ClsBeanQuery> beanQueryClasses;
 	public static final String CLSNAME = "EntityRepository";
 	
 	public ClsEntityRepository() {
 		super(CLSNAME,false);
 		addSuperclass(new ClsBaseRepository(ClsDbPool.instance));
-//		beanQueryClasses = new ArrayList<>(); 
 	}
 	
 
 	public void addDeclarations(Collection<EntityCls> entities) {
 		addIncludeLibInSource(Types.QSqlRecord);
 		addIncludeHeader(getSuperclass().getHeaderInclude());
-		addIncludeInSourceDefaultHeaderFileName(EntityCls.getDatabaseMapper().getSqlQueryType());
+	//	addIncludeInSourceDefaultHeaderFileName(EntityCls.getDatabaseMapper().getSqlQueryType());
 		addInclude(ClsDbPool.instance.getHeaderInclude());
 		
 		if(EntityCls.getDatabase().supportsInsertOrIgnore()) {
@@ -59,12 +56,14 @@ public class ClsEntityRepository extends Cls{
 			
 			if(entity.getTbl().hasQueryType(Table.QueryType.Update))
 				addIncludeHeader("query/"+entity.getName().toLowerCase()+"entityqueryupdate");
-//			addAttr(new Attr(new ClsQHash(entity.getPkType(), entity.toRawPointer()), "loadedBeans"+entity.getName()));
-			addMethod(new MethodGetById(entity));
-			addMethod(new MethodGetById(entity,true));
-			addMethod(new MethodGetByIdOrCreateNew(entity));
-			addMethod(new MethodGetByIdOrCreateNew(entity,true));			
-//			addMethod(new MethodGetByRecord(entity.getTbl().getColumns(true), entity));
+			addMethod(new MethodGetById(entity,false));
+			if(entity.hasRelations()) {
+				addMethod(new MethodGetById(entity,true));
+			}
+			addMethod(new MethodGetByIdOrCreateNew(entity,false));
+			if(entity.hasRelations()) {
+				addMethod(new MethodGetByIdOrCreateNew(entity,true));
+			}
 			addMethod(new MethodFetchList(entity, entity.getTbl().getPrimaryKey(),false));
 			addMethod(new MethodFetchOne(entity.getOneRelations(),entity.getOneToManyRelations(), entity, null, false));
 			if(entity.hasRelations()) {
@@ -72,19 +71,13 @@ public class ClsEntityRepository extends Cls{
 				addMethod(new MethodFetchOne(entity.getOneRelations(),entity.getOneToManyRelations(), entity, null, true));
 			}
 			
-//			addMethod(new MethodFetchListStatic(entity));
-			
-			
-//			addMethod(new MethodFetchOneStatic(entity));
-//			beanQueryClasses.add(new ClsBeanQuery(entity));
 			addForwardDeclaredClass(entity);
-//			addForwardDeclaredClass(Types.beanQuerySelect(entity));
 			
 			if(entity.getTbl().hasQueryType(Table.QueryType.Update))
-				addForwardDeclaredClass(Types.beanQueryUpdate(entity));
+				addForwardDeclaredClass(Types.entityQueryUpdate(entity));
 			
 			if(entity.getTbl().hasQueryType(Table.QueryType.Delete))
-				addForwardDeclaredClass(Types.beanQueryDelete(entity));
+				addForwardDeclaredClass(Types.entityQueryDelete(entity));
 			
 			if(EntityCls.getCfg().isEnableMethodLoadCollection())
 				addMethod(new MethodLoadCollection(new Param(Types.qlist(entity.toSharedPtr()).toConstRef(),  "collection"), entity));

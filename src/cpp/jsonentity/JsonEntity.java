@@ -23,7 +23,7 @@ import cpp.core.method.MethodAttributeSetter;
 import cpp.jsonentity.method.MethodAddInsertParamForRawExpression;
 import cpp.jsonentity.method.MethodAddManyToManyRelatedEntity;
 import cpp.jsonentity.method.MethodAddManyToManyRelatedEntityInternal;
-import cpp.jsonentity.method.MethodAddRelatedBean;
+import cpp.jsonentity.method.MethodAddRelatedEntity;
 import cpp.jsonentity.method.MethodAddRelatedEntityInternal;
 import cpp.jsonentity.method.MethodColumnAttrSetNull;
 import cpp.jsonentity.method.MethodColumnAttrSetter;
@@ -201,8 +201,7 @@ public class JsonEntity extends Cls {
 			}
 			
 			addMethod(new MethodManyAttrGetter(attr));
-			addMethod(new MethodAddRelatedBean(r, new Param(attr.getElementType().toConstRef(), ENTIITY_PARAM_NAME)));
-			//addMethod(new MethodAddRelatedBean(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
+			addMethod(new MethodAddRelatedEntity(r, new Param(attr.getElementType().toConstRef(), ENTIITY_PARAM_NAME)));
 			addMethod(new MethodAddRelatedEntityInternal(r, new Param(attr.getElementType().toConstRef(), ENTIITY_PARAM_NAME)));
 			addMethod(new MethodAddRelatedEntityInternal(r, new Param(Types.qlist(attr.getElementType()).toConstRef(), ENTIITY_PARAM_NAME)));
 			addMethod(new MethodGetManyRelatedAtIndex(attr, r));
@@ -224,7 +223,6 @@ public class JsonEntity extends Cls {
 			}
 			addMethod(new MethodManyAttrGetter(attr));
 			addMethod(new MethodAddManyToManyRelatedEntity(r, new Param(attr.getElementType().toConstRef(), ENTIITY_PARAM_NAME)));
-			//addMethod(new MethodAddRelatedBean(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
 			addMethod(new MethodAddManyToManyRelatedEntityInternal(r, new Param(attr.getElementType().toConstRef(), ENTIITY_PARAM_NAME)));
 			addMethod(new MethodAddManyToManyRelatedEntityInternal(r, new Param(Types.qlist(attr.getElementType()).toConstRef(), ENTIITY_PARAM_NAME)));
 			addMethod(new MethodGetManyRelatedAtIndex(attr, r));
@@ -235,7 +233,7 @@ public class JsonEntity extends Cls {
 			
 		}
 		
-		Type nullstring = Types.nullable(Types.QString);
+		Type nullstring = Types.optional(Types.QString);
 //		structPk.setScope(name);
 		for(Column col:allColumns) {
 						
@@ -358,7 +356,7 @@ public class JsonEntity extends Cls {
 		addIncludeLibInSource(JsonTypes.QJsonDocument);
 		addIncludeLibInSource(JsonTypes.QJsonObject);
 		if(tbl.hasNullableColumn()) {
-			addIncludeDefaultHeaderFileName(Types.nullable(Types.Void));
+			addIncludeDefaultHeaderFileName(Types.optional(Types.Void));
 		}
 		addIncludeDefaultHeaderFileName(JsonTypes.BaseJsonEntity);
 
@@ -546,7 +544,7 @@ public class JsonEntity extends Cls {
 	}
 	
 	
-	public static String getRelatedBeanMethodName(AbstractRelation r) {
+	public static String getRelatedEntityMethodName(AbstractRelation r) {
 		 if (r instanceof OneToManyRelation) {
 			return "add"+StringUtil.ucfirst(OrmUtil.getOneToManyRelationDestAttrNameSingular((OneToManyRelation) r))+"Internal";
 		} else  if (r instanceof ManyRelation) {

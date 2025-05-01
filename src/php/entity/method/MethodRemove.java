@@ -23,11 +23,6 @@ public class MethodRemove extends Method {
 		PhpCls parent = (PhpCls) this.parent;
 		addInstr(new StaticMethodCall(parent.getSuperclass(), parent.getMethod("save")).asInstruction()) ;
 		for(OneToManyRelation r:oneToManyRelations) {
-//			IfBlock ifRemoveBeans = _if(Expressions.not(parent.getAttrByName("_removed"+ StringUtil.ucfirst(PgCppUtil.getManyRelationDestAttrName(r)) )
-//					.callMethod("empty")
-//					));
-			//String sql="delete from "+r.get;
-			//ifRemoveBeans.getIfInstr().
 			System.out.println(r);
 		}
 	}

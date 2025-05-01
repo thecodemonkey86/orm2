@@ -156,6 +156,9 @@ public class InstructionBlock extends Instruction implements Iterable<Instructio
 		return instructions.isEmpty();
 	}
 	
+	public Expression _not(Expression e) {
+		return Expressions.not(e)  ;
+	}
 
 
 }

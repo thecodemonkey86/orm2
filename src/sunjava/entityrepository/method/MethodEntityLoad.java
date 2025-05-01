@@ -64,7 +64,7 @@ public class MethodEntityLoad extends Method {
 
 	@Override
 	public void addImplementation() {
-		Param pBean = getParam("entity");
+		Param pEntity = getParam("entity");
 		if(!oneRelations.isEmpty() || !oneToManyRelations.isEmpty() || !manyToManyRelations.isEmpty()) {
 			addThrowsException(Types.SqlException);
 			ClsEntityRepository parent = (ClsEntityRepository) this.parent;
@@ -137,7 +137,7 @@ public class MethodEntityLoad extends Method {
 
 			for(Column col:primaryKey.getColumns()) {
 
-				exprQSqlQuery = exprQSqlQuery.callMethod("where", JavaString.stringConstant("e1."+ col.getEscapedName()+"=?"),pBean.callAttrGetter(col.getCamelCaseName()));
+				exprQSqlQuery = exprQSqlQuery.callMethod("where", JavaString.stringConstant("e1."+ col.getEscapedName()+"=?"),pEntity.callAttrGetter(col.getCamelCaseName()));
 
 			}
 			exprQSqlQuery = exprQSqlQuery.callMethod(ClsSqlQuery.query);
@@ -148,13 +148,13 @@ public class MethodEntityLoad extends Method {
 			//bCount = 2;
 			HashMap<String, Var> pkSets=new HashMap<>();
 			/*for(OneToManyRelation r:oneToManyRelations) {
-			BeanCls foreignCls = Beans.get(r.getDestTable()); 
+			EntityCls foreignCls = Entities.get(r.getDestTable()); 
 			if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
 				Var pkSet = _declareInitDefaultConstructor(Types.hashset(foreignCls.getPkType()), "pkSetB"+r.getAlias());
 				pkSets.put(r.getAlias() ,pkSet);
 			} else {
 				Column colPk = r.getDestTable().getPrimaryKey().getColumns().get(0);
-				Type type = BeanCls.getTypeMapper().columnToType( colPk);
+				Type type = EntityCls.getTypeMapper().columnToType( colPk);
 				Var pkSet = _declareInitDefaultConstructor(Types.hashset(type), "pkSetB"+r.getAlias());
 				pkSets.put(r.getAlias(), pkSet);
 			}
@@ -189,11 +189,11 @@ public class MethodEntityLoad extends Method {
 					Var pk = doWhileQSqlQueryNext._declareNew(foreignCls.getPkType(), "pk"+r.getAlias(),pkArgs);
 					doWhileQSqlQueryNext._if(Expressions.not(pkSet.callMethod(ClsHashSet.contains, pk)))
 					.addIfInstr(pkSet.callMethodInstruction(ClsHashSet.add, pk))
-					.addIfInstr(pBean.callMethodInstruction(OrmUtil.getAddRelatedBeanMethodName(r), Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias()))));
-					/*.addIfInstr(pBean.accessAttr(
+					.addIfInstr(pEntity.callMethodInstruction(OrmUtil.getAddRelatedEntityMethodName(r), Types.EntityRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias()))));
+					/*.addIfInstr(pEntity.accessAttr(
 								CodeUtil2.plural(r.getDestTable().getCamelCaseName()))
 								.callMethodInstruction(ClsArrayList.METHOD_NAME_ADD, 
-										Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Beans.get(r.getDestTable())),  resultSet, JavaString.fromStringConstant(r.getAlias()))))
+										Types.EntityRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.fromStringConstant(r.getAlias()))))
 					 */
 
 					;
@@ -203,11 +203,11 @@ public class MethodEntityLoad extends Method {
 
 					doWhileQSqlQueryNext._if(Expressions.not(pkSet.callMethod(ClsHashSet.contains, pk)))
 					.addIfInstr(pkSet.callMethodInstruction(ClsHashSet.add, pk))
-					.addIfInstr(pBean.callMethodInstruction(OrmUtil.getAddRelatedBeanMethodName(r), Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias()))));
-					/*.addIfInstr(pBean.accessAttr(
+					.addIfInstr(pEntity.callMethodInstruction(OrmUtil.getAddRelatedEntityMethodName(r), Types.EntityRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias()))));
+					/*.addIfInstr(pEntity.accessAttr(
 						CodeUtil2.plural(r.getDestTable().getCamelCaseName()))
 						.callMethodInstruction(ClsArrayList.METHOD_NAME_ADD, 
-								Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Beans.get(r.getDestTable())),  resultSet, JavaString.fromStringConstant(r.getAlias()))));
+								Types.EntityRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.fromStringConstant(r.getAlias()))));
 					 */
 				}
 
@@ -216,14 +216,14 @@ public class MethodEntityLoad extends Method {
 
 			for(OneRelation r:oneRelations) {
 				try {
-					doWhileQSqlQueryNext._callMethodInstr(pBean, new MethodOneRelationAttrSetter( pBean.getClassConcreteType().getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)), true, r.isPartOfPk()), 
-							Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias())));
+					doWhileQSqlQueryNext._callMethodInstr(pEntity, new MethodOneRelationAttrSetter( pEntity.getClassConcreteType().getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)), true, r.isPartOfPk()), 
+							Types.EntityRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias())));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		}
-		_callMethodInstr(pBean, ClsBaseEntity.setLoaded, BoolExpression.TRUE);
+		_callMethodInstr(pEntity, ClsBaseEntity.setLoaded, BoolExpression.TRUE);
 	}
 
 }

@@ -17,11 +17,11 @@ import sunjava.lib.ClsArrayList;
 import sunjava.orm.OrmUtil;
 import util.StringUtil;
 
-public class MethodRemoveManyToManyRelatedBean extends Method {
+public class MethodRemoveManyToManyRelatedEntity extends Method {
 
 	protected ManyRelation rel;
 	
-	public MethodRemoveManyToManyRelatedBean(ManyRelation r, Param p) {
+	public MethodRemoveManyToManyRelatedEntity(ManyRelation r, Param p) {
 		super(Public, Types.Void, "remove"+StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrNameSingular(r)));
 		addParam(p);
 		rel=r;
@@ -32,21 +32,21 @@ public class MethodRemoveManyToManyRelatedBean extends Method {
 		JavaCls parent = (JavaCls) this.parent;
 		Attr a=parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
 		addInstr(a.callMethod(ClsArrayList.remove,getParam("entity")).asInstruction());
-		EntityCls relationBean = Entities.get( rel.getDestTable());
-		Param pBean = getParam("entity");
+		EntityCls relationEntity = Entities.get( rel.getDestTable());
+		Param pEntity = getParam("entity");
 		Attr aRemoved = parent.getAttrByName(
 				a.getName()+"Removed");
 		_if(aRemoved.isNull()).addIfInstr(aRemoved.assign(new NewOperator(aRemoved.getType())));
 		
-		if (relationBean.getTbl().getPrimaryKey().isMultiColumn()) {
-			Type pkType=relationBean.getPkType();
-Expression[] idAddedArgs = new Expression[relationBean.getTbl().getPrimaryKey().getColumnCount()];
+		if (relationEntity.getTbl().getPrimaryKey().isMultiColumn()) {
+			Type pkType=relationEntity.getPkType();
+Expression[] idAddedArgs = new Expression[relationEntity.getTbl().getPrimaryKey().getColumnCount()];
 			
 			for(int i = 0; i < idAddedArgs.length; i++) {
-				idAddedArgs[i] = pBean.callAttrGetter(relationBean.getTbl().getPrimaryKey().getColumn(i).getCamelCaseName());
+				idAddedArgs[i] = pEntity.callAttrGetter(relationEntity.getTbl().getPrimaryKey().getColumn(i).getCamelCaseName());
 			}
 			Var idRemoved = _declareNew(pkType, "idRemoved", idAddedArgs);
-			for(Column col:relationBean.getTbl().getPrimaryKey().getColumns()) {
+			for(Column col:relationEntity.getTbl().getPrimaryKey().getColumns()) {
 				addInstr( idRemoved.callAttrSetterMethodInstr(col
 						.getCamelCaseName(), getParam("entity")
 						.callAttrGetter(
@@ -66,7 +66,7 @@ Expression[] idAddedArgs = new Expression[relationBean.getTbl().getPrimaryKey().
 							.callMethod(ClsArrayList.add,
 									getParam("entity")
 									.callAttrGetter(
-											relationBean.getTbl().getPrimaryKey().getFirstColumn()
+											relationEntity.getTbl().getPrimaryKey().getFirstColumn()
 											.getCamelCaseName()
 									)
 								).asInstruction());	

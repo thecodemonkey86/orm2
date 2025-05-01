@@ -29,7 +29,7 @@ public class MethodUpdateSetExpression extends Method{
 	public void addImplementation() {
 		
 		addInstr(_this().accessAttr(ClsEntityQueryUpdate.updateFields).binOp("+=", QString.fromStringConstant(col.getEscapedName()+"=").concat(pExpression)).asInstruction());
-		_callMethodInstr( _this().accessAttr(ClsEntityQueryUpdate.params),ClsQList.append,Types.QVariant.callStaticMethod(ClsQVariant.fromValue, pValue));
+		_callMethodInstr( _this().accessAttr(ClsEntityQueryUpdate.params),ClsQList.append,ClsQVariant.fromValue(pValue));
 		
 		_return(_this().dereference());
 	}

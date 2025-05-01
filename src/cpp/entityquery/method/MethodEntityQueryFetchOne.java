@@ -12,8 +12,10 @@ public class MethodEntityQueryFetchOne extends Method{
 	protected EntityCls entity;
 	protected Param pSqlCon;
 	
+	public static String METHOD_NAME="queryOne";
+	
 	public MethodEntityQueryFetchOne(EntityCls entity) {
-		super(Public, entity.toSharedPtr(), "queryOne");
+		super(Public, entity.toSharedPtr(),METHOD_NAME );
 		this.entity=entity;
 		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 	}

@@ -223,10 +223,10 @@ public class PhpOrm extends OrmGenerator {
 		Php.phpVersion = ((PhpOrmConfig) cfg).getPhpversion();
 		EntityCls.setTypeMapper(getTypeMapper(cfg));
 		Charset utf8 = Charset.forName("UTF-8");
-		ClsEntityRepository.setBeanRepositoryNamespace(cfg.getBasePath().relativize(cfg.getRepositoryPath()).toString().replace("/", "\\"));
-		EntityCls.setBeanNamespace(cfg.getBasePath().relativize(cfg.getModelPath()).toString().replace("/", "\\")+"\\Entities");
-		EntityCls.setBeanRepoNamespace(cfg.getBasePath().relativize(cfg.getRepositoryPath()).toString().replace("/", "\\"));
-		ClsEntityQuery.setBeanQueryNamespace(ClsEntityRepository.getBeanRepositoryNamespace()+"\\Query");
+		ClsEntityRepository.setEntityRepositoryNamespace(cfg.getBasePath().relativize(cfg.getRepositoryPath()).toString().replace("/", "\\"));
+		EntityCls.setEntityNamespace(cfg.getBasePath().relativize(cfg.getModelPath()).toString().replace("/", "\\")+"\\Entities");
+		EntityCls.setEntityRepoNamespace(cfg.getBasePath().relativize(cfg.getRepositoryPath()).toString().replace("/", "\\"));
+		ClsEntityQuery.setEntityQueryNamespace(ClsEntityRepository.getEntityRepositoryNamespace()+"\\Query");
 		
 		EntityCls.setSqlQueryCls(getSqlQueryCls(cfg));
 		EntityCls.setDatabase(cfg.getDatabase());
@@ -254,18 +254,18 @@ public class PhpOrm extends OrmGenerator {
 			c.addDeclarations();
 		}
 
-		Path pathBeans = pathModel.resolve("Entities");
+		Path pathEntities = pathModel.resolve("Entities");
 		Path pathRepository = cfg.getRepositoryPath();
 		Path helperPath = pathRepository.resolve("Helper");
 		Path pathRepositoryQuery = pathRepository.resolve("Query");
-		Path pathBeanPk = pathBeans.resolve("Pk");
+		Path pathEntityPk = pathEntities.resolve("Pk");
 		
-		Files.createDirectories(pathBeanPk);
+		Files.createDirectories(pathEntityPk);
 		Files.createDirectories(helperPath);
 		Files.createDirectories(pathRepositoryQuery);
 		
-		try(DirectoryStream<Path> dsPathBeans = Files.newDirectoryStream(pathBeans)) {
-			for(Path f : dsPathBeans) {
+		try(DirectoryStream<Path> dsPathEntities = Files.newDirectoryStream(pathEntities)) {
+			for(Path f : dsPathEntities) {
 				if(!Entities.exists(StringUtil.dropAll(f.getFileName().toString(),".php")) && f.toString().endsWith(".php")) {
 					Files.delete(f);
 				}
@@ -285,7 +285,7 @@ public class PhpOrm extends OrmGenerator {
 		}
 		
 		for (EntityCls c : Entities.getAllEntities()) {
-			Path pathSrc = pathBeans.resolve(c.getName() + ".php");
+			Path pathSrc = pathEntities.resolve(c.getName() + ".php");
 			if (Files.exists(pathSrc)) {
 				String existingSourceFile = new String(Files.readAllBytes(pathSrc), utf8);
 
@@ -311,10 +311,10 @@ public class PhpOrm extends OrmGenerator {
 
 		for (EntityCls c : Entities.getAllEntities()) {
 			if(c.getTbl().getPrimaryKey().isMultiColumn()) {
-				Files.write(pathBeanPk.resolve("Pk"+ c.getName() + ".php"), ((PhpCls) c.getPkType()).toSourceString().getBytes(utf8), writeOptions);
+				Files.write(pathEntityPk.resolve("Pk"+ c.getName() + ".php"), ((PhpCls) c.getPkType()).toSourceString().getBytes(utf8), writeOptions);
 			}
 			
-			Files.write(pathBeans.resolve(c.getName() + ".php"), c.toSourceString().getBytes(utf8), writeOptions);
+			Files.write(pathEntities.resolve(c.getName() + ".php"), c.toSourceString().getBytes(utf8), writeOptions);
 			
 			Files.write(helperPath.resolve(c.getFetchListHelperCls().getName() + ".php"), c.getFetchListHelperCls().toSourceString().getBytes(utf8), writeOptions);
 			ClsEntityQuery clsQuery = new ClsEntityQuery(c);

@@ -13,10 +13,10 @@ import database.relation.OneToManyRelation;
 public class MethodAddRelatedEntityInternal extends Method {
 
 	protected OneToManyRelation rel;
-	Param pBean; 
+	Param pEntity; 
 	public MethodAddRelatedEntityInternal(OneToManyRelation r, Param p) {
 		super(Public, Types.Void, getMethodName(r) );
-		pBean = addParam(p);
+		pEntity = addParam(p);
 		rel=r;
 	}
 	
@@ -44,7 +44,7 @@ public class MethodAddRelatedEntityInternal extends Method {
 	@Override
 	public void addImplementation() {
 		Attr a=parent.getAttrByName(OrmUtil.getOneToManyRelationDestAttrName(rel));
-		addInstr(a.callMethod(ClsQList.append,pBean).asInstruction());
+		addInstr(a.callMethod(ClsQList.append,pEntity).asInstruction());
 //		addInstr(parent.getAttrByName("_added"+StringUtil.ucfirst(a.getName())).callMethod("append",getParam("entity")).asInstruction());
 	}
 	

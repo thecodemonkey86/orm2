@@ -143,7 +143,7 @@ public abstract class Column {
 	}
 	
 //	public Type toType() {
-//		return BeanCls.getDatabaseMapper().getTypeFromDbDataType(dbType, nullable);
+//		return EntityCls.getDatabaseMapper().getTypeFromDbDataType(dbType, nullable);
 //	}
 	
 	public OneRelation getOneRelation() {
@@ -192,7 +192,7 @@ public abstract class Column {
 	}
 
 //	public Expression getGenericDefaultValue() {
-//		return BeanCls.getDatabaseMapper().getGenericDefaultValueExpression(this);
+//		return EntityCls.getDatabaseMapper().getGenericDefaultValueExpression(this);
 //	}
 	
 	public void setEnableRawValue(boolean enableRawValue) {

@@ -17,6 +17,7 @@ public class MethodAttrSetterInternal extends Method{
 		super(Public, cls.toRawPointer(), "set"+StringUtil.ucfirst(a.getName())+"Internal");
 		this.a=a;
 		addParam(new Param(a.getType().isPrimitiveType() || a.getType()instanceof RawPtr ? a.getType() : a.getType().toConstRef(), a.getName()));
+		setnoexcept();
 	}
 
 	@Override

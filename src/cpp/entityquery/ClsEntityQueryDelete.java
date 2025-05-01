@@ -82,7 +82,7 @@ public class ClsEntityQueryDelete extends Cls {
 		addIncludeLibInSource(Types.QRegularExpression);
 		addIncludeDefaultHeaderFileName(Types.SqlUtil);
 		addIncludeDefaultHeaderFileName(Types.SqlQuery);
-		addIncludeDefaultHeaderFileName(Types.nullable(null));
+		addIncludeDefaultHeaderFileName(Types.optional(null));
 		addIncludeHeader(ClsDbPool.instance.getHeaderInclude());
 		addIncludeLibInSource(QtCoreTypes.QDebug,true);
 		addIncludeLibInSource(QtSqlTypes.QSqlError,true);
@@ -90,26 +90,10 @@ public class ClsEntityQueryDelete extends Cls {
 		addIncludeLibInSource(Types.QRegularExpression);
 		addAttr(new Attr(Types.QString,table));
 		addAttr(new Attr(Types.QStringList,"conditions"));
-		//addAttr(new Attr(Types.Int64,"limitResults"));
-		//addAttr(new Attr(Types.Int64,"resultOffset"));
 		addAttr(new Attr(Types.QVariantList,params));
-//		addAttr(new Attr(EnumQueryMode.INSTANCE,queryMode));
-		
-		//addForwardDeclaredClass(Types.EntityRepository);
 		
 		addMethod(new MethodToStringDelete(cls));
-//		addMethod(new MethodLimit(this,BeanQueryType.Delete));
-//		addMethod(new MethodLimitAndOffset(this,BeanQueryType.Delete,null,true));
-//		addMethod(new MethodLimitAndOffset(this,BeanQueryType.Delete,new Param(Types.QString.toConstRef(), "param"),true));
-//		addMethod(new MethodLimitAndOffset(this,BeanQueryType.Delete,new Param(Types.Int, "param"),true));
-//		addMethod(new MethodLimitAndOffset(this,BeanQueryType.Delete,new Param(Types.Bool, "param"),true));
-//		addMethod(new MethodLimitAndOffset(this,BeanQueryType.Delete,new Param(Types.Double, "param"),true));
-//		addMethod(new MethodLimitAndOffset(this,BeanQueryType.Delete,new Param(Types.QVariant.toConstRef(), "param"),true));
-//		addMethod(new MethodLimitAndOffset(this,BeanQueryType.Delete,null,false));
-//		addMethod(new MethodOffset(this,BeanQueryType.Delete));
-//		addMethod(new MethodPrintDebug());
 		addMethod(new MethodPrintQDebug());
-//		addMethod(new MethodDeleteFrom(cls, this));
 		addMethod(new MethodExecute());
 		addMethod(new MethodGetDebugString());
 		addMethod(new MethodAddQueryParameter(Types.Int));

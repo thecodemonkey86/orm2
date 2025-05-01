@@ -6,6 +6,7 @@ import cpp.Types;
 import cpp.CoreTypes;
 import cpp.core.Attr;
 import cpp.core.Method;
+import cpp.core.Optional;
 import cpp.core.Param;
 import cpp.core.QString;
 import cpp.core.expression.CreateObjectExpression;
@@ -14,7 +15,6 @@ import cpp.core.expression.InlineIfExpression;
 import cpp.core.expression.Var;
 import cpp.core.instruction.IfBlock;
 import cpp.entity.EntityCls;
-import cpp.entity.Nullable;
 import cpp.lib.ClsQString;
 import cpp.lib.ClsQStringList;
 import cpp.lib.ClsQVariant;
@@ -45,13 +45,13 @@ public class MethodGetUpdateFields extends Method{
 			Expression colAttr = parent.accessThisAttrGetterByColumn(colPk); //parent.getAttrByName(colPk.getCamelCaseName());
 			
 			if(colPk.isNullable())
-				colAttr = colAttr.callMethod(Nullable.val);
+				colAttr = colAttr.callMethod(Optional.value);
 			else if(colAttr.getType().equals(Types.QString))
 				colAttr = new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), QString.fromStringConstant(""), colAttr);
 			ifIdModified.setIfInstr(
 					fields.callMethodInstruction(ClsQStringList.append, QString.fromStringConstant(colPk.getEscapedName()+"=?"))
 					,
-					pParams.callMethodInstruction(ClsQStringList.append, Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr) )
+					pParams.callMethodInstruction(ClsQStringList.append, ClsQVariant.fromValue(colAttr) )
 					
 					);
 		}
@@ -61,7 +61,7 @@ public class MethodGetUpdateFields extends Method{
 				 _ifNot(attrFilePath.callMethod(ClsQString.isNull)).setIfInstr(
 							fields.callMethodInstruction(ClsQStringList.append, QString.fromStringConstant(String.format("%s=%s(?)", col.getEscapedName(),EntityCls.getDatabase().getFileLoadFunction())))
 							,
-							pParams.callMethodInstruction(ClsQStringList.append,  Types.QVariant.callStaticMethod(ClsQVariant.fromValue, attrFilePath))
+							pParams.callMethodInstruction(ClsQStringList.append,  ClsQVariant.fromValue(attrFilePath))
 							
 							);
 			} else	{
@@ -72,7 +72,7 @@ public class MethodGetUpdateFields extends Method{
 					.setIfInstr(
 							fields.callMethodInstruction(ClsQStringList.append, QString.fromStringConstant(col.getEscapedName()+"=?"))
 							,
-							pParams.callMethodInstruction(ClsQStringList.append, col.isNullable() ? new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), new CreateObjectExpression(CoreTypes.QVariant), colAttr.callMethod(Nullable.val))   : Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr.getType().equals(Types.QString) ? new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), QString.fromStringConstant(""), colAttr): colAttr))
+							pParams.callMethodInstruction(ClsQStringList.append, col.isNullable() ? new InlineIfExpression(_not(colAttr.callMethod(Optional.has_value)), new CreateObjectExpression(CoreTypes.QVariant), colAttr.callMethod(Optional.value))   : ClsQVariant.fromValue(colAttr.getType().equals(Types.QString) ? new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), QString.fromStringConstant(""), colAttr): colAttr))
 							
 							);
 				}
@@ -88,7 +88,7 @@ public class MethodGetUpdateFields extends Method{
 					Expression colAttr = parent.accessThisAttrGetterByColumn(col);
 					 
 					ifBlock.setIfInstr(fields.callMethodInstruction(ClsQStringList.append, QString.fromStringConstant(col.getEscapedName()+"=?")),
-							pParams.callMethodInstruction(ClsQStringList.append, col.isNullable() ? new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), new CreateObjectExpression(CoreTypes.QVariant), colAttr.callMethod(Nullable.val))   : Types.QVariant.callStaticMethod(ClsQVariant.fromValue, colAttr.getType().equals(Types.QString) ? new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), QString.fromStringConstant(""), colAttr): colAttr)));
+							pParams.callMethodInstruction(ClsQStringList.append, col.isNullable() ? new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), new CreateObjectExpression(CoreTypes.QVariant), colAttr.callMethod(Optional.value))   : ClsQVariant.fromValue(colAttr.getType().equals(Types.QString) ? new InlineIfExpression(colAttr.callMethod(ClsQString.isNull), QString.fromStringConstant(""), colAttr): colAttr)));
 				}
 			}
 			

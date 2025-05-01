@@ -19,6 +19,6 @@ public abstract class DatabaseTypeMapper {
 	protected abstract Expression getResultSetValueGetterInternal(Var resultSet,Column col,Expression identifier);
 	
 	public abstract Type getSqlQueryClass();
-	public abstract Type getBeanQueryClass(EntityCls beanCls);
-	public abstract Type getLibBeanQueryClass(EntityCls beanCls);
+	public abstract Type getEntityQueryClass(EntityCls entityCls);
+	public abstract Type getLibEntityQueryClass(EntityCls entityCls);
 }

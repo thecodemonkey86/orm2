@@ -26,7 +26,7 @@ public class MethodManyAttrGetter extends Method{
 	@Override
 	public void addImplementation() {
 		PhpCls parent = (PhpCls) this.parent;
-//		parent.addImport("ormtest.repository.BeanRepository");
+//		parent.addImport("ormtest.repository.EntityRepository");
 		_if(Expressions.not(parent.getAttrByName("loaded"))).thenBlock()
 //			._callMethodInstr(_this(), "load");
 		.addInstr( Types.EntityRepository.callStaticMethod("load"+parent.getName(), _this()).asInstruction());

@@ -89,9 +89,9 @@ public class ClsEntityQueryUpdate extends Cls {
 		//addIncludeHeader(EntityCls.getModelPath() + "entities/"+cls.getIncludeHeader());
 		addIncludeHeaderInSource("../"+ Types.EntityRepository.getName().toLowerCase());
 		addIncludeLibInSource(Types.QRegularExpression);
-		addIncludeHeader(Types.nullable(Types.Void).getHeaderInclude());
+		addIncludeHeader(Types.optional(Types.Void).getHeaderInclude());
 		addIncludeInSourceDefaultHeaderFileName(Types.SqlUtil);
-		addIncludeDefaultHeaderFileName(Types.nullable(null));
+		addIncludeDefaultHeaderFileName(Types.optional(null));
 		addIncludeLibInSource(Types.qset(Types.Void));
 		addIncludeDefaultHeaderFileName(Types.SqlQuery);
 		addIncludeHeader(ClsDbPool.instance.getHeaderInclude());
@@ -99,7 +99,7 @@ public class ClsEntityQueryUpdate extends Cls {
 		addIncludeLibInSource(QtSqlTypes.QSqlError,true);
 		//addIncludeLib("QSqlDriver");
 		addIncludeLib(Types.QVariant.getName());
-		addAttr(new Attr(Types.QString,"mainBeanAlias"));
+		addAttr(new Attr(Types.QString,"mainEntityAlias"));
 		addAttr(new Attr(Types.QString,selectFields));
 		addAttr(new Attr(Types.QString,table));
 		addAttr(new Attr(Types.QStringList,"joinTables"));
@@ -144,16 +144,6 @@ public class ClsEntityQueryUpdate extends Cls {
 		addMethod(new MethodAndWhere9(this));
 		addMethod(new MethodAndWhere10(this));
 		addMethod(new MethodAndWhere11(this));
-//		addMethod(new MethodLimit(this,BeanQueryType.Update));
-//		addMethod(new MethodLimitAndOffset(this,BeanQueryType.Update,null,true));
-//		addMethod(new MethodLimitAndOffset(this,BeanQueryType.Update,new Param(Types.QString.toConstRef(), "param"),true));
-//		addMethod(new MethodLimitAndOffset(this,BeanQueryType.Update,new Param(Types.Int, "param"),true));
-//		addMethod(new MethodLimitAndOffset(this,BeanQueryType.Update,new Param(Types.Bool, "param"),true));
-//		addMethod(new MethodLimitAndOffset(this,BeanQueryType.Update,new Param(Types.Double, "param"),true));
-//		addMethod(new MethodLimitAndOffset(this,BeanQueryType.Update,new Param(Types.QVariant.toConstRef(), "param"),true));
-//		addMethod(new MethodLimitAndOffset(this,BeanQueryType.Update,null,false));
-//		addMethod(new MethodOffset(this,BeanQueryType.Update));
-//		addMethod(new MethodPrintDebug());
 		addMethod(new MethodPrintQDebug());
 		addMethod(new MethodExecute());
 		addMethod(new MethodGetDebugString());

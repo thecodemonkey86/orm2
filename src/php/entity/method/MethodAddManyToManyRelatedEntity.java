@@ -9,12 +9,12 @@ import php.core.expression.ArrayInitExpression;
 import php.core.method.Method;
 import php.orm.OrmUtil;
 
-public class MethodAddManyToManyRelatedBean extends Method {
+public class MethodAddManyToManyRelatedEntity extends Method {
 
 	protected ManyRelation rel;
 	
-	public MethodAddManyToManyRelatedBean(ManyRelation r, Param p) {
-		super(Public, Types.Void, OrmUtil.getAddRelatedBeanMethodName(r));
+	public MethodAddManyToManyRelatedEntity(ManyRelation r, Param p) {
+		super(Public, Types.Void, OrmUtil.getAddRelatedEntityMethodName(r));
 		addParam(p);
 		rel=r;
 	}
@@ -24,17 +24,17 @@ public class MethodAddManyToManyRelatedBean extends Method {
 		PhpCls parent = (PhpCls) this.parent;
 		Attr a=parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
 		_if(a.isNull()).addIfInstr(a.assign(new ArrayInitExpression()));
-		Param pBean = getParam("entity");
+		Param pEntity = getParam("entity");
 		if(rel.getDestTable().getPrimaryKey().isMultiColumn()) {
 			throw new RuntimeException("unimplemented");
 		} else {
-			addInstr(a.arrayIndexSet(pBean.callAttrGetter(rel.getDestTable().getPrimaryKey().getFirstColumn().getCamelCaseName()),pBean));
+			addInstr(a.arrayIndexSet(pEntity.callAttrGetter(rel.getDestTable().getPrimaryKey().getFirstColumn().getCamelCaseName()),pEntity));
 		}
 		Attr aAdded = parent.getAttrByName(a.getName()+"Added"
 				);
 		_if(aAdded.isNull()).addIfInstr(aAdded.assign(new ArrayInitExpression()));
 		addInstr(
-				aAdded.arrayPush(pBean));
+				aAdded.arrayPush(pEntity));
 	}
 
 }

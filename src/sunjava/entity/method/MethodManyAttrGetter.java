@@ -26,10 +26,10 @@ public class MethodManyAttrGetter extends Method{
 	public void addImplementation() {
 		addThrowsException(Types.SqlException);
 		JavaCls parent = (JavaCls) this.parent;
-//		parent.addImport("ormtest.repository.BeanRepository");
+//		parent.addImport("ormtest.repository.EntityRepository");
 		_if(Expressions.not(parent.getAttrByName("loaded"))).thenBlock()
 //			._callMethodInstr(_this(), "load");
-		.addInstr( Types.BeanRepository.callStaticMethod("load"+parent.getName(), _this()).asInstruction());
+		.addInstr( Types.EntityRepository.callStaticMethod("load"+parent.getName(), _this()).asInstruction());
 		
 		IfBlock ifAttrIsNotNull= _if(a.isNotNull());
 		ifAttrIsNotNull.thenBlock().

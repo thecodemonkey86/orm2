@@ -6,6 +6,9 @@ public class HeaderFileInclude extends Include{
 	String file;
 	
 	public HeaderFileInclude(String i) {
+		if(i==null) {
+			throw new NullPointerException();
+		}
 		file = i;
 		if(!i.endsWith(".h")) {
 			file+=".h";

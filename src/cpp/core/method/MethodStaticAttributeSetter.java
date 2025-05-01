@@ -11,6 +11,7 @@ public class MethodStaticAttributeSetter extends MethodAttributeSetter {
 	public MethodStaticAttributeSetter(Attr a) {
 		super(a);
 		setStatic(true);
+		setnoexcept();
 	}
 	
 	@Override

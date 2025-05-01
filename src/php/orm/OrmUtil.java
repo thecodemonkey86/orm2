@@ -86,19 +86,19 @@ public class OrmUtil {
 		return relation.getDestTable().getCamelCaseName();
 	}
 	
-	public static String getAddRelatedBeanMethodName(IManyRelation r) {
+	public static String getAddRelatedEntityMethodName(IManyRelation r) {
 		return "add" + StringUtil.ucfirst(getManyRelationDestAttrNameSingular(r)); 
 	}
 	
 	public static Type getRelationForeignPrimaryKeyType(AbstractRelation r) {
-		Type beanPk = null;
+		Type entityPk = null;
 		if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
-			beanPk = Entities.get(r.getDestTable().getUc1stCamelCaseName()).getPkType();
+			entityPk = Entities.get(r.getDestTable().getUc1stCamelCaseName()).getPkType();
 			
 		} else {
-			beanPk = EntityCls.getTypeMapper().columnToType( r.getDestTable().getPrimaryKey().getColumns().get(0));
+			entityPk = EntityCls.getTypeMapper().columnToType( r.getDestTable().getPrimaryKey().getColumns().get(0));
 		}
-		return beanPk;
+		return entityPk;
 	}
 	
 

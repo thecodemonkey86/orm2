@@ -30,8 +30,8 @@ public class FetchListHelperClass extends PhpCls{
 		manyRelations.addAll(entity.getManyToManyRelations());
 		setConstructor(new FetchListHelperConstructor(entity));
 		for(AbstractRelation r:manyRelations) {
-			Type beanPk=OrmUtil.getRelationForeignPrimaryKeyType(r);
-			Attr attrSet = new Attr(Types.array(Types.String, beanPk), r.getAlias()+"Set");
+			Type entityPk=OrmUtil.getRelationForeignPrimaryKeyType(r);
+			Attr attrSet = new Attr(Types.array(Types.String, entityPk), r.getAlias()+"Set");
 		//	addMethod(new MethodAttributeGetter(attrSet));
 			addMethod(new MethodAddRelationPk(r));
 			addMethod(new MethodContainsRelationPk(r));

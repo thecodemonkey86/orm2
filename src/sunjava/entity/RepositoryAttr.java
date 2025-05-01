@@ -9,7 +9,7 @@ import sunjava.core.expression.Expression;
 public class RepositoryAttr extends Attr{
 
 	public RepositoryAttr() {
-		super(Types.BeanRepository, "repository");
+		super(Types.EntityRepository, "repository");
 	}
 
 	public MethodCall callGetByRecordMethod(EntityCls entity, Expression...args) {

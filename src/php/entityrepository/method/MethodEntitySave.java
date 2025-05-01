@@ -66,16 +66,16 @@ public class MethodEntitySave extends Method {
 		}
 		InstructionBlock mainBlock = this; //tryCatch.getTryBlock()
 		
-		Param pBean = getParam("entity");
+		Param pEntity = getParam("entity");
 	
-		IfBlock ifIsInsertNew = mainBlock._if(pBean.callMethod(ClsBaseEntity.METHOD_NAME_IS_INSERT_NEW));
+		IfBlock ifIsInsertNew = mainBlock._if(pEntity.callMethod(ClsBaseEntity.METHOD_NAME_IS_INSERT_NEW));
 //		ifIsInsertNew.thenBlock()._callMethodInstr(sqlQuery, ClsSqlQuery.METHOD_NAME_BEGIN_TRANSACTION);
 		
 		ifIsInsertNew.thenBlock()
 		
 			._callMethodInstr(sqlQuery,  ClsSqlQuery.insertInto,parent.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(entity)));
 		
-		IfBlock ifHasUpdate = ifIsInsertNew.elseBlock()._if(pBean.callMethod(ClsBaseEntity.METHOD_NAME_HAS_UPDATE));
+		IfBlock ifHasUpdate = ifIsInsertNew.elseBlock()._if(pEntity.callMethod(ClsBaseEntity.METHOD_NAME_HAS_UPDATE));
 		
 		
 //		ifHasUpdate.thenBlock()._callMethodInstr(sqlQuery, ClsSqlQuery.METHOD_NAME_BEGIN_TRANSACTION);
@@ -91,7 +91,7 @@ public class MethodEntitySave extends Method {
 			
 				if (col.isNullable()) {
 					// begin insert
-					IfBlock ifColIsNull = ifIsInsertNew.thenBlock()._if(EntityCls.accessColumnAttrOrEntity(pBean,col).isNull());
+					IfBlock ifColIsNull = ifIsInsertNew.thenBlock()._if(EntityCls.accessColumnAttrOrEntity(pEntity,col).isNull());
 					
 					ifColIsNull.thenBlock()._callMethodInstr(sqlQuery, 
 							ClsSqlQuery.setValue,new PhpStringLiteral(col.getEscapedName()), 
@@ -99,14 +99,14 @@ public class MethodEntitySave extends Method {
 					
 					ifColIsNull.elseBlock()._callMethodInstr(sqlQuery, 
 							ClsSqlQuery.setValue,new PhpStringLiteral(col.getEscapedName()), 
-							EntityCls.getTypeMapper().getInsertUpdateValueExpression( EntityCls.accessAttrGetterByColumn(pBean,col,false),col));
+							EntityCls.getTypeMapper().getInsertUpdateValueExpression( EntityCls.accessAttrGetterByColumn(pEntity,col,false),col));
 					// end insert
 					
 					// begin update		
 					if (!col.isPartOfPk()) {
 	
-						IfBlock ifModified = ifHasUpdate.thenBlock()._if(EntityCls.accessIsColumnAttrOrEntityModified(pBean, col));
-						IfBlock ifColIsNullElse = ifModified.thenBlock()._if(EntityCls.accessColumnAttrOrEntity(pBean,col).isNull());
+						IfBlock ifModified = ifHasUpdate.thenBlock()._if(EntityCls.accessIsColumnAttrOrEntityModified(pEntity, col));
+						IfBlock ifColIsNullElse = ifModified.thenBlock()._if(EntityCls.accessColumnAttrOrEntity(pEntity,col).isNull());
 						
 						ifColIsNullElse.thenBlock()._callMethodInstr(sqlQuery, 
 								ClsSqlQuery.setValue,new PhpStringLiteral(col.getEscapedName()), 
@@ -114,41 +114,41 @@ public class MethodEntitySave extends Method {
 						
 						ifColIsNullElse.elseBlock()._callMethodInstr(sqlQuery, 
 								ClsSqlQuery.setValue,new PhpStringLiteral(col.getEscapedName()), 
-								EntityCls.getTypeMapper().getInsertUpdateValueExpression(EntityCls.accessAttrGetterByColumn(pBean,col,false),col));
+								EntityCls.getTypeMapper().getInsertUpdateValueExpression(EntityCls.accessAttrGetterByColumn(pEntity,col,false),col));
 					}
 					// end update
 				} else {
-					ifIsInsertNew.thenBlock()._callMethodInstr(sqlQuery,  ClsSqlQuery.setValue,new PhpStringLiteral(col.getEscapedName()), Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(EntityCls.getTypeMapper().columnToType(col)), EntityCls.accessAttrGetterByColumn(pBean,col,true)));
+					ifIsInsertNew.thenBlock()._callMethodInstr(sqlQuery,  ClsSqlQuery.setValue,new PhpStringLiteral(col.getEscapedName()), Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(EntityCls.getTypeMapper().columnToType(col)), EntityCls.accessAttrGetterByColumn(pEntity,col,true)));
 					
 					if (!col.isPartOfPk()) {
-						IfBlock ifModified = ifHasUpdate.thenBlock()._if(EntityCls.accessIsColumnAttrOrEntityModified(pBean, col));
+						IfBlock ifModified = ifHasUpdate.thenBlock()._if(EntityCls.accessIsColumnAttrOrEntityModified(pEntity, col));
 						ifModified.thenBlock()._callMethodInstr(sqlQuery, 
 								ClsSqlQuery.setValue,new PhpStringLiteral(col.getEscapedName()), 
-								EntityCls.getTypeMapper().getInsertUpdateValueExpression( EntityCls.accessAttrGetterByColumn(pBean,col,false),col));
+								EntityCls.getTypeMapper().getInsertUpdateValueExpression( EntityCls.accessAttrGetterByColumn(pEntity,col,false),col));
 					
 					}
 				}
 			} else {
-				ifIsInsertNew.thenBlock()._callMethodInstr(sqlQuery, ClsSqlQuery.addInsertRawExpression,new PhpStringLiteral(col.getEscapedName()), pBean.callAttrGetter("insertExpression"+col.getUc1stCamelCaseName()));
+				ifIsInsertNew.thenBlock()._callMethodInstr(sqlQuery, ClsSqlQuery.addInsertRawExpression,new PhpStringLiteral(col.getEscapedName()), pEntity.callAttrGetter("insertExpression"+col.getUc1stCamelCaseName()));
 			}
 		}
 		
-		IfBlock ifNotIsPkModified = ifHasUpdate.thenBlock()._if(_not(pBean.callMethod(ClsBaseEntity.METHOD_NAME_IS_PRIMARY_KEY_MODIFIED)));
+		IfBlock ifNotIsPkModified = ifHasUpdate.thenBlock()._if(_not(pEntity.callMethod(ClsBaseEntity.METHOD_NAME_IS_PRIMARY_KEY_MODIFIED)));
 		
 		
 		for (Column colPk : tbl.getPrimaryKey().getColumns()) {
-			ifNotIsPkModified.thenBlock()._callMethodInstr(sqlQuery,  ClsSqlQuery.where,new PhpStringLiteral(colPk.getEscapedName()+"=?"), EntityCls.getTypeMapper().getInsertUpdateValueExpression( EntityCls.accessAttrGetterByColumn(pBean,colPk,true),colPk));
+			ifNotIsPkModified.thenBlock()._callMethodInstr(sqlQuery,  ClsSqlQuery.where,new PhpStringLiteral(colPk.getEscapedName()+"=?"), EntityCls.getTypeMapper().getInsertUpdateValueExpression( EntityCls.accessAttrGetterByColumn(pEntity,colPk,true),colPk));
 			
 			
 			ifNotIsPkModified.elseBlock()._callMethodInstr(sqlQuery, 
 					ClsSqlQuery.setValue,new PhpStringLiteral(colPk.getEscapedName()), 
-					EntityCls.getTypeMapper().getInsertUpdateValueExpression(EntityCls.accessAttrGetterByColumn(pBean,colPk,true),colPk));
-			ifNotIsPkModified.elseBlock()._callMethodInstr(sqlQuery,  ClsSqlQuery.where,new PhpStringLiteral(colPk.getEscapedName()+"=?"), EntityCls.getTypeMapper().getInsertUpdateValueExpression(EntityCls.accessPrimaryKeyPreviousAttrGetterByColumn(pBean,colPk),colPk));
+					EntityCls.getTypeMapper().getInsertUpdateValueExpression(EntityCls.accessAttrGetterByColumn(pEntity,colPk,true),colPk));
+			ifNotIsPkModified.elseBlock()._callMethodInstr(sqlQuery,  ClsSqlQuery.where,new PhpStringLiteral(colPk.getEscapedName()+"=?"), EntityCls.getTypeMapper().getInsertUpdateValueExpression(EntityCls.accessPrimaryKeyPreviousAttrGetterByColumn(pEntity,colPk),colPk));
 		}
 		
 		ifIsInsertNew.thenBlock()._callMethodInstr(sqlQuery, ClsSqlQuery.execute);
 		if(tbl.isAutoIncrement()) {
-			ifIsInsertNew.thenBlock()._callMethodInstr(pBean, ClsBaseEntity.METHOD_NAME_SET_AUTO_INCREMENT_ID, aSqlCon.accessAttr(ClsMysqli.insert_id));
+			ifIsInsertNew.thenBlock()._callMethodInstr(pEntity, ClsBaseEntity.METHOD_NAME_SET_AUTO_INCREMENT_ID, aSqlCon.accessAttr(ClsMysqli.insert_id));
 		} 
 		ifHasUpdate.thenBlock()._callMethodInstr(sqlQuery, ClsSqlQuery.execute);
 
@@ -167,27 +167,27 @@ public class MethodEntitySave extends Method {
 			}
 			
 			// "removed"
-			MethodCall expressionManyToManyRemoved = pBean.callAttrGetter(entity.getAttrByName(OrmUtil.getManyRelationDestAttrName(r)+"Removed" ));
-			IfBlock ifRemoveBeans = _if(pBean.callMethod(MethodHasRemovedManyToMany.getMethodName(r)));
+			MethodCall expressionManyToManyRemoved = pEntity.callAttrGetter(entity.getAttrByName(OrmUtil.getManyRelationDestAttrName(r)+"Removed" ));
+			IfBlock ifRemoveEntities = _if(pEntity.callMethod(MethodHasRemovedManyToMany.getMethodName(r)));
 		
 			
-			Var varDeleteSql = ifRemoveBeans.thenBlock()._declare(EntityCls.getSqlQueryCls(), "deleteSqlQuery",EntityCls.getSqlQueryCls().newInstance(aSqlCon));
-			ifRemoveBeans.thenBlock()._callMethodInstr(varDeleteSql, ClsSqlQuery.deleteFrom, new PhpStringLiteral(r.getMappingTable().getName()));
+			Var varDeleteSql = ifRemoveEntities.thenBlock()._declare(EntityCls.getSqlQueryCls(), "deleteSqlQuery",EntityCls.getSqlQueryCls().newInstance(aSqlCon));
+			ifRemoveEntities.thenBlock()._callMethodInstr(varDeleteSql, ClsSqlQuery.deleteFrom, new PhpStringLiteral(r.getMappingTable().getName()));
 			
 			ArrayList<String> whereSourceCols = new ArrayList<>(r.getSourceColumnCount());
 			Expression[] whereSourceColsParams = new Expression[r.getSourceColumnCount()+1];
 			
 			for(int i=0;i<r.getSourceColumnCount();i++) {
 				whereSourceCols.add(r.getSourceMappingColumn(i).getEscapedName());
-				whereSourceColsParams[i+1] = EntityCls.getTypeMapper().getInsertUpdateValueGetterExpression(pBean,r.getSourceEntityColumn(i)); 
-				//ifRemoveBeans.thenBlock()._callMethodInstr(varDeleteSql, ClsSqlQuery.where, PhpString.stringConstant(r.getSourceMappingColumn(i).getEscapedName()+" = ?"),Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(BeanCls.getTypeMapper().columnToType(col)),pBean.callAttrGetter(r.getSourceEntityColumn(i).getCamelCaseName())));
+				whereSourceColsParams[i+1] = EntityCls.getTypeMapper().getInsertUpdateValueGetterExpression(pEntity,r.getSourceEntityColumn(i)); 
+				//ifRemoveEntities.thenBlock()._callMethodInstr(varDeleteSql, ClsSqlQuery.where, PhpString.stringConstant(r.getSourceMappingColumn(i).getEscapedName()+" = ?"),Types.SqlParam.callStaticMethod(ClsSqlParam.getMethodName(EntityCls.getTypeMapper().columnToType(col)),pEntity.callAttrGetter(r.getSourceEntityColumn(i).getCamelCaseName())));
 			
 			}
 			whereSourceColsParams[0] = whereSourceCols.size() > 1 ? new PhpStringLiteral("("+ CodeUtil2.commaSep(whereSourceCols)+") = (" + CodeUtil2.strMultiply("?", ",", whereSourceCols.size())+ ")") :  new PhpStringLiteral( whereSourceCols.get(0)+ " = ?");
-			ifRemoveBeans.thenBlock()._callMethodInstr(varDeleteSql, ClsSqlQuery.where, whereSourceColsParams);
+			ifRemoveEntities.thenBlock()._callMethodInstr(varDeleteSql, ClsSqlQuery.where, whereSourceColsParams);
 			
 						
-			IfBlock ifCountEq1 = ifRemoveBeans.thenBlock()
+			IfBlock ifCountEq1 = ifRemoveEntities.thenBlock()
 					._if(expressionManyToManyRemoved.count().equalsOp(new IntExpression(1)));
 			
 			Expression[] whereDestColsParams = new Expression[r.getDestColumnCount()+1];
@@ -220,8 +220,8 @@ public class MethodEntitySave extends Method {
 			}
 			// end of "removed"
 			// "added"
-			MethodCall expressionManyToManyAdded = pBean.callAttrGetter(entity.getAttrByName(OrmUtil.getManyRelationDestAttrName(r)+"Added" ));
-			IfBlock ifAddedBeans = _if(pBean.callMethod(MethodHasAddedManyToMany.getMethodName(r)));
+			MethodCall expressionManyToManyAdded = pEntity.callAttrGetter(entity.getAttrByName(OrmUtil.getManyRelationDestAttrName(r)+"Added" ));
+			IfBlock ifAddedEntities = _if(pEntity.callMethod(MethodHasAddedManyToMany.getMethodName(r)));
 			
 			Expression[] argsInsertMultiRow = new Expression[r.getMappingTable().getPrimaryKey().getColumnCount()];
 			Expression[] argsOnConflictDoNothing = new Expression[r.getMappingTable().getPrimaryKey().getColumnCount()];
@@ -243,16 +243,16 @@ public class MethodEntitySave extends Method {
 				argsOnConflictDoNothing[i+r.getSourceTable().getPrimaryKey().getColumnCount()] = colName;
 			}
 			
-			Var varAddSql = ifAddedBeans.thenBlock()._declare(EntityCls.getSqlQueryCls(), "addSqlQuery",EntityCls.getSqlQueryCls().newInstance(aSqlCon));
-			ifAddedBeans.thenBlock()._callMethodInstr(varAddSql, ClsSqlQuery.insertMultiRow,new PhpStringLiteral(r.getMappingTable().getName()), new ArrayInitExpression( argsInsertMultiRow));
-			ifAddedBeans.thenBlock()._callMethodInstr(varAddSql, ClsSqlQuery.onConflictDoNothing, new ArrayInitExpression(argsOnConflictDoNothing));
+			Var varAddSql = ifAddedEntities.thenBlock()._declare(EntityCls.getSqlQueryCls(), "addSqlQuery",EntityCls.getSqlQueryCls().newInstance(aSqlCon));
+			ifAddedEntities.thenBlock()._callMethodInstr(varAddSql, ClsSqlQuery.insertMultiRow,new PhpStringLiteral(r.getMappingTable().getName()), new ArrayInitExpression( argsInsertMultiRow));
+			ifAddedEntities.thenBlock()._callMethodInstr(varAddSql, ClsSqlQuery.onConflictDoNothing, new ArrayInitExpression(argsOnConflictDoNothing));
 			Type foreachAddedElementType = ((PhpArray) expressionManyToManyAdded.getType()).getElementType();
-			ForeachLoop foreachAttrAdd = ifAddedBeans.thenBlock()._foreach(new Var(foreachAddedElementType, "added"), expressionManyToManyAdded);
+			ForeachLoop foreachAttrAdd = ifAddedEntities.thenBlock()._foreach(new Var(foreachAddedElementType, "added"), expressionManyToManyAdded);
 			Expression[] addInsertRowArgs  = new Expression[r.getSourceTable().getPrimaryKey().getColumnCount()+r.getDestTable().getPrimaryKey().getColumns().size()];
 			
 			for(int i = 0; i < r.getSourceTable().getPrimaryKey().getColumnCount(); i++) {
 				Column col = r.getSourceTable().getPrimaryKey().getColumn(i); 
-				addInsertRowArgs[i] = EntityCls.getTypeMapper().getInsertUpdateValueGetterExpression(pBean, col); 
+				addInsertRowArgs[i] = EntityCls.getTypeMapper().getInsertUpdateValueGetterExpression(pEntity, col); 
 			}
 			
 			for(int i = 0; i < r.getDestTable().getPrimaryKey().getColumnCount(); i++) {
@@ -263,11 +263,11 @@ public class MethodEntitySave extends Method {
 			foreachAttrAdd._callMethodInstr(varAddSql, ClsSqlQuery.addInsertRow, new ArrayInitExpression( addInsertRowArgs));
 			
 			
-			ifAddedBeans.thenBlock()._callMethodInstr(varAddSql, ClsSqlQuery.execute);
+			ifAddedEntities.thenBlock()._callMethodInstr(varAddSql, ClsSqlQuery.execute);
 			
-			ifRemoveBeans.thenBlock()._callMethodInstr(varDeleteSql, ClsSqlQuery.execute);
+			ifRemoveEntities.thenBlock()._callMethodInstr(varDeleteSql, ClsSqlQuery.execute);
 
-			_callMethodInstr(pBean, MethodClearModified.getMethodName());
+			_callMethodInstr(pEntity, MethodClearModified.getMethodName());
 			/* example: if (!entity.getEntity1sAdded().isEmpty()){
 			SqlQuery addSqlQuery  = new PgSqlQuery(sqlCon);
 			addSqlQuery.insertMultiRow("e1_e3_mm", "e1_id", "e3_id");

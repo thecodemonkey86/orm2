@@ -17,10 +17,10 @@ import database.relation.ManyRelation;
 public class MethodAddManyToManyRelatedEntity extends Method {
 
 	protected ManyRelation rel;
-	Param pBean;
+	Param pEntity;
 	public MethodAddManyToManyRelatedEntity(ManyRelation r, Param p) {
 		super(Public, Types.Void, getMethodName(r));
-		pBean = addParam(p);
+		pEntity = addParam(p);
 		rel=r;
 	}
 	
@@ -31,15 +31,15 @@ public class MethodAddManyToManyRelatedEntity extends Method {
 	@Override
 	public void addImplementation() {
 		Attr a=parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
-		addInstr(a.callMethod(ClsQList.append,pBean).asInstruction());
-		JsonEntity relationBean = JsonEntities.get( rel.getDestTable());
+		addInstr(a.callMethod(ClsQList.append,pEntity).asInstruction());
+		JsonEntity relationEntity = JsonEntities.get( rel.getDestTable());
 		
-		if (relationBean.getTbl().getPrimaryKey().isMultiColumn()) {
-			Struct pkType=relationBean.getStructPk();
+		if (relationEntity.getTbl().getPrimaryKey().isMultiColumn()) {
+			Struct pkType=relationEntity.getStructPk();
 			Var idAdded = _declare(pkType, "idAdded");
-			for(Column col:relationBean.getTbl().getPrimaryKey().getColumns()) {
+			for(Column col:relationEntity.getTbl().getPrimaryKey().getColumns()) {
 				_assign(idAdded.accessAttr(col
-						.getCamelCaseName()), pBean
+						.getCamelCaseName()), pEntity
 						.callAttrGetter(
 								col
 								.getCamelCaseName()
@@ -57,9 +57,9 @@ public class MethodAddManyToManyRelatedEntity extends Method {
 					parent.getAttrByName(
 							a.getName()+"Added")
 							.callMethod(ClsQList.append,
-									pBean
+									pEntity
 									.callAttrGetter(
-											relationBean.getTbl().getPrimaryKey().getFirstColumn()
+											relationEntity.getTbl().getPrimaryKey().getFirstColumn()
 											.getCamelCaseName()
 									)
 								).asInstruction());	

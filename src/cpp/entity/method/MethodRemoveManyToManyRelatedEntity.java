@@ -24,7 +24,7 @@ import database.relation.ManyRelation;
 public class MethodRemoveManyToManyRelatedEntity extends Method {
 
 	protected ManyRelation rel;
-	Param pBean;
+	Param pEntity;
 	Param pSqlCon;
 	
 	public static String getMethodName(ManyRelation r) {
@@ -33,7 +33,7 @@ public class MethodRemoveManyToManyRelatedEntity extends Method {
 	
 	public MethodRemoveManyToManyRelatedEntity(ManyRelation r) {
 		super(Public, Types.Void,getMethodName(r));
-		pBean = addParam(new ManyAttr(r).getElementType().toConstRef(),"entity");
+		pEntity = addParam(new ManyAttr(r).getElementType().toConstRef(),"entity");
 		rel=r;
 		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 	}
@@ -42,7 +42,7 @@ public class MethodRemoveManyToManyRelatedEntity extends Method {
 	public void addImplementation() {
 		EntityCls parent = (EntityCls) this.parent;
 		Attr a=parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
-		addInstr(a.callMethod(ClsQList.removeOne,pBean).asInstruction());
+		addInstr(a.callMethod(ClsQList.removeOne,pEntity).asInstruction());
 		
 		ArrayList<String> columns = new ArrayList<>();
 		Var varParams = _declare(Types.QVariantList, "params");
@@ -58,7 +58,7 @@ public class MethodRemoveManyToManyRelatedEntity extends Method {
 			_callMethodInstr(varParams, ClsQVariantList.append,parent.accessThisAttrGetterByColumn(colPk));
 		}
 		for(Column colPk : rel.getDestTable().getPrimaryKey()) {
-			_callMethodInstr(varParams, ClsQVariantList.append, pBean.callAttrGetter(colPk.getCamelCaseName()));
+			_callMethodInstr(varParams, ClsQVariantList.append, pEntity.callAttrGetter(colPk.getCamelCaseName()));
 		}
 		
 		String sql = String.format("delete from %s where %s", rel.getMappingTable().getEscapedName(), CodeUtil.concat(columns," AND "));
@@ -66,38 +66,6 @@ public class MethodRemoveManyToManyRelatedEntity extends Method {
 		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, pSqlCon,QString.fromStringConstant(sql),varParams).asInstruction());
 		
 		
-		/*EntityCls relationBean = Entities.get( rel.getDestTable());
-		
-		if (relationBean.getTbl().getPrimaryKey().isMultiColumn()) {
-			Struct pkType=relationBean.getStructPk();
-			Var idRemoved = _declare(pkType, "idRemoved");
-			for(Column col:relationBean.getTbl().getPrimaryKey().getColumns()) {
-				_assign(idRemoved.accessAttr(col
-						.getCamelCaseName()), getParam("entity")
-						.callAttrGetter(
-								col
-								.getCamelCaseName()
-						));
-			}
-			addInstr(
-					parent.getAttrByName(
-							a.getName()+"Removed")
-							.callMethod("append",
-									idRemoved
-								).asInstruction());	
-				
-		} else {
-			addInstr(
-					parent.getAttrByName(
-							a.getName()+"Removed")
-							.callMethod("append",
-									getParam("entity")
-									.callAttrGetter(
-											relationBean.getTbl().getPrimaryKey().getFirstColumn()
-											.getCamelCaseName()
-									)
-								).asInstruction());	
-		}*/
 	}
 
 }

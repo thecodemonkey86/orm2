@@ -24,6 +24,7 @@ public class MethodGetAllSelectFields extends Method  {
 		setStatic(true);
 		pAlias = addParam(new Param(Types.QString.toConstRef(), "alias"));
 		this.cols = cols;
+		setnoexcept();
 	}
 	
 	public static String getMethodName() {

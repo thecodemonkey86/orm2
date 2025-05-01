@@ -22,7 +22,7 @@ import php.core.method.Method;
 import php.entity.Entities;
 import php.entity.EntityCls;
 import php.entity.method.MethodOneRelationAttrSetter;
-import php.entity.method.MethodOneRelationBeanIsNull;
+import php.entity.method.MethodOneRelationEntityIsNull;
 import php.entitypk.method.MethodPkHash;
 import php.entityrepository.method.MethodGetFromQueryAssocArray;
 import php.lib.ClsSqlQuery;
@@ -79,8 +79,8 @@ public class MethodEntityQueryFetchOne extends Method{
 		manyRelations.addAll(manyToManyRelations);
 		
 		for(OneRelation r:oneRelations) {
-//			BeanCls foreignCls = Beans.get(r.getDestTable()); 
-			IfBlock ifBlock= doWhileQueryNext._if(Expressions.and( e1.callMethod(new MethodOneRelationBeanIsNull(r)),row.arrayIndex(new PhpStringLiteral(EntityCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias() + "__" + r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull()) );
+//			EntityCls foreignCls = Entities.get(r.getDestTable()); 
+			IfBlock ifBlock= doWhileQueryNext._if(Expressions.and( e1.callMethod(new MethodOneRelationEntityIsNull(r)),row.arrayIndex(new PhpStringLiteral(EntityCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias() + "__" + r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull()) );
 			ifBlock.thenBlock().
 			_callMethodInstr(e1, new MethodOneRelationAttrSetter( e1.getClassConcreteType().getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)), true), 
 					Types.EntityRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Entities.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
@@ -88,7 +88,7 @@ public class MethodEntityQueryFetchOne extends Method{
 		
 		for(AbstractRelation r:manyRelations) {
 			EntityCls foreignCls = Entities.get(r.getDestTable()); 
-			Type beanPk=OrmUtil.getRelationForeignPrimaryKeyType(r);
+			Type entityPk=OrmUtil.getRelationForeignPrimaryKeyType(r);
 			
 			
 			Expression pkArrayIndex = null;
@@ -102,7 +102,7 @@ public class MethodEntityQueryFetchOne extends Method{
 				
 				
 				
-				Var foreignPk = ifNotPkForeignIsNull.thenBlock()._declareNew(beanPk, "foreignPk"+StringUtil.ucfirst(r.getAlias()),foreignPkArgs);
+				Var foreignPk = ifNotPkForeignIsNull.thenBlock()._declareNew(entityPk, "foreignPk"+StringUtil.ucfirst(r.getAlias()),foreignPkArgs);
 				Var vMd5 = ifNotPkForeignIsNull.thenBlock()._declare(Types.String, "_md5"+r.getAlias(), foreignPk.callMethod(MethodPkHash.getMethodName()));			
 				Var pkSet = ifRowNotNull.thenBlock()._declareNewArray(Types.array(Types.Mixed), "pkSet"+StringUtil.ucfirst(r.getAlias()));
 				pkArrayIndex = pkSet.arrayIndex(vMd5);
@@ -114,9 +114,9 @@ public class MethodEntityQueryFetchOne extends Method{
 				pkArrayIndex = pkSet.arrayIndex(row.arrayIndex(new PhpStringLiteral( EntityCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+colPk.getName()))));
 			}
 			IfBlock ifNotIssetPk = ifNotPkForeignIsNull.thenBlock()._if(_not(PhpFunctions.isset.call(pkArrayIndex)));
-			Var foreignBean = ifNotIssetPk.thenBlock()._declare(foreignCls, "b" + r.getAlias(),  Types.EntityRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Entities.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
-			ifNotIssetPk.thenBlock()._assign(pkArrayIndex, foreignBean);
-			ifNotIssetPk.thenBlock()._callMethodInstr(e1, EntityCls.getAddRelatedBeanMethodName(r), foreignBean);
+			Var foreignEntity = ifNotIssetPk.thenBlock()._declare(foreignCls, "b" + r.getAlias(),  Types.EntityRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Entities.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
+			ifNotIssetPk.thenBlock()._assign(pkArrayIndex, foreignEntity);
+			ifNotIssetPk.thenBlock()._callMethodInstr(e1, EntityCls.getAddRelatedEntityMethodName(r), foreignEntity);
 			
 		}
 		

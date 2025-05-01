@@ -9,19 +9,16 @@ import php.lib.LibEqualsOperator;
 import util.StringUtil;
 import util.pg.PgCppUtil;
 
-public class MethodOneRelationBeanIsNull extends Method{
+public class MethodOneRelationEntityIsNull extends Method{
 	OneRelation r;
 	
-	public MethodOneRelationBeanIsNull(OneRelation r ) {
+	public MethodOneRelationEntityIsNull(OneRelation r ) {
 		super(Public, Types.Bool, getMethodName(r));
 		this.r=r;
 	}
 
 	@Override
 	public void addImplementation() {
-		if (parent.getName().equals("Track")) {
-			System.out.println("");
-		}
 		_return(
 				new BinaryOperatorExpression(
 						_this().accessAttr(PgCppUtil.getOneRelationDestAttrName(r)),

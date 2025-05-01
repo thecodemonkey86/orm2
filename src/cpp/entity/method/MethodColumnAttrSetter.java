@@ -4,18 +4,16 @@ import util.CodeUtil2;
 import util.StringUtil;
 import cpp.Types;
 import cpp.core.Attr;
-import cpp.core.ConstRef;
 import cpp.core.Method;
+import cpp.core.Optional;
 import cpp.core.Param;
 import cpp.core.TplCls;
 import cpp.core.Type;
 import cpp.core.expression.BoolExpression;
-import cpp.core.expression.CreateObjectExpression;
 import cpp.core.expression.Expression;
 import cpp.core.expression.Operators;
 import cpp.core.instruction.IfBlock;
 import cpp.entity.EntityCls;
-import cpp.entity.Nullable;
 import cpp.entity.SetterValidator;
 import cpp.entity.SetterValidator.OnFailValidateMode;
 import database.column.Column;
@@ -36,6 +34,7 @@ public class MethodColumnAttrSetter extends Method{
 			addParam(new Param(a.getType().isPrimitiveType() ? a.getType() : a.getType().toConstRef(), a.getName()));
 		}
 		this.col=col;
+		setnoexcept();
 	}
 	
 	@Override
@@ -65,7 +64,7 @@ public class MethodColumnAttrSetter extends Method{
 		}
 		
 		if(col.isNullable()) {
-			cond = _this().accessAttr(a).callMethod(Nullable.isNull).binOp(Operators.OR, param._notEquals(_this().accessAttr(a).callMethod(Nullable.val)));
+			cond =_not(_this().accessAttr(a).callMethod(Optional.has_value)).binOp(Operators.OR, param._notEquals(_this().accessAttr(a).callMethod(Optional.value)));
 		} else {
 			cond = param._notEquals(_this().accessAttr(a));
 		}
@@ -81,7 +80,8 @@ public class MethodColumnAttrSetter extends Method{
 				addInstr(_this().assignAttr("primaryKeyModified",BoolExpression.TRUE));
 		}
 		if (col.isNullable()) {
-			ifNotEquals.thenBlock()._assign(_accessThis(a), new CreateObjectExpression(Types.nullable(param.getType().isPrimitiveType() ? param.getType() : ((ConstRef)param.getType()).getBase()), param));
+//			ifNotEquals.thenBlock()._assign(_accessThis(a), new CreateObjectExpression(Types.optional(param.getType().isPrimitiveType() ? param.getType() : ((ConstRef)param.getType()).getBase()), param));
+			ifNotEquals.thenBlock()._callMethodInstr(_accessThis(a), Optional.emplace, param);
 		} else {
 			ifNotEquals.thenBlock()._assign(_accessThis(a), param);
 		}

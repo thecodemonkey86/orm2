@@ -30,11 +30,11 @@ public class FetchListHelperClass extends Struct{
 		
 		//int bCount=2;
 		for(AbstractRelation r:manyRelations) {
-			Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
+			Type entityPk=Types.getRelationForeignPrimaryKeyType(r);
 			if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
-				parent.addForwardDeclaredClass((Struct) beanPk );
+				parent.addForwardDeclaredClass((Struct) entityPk );
 			}
-			Attr attrSet = new Attr(Types.qset(beanPk), r.getAlias()+"Set");
+			Attr attrSet = new Attr(Types.qset(entityPk), r.getAlias()+"Set");
 //			addMethod(new Method(Method.Public, attrSet.getType().toRef(), "get"+StringUtil.ucfirst(attrSet.getName())) {
 //
 //				@Override

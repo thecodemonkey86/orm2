@@ -96,27 +96,27 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 			} else {
 				switch(dbType) {
 				case "8":
-					return Types.nullable(Types.Int);
+					return Types.optional(Types.Int);
 				case "16":
-					return Types.nullable(Types.Int64);
+					return Types.optional(Types.Int64);
 				case "7":
-					return Types.nullable(Types.Short);
+					return Types.optional(Types.Short);
 				case "14":	
 				case "37":
-					return Types.nullable(Types.QString);
+					return Types.optional(Types.QString);
 				case "12":
-					return Types.nullable(Types.QDate);
+					return Types.optional(Types.QDate);
 				case "35":
-					return Types.nullable(Types.QDateTime);
+					return Types.optional(Types.QDateTime);
 				case "13":
-					return Types.nullable(Types.QTime);
+					return Types.optional(Types.QTime);
 				case "10":
 				case "27":
-					return Types.nullable(Types.Double);
+					return Types.optional(Types.Double);
 				case "261":
-					return Types.nullable(Types.QByteArray);	
+					return Types.optional(Types.QByteArray);	
 				default:
-					return Types.nullable(CoreTypes.QVariant);
+					return Types.optional(CoreTypes.QVariant);
 				}
 			}
 	}
@@ -171,27 +171,27 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper {
 				/*switch(dbType) {
 				case "8":
 					IntExpression intExpression = new IntExpression(0);
-					return new CreateObjectExpression( Types.nullable(intExpression.getType()),intExpression);
+					return new CreateObjectExpression( Types.optional(intExpression.getType()),intExpression);
 				case "16":
 					LongLongExpression longLongExpression = new LongLongExpression(0L);
-					return new CreateObjectExpression(Types.nullable(Types.LongLong), longLongExpression);
+					return new CreateObjectExpression(Types.optional(Types.LongLong), longLongExpression);
 				case "14":	
 				case "37":
-					return new CreateObjectExpression(Types.nullable(Types.QString));
+					return new CreateObjectExpression(Types.optional(Types.QString));
 				case "12":
-					return new CreateObjectExpression(Types.nullable(Types.QDate)) ;
+					return new CreateObjectExpression(Types.optional(Types.QDate)) ;
 				case "35":
-					return new CreateObjectExpression(Types.nullable(Types.QDateTime)) ;
+					return new CreateObjectExpression(Types.optional(Types.QDateTime)) ;
 				case "13":
-					return new CreateObjectExpression(Types.nullable(Types.QTime) );
+					return new CreateObjectExpression(Types.optional(Types.QTime) );
 				case "10":
 				case "27":
 					 DoubleExpression doubleExpression = new DoubleExpression(0.0);
-					 return new CreateObjectExpression(Types.nullable(doubleExpression.getType()), doubleExpression);
+					 return new CreateObjectExpression(Types.optional(doubleExpression.getType()), doubleExpression);
 				case "261":
-					return new CreateObjectExpression(Types.nullable(Types.QByteArray)) ;		
+					return new CreateObjectExpression(Types.optional(Types.QByteArray)) ;		
 				default:
-					return new CreateObjectExpression(Types.nullable(CoreTypes.QVariant)) ;
+					return new CreateObjectExpression(Types.optional(CoreTypes.QVariant)) ;
 				}*/
 				return new CreateObjectExpression(getTypeFromDbDataType(dbType, nullable));
 			}

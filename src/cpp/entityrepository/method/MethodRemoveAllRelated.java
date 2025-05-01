@@ -56,7 +56,7 @@ public class MethodRemoveAllRelated extends Method {
 		Var varParams = _declare(Types.QVariantList, "params");
 		
 		for(Param p : fieldParams)		{
-		  _callMethodInstr(varParams, ClsQVariantList.append, Types.QVariant.callStaticMethod(ClsQVariant.fromValue,  p));
+		  _callMethodInstr(varParams, ClsQVariantList.append, ClsQVariant.fromValue( p));
 		}
 		
 		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, pSqlCon, varDeleteSql, varParams)

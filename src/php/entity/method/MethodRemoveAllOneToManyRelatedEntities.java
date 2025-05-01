@@ -16,11 +16,11 @@ import php.entity.EntityCls;
 import php.orm.OrmUtil;
 import util.StringUtil;
 
-public class MethodRemoveAllOneToManyRelatedBeans extends Method {
+public class MethodRemoveAllOneToManyRelatedEntities extends Method {
 
 	protected OneToManyRelation rel;
 
-	public MethodRemoveAllOneToManyRelatedBeans(OneToManyRelation r) {
+	public MethodRemoveAllOneToManyRelatedEntities(OneToManyRelation r) {
 		super(Public, Types.Void, "removeAll" + StringUtil.ucfirst(OrmUtil.getOneToManyRelationDestAttrName(r)));
 		rel = r;
 	}
@@ -30,31 +30,31 @@ public class MethodRemoveAllOneToManyRelatedBeans extends Method {
 		PhpCls parent = (PhpCls) this.parent;
 		
 		Attr a = parent.getAttrByName(OrmUtil.getOneToManyRelationDestAttrName(rel));
-		Var vRelatedBean = new Var(Entities.get(rel.getDestTable()), "relatedBean");
-		 ForeachLoop foreach = _foreach(vRelatedBean, _this().accessAttr(a));
-		 EntityCls relationBean = Entities.get(rel.getDestTable());
+		Var vRelatedEntity = new Var(Entities.get(rel.getDestTable()), "relatedEntity");
+		 ForeachLoop foreach = _foreach(vRelatedEntity, _this().accessAttr(a));
+		 EntityCls relationEntity = Entities.get(rel.getDestTable());
 				
 		Attr aRemoved = parent.getAttrByName(a.getName() + "Removed");
 		foreach._if(aRemoved.isNull()).addIfInstr(aRemoved.assign(new ArrayInitExpression()));
 
-		if (relationBean.getTbl().getPrimaryKey().isMultiColumn()) {
-			Type pkType = relationBean.getPkType();
-			Expression[] idAddedArgs = new Expression[relationBean.getTbl().getPrimaryKey().getColumnCount()];
+		if (relationEntity.getTbl().getPrimaryKey().isMultiColumn()) {
+			Type pkType = relationEntity.getPkType();
+			Expression[] idAddedArgs = new Expression[relationEntity.getTbl().getPrimaryKey().getColumnCount()];
 
 			for (int i = 0; i < idAddedArgs.length; i++) {
-				idAddedArgs[i] = vRelatedBean
-						.callAttrGetter(relationBean.getTbl().getPrimaryKey().getColumn(i).getCamelCaseName());
+				idAddedArgs[i] = vRelatedEntity
+						.callAttrGetter(relationEntity.getTbl().getPrimaryKey().getColumn(i).getCamelCaseName());
 			}
 			Var idRemoved = foreach._declareNew(pkType, "idRemoved", idAddedArgs);
-			for (Column col : relationBean.getTbl().getPrimaryKey().getColumns()) {
+			for (Column col : relationEntity.getTbl().getPrimaryKey().getColumns()) {
 				foreach.addInstr(idRemoved.callAttrSetterMethodInstr(col.getCamelCaseName(),
-						vRelatedBean.callAttrGetter(col.getCamelCaseName())));
+						vRelatedEntity.callAttrGetter(col.getCamelCaseName())));
 			}
 			foreach.addInstr(aRemoved.arrayPush(idRemoved));
 
 		} else {
 			foreach.addInstr(aRemoved.arrayPush(
-					vRelatedBean.callAttrGetter(relationBean.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())));
+					vRelatedEntity.callAttrGetter(relationEntity.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())));
 		}
 		_assign(a,new ArrayInitExpression());
 	}

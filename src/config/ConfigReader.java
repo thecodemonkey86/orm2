@@ -32,7 +32,7 @@ public abstract class ConfigReader implements ContentHandler {
 	
 	protected LinkedList<String> tags;
 	private enum Section {
-		ENTITIES, MAPPING_TABLES, ONE_TO_MANY_RELATIONS, MANY_TO_MANY_RELATIONS, ONE_RELATIONS, OPTIONS
+		ENTITIES, ONE_TO_MANY_RELATIONS, MANY_TO_MANY_RELATIONS, ONE_RELATIONS, OPTIONS
 	}
 
 	private Table currentEntityTable;
@@ -246,9 +246,6 @@ public abstract class ConfigReader implements ContentHandler {
 				break;
 			case "oneRelations":
 				section = Section.ONE_RELATIONS;
-				break;
-			case "mappingTables":
-				section = Section.MAPPING_TABLES;
 				break;
 			case "relation":
 				currentSrcTable = cfg.getEntityTable(atts.getValue("src"));

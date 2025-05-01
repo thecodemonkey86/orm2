@@ -131,7 +131,7 @@ public class SqliteDatabaseMapper extends DatabaseTypeMapper {
 
 			}
 		} else {
-			return Types.nullable(getTypeFromDbDataType(dbType, false));
+			return Types.optional(getTypeFromDbDataType(dbType, false));
 		}
 
 	}
@@ -177,7 +177,7 @@ public class SqliteDatabaseMapper extends DatabaseTypeMapper {
 				}
 		} else {
 			Expression e = getColumnDefaultValueExpressionImpl(dbType, false);
-			return new CreateObjectExpression(Types.nullable(e.getType()));
+			return new CreateObjectExpression(Types.optional(e.getType()));
 		}
 	}
 

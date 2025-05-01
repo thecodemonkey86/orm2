@@ -104,11 +104,11 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 	}
 
 	@Override
-	public Type getBeanQueryClass(EntityCls beanCls) {
+	public Type getEntityQueryClass(EntityCls entityCls) {
 		throw new RuntimeException("not implemented");
 	}
 	@Override
-	public Type getLibBeanQueryClass(EntityCls beanCls) {
+	public Type getLibEntityQueryClass(EntityCls entityCls) {
 		throw new RuntimeException("not implemented");
 	}
 
@@ -119,6 +119,7 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 
 	@Override
 	public Expression getDefaultFetchExpression(Expression res) {
+		//if(cfg)
 		return res.callMethod(ClsMysqliResult.fetch_assoc);
 	}
 
@@ -206,17 +207,17 @@ public class MySqlDatabaseTypeMapper extends DatabaseTypeMapper{
 	}
 
 	@Override
-	public Method getBeanRepositoryBeginTransactionMethod() {
+	public Method getEntityRepositoryBeginTransactionMethod() {
 		return new MysqliEntityRepositoryBeginTransactionMethod();
 	}
 
 	@Override
-	public Method getBeanRepositoryCommitTransactionMethod() {
+	public Method getEntityRepositoryCommitTransactionMethod() {
 		return new MysqliEntityRepositoryCommitTransactionMethod();
 	}
 
 	@Override
-	public Method getBeanRepositoryRollbackTransactionMethod() {
+	public Method getEntityRepositoryRollbackTransactionMethod() {
 		return new MysqliEntityRepositoryRollbackTransactionMethod();
 	}
 

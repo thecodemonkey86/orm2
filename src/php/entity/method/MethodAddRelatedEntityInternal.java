@@ -16,11 +16,11 @@ import php.entitypk.method.MethodPkHash;
 import php.orm.OrmUtil;
 import util.StringUtil;
 
-public class MethodAddRelatedBeanInternal extends Method {
+public class MethodAddRelatedEntityInternal extends Method {
 
 	protected OneToManyRelation rel;
 	
-	public MethodAddRelatedBeanInternal(OneToManyRelation r, Param p) {
+	public MethodAddRelatedEntityInternal(OneToManyRelation r, Param p) {
 		super(Public, Types.Void, getMethodName(r) );
 		addParam(p);
 		rel=r;
@@ -38,24 +38,24 @@ public class MethodAddRelatedBeanInternal extends Method {
 		PhpCls parent = (PhpCls) this.parent;
 		Attr a=parent.getAttrByName(OrmUtil.getOneToManyRelationDestAttrName(rel));
 		_if(a.isNull()).addIfInstr(a.assign(new ArrayInitExpression()));
-		Param pBean = getParam("entity");
+		Param pEntity = getParam("entity");
 		PrimaryKey pk = rel.getDestTable().getPrimaryKey();
 		if(rel.getDestTable().getPrimaryKey().isMultiColumn()) {
 			Expression[] e1PkArgs = new Expression[pk.getColumnCount()];
 			int i=0;
 			for(Column colPk : pk) {
-				e1PkArgs[i++] = pBean.callAttrGetter(colPk.getCamelCaseName());
+				e1PkArgs[i++] = pEntity.callAttrGetter(colPk.getCamelCaseName());
 			}
 			
 			Var relPk = _declareNew(Entities.get( rel.getDestTable()).getPkType(), "relPk", e1PkArgs);
-			addInstr(a.arrayIndexSet(relPk.callMethod(MethodPkHash.getMethodName()),pBean));
+			addInstr(a.arrayIndexSet(relPk.callMethod(MethodPkHash.getMethodName()),pEntity));
 		} else {
-			addInstr(a.arrayIndexSet(pBean.callAttrGetter(rel.getDestTable().getPrimaryKey().getFirstColumn().getCamelCaseName()),pBean));
+			addInstr(a.arrayIndexSet(pEntity.callAttrGetter(rel.getDestTable().getPrimaryKey().getFirstColumn().getCamelCaseName()),pEntity));
 		}
 	}
 	
-	public static MethodAddRelatedBeanInternal prototype() {
-		return new MethodAddRelatedBeanInternal(null, null);
+	public static MethodAddRelatedEntityInternal prototype() {
+		return new MethodAddRelatedEntityInternal(null, null);
 	}
 
 }

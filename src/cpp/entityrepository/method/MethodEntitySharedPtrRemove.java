@@ -11,7 +11,7 @@ public class MethodEntitySharedPtrRemove extends Method {
 
 	protected EntityCls entity;
 	protected boolean overloadCascadeDeleteRelations;
-	protected Param pBean;
+	protected Param pEntity;
 	protected Param pSqlCon;
 	
 	public MethodEntitySharedPtrRemove(EntityCls entity,
@@ -22,7 +22,7 @@ public class MethodEntitySharedPtrRemove extends Method {
 			this.addParam(new Param(Types.Bool, "overloadCascadeDeleteRelations"));
 //		this.setVirtualQualifier(true);
 		this.overloadCascadeDeleteRelations = overloadCascadeDeleteRelations;
-		pBean = addParam(entity.toSharedPtr(), "entity");
+		pEntity = addParam(entity.toSharedPtr(), "entity");
 		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 		this.entity = entity;
 		setStatic(true);
@@ -32,7 +32,7 @@ public class MethodEntitySharedPtrRemove extends Method {
 
 	@Override
 	public void addImplementation() {
-		 addInstr(new StaticMethodCall(parent, parent.getMethod(MethodEntityRemove.getMethodName()), pBean.deref(),pSqlCon).asInstruction());
+		 addInstr(new StaticMethodCall(parent, parent.getMethod(MethodEntityRemove.getMethodName()), pEntity.deref(),pSqlCon).asInstruction());
 
 	}
 

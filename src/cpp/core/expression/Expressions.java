@@ -30,6 +30,20 @@ public class Expressions {
 			return "nullptr";
 		}
 	};
+	public static Expression stdNullOpt(Type t) {
+		return new Expression() {
+		
+			@Override
+			public String toString() {
+				return "std::nullopt";
+			}
+			
+			@Override
+			public Type getType() {
+				return Types.optional(t);
+			}
+		};
+	}
 	
 	@Deprecated
 	public static Expression concat(Expression separator, List<Expression> expressions) {

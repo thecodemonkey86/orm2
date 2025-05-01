@@ -5,7 +5,9 @@ import cpp.CoreTypes;
 import cpp.core.Attr;
 import cpp.core.Cls;
 import cpp.core.Method;
+import cpp.core.Optional;
 import cpp.core.expression.BoolExpression;
+import cpp.core.expression.Expressions;
 import database.column.Column;
 
 public class MethodColumnAttrSetNull extends Method{
@@ -19,11 +21,12 @@ public class MethodColumnAttrSetNull extends Method{
 		this.a=a;
 		this.col=col;
 		this.internal = internal;
+		setnoexcept();
 	}
 
 	@Override
 	public void addImplementation() {
-		addInstr(_accessThis(a).callMethodInstruction("setNull"));
+		addInstr(_accessThis(a).assign(Expressions.stdNullOpt(((Optional) a.getType()).getElementType())));
 		if(!internal) {
 		if (!col.isPartOfPk())
 			addInstr(_this().assignAttr(a.getName()+"Modified",BoolExpression.TRUE));

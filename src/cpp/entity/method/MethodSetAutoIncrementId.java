@@ -14,18 +14,22 @@ import util.CodeUtil2;
 public class MethodSetAutoIncrementId extends Method {
 
 	Param pId;
-	
-	public MethodSetAutoIncrementId(boolean isAutoIncrement) {
+	EntityCls entity;
+	public MethodSetAutoIncrementId(boolean isAutoIncrement, EntityCls entity) {
 		super(Public, Types.Void, "setAutoIncrementId");
 		
 		pId = addParam(new Param(Types.Int64, "id"));
 		if(!isAutoIncrement)
 			setNoreturnQualifier(true);
+		
+		if( entity.getTbl().getPrimaryKey().isAutoIncrement()) {
+			setnoexcept();
+		}
+		this.entity=entity;
 	}
 
 	@Override
 	public void addImplementation() {
-		EntityCls entity = (EntityCls) parent;
 		if( entity.getTbl().getPrimaryKey().isAutoIncrement()) {
 			Attr attrAutoIncrement = entity.getAttrByName( entity.getTbl().getPrimaryKey().getAutoIncrementColumn().getCamelCaseName());
 			addInstr( _this().accessAttr(attrAutoIncrement).assign( getParam("id")));

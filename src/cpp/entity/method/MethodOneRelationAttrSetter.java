@@ -10,7 +10,7 @@ import cpp.core.expression.Expressions;
 import cpp.core.instruction.IfBlock;
 import cpp.core.method.MethodAttributeSetter;
 import cpp.entity.EntityCls;
-import cpp.entity.Nullable;
+import cpp.core.Optional;
 import cpp.entity.OneAttr;
 import database.column.Column;
 import database.relation.OneRelation;
@@ -36,45 +36,37 @@ public class MethodOneRelationAttrSetter extends MethodAttributeSetter {
 	public void addImplementation() {
 		super.addImplementation();
 		OneRelation r = ((OneAttr) attr).getRelation();
-		Param pRelationBean = getParam(attr.getName());
+		Param pRelationEntity = getParam(attr.getName());
 		for(int i=0;i<r.getColumnCount();i++) {
 			Column destCol = r.getColumns(i).getValue2();
 			Column srcCol = r.getColumns(i).getValue1();
-			//if(!destCol.isPartOfPk()) {
-				if(destCol.isNullable() == srcCol.isNullable()) {
-					if(destCol.isNullable()) {
-						IfBlock ifParamOneRelationIsNull = _if(pRelationBean._equals(Expressions.Nullptr));
-						ifParamOneRelationIsNull.thenBlock().addInstr( _this().assignAttr(srcCol.getCamelCaseName(), new CreateObjectExpression(Types.nullable(EntityCls.getDatabaseMapper().columnToType(destCol)))));
-						ifParamOneRelationIsNull.elseBlock().addInstr( _this().assignAttr(srcCol.getCamelCaseName(), pRelationBean.callAttrGetter(destCol.getCamelCaseName())));
-						
-					} else {
-						addInstr( _this().assignAttr(srcCol.getCamelCaseName(), pRelationBean.callMethod("get"+destCol.getUc1stCamelCaseName())));
-					}
+			if(destCol.isNullable() == srcCol.isNullable()) {
+				if(destCol.isNullable()) {
+					IfBlock ifParamOneRelationIsNull = _if(pRelationEntity._equals(Expressions.Nullptr));
+					ifParamOneRelationIsNull.thenBlock().addInstr( _this().assignAttr(srcCol.getCamelCaseName(), new CreateObjectExpression(Types.optional(EntityCls.getDatabaseMapper().columnToType(destCol)))));
+					ifParamOneRelationIsNull.elseBlock().addInstr( _this().assignAttr(srcCol.getCamelCaseName(), pRelationEntity.callAttrGetter(destCol.getCamelCaseName())));
 					
-				} else if(destCol.isNullable()) {
-					
-					IfBlock ifBeanNotNull = _if(pRelationBean._notEquals(Expressions.Nullptr));
-						ifBeanNotNull.thenBlock().addInstr( _this().assignAttr(srcCol.getCamelCaseName(), pRelationBean.callAttrGetter(destCol.getCamelCaseName()).callMethod(Nullable.val)));
-						
 				} else {
-					IfBlock ifParamOneRelationIsNull = _if(pRelationBean._equals(Expressions.Nullptr));
-					ifParamOneRelationIsNull.thenBlock().addInstr( _this().assignAttr(srcCol.getCamelCaseName(), new CreateObjectExpression(EntityCls.getDatabaseMapper().columnToType(srcCol))));
-					ifParamOneRelationIsNull.elseBlock().addInstr( _this().assignAttr(srcCol.getCamelCaseName(), new CreateObjectExpression(EntityCls.getDatabaseMapper().columnToType(srcCol), pRelationBean.callMethod("get"+destCol.getUc1stCamelCaseName()))));
+					addInstr( _this().assignAttr(srcCol.getCamelCaseName(), pRelationEntity.callMethod("get"+destCol.getUc1stCamelCaseName())));
 				}
 				
-				if (!this.internal) {
-					if (!srcCol.isPartOfPk()) {
-						addInstr(_this().assignAttr(attr.getName()+"Modified",BoolExpression.TRUE));
-					}
+			} else if(destCol.isNullable()) {
+				
+				IfBlock ifEntityNotNull = _if(pRelationEntity._notEquals(Expressions.Nullptr));
+					ifEntityNotNull.thenBlock().addInstr( _this().assignAttr(srcCol.getCamelCaseName(), pRelationEntity.callAttrGetter(destCol.getCamelCaseName()).callMethod(Optional.value)));
+					
+			} else {
+				IfBlock ifParamOneRelationIsNull = _if(pRelationEntity._equals(Expressions.Nullptr));
+				ifParamOneRelationIsNull.thenBlock().addInstr( _this().assignAttr(srcCol.getCamelCaseName(), new CreateObjectExpression(EntityCls.getDatabaseMapper().columnToType(srcCol))));
+				ifParamOneRelationIsNull.elseBlock().addInstr( _this().assignAttr(srcCol.getCamelCaseName(), new CreateObjectExpression(EntityCls.getDatabaseMapper().columnToType(srcCol), pRelationEntity.callMethod("get"+destCol.getUc1stCamelCaseName()))));
+			}
+			
+			if (!this.internal) {
+				if (!srcCol.isPartOfPk()) {
+					addInstr(_this().assignAttr(attr.getName()+"Modified",BoolExpression.TRUE));
 				}
-//			} else if (!this.internal) {
-//				if(!srcCol.isNullable()) {
-//					addInstr(pRelationBean.callSetterMethodInstruction(destCol.getCamelCaseName(), _this().accessAttr(srcCol.getCamelCaseName())));
-//				} else {
-//					addInstr(pRelationBean.callSetterMethodInstruction(destCol.getCamelCaseName(), _this().accessAttr(srcCol.getCamelCaseName()).callMethod(Nullable.val)));
-//				}
-//			 
-//			}
+			}
+ 
 			
 		}
 		

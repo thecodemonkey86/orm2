@@ -277,13 +277,10 @@ public class CppOrm extends OrmGenerator {
 			for (EntityCls c : Entities.getAllEntities()) {
 				c.addDeclarations();
 			}
-	//		for (BeanCls c : Beans.getAllBeans()) {
-	//			c.breakPointerCircles();
-	//		}
-			Path pathBeans = pathModel.resolve("entities");
+			Path pathEntities = pathModel.resolve("entities");
 			for (EntityCls c : Entities.getAllEntities()) {
-				Path pathHeader = pathBeans.resolve(c.getName().toLowerCase()+".h");
-				Path pathSrc = pathBeans.resolve(c.getName().toLowerCase()+".cpp");
+				Path pathHeader = pathEntities.resolve(c.getName().toLowerCase()+".h");
+				Path pathSrc = pathEntities.resolve(c.getName().toLowerCase()+".cpp");
 				
 				
 				if (Files.exists(pathHeader) && Files.exists(pathSrc)) {
@@ -361,17 +358,17 @@ public class CppOrm extends OrmGenerator {
 			
 			Path pathRepository = cfg.getRepositoryPath();
 			Path pathRepositoryQuery = pathRepository.resolve("query");
-			Files.createDirectories(pathBeans);
+			Files.createDirectories(pathEntities);
 			Files.createDirectories(pathRepositoryQuery);
 	
 			
 			for (EntityCls c : Entities.getAllEntities()) {
 				
-				FileUtil2.writeFileIfContentChanged(pathBeans.resolve(c.getName().toLowerCase()+".h"), c.toHeaderString().getBytes(utf8), writeOptions);
-				FileUtil2.writeFileIfContentChanged(pathBeans.resolve(c.getName().toLowerCase()+".cpp"), c.toSourceString().getBytes(utf8), writeOptions);
+				FileUtil2.writeFileIfContentChanged(pathEntities.resolve(c.getName().toLowerCase()+".h"), c.toHeaderString().getBytes(utf8), writeOptions);
+				FileUtil2.writeFileIfContentChanged(pathEntities.resolve(c.getName().toLowerCase()+".cpp"), c.toSourceString().getBytes(utf8), writeOptions);
 				
 				
-				ClsEntityQuerySelect clsQuery = Types.beanQuerySelect(c);
+				ClsEntityQuerySelect clsQuery = Types.entityQuerySelect(c);
 				clsQuery.setExportMacro(cfg.getExportMacro(),cfg.getExportMacroIncludeHeader());
 				clsQuery.addMethodImplementations();
 //				if(cfg.hasNamespace()) {
@@ -405,10 +402,6 @@ public class CppOrm extends OrmGenerator {
 			FileUtil2.writeFileIfContentChanged(pathRepository.resolve(repo.getName().toLowerCase()+ ".h"), repo.toHeaderString().getBytes(utf8), writeOptions);
 			FileUtil2.writeFileIfContentChanged(pathRepository.resolve(repo.getName().toLowerCase()+".cpp"), repo.toSourceString().getBytes(utf8), writeOptions);
 		
-//		BeanHelper helper = new BeanHelper(Beans.getAllBeans());
-//		helper.addMethodImplementations();
-//		FileUtil2.writeFileIfContentChanged(path.resolve("entityhelper").resolve("entityhelper.h"), helper.toHeaderString().getBytes(utf8), writeOptions);
-//		FileUtil2.writeFileIfContentChanged(path.resolve("entityhelper").resolve("entityhelper.cpp"), helper.toSourceString().getBytes(utf8), writeOptions);
 		} else {
 			Path pathEntities = pathModel.resolve("entities");
 			Path pathRepository = cfg.getRepositoryPath();
@@ -512,25 +505,6 @@ public class CppOrm extends OrmGenerator {
 			Files.createDirectories(pathEntities);
 			Files.createDirectories(pathRepositoryQuery);
 	
-			/*try(DirectoryStream<Path> dsPathBeans = Files.newDirectoryStream(pathEntities)) {
-				for(Path f : dsPathBeans) {
-					if(f.toString().endsWith(".h") || f.toString().endsWith(".cpp")) {
-						Files.delete(f);
-					}
-				}
-			} finally {
-				
-			}
-			
-			try(DirectoryStream<Path> dsPathQuery = Files.newDirectoryStream(pathRepositoryQuery)) {
-				for(Path f : dsPathQuery) {
-					if(f.toString().endsWith(".h") || f.toString().endsWith(".cpp")) {
-						Files.delete(f);
-					}
-				}
-			} finally {
-				
-			}*/
 			
 			for (JsonEntity c : JsonEntities.getAllEntities()) {
 				ClsJsonEntityQuerySelect clsQuery = new ClsJsonEntityQuerySelect(c);

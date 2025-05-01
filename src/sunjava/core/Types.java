@@ -131,7 +131,7 @@ public class Types {
 	public static final ClsPgSqlQuery PgSqlQuery = 	new ClsPgSqlQuery();
 	
 	public static final ClsBaseEntity BaseEntity = new ClsBaseEntity();
-	public static final ClsEntityRepository BeanRepository = new ClsEntityRepository();
+	public static final ClsEntityRepository EntityRepository = new ClsEntityRepository();
 	public static final ClsSqlParam SqlParam = new ClsSqlParam();
 	public static final ClsSqlUtil SqlUtil = new ClsSqlUtil();
 	public static final ClsSqlException SqlException = new ClsSqlException();
@@ -155,14 +155,14 @@ public class Types {
 	}
 	
 	public static Type getRelationForeignPrimaryKeyType(AbstractRelation r) {
-		Type beanPk = null;
+		Type entityPk = null;
 		if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
-			beanPk = Entities.get(r.getDestTable().getUc1stCamelCaseName()).getPkType();
+			entityPk = Entities.get(r.getDestTable().getUc1stCamelCaseName()).getPkType();
 			
 		} else {
-			beanPk = EntityCls.getTypeMapper().columnToType( r.getDestTable().getPrimaryKey().getColumns().get(0));
+			entityPk = EntityCls.getTypeMapper().columnToType( r.getDestTable().getPrimaryKey().getColumns().get(0));
 		}
-		return beanPk;
+		return entityPk;
 	}
 	
 	

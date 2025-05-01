@@ -20,7 +20,7 @@ public class MethodToggleAddRemoveRelatedEntity extends Method {
 	AbstractRelation r;
 	
 	public MethodToggleAddRemoveRelatedEntity(AbstractRelation r) {
-		super(Public, Types.Void, "toggleAddRemoveRelatedBean" +r.getDestTable().getUc1stCamelCaseName()+StringUtil.ucfirst( r.getAlias()));
+		super(Public, Types.Void, "toggleAddRemoveRelatedEntity" +r.getDestTable().getUc1stCamelCaseName()+StringUtil.ucfirst( r.getAlias()));
 		if(r instanceof ManyRelation) {
 			manyAttr = new ManyAttr((ManyRelation) r);
 		} else if(r instanceof OneToManyRelation ) {

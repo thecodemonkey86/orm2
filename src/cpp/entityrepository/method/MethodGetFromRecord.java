@@ -53,7 +53,7 @@ public class MethodGetFromRecord extends Method {
 	@Override
 	public void addImplementation() {
 		//Var entity = _declareMakeShared(parent, "entity");
-		Var vBean = _declareMakeShared(entity, "entity");
+		Var vEntity = _declareMakeShared(entity, "entity");
 		for(Column col:columns) {
 			try{
 				
@@ -68,20 +68,19 @@ public class MethodGetFromRecord extends Method {
 						Var val = _declare(CoreTypes.QVariant, "_val"+col.getUc1stCamelCaseName(),getParam("record").callMethod("value", exprArrayIndex));
 						IfBlock ifIsNull = _if(val.callMethod(ClsQVariant.isNull));
 						Expression eValue = val.callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(col));
-						ifIsNull.thenBlock().addInstr(vBean.callMethodInstruction("set"+col.getUc1stCamelCaseName()+"NullInternal"));
-						ifIsNull.elseBlock().addInstr(vBean.callMethodInstruction("set"+col.getUc1stCamelCaseName()+"Internal",EntityCls.getDatabase() instanceof FirebirdDatabase && eValue.getType().equals(CoreTypes.QString) ? eValue.callMethod(ClsQString.trimmed) : eValue));
+						ifIsNull.thenBlock().addInstr(vEntity.callMethodInstruction("set"+col.getUc1stCamelCaseName()+"NullInternal"));
+						ifIsNull.elseBlock().addInstr(vEntity.callMethodInstruction("set"+col.getUc1stCamelCaseName()+"Internal",EntityCls.getDatabase() instanceof FirebirdDatabase && eValue.getType().equals(CoreTypes.QString) ? eValue.callMethod(ClsQString.trimmed) : eValue));
 					} else {
 						Expression eValue = getParam("record").callMethod("value", exprArrayIndex).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(col));
-						addInstr(vBean.callMethodInstruction("set"+col.getUc1stCamelCaseName()+"Internal",EntityCls.getDatabase() instanceof FirebirdDatabase && eValue.getType().equals(CoreTypes.QString) ? eValue.callMethod(ClsQString.trimmed) : eValue));
+						addInstr(vEntity.callMethodInstruction("set"+col.getUc1stCamelCaseName()+"Internal",EntityCls.getDatabase() instanceof FirebirdDatabase && eValue.getType().equals(CoreTypes.QString) ? eValue.callMethod(ClsQString.trimmed) : eValue));
 					}
 				}
-//					_callMethodInstr(entity, "set"+col.getUc1stCamelCaseName(), getParam("record").callMethod("value", new QStringPlusOperatorExpression(getParam("alias"), QString.fromStringConstant("__"+ col.getName()))).callMethod(BeanCls.getDatabaseMapper().getQVariantConvertMethod(col)));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		addInstr(vBean.callMethodInstruction("setInsertNew",BoolExpression.FALSE));
-		_return(vBean);
+		addInstr(vEntity.callMethodInstruction("setInsertNew",BoolExpression.FALSE));
+		_return(vEntity);
 	}
 
 }

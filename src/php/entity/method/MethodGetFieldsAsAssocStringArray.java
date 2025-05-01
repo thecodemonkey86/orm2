@@ -46,7 +46,7 @@ public class MethodGetFieldsAsAssocStringArray extends Method {
 		for(Column col : entity.getTbl().getAllColumns()) {
 			if(!col.hasRelation()) {
 					MethodCall getter = _this().callMethod("get"+col.getUc1stCamelCaseName());
-					Expression convertExpr = BeanCls.getTypeMapper().getConvertFieldToStringExpression(getter, col,pDateTimeFormat,pDateFormat);
+					Expression convertExpr = EntityCls.getTypeMapper().getConvertFieldToStringExpression(getter, col,pDateTimeFormat,pDateFormat);
 					CaseBlock caseBlock = switchBlock._case(new PhpStringLiteral(col.getName()));
 					caseBlock.addInstr(result.arrayIndexSet(new PhpStringLiteral(col.getName()), convertExpr));
 					caseBlock._break();

@@ -62,13 +62,13 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 	}
 
 	@Override
-	public Type getBeanQueryClass(EntityCls beanCls) {
+	public Type getEntityQueryClass(EntityCls entityCls) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Type getLibBeanQueryClass(EntityCls beanCls) {
+	public Type getLibEntityQueryClass(EntityCls entityCls) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -125,17 +125,17 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 	}
 
 	@Override
-	public Method getBeanRepositoryBeginTransactionMethod() {
+	public Method getEntityRepositoryBeginTransactionMethod() {
 		return new PgEntityRepositoryBeginTransactionMethod();
 	}
 
 	@Override
-	public Method getBeanRepositoryCommitTransactionMethod() {
+	public Method getEntityRepositoryCommitTransactionMethod() {
 		return new PgEntityRepositoryCommitTransactionMethod();
 	}
 
 	@Override
-	public Method getBeanRepositoryRollbackTransactionMethod() {
+	public Method getEntityRepositoryRollbackTransactionMethod() {
 		return new PgEntityRepositoryRollbackTransactionMethod();
 	}
 

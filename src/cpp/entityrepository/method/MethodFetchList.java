@@ -95,45 +95,30 @@ public class MethodFetchList extends Method {
 		
 		if(!this.lazyLoading) {
 		
-			//bCount = 2;
 			if (!manyRelations.isEmpty()) {
 				
-				//Var structHelper = ifInstr._declare(entity.getFetchListHelperCls().toRawPointer(), "structHelper", new NewOperator(entity.getFetchListHelperCls()));
-	
-	//			for(Relation r:manyRelations) {
-	//				Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
-	//				ifInstr._assign(structHelper.accessAttr(r.getAlias()+"Set"),  new CreateObjectExpression(Types.qset(beanPk)));
-	//				//bCount++;
-	//			}
-	
 				doWhileQueryNext._assignInstruction(recDoWhile, query.callMethod("record"));
 				
 				Var fkHelper = doWhileQueryNext._declare(entity.getFetchListHelperCls().toRef(), "fkHelper",e1Map.arrayIndex(e1pk));
 				
 				Var structHelperIfNotE1SetContains = ifNotE1SetContains.thenBlock()._declare(entity.getFetchListHelperCls(), "structHelper");
 				ifNotE1SetContains.thenBlock()._assign(structHelperIfNotE1SetContains.accessAttr("e1"), e1DoWhile);
-	//			//bCount = 2;
-	//			for(Relation r:manyRelations) {
-	//				Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
-	//				ifNotE1SetContains.getIfInstr()._assign(structHelperIfNotE1SetContains.accessAttr(r.getAlias()+"Set"),  new CreateObjectExpression(Types.qset(beanPk)));
-	//				//bCount++;
-	//			}
 				
 				ifNotE1SetContains.thenBlock()._callMethodInstr(e1Map, "insert", e1pk, structHelperIfNotE1SetContains );
 						
 				
 				for(AbstractRelation r:manyRelations) {
-					Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
+					Type entityPk=Types.getRelationForeignPrimaryKeyType(r);
 					EntityCls foreignCls = Entities.get(r.getDestTable()); 
-					Expression foreignBeanExpression = parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), recDoWhile, QString.fromStringConstant(r.getAlias()));
+					Expression foreignEntityExpression = parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), recDoWhile, QString.fromStringConstant(r.getAlias()));
 	//				IfBlock ifRecValueIsNotNull = null;
-					Var foreignBean = null;				
+					Var foreignEntity = null;				
 					
 					IfBlock ifNotPkForeignIsNull= doWhileQueryNext._if(Expressions.not( recDoWhile.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getFirstColumn().getName())).callMethod("isNull")));
 					
 					Var pkForeign = null;
 					if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
-						pkForeign = ifNotPkForeignIsNull.thenBlock()._declare(beanPk, "pkForeignB"+r.getAlias());
+						pkForeign = ifNotPkForeignIsNull.thenBlock()._declare(entityPk, "pkForeignB"+r.getAlias());
 						
 						for(Column colPk:r.getDestTable().getPrimaryKey().getColumns()) {
 							ifNotPkForeignIsNull.thenBlock()._assign(
@@ -144,7 +129,7 @@ public class MethodFetchList extends Method {
 						}
 					} else {
 						Column colPk=r.getDestTable().getPrimaryKey().getFirstColumn();
-						pkForeign = ifNotPkForeignIsNull.thenBlock()._declare(beanPk, "pkForeignB"+r.getAlias(),recDoWhile.callMethod("value",QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType())));
+						pkForeign = ifNotPkForeignIsNull.thenBlock()._declare(entityPk, "pkForeignB"+r.getAlias(),recDoWhile.callMethod("value",QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk.getDbType())));
 					}
 					IfBlock ifRecValueIsNotNull = ifNotPkForeignIsNull.thenBlock()._if(
 							Expressions.not(fkHelper
@@ -157,11 +142,11 @@ public class MethodFetchList extends Method {
 							
 							
 						);
-					foreignBean =ifRecValueIsNotNull.thenBlock()._declare(foreignBeanExpression.getType(), "foreignB"+r.getAlias(),foreignBeanExpression) ;
+					foreignEntity =ifRecValueIsNotNull.thenBlock()._declare(foreignEntityExpression.getType(), "foreignB"+r.getAlias(),foreignEntityExpression) ;
 					
 									
 					ifRecValueIsNotNull.thenBlock().addInstr(fkHelper.accessAttr("e1")
-							.callMethodInstruction(EntityCls.getRelatedBeanMethodName(r), foreignBean));
+							.callMethodInstruction(EntityCls.getRelatedEntityMethodName(r), foreignEntity));
 					ifRecValueIsNotNull.thenBlock().addInstr(
 							fkHelper.accessAttr(r.getAlias()+"Set")
 							.callMethod("insert", 
@@ -171,15 +156,16 @@ public class MethodFetchList extends Method {
 					
 //					for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
 //						if (foreignOneRelation.getDestTable().equals(entity.getTbl())) {
-//							ifRecValueIsNotNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("e1")));
+//							ifRecValueIsNotNull.thenBlock().addInstr(foreignEntity.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("e1")));
 //						}
 //					}
-					//ifRecValueIsNotNull.getIfInstr()._callMethodInstr(foreignBean, "setLoaded", BoolExpression.TRUE);
+					//ifRecValueIsNotNull.getIfInstr()._callMethodInstr(foreignEntity, "setLoaded", BoolExpression.TRUE);
 					
 					//bCount++;
+					ifNotE1SetContains.thenBlock().addInstr(e1DoWhile.callSetterMethodInstruction("loaded"+  r.getIdentifier(), BoolExpression.TRUE));
 				}
 				
-	
+				
 				
 			} else {
 				/* manyRelations.isEmpty() */
@@ -187,34 +173,27 @@ public class MethodFetchList extends Method {
 			}
 			for(OneRelation r:oneRelations) {
 				EntityCls foreignCls = Entities.get(r.getDestTable());
-				Expression foreignBeanExpression = parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), recDoWhile, QString.fromStringConstant(r.getAlias()));
+				Expression foreignEntityExpression = parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), recDoWhile, QString.fromStringConstant(r.getAlias()));
 				
-				IfBlock ifRelatedBeanIsNull= ifNotE1SetContains.thenBlock().
+				IfBlock ifRelatedEntityIsNull= ifNotE1SetContains.thenBlock().
 						_if(Expressions.and( e1DoWhile.callMethod(new MethodOneRelationEntityIsNull(r))
 								,
 								Expressions.not( recDoWhile.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getFirstColumn().getName())).callMethod(ClsQVariant.isNull))
 								));
 				
-				Var foreignBean =ifRelatedBeanIsNull.thenBlock()._declare(foreignBeanExpression.getType(), "foreignB"+r.getAlias(),foreignBeanExpression) ;
-				ifRelatedBeanIsNull.thenBlock()
+				Var foreignEntity =ifRelatedEntityIsNull.thenBlock()._declare(foreignEntityExpression.getType(), "foreignB"+r.getAlias(),foreignEntityExpression) ;
+				ifRelatedEntityIsNull.thenBlock()
 					._callMethodInstr(
 							e1DoWhile ,
 							new MethodAttrSetterInternal(foreignCls,
 									entity.getAttrByName(OrmUtil.getOneRelationDestAttrName(r)))
-							,  foreignBean);
+							,  foreignEntity);
 				
 			
-	//			for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
-	//				if (foreignOneRelation.getDestTable().equals(entity.getTbl())) {
-	//					ifRelatedBeanIsNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", e1DoWhile));
-	//				}
-	//			}
-	//			ifRelatedBeanIsNull.getIfInstr()._callMethodInstr(foreignBean, "setLoaded", BoolExpression.TRUE);
-				
-				//bCount++;
+				ifNotE1SetContains.thenBlock().addInstr(e1DoWhile.callSetterMethodInstruction("loaded"+  r.getIdentifier(), BoolExpression.TRUE));
 			}
 			
-			ifNotE1SetContains.thenBlock()._callMethodInstr(e1DoWhile, "setLoaded", BoolExpression.TRUE);
+
 		}
 		ifNotE1SetContains.thenBlock()._callMethodInstr(result, "append", e1DoWhile);
 //		_callMethodInstr(query, ClsQSqlQuery.clear); 

@@ -63,7 +63,7 @@ public class JavaOrm extends OrmGenerator{
 			Charset utf8 = Charset.forName("UTF-8");
 			Class.forName("org.postgresql.Driver");
 
-			ClsEntityQuery.setBeanQueryPackage(cfg.getRepositoryPackageName()+".query");
+			ClsEntityQuery.setEntityQueryPackage(cfg.getRepositoryPackageName()+".query");
 			EntityCls.setEntityClsPackage(cfg.getEntityPackageName());
 			ClsEntityRepository.setEntityRepositoryPackage(cfg.getRepositoryPackageName());
 			
@@ -73,11 +73,11 @@ public class JavaOrm extends OrmGenerator{
 			Path path = cfg.getBasePath();
 			Path modelPath = cfg.getModelPath();
 			Path repositoryPath = cfg.getRepositoryPath();
-			Path beansPath = modelPath.resolve("entities");
-			Path fetchListHelperPath = beansPath.resolve("helper");
+			Path entitiesPath = modelPath.resolve("entities");
+			Path fetchListHelperPath = entitiesPath.resolve("helper");
 			
 			
-			ClsEntityRepository repo=Types.BeanRepository;
+			ClsEntityRepository repo=Types.EntityRepository;
 			
 			for(Table tbl:cfg.getEntityTables()  ) {
 				
@@ -93,15 +93,12 @@ public class JavaOrm extends OrmGenerator{
 			}
 			
 			
-			for (EntityCls c : Entities.getAllBeans()) {
+			for (EntityCls c : Entities.getAllEntities()) {
 				c.addDeclarations();
 			}
 			
-			repo.addDeclarations(Entities.getAllBeans());
-//			for (BeanCls c : Beans.getAllBeans()) {
-//				c.breakPointerCircles();
-//			}
-			for (EntityCls c : Entities.getAllBeans()) {
+			repo.addDeclarations(Entities.getAllEntities());
+			for (EntityCls c : Entities.getAllEntities()) {
 				//Path pathHeader = Paths.get(path+"/entities/"+c.getName().toLowerCase()+".h");
 				Path pathSrc = Paths.get(path+"/entities/"+c.getName()+".java");
 				
@@ -139,8 +136,8 @@ public class JavaOrm extends OrmGenerator{
 			Files.createDirectories(fetchListHelperPath);
 			Files.createDirectories(repositoryPath.resolve("query"));
 			
-			for (EntityCls c : Entities.getAllBeans()) {
-				Path pathSrc = beansPath.resolve(c.getName()+".java");
+			for (EntityCls c : Entities.getAllEntities()) {
+				Path pathSrc = entitiesPath.resolve(c.getName()+".java");
 				Path pathHelperSrc = fetchListHelperPath.resolve(c.getFetchListHelperCls().getName()+".java");
 						
 				Files.write(pathSrc, c.toSourceString().getBytes(utf8), writeOptions);
@@ -150,8 +147,8 @@ public class JavaOrm extends OrmGenerator{
 				Files.write(repositoryPath.resolve("query").resolve(clsQuery.getName()+".java"), clsQuery.toSourceString().getBytes(utf8), writeOptions);
 				
 				if(c.getTbl().getPrimaryKey().isMultiColumn()) {
-					Path pathMultiColumnPkType = beansPath.resolve("pk").resolve(c.getPkType().getName()+".java");
-					Files.createDirectories(beansPath.resolve("pk"));
+					Path pathMultiColumnPkType = entitiesPath.resolve("pk").resolve(c.getPkType().getName()+".java");
+					Files.createDirectories(entitiesPath.resolve("pk"));
 					Files.write(pathMultiColumnPkType, ((JavaCls) c.getPkType()).toSourceString().getBytes(utf8), writeOptions);
 				}
 			}

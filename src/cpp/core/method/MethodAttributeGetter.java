@@ -11,6 +11,7 @@ public class MethodAttributeGetter extends Method{
 		this.a=a;
 		if(!a.isStatic())
 			setConstQualifier();
+		setnoexcept();
 	}
 
 	

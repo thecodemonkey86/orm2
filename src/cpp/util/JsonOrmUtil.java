@@ -2,19 +2,19 @@ package cpp.util;
 
 import cpp.CoreTypes;
 import cpp.core.ConstRef;
+import cpp.core.Optional;
 import cpp.core.TplCls;
 import cpp.core.Type;
 import cpp.core.expression.Expression;
-import cpp.entity.Nullable;
 import cpp.lib.ClsQString;
 
 public class JsonOrmUtil {
 	public static Expression convertToQString(Expression e) {
 		Type t=null;
 		Expression ex=null;
-		if(e.getType() instanceof Nullable) {
+		if(e.getType() instanceof Optional) {
 			t= ((TplCls) e.getType()).getElementType();
-			ex=e.callMethod(Nullable.val);
+			ex=e.callMethod(Optional.value);
 		} else if(e.getType() instanceof ConstRef) {
 			t=((ConstRef) e.getType()).getBase();
 			ex=e;

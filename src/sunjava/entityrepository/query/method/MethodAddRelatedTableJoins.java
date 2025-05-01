@@ -22,37 +22,34 @@ public class MethodAddRelatedTableJoins extends Method {
 	
 	public MethodAddRelatedTableJoins(EntityCls cls) {
 		super(Public, Types.Void, "addRelatedTableJoins");
-//		addParam(new Param(Types.beanQuery(cls), "query"));
-//		setStatic(true);
 		this.entity = cls;
 		setOverrideAnnotation(true);
 	}
 
 	@Override
 	public void addImplementation() {
-//		Expression query = getParam("query");
 		Expression query = _this();
 			
 		for(OneRelation r:entity.getOneRelations()) {
-			//parent.addImport(Beans.get(r.getDestTable()).getImport());
+			//parent.addImport(Entities.get(r.getDestTable()).getImport());
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getColumnCount();i++) {
 				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
 			}
 			
-			query = query.callMethod("leftJoin", Types.BeanRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(Entities.get(r.getDestTable()))),JavaString.stringConstant(r.getAlias()), JavaString.stringConstant(CodeUtil2.concat(joinConditions," AND ")));
+			query = query.callMethod("leftJoin", Types.EntityRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(Entities.get(r.getDestTable()))),JavaString.stringConstant(r.getAlias()), JavaString.stringConstant(CodeUtil2.concat(joinConditions," AND ")));
 		}
 		for(OneToManyRelation r:entity.getOneToManyRelations()) {
-			//parent.addImport(Beans.get(r.getDestTable()).getImport());
+			//parent.addImport(Entities.get(r.getDestTable()).getImport());
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getColumnCount();i++) {
 				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
 			}
 			
-			query = query.callMethod("leftJoin", Types.BeanRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(Entities.get(r.getDestTable()))),JavaString.stringConstant(r.getAlias()), JavaString.stringConstant(CodeUtil2.concat(joinConditions," AND ")));
+			query = query.callMethod("leftJoin", Types.EntityRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(Entities.get(r.getDestTable()))),JavaString.stringConstant(r.getAlias()), JavaString.stringConstant(CodeUtil2.concat(joinConditions," AND ")));
 		}
 		for(ManyRelation r:entity.getManyRelations()) {
-			//parent.addImport(Beans.get(r.getDestTable()).getImport());
+			//parent.addImport(Entities.get(r.getDestTable()).getImport());
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getSourceColumnCount();i++) {
 				joinConditions.add(CodeUtil.sp("e1."+r.getSourceEntityColumn(i).getEscapedName(),'=',r.getAlias("mapping")+"."+ r.getSourceMappingColumn(i).getEscapedName()));
@@ -65,7 +62,7 @@ public class MethodAddRelatedTableJoins extends Method {
 				joinConditions.add(CodeUtil.sp(r.getAlias("mapping")+"."+r.getDestMappingColumn(i).getEscapedName(),'=',r.getAlias()+"."+r.getDestEntityColumn(i).getEscapedName() ));
 			}
 			
-			query = query.callMethod("leftJoin", Types.BeanRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(Entities.get(r.getDestTable()))),JavaString.stringConstant(r.getAlias()), JavaString.stringConstant(CodeUtil2.concat(joinConditions," AND ")));
+			query = query.callMethod("leftJoin", Types.EntityRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(Entities.get(r.getDestTable()))),JavaString.stringConstant(r.getAlias()), JavaString.stringConstant(CodeUtil2.concat(joinConditions," AND ")));
 			
 		}
 		

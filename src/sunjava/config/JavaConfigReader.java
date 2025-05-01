@@ -20,7 +20,7 @@ public class JavaConfigReader extends ConfigReader{
 //			String v=new String(ch, start, length);
 //			switch(this.tag) {
 //			case "entityJavaPackage":
-//				cfg.setBeanPackageName(v);
+//				cfg.setEntityPackageName(v);
 //				return;
 //			case "repositoryJavaPackage":
 //				cfg.setRepositoryPackageName(v);

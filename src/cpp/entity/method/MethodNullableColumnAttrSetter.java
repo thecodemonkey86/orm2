@@ -12,7 +12,7 @@ import cpp.core.expression.Expression;
 import cpp.core.expression.Operators;
 import cpp.core.instruction.IfBlock;
 import cpp.entity.EntityCls;
-import cpp.entity.Nullable;
+import cpp.core.Optional;
 import cpp.entity.SetterValidator;
 import cpp.entity.SetterValidator.OnFailValidateMode;
 import database.column.Column;
@@ -55,7 +55,7 @@ public class MethodNullableColumnAttrSetter extends Method{
 			}).thenBlock()._return(columnValidator.onFailMode() ==OnFailValidateMode.ReturnFalse ? BoolExpression.FALSE: null);
 		}
 		
-		cond = _this().accessAttr(a).callMethod(Nullable.isNull).binOp(Operators.OR, param._notEquals(_this().accessAttr(a)));
+		cond = _not(_this().accessAttr(a).callMethod(Optional.has_value)).binOp(Operators.OR, param._notEquals(_this().accessAttr(a)));
 		
 	
 		 IfBlock ifNotEquals = _if(cond);

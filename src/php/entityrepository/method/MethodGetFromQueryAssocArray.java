@@ -19,7 +19,7 @@ import php.core.expression.IntExpression;
 
 public class MethodGetFromQueryAssocArray extends Method{
 	protected List<Column> columns;
-	protected EntityCls beanCls;
+	protected EntityCls entityCls;
 	
 	public static String getMethodName(EntityCls entity) {
 		return "get"+entity.getName()+ "FromQueryAssocArray";
@@ -31,7 +31,7 @@ public class MethodGetFromQueryAssocArray extends Method{
 		addParam(new Param(Types.array(Types.String).toRef(), "array"));
 		addParam(new Param(Types.String, "alias"));
 		this.columns = entity.getTbl().getColumns(true);
-		this.beanCls = entity;
+		this.entityCls = entity;
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class MethodGetFromQueryAssocArray extends Method{
 
 		Param array = getParam("array");
 		Param alias = getParam("alias");
-		Expression pkExprArrayIndex = EntityCls.getTypeMapper().filterFetchAssocArrayKeyExpression(alias).concat(new PhpStringLiteral(EntityCls.getTypeMapper().filterFetchAssocArrayKey("__"+beanCls.getTbl().getPrimaryKey().getFirstColumn().getName())));
+		Expression pkExprArrayIndex = EntityCls.getTypeMapper().filterFetchAssocArrayKeyExpression(alias).concat(new PhpStringLiteral(EntityCls.getTypeMapper().filterFetchAssocArrayKey("__"+entityCls.getTbl().getPrimaryKey().getFirstColumn().getName())));
 		
 		if(EntityCls.getDatabase() instanceof FirebirdDatabase) {
 			pkExprArrayIndex = PhpFunctions.substr.call(pkExprArrayIndex,new IntExpression(0),new IntExpression(31));
@@ -55,7 +55,7 @@ public class MethodGetFromQueryAssocArray extends Method{
 		for(Column col:columns) {
 			if (!col.isRelationDestColumn() || col.hasOneRelation() || col.isPartOfPk()) {
 				try{
-					/*Expression resultSetValueGetter = BeanCls.getTypeMapper().getResultSetValueGetter(resultSet, col, alias);
+					/*Expression resultSetValueGetter = EntityCls.getTypeMapper().getResultSetValueGetter(resultSet, col, alias);
 					if (col.isNullable() && resultSetValueGetter.getType().isPrimitiveType()) {
 						Var value = _declare(resultSetValueGetter.getType(), "value"+col.getUc1stCamelCaseName(),resultSetValueGetter );
 						IfBlock ifWasNull = _if(resultSet.callMethod(ClsResultSet.wasNull));

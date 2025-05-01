@@ -12,9 +12,9 @@ import cpp.util.ClsDbPool;
 public class MethodEntityQueryFetch extends Method{
 	protected EntityCls entity;
 	protected Param pSqlCon;
-	
+	public static String METHOD_NAME= "query";
 	public MethodEntityQueryFetch(EntityCls entity) {
-		super(Public, Types.qlist(entity.toSharedPtr()), "query");
+		super(Public, Types.qlist(entity.toSharedPtr()),METHOD_NAME);
 		this.entity=entity;
 		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 	}

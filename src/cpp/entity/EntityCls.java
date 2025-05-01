@@ -22,6 +22,8 @@ import cpp.core.TplCls;
 import cpp.core.Type;
 import cpp.core.expression.Expression;
 import cpp.core.expression.StaticAccessExpression;
+import cpp.core.method.MethodAttributeSetter;
+import cpp.core.method.MethodOptionalAttributeEmplaceSetter;
 import cpp.core.method.MethodStaticAttributeSetter;
 import cpp.entity.method.EntityConstructor;
 import cpp.entity.method.EntityDestructor;
@@ -37,6 +39,7 @@ import cpp.entity.method.MethodColumnAttrSetNull;
 import cpp.entity.method.MethodColumnAttrSetter;
 import cpp.entity.method.MethodColumnAttrSetterInternal;
 import cpp.entity.method.MethodCopyFields;
+import cpp.entity.method.MethodEnsureLoaded;
 import cpp.entity.method.MethodFileImportColumnSetter;
 import cpp.entity.method.MethodGetAllSelectFields;
 import cpp.entity.method.MethodGetFieldName;
@@ -85,7 +88,7 @@ import database.table.Table;
 
 public class EntityCls extends Cls {
 
-	private static final String BEAN_PARAM_NAME = "entity";
+	private static final String ENTITY_PARAM_NAME = "entity";
 	public static final String BEGIN_CUSTOM_CLASS_MEMBERS = "/*BEGIN_CUSTOM_CLASS_MEMBERS*/";
 	public static final String END_CUSTOM_CLASS_MEMBERS = "/*END_CUSTOM_CLASS_MEMBERS*/";
 	public static final String BEGIN_CUSTOM_PREPROCESSOR = "/*BEGIN_CUSTOM_PREPROCESSOR*/";
@@ -203,9 +206,14 @@ public class EntityCls extends Cls {
 		for(OneRelation r:oneRelations) {
 			OneAttr attr = new OneAttr(r);
 				addAttr(attr);
-				addAttr(new Attr(CoreTypes.Bool, "loaded"+r.getIdentifier()));
-				addAttr(new Attr(Types.Optional, BEAN_PARAM_NAME));
-				
+				Attr attrLoaded = new Attr(CoreTypes.Bool,"loaded"+ r.getIdentifier());
+				addAttr(attrLoaded);
+				addMethod(new MethodAttributeSetter(attrLoaded));	
+				addMethod(new MethodEnsureLoaded(attr, r));
+				Attr attrRelationQuery = new Attr(Types.optional(Types.entityQuerySelect(Entities.get(r.getDestTable()))), "query"+r.getIdentifier());
+				addAttr(attrRelationQuery);
+				addMethod(new MethodOptionalAttributeEmplaceSetter(attrRelationQuery));
+				addInclude( ((Cls)((TplCls) attrRelationQuery.getType()).getElementType()).getHeaderInclude());
 				addIncludeHeaderInSource(attr.getElementType().getName().toLowerCase());
 				addForwardDeclaredClass( (Cls) ((TplCls)attr.getClassType()).getElementType());
 				addMethod(new MethodAttrGetter(attr,r));	
@@ -226,6 +234,14 @@ public class EntityCls extends Cls {
 		for(OneToManyRelation r:oneToManyRelations) {
 			ManyAttr attr = new ManyAttr(r);
 			addAttr(attr);
+			Attr attrLoaded = new Attr(CoreTypes.Bool,"loaded"+ r.getIdentifier());
+			addAttr(attrLoaded);
+			addMethod(new MethodAttributeSetter(attrLoaded));	
+			Attr attrRelationQuery = new Attr(CoreTypes.optional(Types.entityQuerySelect(Entities.get(r.getDestTable()))),"query"+ r.getIdentifier());
+			addAttr(attrRelationQuery);
+			addMethod(new MethodOptionalAttributeEmplaceSetter(attrRelationQuery));
+			addInclude( ((Cls)((TplCls) attrRelationQuery.getType()).getElementType()).getHeaderInclude());
+			addMethod(new MethodEnsureLoaded(attr, r));
 			//Attr attrManyToManyAdded = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Added");
 			//addAttr(attrManyToManyAdded);
 			//addMethod(new MethodAttributeGetter(attrManyToManyAdded));
@@ -236,11 +252,10 @@ public class EntityCls extends Cls {
 			Cls relationEntity =  (Cls) ((TplCls) (Cls) attr.getElementType()).getElementType();
 			addIncludeInSourceDefaultHeaderFileName(relationEntity);
 			addForwardDeclaredClass(relationEntity);
-			addMethod(new MethodManyAttrGetter(attr));
-			addMethod(new MethodAddRelatedEntity(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
-			//addMethod(new MethodAddRelatedBean(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
-			addMethod(new MethodAddRelatedEntityInternal(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
-			addMethod(new MethodAddRelatedEntityInternal(r, new Param(Types.qlist(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
+			addMethod(new MethodManyAttrGetter(attr,r));
+			addMethod(new MethodAddRelatedEntity(r, new Param(attr.getElementType().toConstRef(), ENTITY_PARAM_NAME)));
+			addMethod(new MethodAddRelatedEntityInternal(r, new Param(attr.getElementType().toConstRef(), ENTITY_PARAM_NAME)));
+			addMethod(new MethodAddRelatedEntityInternal(r, new Param(Types.qlist(attr.getElementType()).toConstRef(), ENTITY_PARAM_NAME)));
 			addMethod(new MethodGetManyRelatedAtIndex(attr, r));
 			addMethod(new MethodGetManyRelatedCount(attr, r));
 			addMethod(new MethodRemoveAllOneToManyRelatedEntities(r));
@@ -251,10 +266,18 @@ public class EntityCls extends Cls {
 		for(ManyRelation r:manyRelations) {
 			ManyAttr attr = new ManyAttr(r);
 			addAttr(attr);
+			Attr attrLoaded = new Attr(CoreTypes.Bool,"loaded"+ r.getIdentifier());
+			addAttr(attrLoaded);
+			addMethod(new MethodAttributeSetter(attrLoaded));	
+			Attr attrRelationQuery = new Attr(CoreTypes.optional(Types.entityQuerySelect(Entities.get(r.getDestTable()))),"query"+ r.getIdentifier());
+			addAttr(attrRelationQuery);
+			addMethod(new MethodOptionalAttributeEmplaceSetter(attrRelationQuery));
+			addInclude( ((Cls)((TplCls) attrRelationQuery.getType()).getElementType()).getHeaderInclude());
+			addMethod(new MethodEnsureLoaded(attr, r));
 			Cls relationEntity =  (Cls) ((TplCls) (Cls) attr.getElementType()).getElementType();
 			addIncludeInSourceDefaultHeaderFileName(relationEntity);
 			addForwardDeclaredClass(relationEntity);
-			addMethod(new MethodManyAttrGetter(attr));
+			addMethod(new MethodManyAttrGetter(attr,r));
 //			Attr attrManyToManyAdded = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Added");
 //			addAttr(attrManyToManyAdded);
 //			addMethod(new MethodAttributeGetter(attrManyToManyAdded));
@@ -262,16 +285,15 @@ public class EntityCls extends Cls {
 			//Attr attrManyToManyRemoved = new Attr(Types.qvector(Types.getRelationForeignPrimaryKeyType(r)) ,attr.getName()+"Removed");
 			//addAttr(attrManyToManyRemoved);
 			//addMethod(new MethodAttributeGetter(attrManyToManyRemoved));
-			addMethod(new MethodAddManyToManyRelatedEntity(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
-			//addMethod(new MethodAddManyToManyRelatedBean(r, new Param(Types.qvector(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
-			addMethod(new MethodAddManyToManyRelatedEntityInternal(r, new Param(attr.getElementType().toConstRef(), BEAN_PARAM_NAME)));
-			addMethod(new MethodAddManyToManyRelatedEntityInternal(r, new Param(Types.qlist(attr.getElementType()).toConstRef(), BEAN_PARAM_NAME)));
+			addMethod(new MethodAddManyToManyRelatedEntity(r, new Param(attr.getElementType().toConstRef(), ENTITY_PARAM_NAME)));
+			addMethod(new MethodAddManyToManyRelatedEntityInternal(r, new Param(attr.getElementType().toConstRef(), ENTITY_PARAM_NAME)));
+			addMethod(new MethodAddManyToManyRelatedEntityInternal(r, new Param(Types.qlist(attr.getElementType()).toConstRef(), ENTITY_PARAM_NAME)));
 			
 			addMethod(new MethodRemoveManyToManyRelatedEntity(r));
 			addMethod(new MethodRemoveAllManyRelatedEntities(r));
 		}
 		
-		Type nullstring = Types.nullable(Types.QString);
+		Type nullstring = Types.optional(Types.QString);
 //		structPk.setScope(name);
 		boolean singleColPk = tbl.getPrimaryKey().getColumnCount()==1;
 		for(Column col:allColumns) {
@@ -336,7 +358,7 @@ public class EntityCls extends Cls {
 		if(!singleColPk) {
 			addMethod(new MethodSetPrimaryKey(tbl.getPrimaryKey()));
 		}
-		addMethod(new MethodSetAutoIncrementId(getTbl().getPrimaryKey().isAutoIncrement()));
+		addMethod(new MethodSetAutoIncrementId(getTbl().getPrimaryKey().isAutoIncrement(),this));
 		//for(OneToManyRelation r:oneToManyRelations) {
 		//	addMethod(new MethodToggleAddRemoveRelatedEntity(r));
 		//}
@@ -347,7 +369,7 @@ public class EntityCls extends Cls {
 	}
 	
 	public EntityCls(Table tbl,List<OneToManyRelation> manyRelations,List<OneRelation> oneRelations, List<ManyRelation> manyToManyRelations) {
-		super(CodeUtil2.uc1stCamelCase(tbl.getName()));
+		super(CodeUtil2.uc1stCamelCase(tbl.getName()),false);
 		this.tbl = tbl;
 		this.oneToManyRelations= manyRelations;
 		this.oneRelations = oneRelations;
@@ -367,7 +389,6 @@ public class EntityCls extends Cls {
 		Destructor d = new EntityDestructor(this);
 		setDestructor(d);
 		
-	//	addPreprocessorInstruction("#define " + getName()+ " "+CodeUtil2.uc1stCamelCase(tbl.getName()));
 		addIncludeDefaultHeaderFileName(Types.BaseEntity);
 		addIncludeLib(Types.QString);
 		addIncludeLib(CoreTypes.QVariant);
@@ -375,20 +396,15 @@ public class EntityCls extends Cls {
 		addIncludeLib(Types.qset(null));
 		addIncludeLib("memory");
 		if(tbl.hasNullableColumn())
-			addIncludeHeader("nullable");
+			addIncludeLib(Types.optional(null));
 				
-//		Attr aTableName = new Attr(Attr.Public, Types.ConstCharPtr, "TABLENAME",constCharPtr(tbl.getName()),true);
-//		addAttr(aTableName);
 		
 		addMethod(new MethodGetTableName());
 		addMethod(new MethodGetTableNameAlias());
-//		addMethod(new MethodGetTableNameInternal());
-		//addIncludeHeader("entityquery");
-		addInclude(cfg.getDbPoolHeader());
+		if(hasRelations())
+			addInclude(cfg.getDbPoolHeader());
 		addIncludeHeaderInSource(repositoryPath + Types.EntityRepository.getName().toLowerCase());
-		addForwardDeclaredClass(Types.beanQuerySelect(this));
-		//addForwardDeclaredClass(Types.EntityRepository);
-//		addIncludeHeader(Types.orderedSet(this).getHeaderInclude());
+		addForwardDeclaredClass(Types.entityQuerySelect(this));
 		addAttributes(tbl.getAllColumns());
 		addForwardDeclaredClass(this);
 		List<Column> cols = tbl.getColumns(!tbl.getPrimaryKey().isAutoIncrement());
@@ -400,7 +416,6 @@ public class EntityCls extends Cls {
 		addMethod(new MethodResetModifiedFlags());
 		addMethod(new MethodGetUpdateConditionParams(tbl.getPrimaryKey()));
 		addMethod(new MethodGetUpdateCondition(tbl.getPrimaryKey()));
-//		addMethod(new MethodGetById(oneRelations,manyRelations, tbl, this));
 		addMethod(new MethodGetSelectFields(allCols));
 		addMethod(new MethodGetAllSelectFields(allCols));
 		if(tbl.isEnableGetValueByName()) {
@@ -409,41 +424,23 @@ public class EntityCls extends Cls {
 			addMethod(new MethodAllFieldNames());
 		}
 		
-//		addMethod(new MethodGetFromRecordStatic(allCols,this));
-//		addMethod(new MethodFetchList(oneRelations, manyRelations, this, tbl.getPrimaryKey()));
-//		addMethod(new MethodCreateQuery(this));
 		if(hasRelations())
 			addMethod(new MethodAddRelatedTableJoins(this));
-		//addMethod(new MethodBeanLoad(oneRelations, oneToManyRelations,manyRelations, tbl));
 		addMethod(new MethodGetPrimaryKeyColumns(tbl.getPrimaryKey()));
 		addMethod(new MethodGetLimitQueryString(tbl.getPrimaryKey()));
 		addMethod(new MethodUnload(oneRelations, oneToManyRelations, manyRelations));
 		addMethod(new MethodCopyFields(this));
-		//addMethod(new MethodLoad2Levels(oneRelations, oneToManyRelations,manyRelations, tbl));
 		
-//		if (manyRelations.size()>0) {
-//			addMethod(new MethodBeanSave(true));
-//			addMethod(new MethodBeanSave(false));
-//		}
-//		addMethod(new LibMethod(new ClsSql(), "sqlCon"));
-//		addMethod(new MethodCreateNew(this));
-//		addMethod(new MethodLoadCollection(oneRelations, manyRelations, this, tbl.getPrimaryKey()));
 		if (tbl.getPrimaryKey().isMultiColumn()) {
 			addNonMemberMethod(new MethodQHashPkStruct(getStructPk(), tbl.getPrimaryKey()));
 			
 			addNonMemberOperator(new StructPkEqOperator(getStructPk()));
-//			BeanHashFunctions.instance.addMethod(new MethodQHashPkStruct(structPk, tbl.getPrimaryKey()));
-//			BeanHashFunctions.instance.addMethod(new MethodQHashBean(this, tbl.getPrimaryKey()));
-//			BeanHashFunctions.instance.addIncludeHeader(getName().toLowerCase());
-//			BeanHashFunctions.instance.addOperator(new StructPkEqOperator(structPk));
-//			addIncludeHeader("entityhash");
 		}  
 		addOperator(new EntityEqualsOperator(this, tbl.getPrimaryKey()));
 		addOperator(new EntitySharedPtrEqualsOperator(this, tbl.getPrimaryKey()));
 		addNonMemberMethod(new MethodQHashEntity(this, tbl.getPrimaryKey()));
 		addNonMemberMethod(new MethodQHashEntitySharedPtr(this, tbl.getPrimaryKey()));
 		addNonMemberOperator(new NonMemberOperatorEntityEquals(this, tbl.getPrimaryKey()));
-//		addForwardDeclaredClass(Types.BeanRepository.getName());
 	}
 	
 	@Override
@@ -629,7 +626,7 @@ public class EntityCls extends Cls {
 	}
 	
 	
-	public static String getRelatedBeanMethodName(AbstractRelation r) {
+	public static String getRelatedEntityMethodName(AbstractRelation r) {
 		 if (r instanceof OneToManyRelation) {
 			return "add"+StringUtil.ucfirst(OrmUtil.getOneToManyRelationDestAttrNameSingular((OneToManyRelation) r))+"Internal";
 		} else  if (r instanceof ManyRelation) {
@@ -687,5 +684,13 @@ public class EntityCls extends Cls {
 	
 	public boolean hasColumnValidator(String col) {
 		return columnValidators != null && columnValidators.containsKey(col);
+	}
+
+	public List<AbstractRelation> getAllRelations() {
+		List<AbstractRelation> result=new ArrayList<>();
+		result.addAll(getOneRelations());
+		result.addAll(getOneToManyRelations());
+		result.addAll(getManyRelations());
+		return result;
 	}
 }

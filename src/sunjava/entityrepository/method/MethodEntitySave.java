@@ -53,16 +53,16 @@ public class MethodEntitySave extends Method {
 		
 		InstructionBlock mainBlock = this; //tryCatch.getTryBlock()
 		
-		Param pBean = getParam("entity");
+		Param pEntity = getParam("entity");
 	
-		IfBlock ifIsInsertNew = mainBlock._if(pBean.callMethod(ClsBaseEntity.METHOD_NAME_IS_INSERT_NEW));
+		IfBlock ifIsInsertNew = mainBlock._if(pEntity.callMethod(ClsBaseEntity.METHOD_NAME_IS_INSERT_NEW));
 //		ifIsInsertNew.thenBlock()._callMethodInstr(sqlQuery, ClsSqlQuery.METHOD_NAME_BEGIN_TRANSACTION);
 		
 		ifIsInsertNew.thenBlock()
 		
 			._callMethodInstr(sqlQuery,  ClsSqlQuery.insertInto,parent.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(entity)));
 		
-		IfBlock ifHasUpdate = ifIsInsertNew.elseBlock()._if(pBean.callMethod(ClsBaseEntity.METHOD_NAME_HAS_UPDATE));
+		IfBlock ifHasUpdate = ifIsInsertNew.elseBlock()._if(pEntity.callMethod(ClsBaseEntity.METHOD_NAME_HAS_UPDATE));
 		
 		
 //		ifHasUpdate.thenBlock()._callMethodInstr(sqlQuery, ClsSqlQuery.METHOD_NAME_BEGIN_TRANSACTION);
@@ -76,7 +76,7 @@ public class MethodEntitySave extends Method {
 		for(Column col : columns) {
 			if (col.isNullable()) {
 				// begin insert
-				IfBlock ifColIsNull = ifIsInsertNew.thenBlock()._if(EntityCls.accessColumnAttrOrEntity(pBean,col).isNull());
+				IfBlock ifColIsNull = ifIsInsertNew.thenBlock()._if(EntityCls.accessColumnAttrOrEntity(pEntity,col).isNull());
 				
 				ifColIsNull.thenBlock()._callMethodInstr(sqlQuery, 
 						ClsSqlQuery.setValue,JavaString.stringConstant(col.getName()), 
@@ -84,14 +84,14 @@ public class MethodEntitySave extends Method {
 				
 				ifColIsNull.elseBlock()._callMethodInstr(sqlQuery, 
 						ClsSqlQuery.setValue,JavaString.stringConstant(col.getName()), 
-						Types.SqlParam.callStaticMethod(ClsSqlParam.get, EntityCls.accessAttrGetterByColumn(pBean,col,false)));
+						Types.SqlParam.callStaticMethod(ClsSqlParam.get, EntityCls.accessAttrGetterByColumn(pEntity,col,false)));
 				// end insert
 				
 				// begin update		
 				if (!col.isPartOfPk()) {
 
-					IfBlock ifModified = ifHasUpdate.thenBlock()._if(EntityCls.accessIsColumnAttrOrEntityModified(pBean, col));
-					IfBlock ifColIsNullElse = ifModified.thenBlock()._if(EntityCls.accessColumnAttrOrEntity(pBean,col).isNull());
+					IfBlock ifModified = ifHasUpdate.thenBlock()._if(EntityCls.accessIsColumnAttrOrEntityModified(pEntity, col));
+					IfBlock ifColIsNullElse = ifModified.thenBlock()._if(EntityCls.accessColumnAttrOrEntity(pEntity,col).isNull());
 					
 					ifColIsNullElse.thenBlock()._callMethodInstr(sqlQuery, 
 							ClsSqlQuery.setValue,JavaString.stringConstant(col.getName()), 
@@ -99,34 +99,34 @@ public class MethodEntitySave extends Method {
 					
 					ifColIsNullElse.elseBlock()._callMethodInstr(sqlQuery, 
 							ClsSqlQuery.setValue,JavaString.stringConstant(col.getName()), 
-							Types.SqlParam.callStaticMethod(ClsSqlParam.get, EntityCls.accessAttrGetterByColumn(pBean,col,false)));
+							Types.SqlParam.callStaticMethod(ClsSqlParam.get, EntityCls.accessAttrGetterByColumn(pEntity,col,false)));
 				}
 				// end update
 			} else {
-				ifIsInsertNew.thenBlock()._callMethodInstr(sqlQuery,  ClsSqlQuery.setValue,JavaString.stringConstant(col.getName()), Types.SqlParam.callStaticMethod(ClsSqlParam.get, EntityCls.accessAttrGetterByColumn(pBean,col,true)));
+				ifIsInsertNew.thenBlock()._callMethodInstr(sqlQuery,  ClsSqlQuery.setValue,JavaString.stringConstant(col.getName()), Types.SqlParam.callStaticMethod(ClsSqlParam.get, EntityCls.accessAttrGetterByColumn(pEntity,col,true)));
 				
 				if (!col.isPartOfPk()) {
-					IfBlock ifModified = ifHasUpdate.thenBlock()._if(EntityCls.accessIsColumnAttrOrEntityModified(pBean, col));
+					IfBlock ifModified = ifHasUpdate.thenBlock()._if(EntityCls.accessIsColumnAttrOrEntityModified(pEntity, col));
 					ifModified.thenBlock()._callMethodInstr(sqlQuery, 
 							ClsSqlQuery.setValue,JavaString.stringConstant(col.getName()), 
-							Types.SqlParam.callStaticMethod(ClsSqlParam.get, EntityCls.accessAttrGetterByColumn(pBean,col,false)));
+							Types.SqlParam.callStaticMethod(ClsSqlParam.get, EntityCls.accessAttrGetterByColumn(pEntity,col,false)));
 				
 				}
 			}
 			
 		}
 		
-		IfBlock ifNotIsPkModified = ifHasUpdate.thenBlock()._if(_not(pBean.callMethod(ClsBaseEntity.METHOD_NAME_IS_PRIMARY_KEY_MODIFIED)));
+		IfBlock ifNotIsPkModified = ifHasUpdate.thenBlock()._if(_not(pEntity.callMethod(ClsBaseEntity.METHOD_NAME_IS_PRIMARY_KEY_MODIFIED)));
 		
 		
 		for (Column colPk : tbl.getPrimaryKey().getColumns()) {
-			ifNotIsPkModified.thenBlock()._callMethodInstr(sqlQuery,  ClsSqlQuery.where,JavaString.stringConstant(colPk.getName()+"=?"), Types.SqlParam.callStaticMethod(ClsSqlParam.get, EntityCls.accessAttrGetterByColumn(pBean,colPk,true)));
+			ifNotIsPkModified.thenBlock()._callMethodInstr(sqlQuery,  ClsSqlQuery.where,JavaString.stringConstant(colPk.getName()+"=?"), Types.SqlParam.callStaticMethod(ClsSqlParam.get, EntityCls.accessAttrGetterByColumn(pEntity,colPk,true)));
 			
 			
 			ifNotIsPkModified.elseBlock()._callMethodInstr(sqlQuery, 
 					ClsSqlQuery.setValue,JavaString.stringConstant(colPk.getName()), 
-					Types.SqlParam.callStaticMethod(ClsSqlParam.get, EntityCls.accessAttrGetterByColumn(pBean,colPk,true)));
-			ifNotIsPkModified.elseBlock()._callMethodInstr(sqlQuery,  ClsSqlQuery.where,JavaString.stringConstant(colPk.getName()+"=?"), Types.SqlParam.callStaticMethod(ClsSqlParam.get, EntityCls.accessPrimaryKeyPreviousAttrGetterByColumn(pBean,colPk)));
+					Types.SqlParam.callStaticMethod(ClsSqlParam.get, EntityCls.accessAttrGetterByColumn(pEntity,colPk,true)));
+			ifNotIsPkModified.elseBlock()._callMethodInstr(sqlQuery,  ClsSqlQuery.where,JavaString.stringConstant(colPk.getName()+"=?"), Types.SqlParam.callStaticMethod(ClsSqlParam.get, EntityCls.accessPrimaryKeyPreviousAttrGetterByColumn(pEntity,colPk)));
 		}
 		/*Var catchSqlException = new Var(Types.SqlException, "exception");
 		tryCatch.addCatch(catchSqlException, sqlQuery.callMethodInstruction(ClsSqlQuery.METHOD_NAME_ROLLBACK_TRANSACTION),
@@ -147,7 +147,7 @@ public class MethodEntitySave extends Method {
 		if(tbl.isAutoIncrement()) {
 			Var rsAutoIncrement = ifIsInsertNew.thenBlock()._declare(Types.ResultSet, "rsAutoIncrement", sqlQuery.callMethod(ClsSqlQuery.executeAndGetGeneratedKeys));
 			IfBlock ifRsAutoIncrementNext = ifIsInsertNew.thenBlock()._if(rsAutoIncrement.callMethod(ClsResultSet.METHOD_NAME_NEXT));
-			ifRsAutoIncrementNext.thenBlock()._callMethodInstr(pBean, ClsBaseEntity.METHOD_NAME_SET_AUTO_INCREMENT_ID, rsAutoIncrement.callMethod(ClsResultSet.METHOD_NAME_GET_INT, JavaString.stringConstant(tbl.getPrimaryKey().getFirstColumn().getName())));
+			ifRsAutoIncrementNext.thenBlock()._callMethodInstr(pEntity, ClsBaseEntity.METHOD_NAME_SET_AUTO_INCREMENT_ID, rsAutoIncrement.callMethod(ClsResultSet.METHOD_NAME_GET_INT, JavaString.stringConstant(tbl.getPrimaryKey().getFirstColumn().getName())));
 		
 		} else {
 			ifIsInsertNew.thenBlock()._callMethodInstr(sqlQuery, ClsSqlQuery.execute);
@@ -169,30 +169,30 @@ public class MethodEntitySave extends Method {
 			}
 			
 			// "removed"
-			MethodCall expressionManyToManyRemoved = pBean.callAttrGetter(entity.getAttrByName(OrmUtil.getManyRelationDestAttrName(r)+"Removed" ));
-			IfBlock ifRemoveBeans = _if(pBean.callMethod(MethodHasRemovedManyToMany.getMethodName(r)));
+			MethodCall expressionManyToManyRemoved = pEntity.callAttrGetter(entity.getAttrByName(OrmUtil.getManyRelationDestAttrName(r)+"Removed" ));
+			IfBlock ifRemoveEntities = _if(pEntity.callMethod(MethodHasRemovedManyToMany.getMethodName(r)));
 		
 			
-			Var varDeleteSql = ifRemoveBeans.thenBlock()._declare(Types.SqlQuery, "deleteSqlQuery",EntityCls.getSqlQueryCls().newInstance(pSqlCon));
-			ifRemoveBeans.thenBlock()._callMethodInstr(varDeleteSql, ClsSqlQuery.deleteFrom, JavaString.stringConstant(r.getMappingTable().getName()));
+			Var varDeleteSql = ifRemoveEntities.thenBlock()._declare(Types.SqlQuery, "deleteSqlQuery",EntityCls.getSqlQueryCls().newInstance(pSqlCon));
+			ifRemoveEntities.thenBlock()._callMethodInstr(varDeleteSql, ClsSqlQuery.deleteFrom, JavaString.stringConstant(r.getMappingTable().getName()));
 			
 			ArrayList<String> whereSourceCols = new ArrayList<>(r.getSourceColumnCount());
 			Expression[] whereSourceColsParams = new Expression[r.getSourceColumnCount()+1];
 			
 			for(int i=0;i<r.getSourceColumnCount();i++) {
 				whereSourceCols.add(r.getSourceMappingColumn(i).getEscapedName());
-				whereSourceColsParams[i+1] =Types.SqlParam.callStaticMethod(ClsSqlParam.get,pBean.callAttrGetter(r.getSourceEntityColumn(i).getCamelCaseName())); 
-				//ifRemoveBeans.thenBlock()._callMethodInstr(varDeleteSql, ClsSqlQuery.where, JavaString.stringConstant(r.getSourceMappingColumn(i).getEscapedName()+" = ?"),Types.SqlParam.callStaticMethod(ClsSqlParam.get,pBean.callAttrGetter(r.getSourceEntityColumn(i).getCamelCaseName())));
+				whereSourceColsParams[i+1] =Types.SqlParam.callStaticMethod(ClsSqlParam.get,pEntity.callAttrGetter(r.getSourceEntityColumn(i).getCamelCaseName())); 
+				//ifRemoveEntities.thenBlock()._callMethodInstr(varDeleteSql, ClsSqlQuery.where, JavaString.stringConstant(r.getSourceMappingColumn(i).getEscapedName()+" = ?"),Types.SqlParam.callStaticMethod(ClsSqlParam.get,pEntity.callAttrGetter(r.getSourceEntityColumn(i).getCamelCaseName())));
 			
 			}
 			whereSourceColsParams[0] = whereSourceCols.size() > 1 ? JavaString.stringConstant("("+ CodeUtil2.commaSep(whereSourceCols)+") = (" + CodeUtil2.strMultiply("?", ",", whereSourceCols.size())+ ")") :  JavaString.stringConstant( whereSourceCols.get(0)+ " = ?");
-			ifRemoveBeans.thenBlock()._callMethodInstr(varDeleteSql, ClsSqlQuery.where, whereSourceColsParams);
+			ifRemoveEntities.thenBlock()._callMethodInstr(varDeleteSql, ClsSqlQuery.where, whereSourceColsParams);
 			
 			
 			//
 			//
 			
-			IfBlock ifCountEq1 = ifRemoveBeans.thenBlock()
+			IfBlock ifCountEq1 = ifRemoveEntities.thenBlock()
 					._if(expressionManyToManyRemoved.callMethod(ClsArrayList.size).equalsOp(new IntExpression(1)));
 			
 			Expression[] whereDestColsParams = new Expression[r.getDestColumnCount()+1];
@@ -225,8 +225,8 @@ public class MethodEntitySave extends Method {
 			}
 			// end of "removed"
 			// "added"
-			MethodCall expressionManyToManyAdded = pBean.callAttrGetter(entity.getAttrByName(OrmUtil.getManyRelationDestAttrName(r)+"Added" ));
-			IfBlock ifAddedBeans = _if(pBean.callMethod(MethodHasAddedManyToMany.getMethodName(r)));
+			MethodCall expressionManyToManyAdded = pEntity.callAttrGetter(entity.getAttrByName(OrmUtil.getManyRelationDestAttrName(r)+"Added" ));
+			IfBlock ifAddedEntities = _if(pEntity.callMethod(MethodHasAddedManyToMany.getMethodName(r)));
 			
 			Expression[] argsInsertMultiRow = new Expression[r.getMappingTable().getPrimaryKey().getColumnCount()+1];
 			Expression[] argsOnConflictDoNothing = new Expression[r.getMappingTable().getPrimaryKey().getColumnCount()];
@@ -237,16 +237,16 @@ public class MethodEntitySave extends Method {
 				argsOnConflictDoNothing[i] = JavaString.stringConstant(r.getMappingTable().getPrimaryKey().getColumn(i).getName());
 			}
 			
-			Var varAddSql = ifAddedBeans.thenBlock()._declare(Types.SqlQuery, "addSqlQuery",EntityCls.getSqlQueryCls().newInstance(pSqlCon));
-			ifAddedBeans.thenBlock()._callMethodInstr(varAddSql, ClsSqlQuery.insertMultiRow, argsInsertMultiRow);
-			ifAddedBeans.thenBlock()._callMethodInstr(varAddSql, ClsSqlQuery.onConflictDoNothing, argsOnConflictDoNothing);
+			Var varAddSql = ifAddedEntities.thenBlock()._declare(Types.SqlQuery, "addSqlQuery",EntityCls.getSqlQueryCls().newInstance(pSqlCon));
+			ifAddedEntities.thenBlock()._callMethodInstr(varAddSql, ClsSqlQuery.insertMultiRow, argsInsertMultiRow);
+			ifAddedEntities.thenBlock()._callMethodInstr(varAddSql, ClsSqlQuery.onConflictDoNothing, argsOnConflictDoNothing);
 			Type foreachAddedElementType = ((ClsArrayList) expressionManyToManyAdded.getType()).getElementType();
-			ForeachLoop foreachAttrAdd = ifAddedBeans.thenBlock()._foreach(new Var(foreachAddedElementType, "added"), expressionManyToManyAdded);
+			ForeachLoop foreachAttrAdd = ifAddedEntities.thenBlock()._foreach(new Var(foreachAddedElementType, "added"), expressionManyToManyAdded);
 			Expression[] addInsertRowArgs  = new Expression[r.getSourceTable().getPrimaryKey().getColumnCount()+r.getDestTable().getPrimaryKey().getColumns().size()];
 			
 			for(int i = 0; i < r.getSourceTable().getPrimaryKey().getColumnCount(); i++) {
 				Column col = r.getSourceTable().getPrimaryKey().getColumn(i); 
-				addInsertRowArgs[i] = Types.SqlParam.callStaticMethod(ClsSqlParam.get, pBean.callAttrGetter(new Attr(EntityCls.getTypeMapper().columnToType(col), col.getCamelCaseName()))); 
+				addInsertRowArgs[i] = Types.SqlParam.callStaticMethod(ClsSqlParam.get, pEntity.callAttrGetter(new Attr(EntityCls.getTypeMapper().columnToType(col), col.getCamelCaseName()))); 
 			}
 			
 			if (r.getDestTable().getPrimaryKey().isMultiColumn()) {
@@ -264,8 +264,8 @@ public class MethodEntitySave extends Method {
 			foreachAttrAdd._callMethodInstr(varAddSql, ClsSqlQuery.addInsertRow, addInsertRowArgs);
 			
 			
-			ifAddedBeans.thenBlock()._callMethodInstr(varAddSql, ClsSqlQuery.execute);
-			ifRemoveBeans.thenBlock()._callMethodInstr(varDeleteSql, ClsSqlQuery.execute);
+			ifAddedEntities.thenBlock()._callMethodInstr(varAddSql, ClsSqlQuery.execute);
+			ifRemoveEntities.thenBlock()._callMethodInstr(varDeleteSql, ClsSqlQuery.execute);
 			/* example: if (!entity.getEntity1sAdded().isEmpty()){
 			SqlQuery addSqlQuery  = new PgSqlQuery(sqlCon);
 			addSqlQuery.insertMultiRow("e1_e3_mm", "e1_id", "e3_id");

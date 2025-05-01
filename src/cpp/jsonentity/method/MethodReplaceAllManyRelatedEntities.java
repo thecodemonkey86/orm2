@@ -28,7 +28,7 @@ public class MethodReplaceAllManyRelatedEntities extends Method {
 		ForeachLoop foreach = _foreach(new Var(JsonEntities.get(rel.getDestTable()).toSharedPtr().toConstRef(),  OrmUtil.getManyRelationDestAttrNameSingular(rel)), entities);
 		
 		if(rel instanceof OneToManyRelation)
-			foreach._callMethodInstr(_this(), MethodAddRelatedBean.getMethodName((OneToManyRelation) rel), foreach.getVar());
+			foreach._callMethodInstr(_this(), MethodAddRelatedEntity.getMethodName((OneToManyRelation) rel), foreach.getVar());
 		else if(rel instanceof ManyRelation)
 			foreach._callMethodInstr(_this(), MethodAddManyToManyRelatedEntity.getMethodName((ManyRelation) rel), foreach.getVar());
 	}

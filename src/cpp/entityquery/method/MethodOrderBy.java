@@ -13,7 +13,7 @@ public class MethodOrderBy extends Method{
 	Param pDirection;
 	
 	public MethodOrderBy(Cls parentType) {
-		super(Public, parentType.toRef(), "orderBy");
+		super(Public, parentType.toRef(),getMethodName());
 		pOrder = addParam(Types.QString.toConstRef(),"order");
 		pDirection = addParam(new Param( Types.OrderDirection,"direction",EnumSqlQueryOrderDirection.ORDER_ASC));
 		
@@ -29,6 +29,10 @@ public class MethodOrderBy extends Method{
 						"return *this;";
 			}
 		});
+	}
+
+	public static String getMethodName() {
+		return  "orderBy";
 	}
 
 }

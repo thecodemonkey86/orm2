@@ -11,6 +11,7 @@ import cpp.core.expression.MakeSharedExpression;
 import cpp.core.expression.Var;
 import cpp.entity.EntityCls;
 import database.column.Column;
+import database.relation.AbstractRelation;
 import util.StringUtil;
 
 public class MethodRepoCreateNewNonNullableOnly extends Method {
@@ -53,7 +54,9 @@ public class MethodRepoCreateNewNonNullableOnly extends Method {
 	public void addImplementation() {
 		Var entity = _declare(returnType, "entity", new MakeSharedExpression((SharedPtr) returnType));
 		_callMethodInstr(entity, "setInsertNew");
-		addInstr(entity.callMethodInstruction("setLoaded", BoolExpression.TRUE));
+		for(AbstractRelation r: cls.getAllRelations()) {
+			addInstr(entity.callSetterMethodInstruction("loaded"+r.getIdentifier(), BoolExpression.TRUE));
+		}
 		
 		for (Param param : initializeFieldsParams) {
 			addInstr(entity.callMethodInstruction("set" +StringUtil.ucfirst(param.getName())+"Internal",param));

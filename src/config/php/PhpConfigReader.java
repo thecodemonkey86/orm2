@@ -2,6 +2,7 @@ package config.php;
 
 import java.nio.file.Path;
 import java.sql.Connection;
+import java.util.Objects;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -44,6 +45,8 @@ public class PhpConfigReader extends ConfigReader{
 				((PhpOrmConfig)cfg).setPhpversion(new Php5());
 				break;
 			}
+			((PhpOrmConfig)cfg).setUsePDO(Objects.equals(atts.getValue("version"), "true"));
+			
 			break;
 		default:
 			break;

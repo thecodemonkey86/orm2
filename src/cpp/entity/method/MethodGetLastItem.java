@@ -14,8 +14,8 @@ public class MethodGetLastItem extends Method{
 
 	IManyRelation relation;
 	
-	public MethodGetLastItem(Type relatedBeanCls, IManyRelation relation) {
-		super(Public, relatedBeanCls.toConstRef(), "getLast" + StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrNameSingular(relation)));
+	public MethodGetLastItem(Type relatedEntityCls, IManyRelation relation) {
+		super(Public, relatedEntityCls.toConstRef(), "getLast" + StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrNameSingular(relation)));
 		this.relation = relation;
 	}
 

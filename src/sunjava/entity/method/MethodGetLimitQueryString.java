@@ -27,17 +27,17 @@ public class MethodGetLimitQueryString extends Method {
 
 	@Override
 	public void addImplementation() {
-		String mainBeanAlias = "e1.";
+		String mainEntityAlias = "e1.";
 		EntityCls entity = (EntityCls) parent;
 		StringBuilder sql = new StringBuilder();
 		if (pk.isMultiColumn()) {
-			sql.append('(').append(mainBeanAlias).append(pk.getFirstColumn().getEscapedName());
+			sql.append('(').append(mainEntityAlias).append(pk.getFirstColumn().getEscapedName());
 			for(int i=1;i<pk.getColumnCount();i++) {
-				sql.append(',').append(mainBeanAlias).append(pk.getColumn(i).getEscapedName());
+				sql.append(',').append(mainEntityAlias).append(pk.getColumn(i).getEscapedName());
 			}
 			sql.append(')');
 		} else {
-			sql.append(mainBeanAlias).append(pk.getFirstColumn().getEscapedName());
+			sql.append(mainEntityAlias).append(pk.getFirstColumn().getEscapedName());
 		}
 		sql.append(" IN (SELECT ").append(pk.getFirstColumn().getEscapedName());
 		for(int i=1;i<pk.getColumnCount();i++) {

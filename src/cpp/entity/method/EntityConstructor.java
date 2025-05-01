@@ -8,6 +8,7 @@ import cpp.core.expression.BoolExpression;
 import cpp.core.expression.Expression;
 import cpp.entity.EntityCls;
 import database.column.Column;
+import database.relation.AbstractRelation;
 import database.relation.OneRelation;
 
 public class EntityConstructor extends Constructor{
@@ -22,7 +23,10 @@ public class EntityConstructor extends Constructor{
 	@Override
 	public void addImplementation() {
 		addPassToSuperConstructor( autoIncrement ? BoolExpression.TRUE : BoolExpression.FALSE);
-		
+		EntityCls entity = (EntityCls) parent;
+		for(AbstractRelation r:entity.getAllRelations()) {
+			_assign(parent.getAttrByName("loaded"+ r.getIdentifier()), BoolExpression.FALSE);
+		}
 		for(Column col:cols) {
 			 
 			if (!col.hasOneRelation() && !col.isFileImportEnabled()) {
@@ -50,12 +54,13 @@ public class EntityConstructor extends Constructor{
 			}
 		    
 		}
-		EntityCls entity = (EntityCls) parent;
+		
 		for(OneRelation r:entity.getOneRelations()) {
 			if (!r.isPartOfPk()) {
 				_assign(parent.getAttrByName(entity.getOneRelationAttr(r).getName()+ "Modified"), BoolExpression.FALSE);
 			}
 		}
+		
 	}
 
 }

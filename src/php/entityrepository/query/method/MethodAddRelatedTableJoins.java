@@ -20,18 +20,15 @@ public class MethodAddRelatedTableJoins extends Method {
 	
 	public MethodAddRelatedTableJoins(EntityCls cls) {
 		super(Public, Types.Void, "addRelatedTableJoins");
-//		addParam(new Param(Types.beanQuery(cls), "query"));
-//		setStatic(true);
 		this.entity = cls;
 	}
 
 	@Override
 	public void addImplementation() {
-//		Expression query = getParam("query");
 		Expression query = _this();
 			
 		for(OneRelation r:entity.getOneRelations()) {
-			//parent.addImport(Beans.get(r.getDestTable()).getImport());
+			//parent.addImport(Entities.get(r.getDestTable()).getImport());
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getColumnCount();i++) {
 				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
@@ -40,7 +37,7 @@ public class MethodAddRelatedTableJoins extends Method {
 			query = query.callMethod("leftJoin", new PhpStringLiteral(r.getDestTable().getEscapedName()+ " "+  r.getAlias()), new PhpStringLiteral(CodeUtil2.concat(joinConditions," AND ")));
 		}
 		for(OneToManyRelation r:entity.getOneToManyRelations()) {
-			//parent.addImport(Beans.get(r.getDestTable()).getImport());
+			//parent.addImport(Entities.get(r.getDestTable()).getImport());
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getColumnCount();i++) {
 				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
@@ -49,7 +46,7 @@ public class MethodAddRelatedTableJoins extends Method {
 			query = query.callMethod(r.isComposition() ? "join": "leftJoin", new PhpStringLiteral(r.getDestTable().getEscapedName()+ " "+ r.getAlias()), new PhpStringLiteral(CodeUtil2.concat(joinConditions," AND ")));
 		}
 		for(ManyRelation r:entity.getManyRelations()) {
-			//parent.addImport(Beans.get(r.getDestTable()).getImport());
+			//parent.addImport(Entities.get(r.getDestTable()).getImport());
 			ArrayList<String> joinConditions=new ArrayList<>();
 			for(int i=0;i<r.getSourceColumnCount();i++) {
 				joinConditions.add(CodeUtil.sp("e1."+r.getSourceEntityColumn(i).getEscapedName(),'=',r.getAlias("mapping")+"."+ r.getSourceMappingColumn(i).getEscapedName()));
