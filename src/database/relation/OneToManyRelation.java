@@ -8,10 +8,11 @@ import util.Pair;
 public class OneToManyRelation extends AbstractRelation implements IManyRelation{
 
 	protected ArrayList<Pair<Column,Column>> srcToDestColumns;
-	
+	protected boolean composition;
 	public OneToManyRelation(String alias) {
 		super(alias);
 		srcToDestColumns = new ArrayList<>();
+		composition = false;
 	}
 	
 	
@@ -45,5 +46,13 @@ public class OneToManyRelation extends AbstractRelation implements IManyRelation
 	public String toString() {
 		// TODO Auto-generated method stub
 		return sourceTable.getName()+"->"+destTable.getName();
+	}
+	
+	public void setComposition(boolean composition) {
+		this.composition = composition;
+	}
+	
+	public boolean isComposition() {
+		return composition;
 	}
 }
