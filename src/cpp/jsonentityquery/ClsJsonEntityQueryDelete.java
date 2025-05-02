@@ -5,6 +5,7 @@ import cpp.NetworkTypes;
 import cpp.Types;
 import cpp.core.Cls;
 import cpp.core.Constructor;
+import cpp.core.Type;
 import cpp.jsonentity.JsonEntity;
 import cpp.jsonentityquery.method.MethodJsonQueryExecute;
 import cpp.jsonentityquery.method.MethodJsonQueryWhere;
@@ -34,8 +35,10 @@ public class ClsJsonEntityQueryDelete extends Cls{
 				addMethod(new MethodJsonQueryWhereEquals(this, c,true,false));
 				addMethod(new MethodJsonQueryWhereIsNull(this, c));
 			}
+			Type colType = JsonEntity.getDatabaseMapper().columnToType(c);
+			colType.collectIncludes(this,false);
 		}
-		addIncludeLib("memory");
+		addIncludeLibInSource("memory");
 		addForwardDeclaredClass(entity);
 		addIncludeLibInSource(NetworkTypes.QUrl);
 		addIncludeLibInSource(NetworkTypes.QUrlQuery);

@@ -34,7 +34,7 @@ public class JsonOrmUtil {
 		} else if(target.equals(CoreTypes.UInt) || target.equals(CoreTypes.UInt32)  || target.equals(CoreTypes.UInt64)) {
 			return new StaticCast(target, e.callMethod(ClsQJsonValue.toDouble)) ;
 		} else {
-			throw new RuntimeException("not implemented");
+			throw new RuntimeException("not implemented: jsonConvertMethod "+e+" "+target);
 		}
 		
 		//return e;
@@ -57,6 +57,8 @@ public class JsonOrmUtil {
 			return expression.callMethod(ClsQDate.toString, QString.fromStringConstant("yyyy-MM-dd"));
 		} else if(expression.getType().equals(Types.QDateTime) || expression.getType().equals(Types.QDateTime.toConstRef())) {
 			return expression.callMethod(ClsQDateTime.toString, QString.fromStringConstant("yyyy-MM-dd HH:mm:ss"));
+		} else if(expression.getType().isUnsigned()) {
+			return new CreateObjectExpression(JsonTypes.QJsonValue, new StaticCast(Types.Int64, expression));
 		} else {
 		//	System.out.println(expression);
 		//	System.out.println(expression.getType());

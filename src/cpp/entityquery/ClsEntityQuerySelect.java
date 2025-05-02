@@ -103,6 +103,7 @@ public class ClsEntityQuerySelect extends Cls {
 		}
 		
 		addIncludeLib(ClsQList.CLSNAME);
+		addIncludeLib("memory");
 		addForwardDeclaredClass(cls);
 		addIncludeHeaderInSource(cls.getHeaderInclude());
 		addIncludeHeaderInSource("../"+ Types.EntityRepository.getName().toLowerCase());

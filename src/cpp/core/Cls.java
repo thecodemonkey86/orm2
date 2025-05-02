@@ -146,6 +146,9 @@ public class Cls extends Type implements IAttributeContainer{
 	}
 	
 	public void addIncludeLibInSource(String i) {
+		if(includesInSourceFile==null) {
+			includesInSourceFile = new LinkedHashSet<>();
+		}
 		includesInSourceFile.add(new LibInclude(i));
 	}
 	

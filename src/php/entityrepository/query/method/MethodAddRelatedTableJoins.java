@@ -46,7 +46,7 @@ public class MethodAddRelatedTableJoins extends Method {
 				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
 			}
 			
-			query = query.callMethod("leftJoin", new PhpStringLiteral(r.getDestTable().getEscapedName()+ " "+ r.getAlias()), new PhpStringLiteral(CodeUtil2.concat(joinConditions," AND ")));
+			query = query.callMethod(r.isComposition() ? "join": "leftJoin", new PhpStringLiteral(r.getDestTable().getEscapedName()+ " "+ r.getAlias()), new PhpStringLiteral(CodeUtil2.concat(joinConditions," AND ")));
 		}
 		for(ManyRelation r:entity.getManyRelations()) {
 			//parent.addImport(Beans.get(r.getDestTable()).getImport());

@@ -48,6 +48,9 @@ public class MethodToJson extends Method {
 		
 		
 		for (Column col : entity.getTbl().getColumnsWithoutPrimaryKey()) {
+			if(col.getName().equals("curr_num_documents")) {
+				System.out.println();
+			}
 				IfBlock ifFieldModfied= _if(_this.accessAttr(ClsBaseJsonEntity.insert).binOp(Operators.OR, parent.getAttrByName(col.getCamelCaseName()+"Modified")));
 					
 				if (col.isNullable()) {

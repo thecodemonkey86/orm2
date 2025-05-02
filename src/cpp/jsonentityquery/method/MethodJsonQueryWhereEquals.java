@@ -26,6 +26,7 @@ public class MethodJsonQueryWhereEquals extends Method {
 		this.col = col;
 		this.nullableParam = nullableParam;
 		Type t=JsonEntity.getDatabaseMapper().columnToType(col,nullableParam);
+		 
 		this.pValue = addParam(t.isPrimitiveType() ? t : t.toConstRef(), col.getCamelCaseName());
 		this.hasTableAlias = hasTableAlias;
 	}
@@ -46,5 +47,5 @@ public class MethodJsonQueryWhereEquals extends Method {
 		}
 		_return(_this().dereference());
 	}
-
+	
 }

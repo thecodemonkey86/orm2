@@ -44,7 +44,7 @@ public class MethodAddRelatedTableJoins extends Method {
 				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
 			}
 			
-			query = query.callMethod("leftJoin", Entities.get(r.getDestTable()).callStaticMethod("getTableName"),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
+			query = query.callMethod(r.isComposition() ? "join": "leftJoin", Entities.get(r.getDestTable()).callStaticMethod("getTableName"),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
 		}
 		for(ManyRelation r:entity.getManyRelations()) {
 			ArrayList<String> joinConditions=new ArrayList<>();

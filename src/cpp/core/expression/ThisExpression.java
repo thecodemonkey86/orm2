@@ -17,6 +17,9 @@ public class ThisExpression extends Expression{
 	
 	@Override
 	public Type getType() {
+		if(parent==null) {
+			throw new NullPointerException();
+		}
 		return parent.toRawPointer();
 	}
 }

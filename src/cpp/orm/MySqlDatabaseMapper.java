@@ -14,6 +14,10 @@ import cpp.core.expression.Int16Expression;
 import cpp.core.expression.Int64Expression;
 import cpp.core.expression.Int8Expression;
 import cpp.core.expression.IntExpression;
+import cpp.core.expression.UInt16Expression;
+import cpp.core.expression.UInt64Expression;
+import cpp.core.expression.UInt8Expression;
+import cpp.core.expression.UIntExpression;
 import cpp.lib.ClsQVariant;
 import cpp.lib.ClsSqlQuery;
 import database.column.Column;
@@ -140,13 +144,13 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 			case "tinyint":
 				return new Int8Expression((byte) 0);
 			case "int_unsigned":
-				return new IntExpression(0);
+				return new UIntExpression(0);
 			case "bigint_unsigned":
-				return new Int64Expression(0L);
+				return new UInt64Expression(0L);
 			case "smallint_unsigned":
-				return new Int16Expression((short) 0);
+				return new UInt16Expression((short) 0);
 			case "tinyint_unsigned":
-				return new Int8Expression((byte) 0);
+				return new UInt8Expression((byte) 0);
 			case "varchar":
 			case "character":	
 			case "char":	
