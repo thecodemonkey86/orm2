@@ -80,32 +80,32 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 		} else {
 			switch(dbType) {
 			case "integer":
-				return Types.nullable(Types.Int32);
+				return Types.optional(Types.Int32);
 			case "bigint":
-				return Types.nullable(Types.Int64);
+				return Types.optional(Types.Int64);
 			case "smallint":
-				return Types.nullable(Types.Int16);
+				return Types.optional(Types.Int16);
 			case "character varying":
 			case "character":	
 			case "text":
-				return Types.nullable(Types.QString);
+				return Types.optional(Types.QString);
 			case "date":
-				return Types.nullable(Types.QDate);
+				return Types.optional(Types.QDate);
 			case "timestamp with time zone":
 			case "timestamp without time zone":
-				return Types.nullable(Types.QDateTime);
+				return Types.optional(Types.QDateTime);
 			case "time with time zone":
-				return Types.nullable(Types.QTime);
+				return Types.optional(Types.QTime);
 			case "double precision":
 			case "numeric":
 			case "real":
-				return Types.nullable(Types.Double);
+				return Types.optional(Types.Double);
 			case "bytea":
-				return Types.nullable(Types.QByteArray);	
+				return Types.optional(Types.QByteArray);	
 			case "boolean":
-				return Types.nullable(CoreTypes.Bool);	
+				return Types.optional(CoreTypes.Bool);	
 			default:
-				return Types.nullable(CoreTypes.QVariant);
+				return Types.optional(CoreTypes.QVariant);
 			}
 		}
 	}
@@ -146,30 +146,30 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 			} else {
 				switch(dbType) {
 				case "integer":
-					return new CreateObjectExpression( Types.nullable(Types.Int));
+					return new CreateObjectExpression( Types.optional(Types.Int));
 				case "bigint":
-					return new CreateObjectExpression(Types.nullable(Types.Int64));
+					return new CreateObjectExpression(Types.optional(Types.Int64));
 				case "character varying":
 				case "character":	
 				case "text":
-					return new CreateObjectExpression(Types.nullable(Types.QString));
+					return new CreateObjectExpression(Types.optional(Types.QString));
 				case "date":
-					return new CreateObjectExpression(Types.nullable(Types.QDate)) ;
+					return new CreateObjectExpression(Types.optional(Types.QDate)) ;
 				case "timestamp with time zone":
 				case "timestamp without time zone":
-					return new CreateObjectExpression(Types.nullable(Types.QDateTime)) ;
+					return new CreateObjectExpression(Types.optional(Types.QDateTime)) ;
 				case "time with time zone":
-					return new CreateObjectExpression(Types.nullable(Types.QTime) );
+					return new CreateObjectExpression(Types.optional(Types.QTime) );
 				case "double precision":
 				case "numeric":
 				case "real":
-					 return new CreateObjectExpression(Types.nullable(Types.Double));
+					 return new CreateObjectExpression(Types.optional(Types.Double));
 				case "bytea":
-					return new CreateObjectExpression(Types.nullable(Types.QByteArray)) ;	
+					return new CreateObjectExpression(Types.optional(Types.QByteArray)) ;	
 				case "boolean":
-					return new CreateObjectExpression(Types.nullable(CoreTypes.Bool));
+					return new CreateObjectExpression(Types.optional(CoreTypes.Bool));
 				default:
-					return new CreateObjectExpression(Types.nullable(CoreTypes.QVariant)) ;
+					return new CreateObjectExpression(Types.optional(CoreTypes.QVariant)) ;
 				}
 			}
 	}

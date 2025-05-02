@@ -20,6 +20,8 @@ public abstract class Method extends InstructionBlock{
 	protected boolean virtualQualifier;
 	protected boolean overrideQualifier;
 	protected boolean noreturnQualifier;
+	protected boolean noexceptQualifier;
+	
 	
 	protected String visibility;
 	protected Type returnType;
@@ -107,7 +109,7 @@ public abstract class Method extends InstructionBlock{
 			params.add(p.toSourceString());
 		}
 		
-		StringBuilder sb=new StringBuilder(CodeUtil.sp(retType(),getParent().getName()+"::"+name,CodeUtil.parentheses(CodeUtil.commaSep(params)),(constQualifier?"const":null),"{\n"));
+		StringBuilder sb=new StringBuilder(CodeUtil.sp(retType(),getParent().getName()+"::"+name,CodeUtil.parentheses(CodeUtil.commaSep(params)),(constQualifier?"const":null),(noexceptQualifier?"noexcept":null),"{\n"));
 		for(Instruction i:instructions) {
 			if(Instruction.isStackTraceEnabled())
 				CodeUtil.writeLine(sb,new Comment(CodeUtil2.traceComment(i.getStackTrace())));
@@ -134,7 +136,7 @@ public abstract class Method extends InstructionBlock{
 		for(Param p:this.params) {
 			params.add(p.toDeclarationString());
 		}
-		return CodeUtil.sp(getVisibility()+":",(inlineQualifier?"inline":null), (isStatic?"static":(virtualQualifier?"virtual":null)),(noreturnQualifier ? "[[noreturn]]":null),retType() , getName(),CodeUtil.parentheses(CodeUtil.commaSep(params)),(constQualifier?"const":null),(overrideQualifier ? "override":null), ";");
+		return CodeUtil.sp(getVisibility()+":",(inlineQualifier?"inline":null), (isStatic?"static":(virtualQualifier?"virtual":null)),(noreturnQualifier ? "[[noreturn]]":null),retType() , getName(),CodeUtil.parentheses(CodeUtil.commaSep(params)),(constQualifier?"const":null),(noexceptQualifier?"noexcept":null),(overrideQualifier ? "override":null), ";");
 	}
 	
 	public void setReturnType(Type returnType) {
@@ -257,5 +259,9 @@ public abstract class Method extends InstructionBlock{
 	}
 	public boolean hasIfNDef() {
 		return ifNDef!=null;
+	}
+	
+	public void setnoexcept() {
+		noexceptQualifier=true;
 	}
 }

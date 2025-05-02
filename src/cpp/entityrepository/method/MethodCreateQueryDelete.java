@@ -10,8 +10,7 @@ public class MethodCreateQueryDelete extends Method {
 	EntityCls entity;
 	
 	public MethodCreateQueryDelete(EntityCls cls) {
-		//super(Public, new ClsBeanQuery(cls).toUniquePointer(), "createQuery"+cls.getName());
-		super(Public, Types.beanQueryDelete(cls),getMethodName(cls)
+		super(Public, Types.entityQueryDelete(cls),getMethodName(cls)
 				);
 		setStatic(true);
 		this.entity=cls;
@@ -19,8 +18,6 @@ public class MethodCreateQueryDelete extends Method {
 
 	@Override
 	public void addImplementation() {
-		//_return(new StdMoveExpression(new CreateObjectExpression(returnType, new NewOperator(new ClsBeanQuery(entity), parent.getAttrByName("sqlCon")) )));
-		//_return(new MakeSharedExpression((SharedPtr)returnType, parent.getStaticAttribute("sqlCon").callMethod("buildQuery")));
 		_return(new CreateObjectExpression(returnType,
 				EntityCls.getDatabase().supportsDeleteTableAlias() 
 				? QString.fromStringConstant(entity.getTbl().getEscapedName()+" e1") 
@@ -31,7 +28,6 @@ public class MethodCreateQueryDelete extends Method {
 	}
 
 	public static String getMethodName(EntityCls cls) {
-		// TODO Auto-generated method stub
 		return "delete"+cls.getName();
 	}
 

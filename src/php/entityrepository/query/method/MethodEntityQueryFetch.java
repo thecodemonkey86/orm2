@@ -23,7 +23,7 @@ import php.core.method.Method;
 import php.entity.Entities;
 import php.entity.EntityCls;
 import php.entity.method.MethodAttrSetterInternal;
-import php.entity.method.MethodOneRelationBeanIsNull;
+import php.entity.method.MethodOneRelationEntityIsNull;
 import php.entitypk.method.MethodPkHash;
 import php.entityrepository.method.MethodGetFromQueryAssocArray;
 import php.lib.ClsBaseEntity;
@@ -55,7 +55,7 @@ public class MethodEntityQueryFetch extends Method{
 		PrimaryKey pk=entity.getTbl().getPrimaryKey();
 		
 		Var result = _declareNewArray( "result");
-		Var res =_declare(Types.mysqli_result, "res",_this().accessAttr("sqlQuery").callMethod(ClsSqlQuery.query) );
+		Var res =_declare(Types.Mixed, "res",_this().accessAttr("sqlQuery").callMethod(ClsSqlQuery.query) );
 		
 		Type e1PkType = pk.isMultiColumn() ? entity.getPkType() : EntityCls.getTypeMapper().columnToType( pk.getFirstColumn());
 
@@ -112,10 +112,10 @@ public class MethodEntityQueryFetch extends Method{
 			ifNotE1SetContains.elseBlock()._assign(e1DoWhile, fetchListHelper.callMethod("getE1"));		
 			
 			for(AbstractRelation r:manyRelations) {
-				Type beanPk=OrmUtil.getRelationForeignPrimaryKeyType(r);
-				Expression foreignBeanExpression = Types.EntityRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Entities.get(r.getDestTable())), row,  new PhpStringLiteral(r.getAlias()));
+				Type entityPk=OrmUtil.getRelationForeignPrimaryKeyType(r);
+				Expression foreignEntityExpression = Types.EntityRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Entities.get(r.getDestTable())), row,  new PhpStringLiteral(r.getAlias()));
 //				IfBlock ifRecValueIsNotNull = null;
-				Var foreignBean = null;				
+				Var foreignEntity = null;				
 				
 				IfBlock ifNotPkForeignIsNull= doWhileQueryNext._if( row.arrayIndex(new PhpStringLiteral(EntityCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull());
 				
@@ -125,13 +125,13 @@ public class MethodEntityQueryFetch extends Method{
 					for(int i = 0; i < r.getDestTable().getPrimaryKey().getColumnCount();i++) {
 						argsRelationPk[i] = row.arrayIndex(new PhpStringLiteral(EntityCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getColumn(i).getName())));
 					}
-					pkForeign = ifNotPkForeignIsNull.thenBlock()._declareNew(beanPk, "pkForeignB"+r.getAlias(), argsRelationPk);
+					pkForeign = ifNotPkForeignIsNull.thenBlock()._declareNew(entityPk, "pkForeignB"+r.getAlias(), argsRelationPk);
 					
 					
 					
 				} else {
 					Column colPk=r.getDestTable().getPrimaryKey().getFirstColumn();
-					pkForeign = ifNotPkForeignIsNull.thenBlock()._declare(beanPk, "pkForeignB"+r.getAlias(), row.arrayIndex(new PhpStringLiteral(EntityCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+ colPk.getName()))));
+					pkForeign = ifNotPkForeignIsNull.thenBlock()._declare(entityPk, "pkForeignB"+r.getAlias(), row.arrayIndex(new PhpStringLiteral(EntityCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias()+"__"+ colPk.getName()))));
 					
 				}
 				
@@ -145,14 +145,14 @@ public class MethodEntityQueryFetch extends Method{
 						
 					);
 				
-				foreignBean =ifNotContainsRelationPk.thenBlock()
+				foreignEntity =ifNotContainsRelationPk.thenBlock()
 						
 						
-						._declare(foreignBeanExpression.getType(), "foreignB"+r.getAlias(),foreignBeanExpression) ;
+						._declare(foreignEntityExpression.getType(), "foreignB"+r.getAlias(),foreignEntityExpression) ;
 				
 								
 				ifNotContainsRelationPk.thenBlock().addInstr(e1DoWhile
-						.callMethodInstruction(EntityCls.getAddRelatedBeanMethodName(r), foreignBean));
+						.callMethodInstruction(EntityCls.getAddRelatedEntityMethodName(r), foreignEntity));
 				ifNotContainsRelationPk.thenBlock().addInstr(
 						fetchListHelper.callMethod("addPk" + StringUtil.ucfirst(r.getAlias()), 
 								pkForeign
@@ -170,23 +170,23 @@ public class MethodEntityQueryFetch extends Method{
 		}
 		for(OneRelation r:oneRelations) {
 			EntityCls foreignCls = Entities.get(r.getDestTable());
-			Expression foreignBeanExpression = Types.EntityRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(foreignCls), row, new PhpStringLiteral(r.getAlias()));
+			Expression foreignEntityExpression = Types.EntityRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(foreignCls), row, new PhpStringLiteral(r.getAlias()));
 			
-			IfBlock ifRelatedBeanIsNull= ifNotE1SetContains.thenBlock().
-					_if(Expressions.and( e1DoWhile.callMethod(new MethodOneRelationBeanIsNull(r)) ,row.arrayIndex(new PhpStringLiteral(EntityCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias() + "__" + r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull()));
+			IfBlock ifRelatedEntityIsNull= ifNotE1SetContains.thenBlock().
+					_if(Expressions.and( e1DoWhile.callMethod(new MethodOneRelationEntityIsNull(r)) ,row.arrayIndex(new PhpStringLiteral(EntityCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias() + "__" + r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull()));
 			
-			Var foreignBean =ifRelatedBeanIsNull.thenBlock()._declare(foreignBeanExpression.getType(), "foreignB"+r.getAlias(),foreignBeanExpression) ;
-			ifRelatedBeanIsNull.thenBlock()
+			Var foreignEntity =ifRelatedEntityIsNull.thenBlock()._declare(foreignEntityExpression.getType(), "foreignB"+r.getAlias(),foreignEntityExpression) ;
+			ifRelatedEntityIsNull.thenBlock()
 				._callMethodInstr(
 						e1DoWhile ,
 						new MethodAttrSetterInternal(foreignCls,
 								entity.getAttrByName(OrmUtil.getOneRelationDestAttrName(r)))
-						,  foreignBean);
+						,  foreignEntity);
 			
 		// FIXME bidirectional relations
 //			for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
 //				if (foreignOneRelation.getDestTable().equals(entity.getTbl())) {
-//					ifRelatedBeanIsNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", e1DoWhile));
+//					ifRelatedEntityIsNull.thenBlock().addInstr(foreignEntity.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", e1DoWhile));
 //				}
 //			}
 			

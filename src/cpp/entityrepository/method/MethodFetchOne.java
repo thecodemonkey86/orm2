@@ -41,7 +41,7 @@ public class MethodFetchOne extends Method {
 	
 	public MethodFetchOne(List<OneRelation> oneRelations,List<OneToManyRelation> manyRelations, EntityCls entity,PrimaryKey pk,boolean lazyLoading) {
 		super(Public, entity.toSharedPtr(),  getMethodName(entity,lazyLoading));
-		pQuery = addParam(Types.QSqlQuery, "query");	
+		pQuery = addParam(Types.QSqlQuery.toRValueRef(), "query");	
 		this.oneRelations = oneRelations;
 		this.manyRelations = manyRelations;
 		this.pk = pk;
@@ -50,9 +50,9 @@ public class MethodFetchOne extends Method {
 		setStatic(true);
 	}
 
-protected Expression getExpressionQuery() {
-	return pQuery;
-}
+	protected Expression getExpressionQuery() {
+		return pQuery;
+	}
 
 	@Override
 	public void addImplementation() {
@@ -64,24 +64,12 @@ protected Expression getExpressionQuery() {
 			IfBlock ifQueryNext = _if(query.callMethod("next"));
 			InstructionBlock ifInstr = ifQueryNext.thenBlock();
 			
-			Var e1 = ifInstr
-					._declare(entity.toSharedPtr(), "e1", parent.callStaticMethod(MethodGetFromRecord.getMethodName(entity), query.callMethod(ClsQSqlQuery.record) , QString.fromStringConstant("e1")));
+			 ifInstr
+					._return( parent.callStaticMethod(MethodGetFromRecord.getMethodName(entity), query.callMethod(ClsQSqlQuery.record) , QString.fromStringConstant("e1")));
 			
 			
-			DoWhile doWhileQueryNext = ifInstr._doWhile();
-			Var recDoWhile =doWhileQueryNext._declare(Types.QSqlRecord, "rec" ,query.callMethod(ClsQSqlQuery.record) );
 			
-			IfBlock ifNotCurrentPrimaryKeyMatches = doWhileQueryNext._if(recDoWhile.callMethod(ClsQSqlRecord.value, QString.fromStringConstant("e1__" + entity.getTbl().getPrimaryKey().getFirstColumn().getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(entity.getTbl().getPrimaryKey().getFirstColumn()))._notEquals(e1.callAttrGetter(entity.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName())) );
-			ifNotCurrentPrimaryKeyMatches.thenBlock().addInstr(new BreakInstruction());
-			doWhileQueryNext.setCondition(ifQueryNext.getCondition());
 			
-
-			ifInstr._assignInstruction(recDoWhile, query.callMethod("record"));
-				
-			
-			ifInstr._callMethodInstr(e1, "setLoaded", BoolExpression.FALSE);
-			ifInstr._return(e1);
-//			_callMethodInstr(query, ClsQSqlQuery.clear); 
 			_return(Expressions.Nullptr);
 		} else {
 			List<OneRelation> oneRelations = entity.getOneRelations();
@@ -127,15 +115,15 @@ protected Expression getExpressionQuery() {
 				
 				
 				for(AbstractRelation r:manyRelations) {
-					Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
+					Type entityPk=Types.getRelationForeignPrimaryKeyType(r);
 					EntityCls foreignCls = Entities.get(r.getDestTable()); 
-					Expression foreignBeanExpression = parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), recDoWhile, QString.fromStringConstant(r.getAlias()));
+					Expression foreignEntityExpression = parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), recDoWhile, QString.fromStringConstant(r.getAlias()));
 					
 					IfBlock ifNotPkForeignIsNull= doWhileQueryNext._if(Expressions.not( recDoWhile.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getFirstColumn().getName())).callMethod("isNull")));
 					
 					Var pkForeign = null;
 					if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
-						pkForeign = ifNotPkForeignIsNull.thenBlock()._declare(beanPk, "pkForeignB"+r.getAlias());
+						pkForeign = ifNotPkForeignIsNull.thenBlock()._declare(entityPk, "pkForeignB"+r.getAlias());
 						
 						for(Column colPk:r.getDestTable().getPrimaryKey().getColumns()) {
 							ifNotPkForeignIsNull.thenBlock()._assign(
@@ -146,7 +134,7 @@ protected Expression getExpressionQuery() {
 						}
 					} else {
 						Column colPk=r.getDestTable().getPrimaryKey().getFirstColumn();
-						pkForeign = ifNotPkForeignIsNull.thenBlock()._declare(beanPk, "pkForeignB"+r.getAlias(),recDoWhile.callMethod("value",QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk)));
+						pkForeign = ifNotPkForeignIsNull.thenBlock()._declare(entityPk, "pkForeignB"+r.getAlias(),recDoWhile.callMethod("value",QString.fromStringConstant(r.getAlias()+"__"+ colPk.getName())).callMethod(EntityCls.getDatabaseMapper().getQVariantConvertMethod(colPk)));
 					}
 					IfBlock ifRecValueIsNotNull = ifNotPkForeignIsNull.thenBlock()._if(
 							Expressions.not(fkHelper
@@ -159,10 +147,10 @@ protected Expression getExpressionQuery() {
 							
 							
 						);
-					Var foreignBean =ifRecValueIsNotNull.thenBlock()._declare(foreignBeanExpression.getType(), "foreignB"+r.getAlias(),foreignBeanExpression) ;
+					Var foreignEntity =ifRecValueIsNotNull.thenBlock()._declare(foreignEntityExpression.getType(), "foreignB"+r.getAlias(),foreignEntityExpression) ;
 					
 					ifRecValueIsNotNull.thenBlock().addInstr(fkHelper.accessAttr("e1")
-							.callMethodInstruction(EntityCls.getRelatedBeanMethodName(r), foreignBean));
+							.callMethodInstruction(EntityCls.getRelatedEntityMethodName(r), foreignEntity));
 					ifRecValueIsNotNull.thenBlock().addInstr(
 							fkHelper.accessAttr(r.getAlias()+"Set")
 							.callMethod("insert", 
@@ -172,7 +160,7 @@ protected Expression getExpressionQuery() {
 					
 //					for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
 //						if (foreignOneRelation.getDestTable().equals(entity.getTbl())) {
-//							ifRecValueIsNotNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("e1")));
+//							ifRecValueIsNotNull.thenBlock().addInstr(foreignEntity.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", fkHelper.accessAttr("e1")));
 //						}
 //					}
 				}
@@ -183,32 +171,35 @@ protected Expression getExpressionQuery() {
 		
 			for(OneRelation r:oneRelations) {
 				EntityCls foreignCls = Entities.get(r.getDestTable());
-				Expression foreignBeanExpression = parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), recDoWhile, QString.fromStringConstant(r.getAlias()));
+				Expression foreignEntityExpression = parent.callStaticMethod(MethodGetFromRecord.getMethodName(foreignCls), recDoWhile, QString.fromStringConstant(r.getAlias()));
 				
-				IfBlock ifRelatedBeanIsNull= doWhileQueryNext.
+				IfBlock ifRelatedEntityIsNull= doWhileQueryNext.
 						_if(Expressions.and( e1.callMethod(new MethodOneRelationEntityIsNull(r))
 								,
 								Expressions.not( recDoWhile.callMethod("value", QString.fromStringConstant(r.getAlias()+"__"+ r.getDestTable().getPrimaryKey().getFirstColumn().getName())).callMethod(ClsQVariant.isNull))
 								));
 				
-				Var foreignBean =ifRelatedBeanIsNull.thenBlock()._declare(foreignBeanExpression.getType(), "foreignB"+r.getAlias(),foreignBeanExpression) ;
-				ifRelatedBeanIsNull.thenBlock()
+				Var foreignEntity =ifRelatedEntityIsNull.thenBlock()._declare(foreignEntityExpression.getType(), "foreignB"+r.getAlias(),foreignEntityExpression) ;
+				ifRelatedEntityIsNull.thenBlock()
 					._callMethodInstr(
 							e1 ,
 							new MethodAttrSetterInternal(foreignCls,
 									entity.getAttrByName(OrmUtil.getOneRelationDestAttrName(r)))
-							,  foreignBean);
+							,  foreignEntity);
 				
 			
 //				for (OneRelation foreignOneRelation: foreignCls.getOneRelations()) {
 //					if (foreignOneRelation.getDestTable().equals(entity.getTbl())) {
-//						ifRelatedBeanIsNull.thenBlock().addInstr(foreignBean.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", e1));
+//						ifRelatedEntityIsNull.thenBlock().addInstr(foreignEntity.callMethodInstruction("set"+r.getSourceTable().getUc1stCamelCaseName()+"Internal", e1));
 //					}
 //				}
 			}
 			}
 			
-			ifInstr._callMethodInstr(e1, "setLoaded", BoolExpression.TRUE);
+			for(AbstractRelation r:entity.getAllRelations()) {
+				ifInstr.addInstr(e1.callSetterMethodInstruction("loaded"+  r.getIdentifier(), BoolExpression.TRUE));
+			}
+			
 			ifInstr._return(e1);
 //			_callMethodInstr(query, ClsQSqlQuery.clear); 
 			_return(Expressions.Nullptr);

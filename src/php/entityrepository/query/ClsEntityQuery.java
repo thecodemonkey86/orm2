@@ -19,14 +19,14 @@ import php.lib.ClsBaseEntityQuery;
 
 public class ClsEntityQuery extends PhpCls {
 
-	protected static String beanQueryNamespace;
+	protected static String entityQueryNamespace;
 	
-	public static void setBeanQueryNamespace(String beanQueryNamespace) {
-		ClsEntityQuery.beanQueryNamespace = beanQueryNamespace;
+	public static void setEntityQueryNamespace(String entityQueryNamespace) {
+		ClsEntityQuery.entityQueryNamespace = entityQueryNamespace;
 	}
 	
 	public ClsEntityQuery(EntityCls cls) {
-		super(cls.getName()+ "EntityQuery",beanQueryNamespace);
+		super(cls.getName()+ "EntityQuery",entityQueryNamespace);
 		
 		setSuperclass(new ClsBaseEntityQuery(cls));
 		setConstructor(new ConstructorEntityQuery());

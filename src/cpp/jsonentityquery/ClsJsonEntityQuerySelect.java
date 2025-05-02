@@ -31,7 +31,7 @@ public class ClsJsonEntityQuerySelect extends Cls{
 		addSuperclass(JsonTypes.BaseJsonEntitySelectQuery);
 		addIncludeDefaultHeaderFileName(getSuperclass());
 		if(entity.getTbl().hasNullableColumn()) {
-			addIncludeDefaultHeaderFileName(Types.nullable(null)) ;
+			addIncludeDefaultHeaderFileName(Types.optional(null)) ;
 		}
 		
 		for(Column c : entity.getTbl().getAllColumns()) {

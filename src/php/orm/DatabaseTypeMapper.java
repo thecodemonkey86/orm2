@@ -22,8 +22,8 @@ public abstract class DatabaseTypeMapper {
 	public abstract Type columnToType(Column c);
 
 	public abstract Type getSqlQueryClass();
-	public abstract Type getBeanQueryClass(EntityCls beanCls);
-	public abstract Type getLibBeanQueryClass(EntityCls beanCls);
+	public abstract Type getEntityQueryClass(EntityCls entityCls);
+	public abstract Type getLibEntityQueryClass(EntityCls entityCls);
 
 	public abstract Type getDatabaseLinkType() ;
 	public abstract Type getDatabaseResultType() ;
@@ -66,9 +66,9 @@ public abstract class DatabaseTypeMapper {
 	public abstract Expression getConvertFieldToStringExpression(Expression obj, Column col,Expression dateTimeFormatExpr,Expression dateFormatExpr) ;
 	
 	public abstract Expression getConvertJsonValueToTypedExpression(Expression obj, Column col) ;
-	public abstract Method getBeanRepositoryBeginTransactionMethod() ;
-	public abstract Method getBeanRepositoryCommitTransactionMethod() ;
-	public abstract Method getBeanRepositoryRollbackTransactionMethod() ;
+	public abstract Method getEntityRepositoryBeginTransactionMethod() ;
+	public abstract Method getEntityRepositoryCommitTransactionMethod() ;
+	public abstract Method getEntityRepositoryRollbackTransactionMethod() ;
 	public boolean hasTransactionHandle() {
 		return false;
 	}

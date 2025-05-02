@@ -12,10 +12,11 @@ import cpp.core.expression.MakeSharedExpression;
 import cpp.core.expression.Var;
 import cpp.core.instruction.IfBlock;
 import cpp.entity.EntityCls;
-import cpp.entity.Nullable;
+import cpp.core.Optional;
 import cpp.entity.method.MethodColumnAttrSetNull;
 import cpp.lib.ClsBaseJsonEntity;
 import database.column.Column;
+import database.relation.AbstractRelation;
 import util.StringUtil;
 
 public class MethodRepoCreateNew extends Method {
@@ -82,8 +83,10 @@ public class MethodRepoCreateNew extends Method {
 	public void addImplementation() {
 		Var entity = _declare(returnType, "entity", new MakeSharedExpression((SharedPtr) returnType));
 		_callMethodInstr(entity, ClsBaseJsonEntity.setInsertNew);
-		addInstr(entity.callMethodInstruction("setLoaded", BoolExpression.TRUE));
 		
+		for(AbstractRelation r: cls.getAllRelations()) {
+			addInstr(entity.callSetterMethodInstruction("loaded"+r.getIdentifier(), BoolExpression.TRUE));
+		}
 		if(initializeFields) {
 			if(this.initializeFieldsWithNullable) {
 				int i=0;
@@ -92,9 +95,9 @@ public class MethodRepoCreateNew extends Method {
 					Column pkCol =  cls.getTbl().getPrimaryKey().getColumn(i);
 					Param param = initializeFieldsParams.get(i);
 					if(pkCol.isNullable()) {
-						IfBlock ifIsNull= _if(param.callMethod(Nullable.isNull));
+						IfBlock ifIsNull= _ifNot(param.callMethod(Optional.has_value));
 						ifIsNull.thenBlock().addInstr(entity.callMethodInstruction(MethodColumnAttrSetNull.getMethodName(entity.getClassType().getAttrByName(param.getName()))));
-						ifIsNull.elseBlock().addInstr(entity.callMethodInstruction("set" +StringUtil.ucfirst(param.getName())+"Internal",param.callMethod(Nullable.val)));
+						ifIsNull.elseBlock().addInstr(entity.callMethodInstruction("set" +StringUtil.ucfirst(param.getName())+"Internal",param.callMethod(Optional.value)));
 					} else {
 						addInstr(entity.callMethodInstruction("set" +StringUtil.ucfirst(param.getName())+"Internal",param));
 					}
@@ -104,9 +107,9 @@ public class MethodRepoCreateNew extends Method {
 					if(!col.isFileImportEnabled()) {
 						Param param = initializeFieldsParams.get(i++);
 						if(col.isNullable()) {
-							IfBlock ifIsNull= _if(param.callMethod(Nullable.isNull));
+							IfBlock ifIsNull= _ifNot(param.callMethod(Optional.has_value));
 							ifIsNull.thenBlock().addInstr(entity.callMethodInstruction(MethodColumnAttrSetNull.getMethodName(entity.getClassType().getAttrByName(param.getName()))));
-							ifIsNull.elseBlock().addInstr(entity.callSetterMethodInstruction(param.getName(),param.callMethod(Nullable.val)));
+							ifIsNull.elseBlock().addInstr(entity.callSetterMethodInstruction(param.getName(),param.callMethod(Optional.value)));
 						} else {
 							addInstr(entity.callSetterMethodInstruction(param.getName(),param));
 						}

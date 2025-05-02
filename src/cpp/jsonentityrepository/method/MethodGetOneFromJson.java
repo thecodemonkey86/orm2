@@ -4,6 +4,7 @@ import cpp.JsonTypes;
 import cpp.Types;
 import cpp.core.Cls;
 import cpp.core.Method;
+import cpp.core.Optional;
 import cpp.core.Param;
 import cpp.core.QString;
 import cpp.core.SharedPtr;
@@ -11,7 +12,6 @@ import cpp.core.expression.Expressions;
 import cpp.core.expression.Var;
 import cpp.core.instruction.ForeachLoop;
 import cpp.core.instruction.IfBlock;
-import cpp.entity.Nullable;
 import cpp.jsonentity.JsonEntities;
 import cpp.jsonentity.JsonEntity;
 import cpp.jsonentity.method.MethodColumnAttrSetterInternal;
@@ -65,7 +65,7 @@ public class MethodGetOneFromJson extends Method {
 							JsonOrmUtil.jsonConvertMethod(
 									pJsonObject.callMethod(ClsQJsonObject.value,
 											QString.fromStringConstant(col.getName())),
-									((Nullable) (((Cls) e1.getType()).getAttrByName(col.getCamelCaseName())).getType())
+									((Optional) (((Cls) e1.getType()).getAttrByName(col.getCamelCaseName())).getType())
 											.getElementType())));
 				} else {
 
@@ -82,8 +82,8 @@ public class MethodGetOneFromJson extends Method {
 						pJsonObject.callMethod(ClsQJsonObject.contains, QString.fromStringConstant(OrmUtil.getOneRelationDestAttrName(r))),
 						Expressions.not(pJsonObject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(OrmUtil.getOneRelationDestAttrName(r))).callMethod(ClsQJsonValue.isNull))));
 				JsonEntity e = JsonEntities.get(r.getDestTable());
-				Var relationBeanData =ifValueIsNull.thenBlock()._declare(e.toSharedPtr(),r.getAlias(),parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e), pJsonObject.callMethod(ClsQJsonObject.value,QString.fromStringConstant(OrmUtil.getOneRelationDestAttrName(r))).callMethod(ClsQJsonValue.toObject)));
-				ifValueIsNull.thenBlock().addInstr(e1.callMethodInstruction("set"+ StringUtil.ucfirst(OrmUtil.getOneRelationDestAttrName(r))+"Internal", relationBeanData));
+				Var relationEntityData =ifValueIsNull.thenBlock()._declare(e.toSharedPtr(),r.getAlias(),parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e), pJsonObject.callMethod(ClsQJsonObject.value,QString.fromStringConstant(OrmUtil.getOneRelationDestAttrName(r))).callMethod(ClsQJsonValue.toObject)));
+				ifValueIsNull.thenBlock().addInstr(e1.callMethodInstruction("set"+ StringUtil.ucfirst(OrmUtil.getOneRelationDestAttrName(r))+"Internal", relationEntityData));
 			}
 			for(OneToManyRelation r : entity.getOneToManyRelations() ) {
 				IfBlock ifValueIsNull = _if(Expressions.and(
@@ -91,9 +91,9 @@ public class MethodGetOneFromJson extends Method {
 						pJsonObject.callMethod(ClsQJsonObject.contains, QString.fromStringConstant(OrmUtil.getOneToManyRelationDestAttrNameSingular(r))),
 						Expressions.not(pJsonObject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(OrmUtil.getOneToManyRelationDestAttrNameSingular(r))).callMethod(ClsQJsonValue.isNull))));
 				JsonEntity e = JsonEntities.get(r.getDestTable());
-				Var relationBeanDataArray  =ifValueIsNull.thenBlock()._declare(JsonTypes.QJsonArray,"_jsonDataArray" +r.getAlias(), pJsonObject.callMethod(ClsQJsonObject.value,QString.fromStringConstant(OrmUtil.getOneToManyRelationDestAttrNameSingular(r))).callMethod(ClsQJsonValue.toArray));
-				ForeachLoop foreachRelationBean = ifValueIsNull.thenBlock()._foreach(new Var(JsonTypes.QJsonValue.toConstRef(),"_jsonData" + r.getAlias()), relationBeanDataArray);
-				foreachRelationBean.addInstr(e1.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r), parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e),foreachRelationBean.getVar().callMethod(ClsQJsonValue.toObject))));
+				Var relationEntityDataArray  =ifValueIsNull.thenBlock()._declare(JsonTypes.QJsonArray,"_jsonDataArray" +r.getAlias(), pJsonObject.callMethod(ClsQJsonObject.value,QString.fromStringConstant(OrmUtil.getOneToManyRelationDestAttrNameSingular(r))).callMethod(ClsQJsonValue.toArray));
+				ForeachLoop foreachRelationEntity = ifValueIsNull.thenBlock()._foreach(new Var(JsonTypes.QJsonValue.toConstRef(),"_jsonData" + r.getAlias()), relationEntityDataArray);
+				foreachRelationEntity.addInstr(e1.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r), parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e),foreachRelationEntity.getVar().callMethod(ClsQJsonValue.toObject))));
 			}
 			for(ManyRelation r : entity.getManyRelations() ) {
 				IfBlock ifValueIsNull = _if(Expressions.and(
@@ -101,9 +101,9 @@ public class MethodGetOneFromJson extends Method {
 						pJsonObject.callMethod(ClsQJsonObject.contains, QString.fromStringConstant(OrmUtil.getManyRelationDestAttrNameSingular(r))),
 						Expressions.not(pJsonObject.callMethod(ClsQJsonObject.value, QString.fromStringConstant(OrmUtil.getManyRelationDestAttrNameSingular(r))).callMethod(ClsQJsonValue.isNull))));
 				JsonEntity e = JsonEntities.get(r.getDestTable());
-				Var relationBeanDataArray  =ifValueIsNull.thenBlock()._declare(JsonTypes.QJsonArray,"_jsonDataArray" +r.getAlias(), pJsonObject.callMethod(ClsQJsonObject.value,QString.fromStringConstant(OrmUtil.getManyRelationDestAttrNameSingular(r))).callMethod(ClsQJsonValue.toArray));
-				ForeachLoop foreachRelationBean = ifValueIsNull.thenBlock()._foreach(new Var(JsonTypes.QJsonValue.toConstRef(),"_jsonData" + r.getAlias()), relationBeanDataArray);
-				foreachRelationBean.addInstr(e1.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r), parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e),foreachRelationBean.getVar().callMethod(ClsQJsonValue.toObject))));
+				Var relationEntityDataArray  =ifValueIsNull.thenBlock()._declare(JsonTypes.QJsonArray,"_jsonDataArray" +r.getAlias(), pJsonObject.callMethod(ClsQJsonObject.value,QString.fromStringConstant(OrmUtil.getManyRelationDestAttrNameSingular(r))).callMethod(ClsQJsonValue.toArray));
+				ForeachLoop foreachRelationEntity = ifValueIsNull.thenBlock()._foreach(new Var(JsonTypes.QJsonValue.toConstRef(),"_jsonData" + r.getAlias()), relationEntityDataArray);
+				foreachRelationEntity.addInstr(e1.callMethodInstruction(MethodAddRelatedEntityInternal.getMethodName(r), parent.callStaticMethod(MethodGetOneFromJson.getMethodName(e),foreachRelationEntity.getVar().callMethod(ClsQJsonValue.toObject))));
 			}
 			_return(e1);
 		}

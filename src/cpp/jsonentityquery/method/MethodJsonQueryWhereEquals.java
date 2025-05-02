@@ -7,9 +7,8 @@ import cpp.core.Param;
 import cpp.core.QString;
 import cpp.core.Type;
 import cpp.core.expression.CreateObjectExpression;
-import cpp.core.expression.Expressions;
 import cpp.core.instruction.IfBlock;
-import cpp.entity.Nullable;
+import cpp.core.Optional;
 import cpp.jsonentity.JsonEntity;
 import cpp.lib.ClsBaseJsonEntitySelectQuery;
 import database.column.Column;
@@ -39,8 +38,8 @@ public class MethodJsonQueryWhereEquals extends Method {
 	public void addImplementation() {
 		String alias=hasTableAlias ? "e1."  : "";
 		if(nullableParam) {
-			IfBlock ifNotIsNull= _if(Expressions.not(pValue.callMethod(Nullable.isNull)));
-			ifNotIsNull.thenBlock()._callMethodInstr(_this(), ClsBaseJsonEntitySelectQuery.where,QString.fromStringConstant(alias+col.getEscapedName()+"=?") ,new CreateObjectExpression(Types.QVariantList).binOp("<<", new CreateObjectExpression(Types.QVariant,this.pValue.callMethod(Nullable.val))));
+			IfBlock ifNotIsNull= _if(pValue.callMethod(Optional.has_value));
+			ifNotIsNull.thenBlock()._callMethodInstr(_this(), ClsBaseJsonEntitySelectQuery.where,QString.fromStringConstant(alias+col.getEscapedName()+"=?") ,new CreateObjectExpression(Types.QVariantList).binOp("<<", new CreateObjectExpression(Types.QVariant,this.pValue.callMethod(Optional.value))));
 			ifNotIsNull.elseBlock()._callMethodInstr(_this(), ClsBaseJsonEntitySelectQuery.where,QString.fromStringConstant(alias+col.getEscapedName()+" is null")  );
 		} else {
 			_callMethodInstr(_this(), ClsBaseJsonEntitySelectQuery.where,QString.fromStringConstant(alias+col.getEscapedName()+"=?") ,new CreateObjectExpression(Types.QVariantList).binOp("<<", new CreateObjectExpression(Types.QVariant,this.pValue)));

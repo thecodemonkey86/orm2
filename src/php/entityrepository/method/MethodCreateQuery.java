@@ -10,7 +10,7 @@ public class MethodCreateQuery extends Method {
 	EntityCls entity;
 	
 	public MethodCreateQuery(EntityCls cls) {
-		//super(Public, new ClsBeanQuery(cls), "createQuery"+cls.getName());
+		//super(Public, new ClsEntityQuery(cls), "createQuery"+cls.getName());
 		super(Public, new ClsEntityQuery(cls), getMethodName(cls));
 //		setStatic(true);
 		this.entity=cls;
@@ -25,7 +25,7 @@ public class MethodCreateQuery extends Method {
 	public void addImplementation() {
 		PhpCls parent = (PhpCls) this.parent;
 //		parent.addImport(((PhpCls)getReturnType()).getImport());
-		//_return(new StdMoveExpression(new NewOperator(returnType, new NewOperator(new ClsBeanQuery(entity), parent.getAttrByName("sqlCon")) )));
+		//_return(new StdMoveExpression(new NewOperator(returnType, new NewOperator(new ClsEntityQuery(entity), parent.getAttrByName("sqlCon")) )));
 		//_return(new MakeSharedExpression((SharedPtr)returnType, parent.getStaticAttribute("sqlCon").callMethod("buildQuery")));
 		_return(new NewOperator(returnType,  parent.getAttrByName("sqlCon") ));
 	}

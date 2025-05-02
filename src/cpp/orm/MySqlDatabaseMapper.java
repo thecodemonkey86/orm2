@@ -117,7 +117,7 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 				}
 			} else {
 				Type t = getTypeFromDbDataType(dbType, false);
-				return Types.nullable(t);				
+				return Types.optional(t);				
 			}
 	}
 
@@ -178,7 +178,7 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 			}
 		} else {
 			Expression e = getGenericDefaultValueExpression(false, dbType);
-			return new CreateObjectExpression(Types.nullable(e.getType()));
+			return new CreateObjectExpression(Types.optional(e.getType()));
 		}
 	}
 	@Override

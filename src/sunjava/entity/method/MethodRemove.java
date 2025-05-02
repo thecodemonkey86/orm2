@@ -23,11 +23,11 @@ public class MethodRemove extends Method {
 		JavaCls parent = (JavaCls) this.parent;
 		addInstr(new StaticMethodCall(parent.getSuperclass(), parent.getMethod("save")).asInstruction()) ;
 		for(OneToManyRelation r:oneToManyRelations) {
-//			IfBlock ifRemoveBeans = _if(Expressions.not(parent.getAttrByName("_removed"+ StringUtil.ucfirst(PgCppUtil.getManyRelationDestAttrName(r)) )
+//			IfBlock ifRemoveEntities = _if(Expressions.not(parent.getAttrByName("_removed"+ StringUtil.ucfirst(PgCppUtil.getManyRelationDestAttrName(r)) )
 //					.callMethod("empty")
 //					));
 			//String sql="delete from "+r.get;
-			//ifRemoveBeans.getIfInstr().
+			//ifRemoveEntities.getIfInstr().
 			System.out.println(r);
 		}
 	}

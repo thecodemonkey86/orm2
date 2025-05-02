@@ -3,11 +3,11 @@ package cpp.entityhelper.method;
 import util.StringUtil;
 import cpp.Types;
 import cpp.core.Method;
+import cpp.core.Optional;
 import cpp.core.Param;
 import cpp.core.QString;
 import cpp.core.Type;
 import cpp.entity.EntityCls;
-import cpp.entity.Nullable;
 import cpp.entity.method.MethodGetFieldName;
 import cpp.lib.ClsWebAppCommonForm;
 import database.column.Column;
@@ -35,8 +35,8 @@ public class MethodFillFromForm extends Method{
 	
 	private static String getFormGetterMethod(Column col) {
 		Type type = EntityCls.getDatabaseMapper().getTypeFromDbDataType(col.getDbType(), col.isNullable()) ;
-		if (type instanceof Nullable) {
-			type = ((Nullable) type).getElementType();
+		if (type instanceof Optional) {
+			type = ((Optional) type).getElementType();
 		}
 		if (type.equals(Types.Int)) {
 			return "intValue";

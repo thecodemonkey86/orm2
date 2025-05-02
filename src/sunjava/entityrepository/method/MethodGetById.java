@@ -9,6 +9,7 @@ import database.relation.AbstractRelation;
 import database.relation.ManyRelation;
 import database.relation.OneRelation;
 import database.relation.OneToManyRelation;
+import sunjava.config.JavaOrmOutputConfig;
 import sunjava.core.JavaString;
 import sunjava.core.Method;
 import sunjava.core.Param;
@@ -24,7 +25,7 @@ import sunjava.core.instruction.IfBlock;
 import sunjava.entity.Entities;
 import sunjava.entity.EntityCls;
 import sunjava.entity.method.MethodOneRelationAttrSetter;
-import sunjava.entity.method.MethodOneRelationBeanIsNull;
+import sunjava.entity.method.MethodOneRelationEntityIsNull;
 import sunjava.entityrepository.ClsEntityRepository;
 import sunjava.lib.ClsHashSet;
 import sunjava.lib.ClsResultSet;
@@ -45,15 +46,21 @@ public class MethodGetById extends Method {
 			addParam(new Param(colType.isPrimitiveType() ? colType : colType, col.getCamelCaseName()));
 			
 		}
-		pSqlCon =addParam(new Param(Types.Connection, "sqlConnection"));
+		if(JavaOrmOutputConfig.isAndroid()) {
+			
+		} else {
+			pSqlCon =addParam(new Param(Types.Connection, "sqlConnection"));
+			addThrowsException(Types.SqlException);
+		}
+		
 		setStatic(true);
-		addThrowsException(Types.SqlException);
+		
 		this.entity=cls;
 	}
 
 //	@Override
-//	public ThisBeanRepositoryExpression _this() {
-//		return new ThisBeanRepositoryExpression((ClsBeanRepository) parent);
+//	public ThisEntityRepositoryExpression _this() {
+//		return new ThisEntityRepositoryExpression((ClsEntityRepository) parent);
 //	}
 	
 	@Override
@@ -70,7 +77,7 @@ public class MethodGetById extends Method {
 		Var sqlQuery = _declare(Types.SqlQuery, "query",EntityCls.getSqlQueryCls().newInstance(sqlCon));
 		
 		ArrayList<Expression> selectFields = new ArrayList<>();
-		selectFields.add(Types.BeanRepository.callStaticMethod("getSelectFields"+entity.getName(), JavaString.stringConstant("e1")));
+		selectFields.add(Types.EntityRepository.callStaticMethod("getSelectFields"+entity.getName(), JavaString.stringConstant("e1")));
 		
 		List<AbstractRelation> allRelations = new ArrayList<>(oneRelations.size()+oneToManyRelations.size()+manyToManyRelations.size());
 		allRelations.addAll(oneRelations);
@@ -78,11 +85,11 @@ public class MethodGetById extends Method {
 		allRelations.addAll(manyToManyRelations);
 		
 		for(AbstractRelation r:allRelations) {
-			selectFields.add(Types.BeanRepository.callStaticMethod("getSelectFields"+Entities.get(r.getDestTable()).getName(), JavaString.stringConstant(r.getAlias())));
+			selectFields.add(Types.EntityRepository.callStaticMethod("getSelectFields"+Entities.get(r.getDestTable()).getName(), JavaString.stringConstant(r.getAlias())));
 		}
 		
 		Expression exprSqlQuery = sqlQuery.callMethod("select", Expressions.concat(CharExpression.fromChar(','), selectFields) )
-									.callMethod("from", Types.BeanRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(entity),JavaString.stringConstant("e1")));
+									.callMethod("from", Types.EntityRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(entity),JavaString.stringConstant("e1")));
 		
 		for(OneRelation r:oneRelations) {
 			ArrayList<String> joinConditions=new ArrayList<>();
@@ -90,7 +97,7 @@ public class MethodGetById extends Method {
 				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',(r.getAlias())+"."+ r.getColumns(i).getValue2().getEscapedName()));
 			}
 			
-			exprSqlQuery = exprSqlQuery.callMethod("leftJoin", Types.BeanRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(Entities.get(r.getDestTable()))),JavaString.stringConstant(r.getAlias()), JavaString.stringConstant(CodeUtil2.concat(joinConditions," AND ")));
+			exprSqlQuery = exprSqlQuery.callMethod("leftJoin", Types.EntityRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(Entities.get(r.getDestTable()))),JavaString.stringConstant(r.getAlias()), JavaString.stringConstant(CodeUtil2.concat(joinConditions," AND ")));
 		}
 		for(OneToManyRelation r:oneToManyRelations) {
 			ArrayList<String> joinConditions=new ArrayList<>();
@@ -98,7 +105,7 @@ public class MethodGetById extends Method {
 				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',(r.getAlias())+"."+ r.getColumns(i).getValue2().getEscapedName()));
 			}
 			
-			exprSqlQuery = exprSqlQuery.callMethod("leftJoin", Types.BeanRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(Entities.get(r.getDestTable()))),JavaString.stringConstant(r.getAlias()), JavaString.stringConstant(CodeUtil2.concat(joinConditions," AND ")));
+			exprSqlQuery = exprSqlQuery.callMethod("leftJoin", Types.EntityRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(Entities.get(r.getDestTable()))),JavaString.stringConstant(r.getAlias()), JavaString.stringConstant(CodeUtil2.concat(joinConditions," AND ")));
 		}
 		for(ManyRelation r:manyToManyRelations) {
 			ArrayList<String> joinConditions=new ArrayList<>();
@@ -113,7 +120,7 @@ public class MethodGetById extends Method {
 				joinConditions.add(CodeUtil.sp(r.getAlias("mapping")+"."+r.getDestMappingColumn(i).getEscapedName(),'=',r.getAlias()+"."+r.getDestEntityColumn(i).getEscapedName() ));
 			}
 			
-			exprSqlQuery = exprSqlQuery.callMethod("leftJoin", Types.BeanRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(Entities.get(r.getDestTable())),JavaString.stringConstant(r.getAlias())), JavaString.stringConstant(CodeUtil2.concat(joinConditions," AND ")));
+			exprSqlQuery = exprSqlQuery.callMethod("leftJoin", Types.EntityRepository.callStaticMethod(ClsEntityRepository.getMethodNameGetTableName(Entities.get(r.getDestTable())),JavaString.stringConstant(r.getAlias())), JavaString.stringConstant(CodeUtil2.concat(joinConditions," AND ")));
 			
 			//bCount++;
 		}
@@ -135,7 +142,7 @@ public class MethodGetById extends Method {
 //		OrmUtil.addAssignValueFromResultSetInstructions(resultSet, ifQSqlQueryNext.getIfInstr(), e1, col, "e1");
 //		}
 					.setIfInstr(
-							e1.assign(Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(entity),  resultSet, JavaString.stringConstant("e1")))
+							e1.assign(Types.EntityRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(entity),  resultSet, JavaString.stringConstant("e1")))
 							,
 							e1.callAttrSetterMethodInstr("loaded", BoolExpression.TRUE)//_assignInstruction(e1.accessAttr("loaded"), BoolExpression.TRUE)
 							)
@@ -150,11 +157,11 @@ public class MethodGetById extends Method {
 		manyRelations.addAll(manyToManyRelations);
 		
 		for(OneRelation r:oneRelations) {
-//			BeanCls foreignCls = Beans.get(r.getDestTable()); 
-			IfBlock ifBlock= doWhileQSqlQueryNext._if(e1.callMethod(new MethodOneRelationBeanIsNull(r)));
+//			EntityCls foreignCls = Entities.get(r.getDestTable()); 
+			IfBlock ifBlock= doWhileQSqlQueryNext._if(e1.callMethod(new MethodOneRelationEntityIsNull(r)));
 			ifBlock.thenBlock().
 			_callMethodInstr(e1, new MethodOneRelationAttrSetter( e1.getClassConcreteType().getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)), true,r.isPartOfPk()), 
-					Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias())));
+					Types.EntityRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias())));
 		}
 		for(AbstractRelation r:manyRelations) {
 			EntityCls foreignCls = Entities.get(r.getDestTable());  
@@ -173,19 +180,19 @@ public class MethodGetById extends Method {
 //				IfBlock ifNotContains = 
 						doWhileQSqlQueryNext._if(Expressions.not(pkSet.callMethod(ClsHashSet.contains, pk)))
 						.addIfInstr(pkSet.callMethodInstruction(ClsHashSet.add, pk))
-						.addIfInstr(e1.callMethodInstruction(EntityCls.getRelatedBeanMethodName(r), Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias()))));
+						.addIfInstr(e1.callMethodInstruction(EntityCls.getRelatedEntityMethodName(r), Types.EntityRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias()))));
 //						.addIfInstr(e1.accessAttr(CodeUtil2.plural(r.getDestTable().getCamelCaseName())).callMethodInstruction("append",  _this().callGetByRecordMethod(foreignCls, rec, JavaString.fromStringConstant(r.getAlias()))));
 				
 			} else {
 				Column colPk = r.getDestTable().getPrimaryKey().getColumns().get(0);
 				Type type = EntityCls.getTypeMapper().columnToType(colPk);
 
-				//IfBlock ifNotRecValueIsNull = doWhileQSqlQueryNext._if(Expressions.not(  Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Beans.get(r.getDestTable())),  resultSet, JavaString.fromStringConstant("pk"+r.getAlias()))));
+				//IfBlock ifNotRecValueIsNull = doWhileQSqlQueryNext._if(Expressions.not(  Types.EntityRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.fromStringConstant("pk"+r.getAlias()))));
 				
 				Var pkSet = ifQSqlQueryNext.thenBlock()._declareInitDefaultConstructor(Types.hashset(type), "pkSet"+r.getAlias());
 				/*Var pk = ifNotRecValueIsNull.getIfInstr()._declare(
 						type, 
-						"pk"+r.getAlias(), Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Beans.get(r.getDestTable())),  resultSet, JavaString.fromStringConstant("pk"+r.getAlias())))
+						"pk"+r.getAlias(), Types.EntityRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.fromStringConstant("pk"+r.getAlias())))
 						
 						;*/
 				
@@ -198,7 +205,7 @@ public class MethodGetById extends Method {
 				IfBlock ifNotRecValueIsNull = doWhileQSqlQueryNext._if(_not(resultSet.callMethod(ClsResultSet.wasNull)));
 				ifNotRecValueIsNull.thenBlock()._if(Expressions.not(pkSet.callMethod(ClsHashSet.contains, pk)))
 					.addIfInstr(pkSet.callMethodInstruction(ClsHashSet.add, pk))
-					.addIfInstr(e1.callMethodInstruction(EntityCls.getRelatedBeanMethodName(r), Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias()))));
+					.addIfInstr(e1.callMethodInstruction(EntityCls.getRelatedEntityMethodName(r), Types.EntityRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias()))));
 			}
 			
 		}

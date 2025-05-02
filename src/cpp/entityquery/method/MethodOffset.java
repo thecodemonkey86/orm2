@@ -11,16 +11,16 @@ import cpp.entityquery.EntityQueryType;
 public class MethodOffset extends Method{
 
 	Param pJoinTableAlias, pOn;
-	EntityQueryType beanQueryType;
+	EntityQueryType entityQueryType;
 	
-	public MethodOffset(Cls parentType, EntityQueryType beanQueryType) {
+	public MethodOffset(Cls parentType, EntityQueryType entityQueryType) {
 		super(Public, parentType.toRef(), "offset");
 		addParam(Types.Int64, "offset");
-		if(beanQueryType == EntityQueryType.Select) {
+		if(entityQueryType == EntityQueryType.Select) {
 			addParam(Types.QString.toConstRef(),"condition");
 			addParam(new Param(Types.QString.toConstRef(),"orderBy", new QString()));
 		}
-		this.beanQueryType = beanQueryType;
+		this.entityQueryType = entityQueryType;
 		
 	}
 
@@ -29,7 +29,7 @@ public class MethodOffset extends Method{
 		addInstr(new Instruction() {
 			@Override
 			public String toString() {
-				if(beanQueryType == EntityQueryType.Select) {
+				if(entityQueryType == EntityQueryType.Select) {
 					return "this->limitResults = -1;\r\n" + 
 							"        this->resultOffset = offset;\r\n" + 
 							"        this->limitOffsetCondition = condition;\r\n" + 

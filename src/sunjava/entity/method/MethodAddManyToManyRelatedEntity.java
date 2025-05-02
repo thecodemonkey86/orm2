@@ -16,12 +16,12 @@ import sunjava.entity.EntityCls;
 import sunjava.lib.ClsArrayList;
 import sunjava.orm.OrmUtil;
 
-public class MethodAddManyToManyRelatedBean extends Method {
+public class MethodAddManyToManyRelatedEntity extends Method {
 
 	protected ManyRelation rel;
 	
-	public MethodAddManyToManyRelatedBean(ManyRelation r, Param p) {
-		super(Public, Types.Void, OrmUtil.getAddRelatedBeanMethodName(r));
+	public MethodAddManyToManyRelatedEntity(ManyRelation r, Param p) {
+		super(Public, Types.Void, OrmUtil.getAddRelatedEntityMethodName(r));
 		addParam(p);
 		rel=r;
 	}
@@ -32,25 +32,25 @@ public class MethodAddManyToManyRelatedBean extends Method {
 		
 		Attr a=parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
 		_if(a.isNull()).addIfInstr(a.assign(new NewOperator(a.getType())));
-		Param pBean = getParam("entity");
-		addInstr(a.callMethod(ClsArrayList.add,pBean).asInstruction());
-		EntityCls relationBean = Entities.get( rel.getDestTable());
+		Param pEntity = getParam("entity");
+		addInstr(a.callMethod(ClsArrayList.add,pEntity).asInstruction());
+		EntityCls relationEntity = Entities.get( rel.getDestTable());
 		Attr aAdded = parent.getAttrByName(
 				a.getName()+"Added");
 		_if(aAdded.isNull()).addIfInstr(aAdded.assign(new NewOperator(aAdded.getType())));
-		if (relationBean.getTbl().getPrimaryKey().isMultiColumn()) {
-			Type pkType=relationBean.getPkType();
+		if (relationEntity.getTbl().getPrimaryKey().isMultiColumn()) {
+			Type pkType=relationEntity.getPkType();
 			
-			Expression[] idAddedArgs = new Expression[relationBean.getTbl().getPrimaryKey().getColumnCount()];
+			Expression[] idAddedArgs = new Expression[relationEntity.getTbl().getPrimaryKey().getColumnCount()];
 			
 			for(int i = 0; i < idAddedArgs.length; i++) {
-				idAddedArgs[i] = pBean.callAttrGetter(relationBean.getTbl().getPrimaryKey().getColumn(i).getCamelCaseName());
+				idAddedArgs[i] = pEntity.callAttrGetter(relationEntity.getTbl().getPrimaryKey().getColumn(i).getCamelCaseName());
 			}
 			
 			Var idAdded = _declareNew(pkType, "idAdded", idAddedArgs);
-			for(Column col:relationBean.getTbl().getPrimaryKey().getColumns()) {
+			for(Column col:relationEntity.getTbl().getPrimaryKey().getColumns()) {
 				addInstr(idAdded.callAttrSetterMethodInstr(col
-						.getCamelCaseName(), pBean
+						.getCamelCaseName(), pEntity
 						.callAttrGetter(
 								col
 								.getCamelCaseName()
@@ -67,9 +67,9 @@ public class MethodAddManyToManyRelatedBean extends Method {
 			addInstr(
 					
 					aAdded.callMethod(ClsArrayList.add,
-									pBean
+									pEntity
 									.callAttrGetter(
-											relationBean.getTbl().getPrimaryKey().getFirstColumn()
+											relationEntity.getTbl().getPrimaryKey().getFirstColumn()
 											.getCamelCaseName()
 									)
 								).asInstruction());	

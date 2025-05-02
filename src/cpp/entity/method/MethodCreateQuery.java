@@ -10,13 +10,13 @@ import cpp.entity.EntityCls;
 public class MethodCreateQuery extends Method {
 
 	public MethodCreateQuery(EntityCls cls) {
-		super(Public, Types.beanQuerySelect(cls).toUniquePointer(), "createQuery");
+		super(Public, Types.entityQuerySelect(cls).toUniquePointer(), "createQuery");
 		setStatic(true);
 	}
 
 	@Override
 	public void addImplementation() {
-		_return(new StdMoveExpression(new CreateObjectExpression(returnType, new NewOperator(Types.beanQuerySelect((EntityCls) parent), parent.getAttrByName("sqlCon").callMethod("buildQuery")) )));
+		_return(new StdMoveExpression(new CreateObjectExpression(returnType, new NewOperator(Types.entityQuerySelect((EntityCls) parent), parent.getAttrByName("sqlCon").callMethod("buildQuery")) )));
 		//_return(new MakeSharedExpression((SharedPtr)returnType, parent.getStaticAttribute("sqlCon").callMethod("buildQuery")));
 	}
 

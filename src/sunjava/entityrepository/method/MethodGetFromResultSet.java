@@ -16,7 +16,7 @@ import sunjava.lib.ClsResultSet;
 
 public class MethodGetFromResultSet extends Method {
 	protected List<Column> columns;
-	protected EntityCls beanCls;
+	protected EntityCls entityCls;
 	
 	public static String getMethodName(EntityCls entity) {
 		return "get"+entity.getName()+ "FromResultSet";
@@ -28,7 +28,7 @@ public class MethodGetFromResultSet extends Method {
 		addParam(new Param(Types.ResultSet, "resultSet"));
 		addParam(new Param(Types.String, "alias"));
 		this.columns = entity.getTbl().getColumns(true);
-		this.beanCls = entity;
+		this.entityCls = entity;
 	}
 
 	@Override

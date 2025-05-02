@@ -2,11 +2,10 @@ package cpp;
 
 import java.util.HashMap;
 
-import cpp.core.TplCls;
+import cpp.core.Optional;
 import cpp.core.Type;
 import cpp.entity.Entities;
 import cpp.entity.EntityCls;
-import cpp.entity.Nullable;
 import cpp.entityquery.ClsEntityQueryDelete;
 import cpp.entityquery.ClsEntityQuerySelect;
 import cpp.entityquery.ClsEntityQueryUpdate;
@@ -44,7 +43,7 @@ public class Types extends CoreTypes{
 	private static HashMap<String, ClsEntityQueryDelete> deleteQueryClasses = new HashMap<>();
 	private static HashMap<String, ClsEntityQueryUpdate> updateQueryClasses = new HashMap<>();
 	
-	public static ClsEntityQuerySelect beanQuerySelect(EntityCls cls) {
+	public static ClsEntityQuerySelect entityQuerySelect(EntityCls cls) {
 		
 		
 		if(selectQueryClasses.containsKey(cls.getName())) {
@@ -57,7 +56,7 @@ public class Types extends CoreTypes{
 
 	
 	
-	public static ClsEntityQueryDelete beanQueryDelete(EntityCls cls) {
+	public static ClsEntityQueryDelete entityQueryDelete(EntityCls cls) {
 		
 		
 		if(deleteQueryClasses.containsKey(cls.getName())) {
@@ -68,7 +67,7 @@ public class Types extends CoreTypes{
 		return d;
 	}
 	
-	public static ClsEntityQueryUpdate beanQueryUpdate(EntityCls cls) {
+	public static ClsEntityQueryUpdate entityQueryUpdate(EntityCls cls) {
 		
 		
 		if(updateQueryClasses.containsKey(cls.getName())) {
@@ -79,32 +78,35 @@ public class Types extends CoreTypes{
 		return u;
 	}
 	
-	public static TplCls nullable(Type element) {
-		return new Nullable( element);
-	}
 	
 	public static Type getRelationForeignPrimaryKeyType(AbstractRelation r) {
-		Type beanPk = null;
+		Type entityPk = null;
 		if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
-			beanPk = Entities.get(r.getDestTable().getUc1stCamelCaseName()).getStructPk();
+			entityPk = Entities.get(r.getDestTable().getUc1stCamelCaseName()).getStructPk();
 			
 		} else {
-			beanPk =EntityCls.getDatabaseMapper().columnToType(r.getDestTable().getPrimaryKey().getColumns().get(0));
+			entityPk =EntityCls.getDatabaseMapper().columnToType(r.getDestTable().getPrimaryKey().getColumns().get(0));
 		}
-		return beanPk;
+		return entityPk;
 		
 	}
 	
 	public static Type getRelationForeignPrimaryKeyTypeJsonEntities(AbstractRelation r) {
-		Type beanPk = null;
+		Type entityPk = null;
 		if(r.getDestTable().getPrimaryKey().isMultiColumn()) {
-			beanPk = JsonEntities.get(r.getDestTable().getUc1stCamelCaseName()).getStructPk();
+			entityPk = JsonEntities.get(r.getDestTable().getUc1stCamelCaseName()).getStructPk();
 			
 		} else {
-			beanPk =JsonEntity.getDatabaseMapper().columnToType(r.getDestTable().getPrimaryKey().getColumns().get(0));
+			entityPk =JsonEntity.getDatabaseMapper().columnToType(r.getDestTable().getPrimaryKey().getColumns().get(0));
 		}
-		return beanPk;
+		return entityPk;
 		
+	}
+
+
+
+	public static Optional optional(Type t) {
+		return new Optional(t);
 	}
 	
 	

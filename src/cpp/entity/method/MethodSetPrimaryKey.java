@@ -14,7 +14,7 @@ import cpp.core.expression.Expression;
 import cpp.core.expression.Expressions;
 import cpp.core.expression.Operators;
 import cpp.core.instruction.IfBlock;
-import cpp.entity.Nullable;
+import cpp.core.Optional;
 import database.column.Column;
 import database.relation.PrimaryKey;
 
@@ -46,7 +46,7 @@ public class MethodSetPrimaryKey extends Method{
 			String a=col.getCamelCaseName();
 			Param param = getParam(a);
 			if(col.isNullable()) {
-				cond.add(_this().accessAttr(a).callMethod(Nullable.isNull).binOp(Operators.OR, param._notEquals(_this().accessAttr(a).callMethod(Nullable.val))));
+				cond.add(_not(_this().accessAttr(a).callMethod(Optional.has_value)).binOp(Operators.OR, param._notEquals(_this().accessAttr(a).callMethod(Optional.value))));
 			} else {
 				cond.add(param._notEquals(_this().accessAttr(a)));
 			}
@@ -59,7 +59,7 @@ public class MethodSetPrimaryKey extends Method{
 			 
 			ifNotInsert.thenBlock().addInstr( _this().assignAttr(col.getCamelCaseName()+"Previous",  _this().accessAttr(a)));
 			if (col.isNullable()) {
-				ifNotEquals.thenBlock()._assign(_this().accessAttr(a), new CreateObjectExpression(Types.nullable(param.getType().isPrimitiveType() ? param.getType() : ((ConstRef)param.getType()).getBase()), param));
+				ifNotEquals.thenBlock()._assign(_this().accessAttr(a), new CreateObjectExpression(Types.optional(param.getType().isPrimitiveType() ? param.getType() : ((ConstRef)param.getType()).getBase()), param));
 			} else {
 				ifNotEquals.thenBlock()._assign(_this().accessAttr(a), param);
 			}

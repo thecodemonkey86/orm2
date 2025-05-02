@@ -1,6 +1,7 @@
 package cpp;
 
 import cpp.core.Cls;
+import cpp.core.Optional;
 import cpp.core.PrimitiveType;
 import cpp.core.TplCls;
 import cpp.core.Type;
@@ -60,5 +61,9 @@ public class CoreTypes {
 	}
 	public static TplCls qset(Type element) {
 		return new ClsQSet(element);
+	}
+	
+	public static Optional optional(Type t) {
+		return new Optional(t);
 	}
 }

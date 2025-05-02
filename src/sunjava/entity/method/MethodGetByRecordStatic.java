@@ -32,9 +32,9 @@ public class MethodGetByRecordStatic extends Method {
 		for(Column col:columns) {
 			try{
 //				if (!col.hasOneRelation()) {
-					addInstr(entity.assignAttr(col.getCamelCaseName(),getParam("record").callMethod("value", new JavaStringPlusOperatorExpression(getParam("alias"), JavaString.fromStringConstant("__"+ col.getName()))).callMethod(BeanCls.getTypeMapper().getConvertMethod(col.getDbType()))));
+					addInstr(entity.assignAttr(col.getCamelCaseName(),getParam("record").callMethod("value", new JavaStringPlusOperatorExpression(getParam("alias"), JavaString.fromStringConstant("__"+ col.getName()))).callMethod(EntityCls.getTypeMapper().getConvertMethod(col.getDbType()))));
 //				}
-//					_callMethodInstr(entity, "set"+col.getUc1stCamelCaseName(), getParam("record").callMethod("value", new JavaStringPlusOperatorExpression(getParam("alias"), JavaString.fromStringConstant("__"+ col.getName()))).callMethod(BeanCls.getTypeMapper().getConvertMethod(col.getDbType())));
+//					_callMethodInstr(entity, "set"+col.getUc1stCamelCaseName(), getParam("record").callMethod("value", new JavaStringPlusOperatorExpression(getParam("alias"), JavaString.fromStringConstant("__"+ col.getName()))).callMethod(EntityCls.getTypeMapper().getConvertMethod(col.getDbType())));
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println(parent);

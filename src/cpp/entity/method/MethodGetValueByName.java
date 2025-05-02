@@ -9,12 +9,11 @@ import cpp.core.Param;
 import cpp.core.expression.CStringLiteral;
 import cpp.core.expression.CreateObjectExpression;
 import cpp.core.expression.Expression;
-import cpp.core.expression.Expressions;
 import cpp.core.instruction.IfBlock;
 import cpp.core.instruction.ReturnInstruction;
 import cpp.core.instruction.ThrowInstruction;
 import cpp.entity.EntityCls;
-import cpp.entity.Nullable;
+import cpp.core.Optional;
 import cpp.lib.ClsQVariant;
 import cpp.lib.ClsQtException;
 import database.column.Column;
@@ -84,12 +83,12 @@ public class MethodGetValueByName extends Method {
 				Expression ret = null;
 				
 				if(c.isNullable()) {
-					ret = new InlineIfExpression( _this().callAttrGetter(c.getCamelCaseName()).callMethod(Nullable.isNull), new CreateObjectExpression(Types.QVariant), _this().callAttrGetter(c.getCamelCaseName()).callMethod(Nullable.val)); 
+					ret = new InlineIfExpression( _this().callAttrGetter(c.getCamelCaseName()).callMethod(Nullable.isNull), new CreateObjectExpression(Types.QVariant), _this().callAttrGetter(c.getCamelCaseName()).callMethod(Optional.value)); 
 				} else {
-					ret = Types.QVariant.callStaticMethod(ClsQVariant.fromValue, _this().callAttrGetter(c.getCamelCaseName()));
+					ret = ClsQVariant.fromValue(_this().callAttrGetter(c.getCamelCaseName()));
 				}
 				
-//				ReturnInstruction ret =new ReturnInstruction(Types.QVariant.callStaticMethod(ClsQVariant.fromValue, _this().callAttrGetter(c.getCamelCaseName()))); 
+//				ReturnInstruction ret =new ReturnInstruction(ClsQVariant.fromValue(_this().callAttrGetter(c.getCamelCaseName()))); 
 				long hash = qhash(c.getName());
 				if (!hashCollisions.contains(hash)) {
 					switchBlock._case(new UIntExpression(hash))._return(ret);
@@ -105,7 +104,7 @@ public class MethodGetValueByName extends Method {
 		for (Column c : columns) {
 			if(!c.isFileImportEnabled()) {
 				Expression ret = c.isNullable() 
-						? new InlineIfExpression(Expressions.not(_this().callAttrGetter(c.getCamelCaseName()).callMethod(Nullable.isNull)), Types.QVariant.callStaticMethod(ClsQVariant.fromValue, _this().callAttrGetter(c.getCamelCaseName()).callMethod(Nullable.val)),new CreateObjectExpression(Types.QVariant)) : Types.QVariant.callStaticMethod(ClsQVariant.fromValue, _this().callAttrGetter(c.getCamelCaseName()));
+						? new InlineIfExpression(_this().callAttrGetter(c.getCamelCaseName()).callMethod(Optional.has_value), ClsQVariant.fromValue(_this().callAttrGetter(c.getCamelCaseName()).callMethod(Optional.value)),new CreateObjectExpression(Types.QVariant)) : ClsQVariant.fromValue(_this().callAttrGetter(c.getCamelCaseName()));
 				Expression cond = pName._equals(new CStringLiteral(c.getName()));
 				if (ifblock == null ||counter==100) {
 					counter=0;

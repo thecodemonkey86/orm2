@@ -6,10 +6,6 @@ import cpp.Types;
 import cpp.core.Attr;
 import cpp.core.Method;
 import cpp.core.Param;
-import cpp.core.expression.BoolExpression;
-import cpp.core.expression.Expressions;
-import cpp.core.instruction.IfBlock;
-import cpp.entityrepository.method.MethodEntityLoad;
 import cpp.util.ClsDbPool;
 import database.relation.AbstractRelation;
 import database.relation.ManyRelation;
@@ -40,16 +36,10 @@ public class MethodAttrGetter extends Method{
 
 	@Override
 	public void addImplementation() {
+		
+		
 		if ( relation!=null) {
-			IfBlock ifNotLoaded = _if(Expressions.and(
-					Expressions.not(parent.getAttrByName("loaded"+relation.getIdentifier()))
-//					Expressions.not(paramByName("noLoading"))
-				)
-					
-					
-			);
-			ifNotLoaded.thenBlock().addInstr(Types.EntityRepository.callStaticMethod(MethodEntityLoad.getMethodName(), _this().dereference(), pSqlCon).asInstruction());
-			ifNotLoaded.thenBlock()._assign(parent.getAttrByName("loaded"), BoolExpression.TRUE);
+			_callMethodInstr(_this(), parent.getMethod(MethodEnsureLoaded.getMethodName((AbstractRelation) relation)),pSqlCon);
 		}
 		_return(a);
 		

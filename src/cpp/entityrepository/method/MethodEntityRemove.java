@@ -18,7 +18,7 @@ public class MethodEntityRemove extends Method {
 
 	protected EntityCls entity;
 	protected boolean overloadCascadeDeleteRelations;
-	protected Param pBean;
+	protected Param pEntity;
 	protected Param pSqlCon;
 	
 	public MethodEntityRemove(EntityCls entity,
@@ -29,7 +29,7 @@ public class MethodEntityRemove extends Method {
 			this.addParam(new Param(Types.Bool, "overloadCascadeDeleteRelations"));
 //		this.setVirtualQualifier(true);
 		this.overloadCascadeDeleteRelations = overloadCascadeDeleteRelations;
-		pBean = addParam(entity.toConstRef(), "entity");
+		pEntity = addParam(entity.toConstRef(), "entity");
 		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 		this.entity = entity;
 		setStatic(true);
@@ -51,13 +51,13 @@ public class MethodEntityRemove extends Method {
 					Expression varParams = null;
 					
 					if(pkCondition.size() == 1) {
-						varParams = pBean.callAttrGetter(entity.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName());
+						varParams = pEntity.callAttrGetter(entity.getTbl().getPrimaryKey().getFirstColumn().getCamelCaseName());
 					} else {
 						varParams = new QListInitList(Types.QVariant);
 						for(Column colPk : entity.getTbl().getPrimaryKey().getColumns()) {
-							Expression e = pBean.callAttrGetter(colPk.getCamelCaseName());
+							Expression e = pEntity.callAttrGetter(colPk.getCamelCaseName());
 							
-							((QListInitList)varParams).addExpression(e.getType().equals(Types.QVariant) ?e : Types.QVariant.callStaticMethod(ClsQVariant.fromValue,e));
+							((QListInitList)varParams).addExpression(e.getType().equals(Types.QVariant) ?e : ClsQVariant.fromValue(e));
 						}
 					}
 					

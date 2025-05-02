@@ -22,12 +22,12 @@ import database.relation.ManyRelation;
 public class MethodAddManyToManyRelatedEntity extends Method {
 
 	protected ManyRelation rel;
-	protected Param pBean;
+	protected Param pEntity;
 	protected Param pSqlCon;
 	
 	public MethodAddManyToManyRelatedEntity(ManyRelation r, Param p) {
 		super(Public, Types.Void, getMethodName(r));
-		pBean = addParam(p);
+		pEntity = addParam(p);
 		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 		rel=r;
 	}
@@ -40,8 +40,7 @@ public class MethodAddManyToManyRelatedEntity extends Method {
 	public void addImplementation() {
 		EntityCls parent = (EntityCls) this.parent;
 		Attr a=parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
-		addInstr(a.callMethod(ClsQList.append,pBean).asInstruction());
-		//EntityCls relationBean = Entities.get( rel.getDestTable());
+		addInstr(a.callMethod(ClsQList.append,pEntity).asInstruction());
 		ArrayList<String> placeholders = new ArrayList<>();
 		ArrayList<String> columns = new ArrayList<>();
 		Var varParams = _declare(Types.QVariantList, "params");
@@ -52,7 +51,7 @@ public class MethodAddManyToManyRelatedEntity extends Method {
 		}
 		for(int i=0;i<rel.getDestColumnCount();i++) {
 			columns.add(rel.getDestMappingColumn(i).getEscapedName());
-			_callMethodInstr(varParams, ClsQVariantList.append, pBean.callAttrGetter(rel.getDestEntityColumn(i).getCamelCaseName()));
+			_callMethodInstr(varParams, ClsQVariantList.append, pEntity.callAttrGetter(rel.getDestEntityColumn(i).getCamelCaseName()));
 		}
 		
 		for(int i=0;i<rel.getSourceTable().getPrimaryKey().getColumnCount();i++) {
@@ -67,40 +66,6 @@ public class MethodAddManyToManyRelatedEntity extends Method {
 		String sql = String.format("insert into %s (%s) values (%s)",rel.getMappingTable().getEscapedName(), CodeUtil.commaSep(columns), CodeUtil.commaSep(placeholders));
 		
 		addInstr(Types.Sql.callStaticMethod(ClsSql.execute, pSqlCon,QString.fromStringConstant(sql),varParams).asInstruction());
-		
-		/*if (relationBean.getTbl().getPrimaryKey().isMultiColumn()) {
-			Struct pkType=relationBean.getStructPk();
-			Var idAdded = _declare(pkType, "idAdded");
-			for(Column col:relationBean.getTbl().getPrimaryKey().getColumns()) {
-				_assign(idAdded.accessAttr(col
-						.getCamelCaseName()), pBean
-						.callAttrGetter(
-								col
-								.getCamelCaseName()
-						));
-			}
-			addInstr(
-					parent.getAttrByName(
-							a.getName()+"Added")
-							.callMethod(ClsQVector.append,
-									idAdded
-								).asInstruction());	
-				
-		} else {
-			addInstr(
-					parent.getAttrByName(
-							a.getName()+"Added")
-							.callMethod(ClsQVector.append,
-									pBean
-									.callAttrGetter(
-											relationBean.getTbl().getPrimaryKey().getFirstColumn()
-											.getCamelCaseName()
-									)
-								).asInstruction());	
-		}*/
-		
-		
-		
 		
 
 	}

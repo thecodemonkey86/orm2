@@ -4,6 +4,7 @@ import config.OrmConfig;
 
 public class JavaOrmOutputConfig extends OrmConfig{
 	protected String entityPackageName,repositoryPackageName;
+	protected static boolean android;
 	
 	public String getEntityPackageName() {
 		return entityPackageName;
@@ -13,11 +14,18 @@ public class JavaOrmOutputConfig extends OrmConfig{
 		return repositoryPackageName;
 	}
 	
-	public void setEntityPackageName(String beanPackageName) {
-		this.entityPackageName = beanPackageName;
+	public void setEntityPackageName(String entityPackageName) {
+		this.entityPackageName = entityPackageName;
 	}
 	
 	public void setRepositoryPackageName(String repositoryPackageName) {
 		this.repositoryPackageName = repositoryPackageName;
+	}
+	
+	public static void setAndroid(boolean android) {
+		JavaOrmOutputConfig.android = android;
+	}
+	public static boolean isAndroid() {
+		return android;
 	}
 }

@@ -26,15 +26,13 @@ public class MethodToStringSelect extends Method{
 
 	@Override
 	public void addImplementation() {
-		Var mainBeanAlias = _declare(Types.QString, "mainBeanAlias", QString.fromStringConstant("e1"));
-		Expression selectFields = entity.hasRelations() ? new InlineIfExpression(Expressions.not(_this().accessAttr(ClsEntityQuerySelect.lazyLoading)), entity.callStaticMethod(MethodGetAllSelectFields.getMethodName(), mainBeanAlias ), entity.callStaticMethod(MethodGetSelectFields.getMethodName(), mainBeanAlias )) : entity.callStaticMethod(MethodGetSelectFields.getMethodName(), mainBeanAlias );
-		Expression tableExpr = entity.callStaticMethod(MethodGetTableName.getMethodName(), mainBeanAlias );
+		Var mainEntityAlias = _declare(Types.QString, "mainEntityAlias", QString.fromStringConstant("e1"));
+		Expression selectFields = entity.hasRelations() ? new InlineIfExpression(Expressions.not(_this().accessAttr(ClsEntityQuerySelect.lazyLoading)), entity.callStaticMethod(MethodGetAllSelectFields.getMethodName(), mainEntityAlias ), entity.callStaticMethod(MethodGetSelectFields.getMethodName(), mainEntityAlias )) : entity.callStaticMethod(MethodGetSelectFields.getMethodName(), mainEntityAlias );
+		Expression tableExpr = entity.callStaticMethod(MethodGetTableName.getMethodName(), mainEntityAlias );
 		addInstr(new Instruction() {
 			@Override
 			public String toString() {
 				
-				//ifNotLazyLoading.thenBlock()._assign(_this().accessAttr(ClsBeanQuerySelect.selectFields),  this.entity.callStaticMethod(MethodGetAllSelectFields.getMethodName(), attrMainBeanAlias ));
-				//ifNotLazyLoading.elseBlock()._assign(_this().accessAttr(ClsBeanQuerySelect.selectFields),  this.entity.callStaticMethod(MethodGetSelectFields.getMethodName(), attrMainBeanAlias ));
 				return "QString query = QLatin1String(\"SELECT %1 FROM %2\").arg("+selectFields+", "+tableExpr+");\r\n" +
 						"\r\n" + 
 						"        for(const QString &joinTable:joinTables) {\r\n" + 

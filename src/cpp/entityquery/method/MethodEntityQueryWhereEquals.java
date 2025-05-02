@@ -1,13 +1,12 @@
 package cpp.entityquery.method;
 
-import cpp.Types;
 import cpp.core.Cls;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.QString;
 import cpp.entity.EntityCls;
 import cpp.entityquery.EntityQueryType;
-import cpp.lib.ClsAbstractBeanQuery;
+import cpp.lib.ClsAbstractEntityQuery;
 import cpp.lib.ClsQVariant;
 import database.column.Column;
 import cpp.core.Type;
@@ -16,25 +15,28 @@ public class MethodEntityQueryWhereEquals extends Method{
 	EntityCls entity;
 	Param pValue ;
 	Column c;
-	EntityQueryType beanQueryType;
+	EntityQueryType entityQueryType;
 	
-	public MethodEntityQueryWhereEquals(Cls query,EntityQueryType beanQueryType, EntityCls entity,Column c) {
-		super(Public, query.toRef(), "where"+c.getUc1stCamelCaseName()+"Equals");
+	public MethodEntityQueryWhereEquals(Cls query,EntityQueryType entityQueryType, EntityCls entity,Column c) {
+		super(Public, query.toRef(), getMethodName(c));
 		this.entity=entity;
 		Type t = EntityCls.getDatabaseMapper().columnToType(c,false);
 		pValue = addParam(new Param( t.isPrimitiveType() ? t : t.toConstRef(), "value"));
 		this.c = c;
-		this.beanQueryType = beanQueryType;
+		this.entityQueryType = entityQueryType;
+	}
+
+	public static String getMethodName(Column c) {
+		return "where"+c.getUc1stCamelCaseName()+"Equals";
 	}
 
 	@Override
 	public void addImplementation() {
-		//new InlineIfExpression(Expressions.not(_this().accessAttr(ClsBeanQuery.selectFields).callMethod(ClsQString.isEmpty)),
 		
-		if(beanQueryType == EntityQueryType.Select) {
-			_return( _this().callMethod(ClsAbstractBeanQuery.where,  QString.fromStringConstant("e1." +  c.getEscapedName()+"=?"), Types.QVariant.callStaticMethod(ClsQVariant.fromValue, pValue) ));
+		if(entityQueryType == EntityQueryType.Select) {
+			_return( _this().callMethod(ClsAbstractEntityQuery.where,  QString.fromStringConstant("e1." +  c.getEscapedName()+"=?"), ClsQVariant.fromValue(pValue) ));
 		} else {
-			_return( _this().callMethod(ClsAbstractBeanQuery.where, QString.fromStringConstant( c.getEscapedName()+"=?"), Types.QVariant.callStaticMethod(ClsQVariant.fromValue, pValue) ));
+			_return( _this().callMethod(ClsAbstractEntityQuery.where, QString.fromStringConstant( c.getEscapedName()+"=?"), ClsQVariant.fromValue(pValue) ));
 		}
 		
 		

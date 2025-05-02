@@ -73,16 +73,16 @@ public class OrmUtil {
 		return relation.getDestTable().getCamelCaseName();
 	}
 	
-	public static String getAddRelatedBeanMethodName(IManyRelation r) {
+	public static String getAddRelatedEntityMethodName(IManyRelation r) {
 		return "add" + StringUtil.ucfirst(getManyRelationDestAttrNameSingular(r)); 
 	}
 	
 	/*public static void addAssignValueFromResultSetInstructions(Var resultSet, InstructionBlock parentBlock, Expression assignTo, Column col,String alias) {
 		
 		if (col.isNullable()) {
-			Var value = parentBlock._declare(BeanCls.getTypeMapper().columnToType(col),
+			Var value = parentBlock._declare(EntityCls.getTypeMapper().columnToType(col),
 					"value"
-					, BeanCls.getTypeMapper().getResultSetValueGetter(resultSet, col, alias));
+					, EntityCls.getTypeMapper().getResultSetValueGetter(resultSet, col, alias));
 			IfBlock ifWasNull = parentBlock._if(resultSet.callMethod(ClsResultSet.METHOD_NAME_WAS_NULL));
 				ifWasNull.getIfInstr()
 				assignTo.accessAttr(Expressions.Null);

@@ -32,13 +32,19 @@ public class MethodUnload extends Method {
 
 	@Override
 	public void addImplementation() {
-		for(ManyRelation relation : manyRelations)
+		for(ManyRelation relation : manyRelations) {
 			addInstr(parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(relation)).callMethod(ClsQList.clear).asInstruction());
-		for(OneToManyRelation relation : oneToManyRelations)
+			addInstr( parent.getAttrByName("loaded"+relation.getIdentifier()).assign(BoolExpression.FALSE));
+		}
+		for(OneToManyRelation relation : oneToManyRelations) {
 			addInstr( parent.getAttrByName(OrmUtil.getOneToManyRelationDestAttrName(relation)).callMethod(ClsQList.clear).asInstruction());
-		for(OneRelation relation : oneRelations)
+			addInstr( parent.getAttrByName("loaded"+relation.getIdentifier()).assign(BoolExpression.FALSE));
+		}
+		for(OneRelation relation : oneRelations) {
 			addInstr(parent.getAttrByName(OrmUtil.getOneRelationDestAttrName(relation)).assign(Expressions.Nullptr));
-		addInstr( parent.getAttrByName("loaded").assign(BoolExpression.FALSE));
+			addInstr( parent.getAttrByName("loaded"+relation.getIdentifier()).assign(BoolExpression.FALSE));
+		}
+		
 
 	}
 

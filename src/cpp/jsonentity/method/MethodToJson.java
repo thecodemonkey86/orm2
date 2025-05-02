@@ -8,7 +8,7 @@ import cpp.core.expression.Expression;
 import cpp.core.expression.Operators;
 import cpp.core.expression.Var;
 import cpp.core.instruction.IfBlock;
-import cpp.entity.Nullable;
+import cpp.core.Optional;
 import cpp.jsonentity.JsonEntity;
 import cpp.lib.ClsBaseJsonEntity;
 import cpp.lib.ClsQJsonDocument;
@@ -54,14 +54,14 @@ public class MethodToJson extends Method {
 				IfBlock ifFieldModfied= _if(_this.accessAttr(ClsBaseJsonEntity.insert).binOp(Operators.OR, parent.getAttrByName(col.getCamelCaseName()+"Modified")));
 					
 				if (col.isNullable()) {
-					IfBlock ifValueIsNull = ifFieldModfied.thenBlock()._ifNot(
+					IfBlock ifValueIsNull = ifFieldModfied.thenBlock()._if(
 							_this.callAttrGetter(col.getCamelCaseName())
-									.callMethod(Nullable.isNull));
+									.callMethod(Optional.has_value));
 					// ifValueIsNull.thenBlock().addInstr(
 					// e1.callMethodInstruction(MethodColumnAttrSetNull.getMethodName(col)));
 					ifValueIsNull.thenBlock().addInstr(o.callMethodInstruction(ClsQJsonObject.insert,QString.fromStringConstant(col.getName()), JsonOrmUtil.convertToQJsonValue(
 							_this.callAttrGetter(col.getCamelCaseName())
-							.callMethod(Nullable.val))));
+							.callMethod(Optional.value))));
 					ifValueIsNull.elseBlock().addInstr(o.callMethodInstruction(ClsQJsonObject.insert,QString.fromStringConstant(col.getName()), new CreateObjectExpression(JsonTypes.QJsonValue)));
 				} else {
 					 ifFieldModfied.thenBlock().addInstr(o.callMethodInstruction(ClsQJsonObject.insert,QString.fromStringConstant(col.getName()), JsonOrmUtil.convertToQJsonValue(

@@ -20,32 +20,27 @@ public class MethodQHashEntity extends NonMemberMethod {
 		this.pk = pk;
 		addParam(new Param(cls.toConstRef(), "entity"));
 		this.cls = cls;
-//		setInlineQualifier(true);
 	}
 	
 	public MethodQHashEntity(Struct structPk, PrimaryKey pk) {
 		super(Types.SizeT, "qHash");
 		this.pk = pk;
 		addParam(new Param(structPk.toConstRef(), "pk"));
-//		setInlineQualifier(true);
 	}
 
 	@Override
 	public void addImplementation() {
-		Expression paramBean = getParam("entity");
-//				.constCast();
-//		MethodDefaultQHash mQhash = new MethodDefaultQHash();
+		Expression paramEntity = getParam("entity");
 		
 		Expression hash = 
 				pk.getColumns().get(0).hasOneRelation() 
-						? paramBean.callMethod("get"+ pk.getColumns().get(0).getOneRelation().getDestTable().getUc1stCamelCaseName()).callMethod("get"+pk.getColumns().get(0).getOneRelationMappedColumn().getUc1stCamelCaseName())  
-								:  new NonMemberMethodCallExpression(new MethodDefaultQHash(),  paramBean.callMethod("get"+ pk.getColumns().get(0).getUc1stCamelCaseName()));
+						? paramEntity.callMethod("get"+ pk.getColumns().get(0).getOneRelation().getDestTable().getUc1stCamelCaseName()).callMethod("get"+pk.getColumns().get(0).getOneRelationMappedColumn().getUc1stCamelCaseName())  
+								:  new NonMemberMethodCallExpression(new MethodDefaultQHash(),  paramEntity.callMethod("get"+ pk.getColumns().get(0).getUc1stCamelCaseName()));
 		for(int i=1;i<pk.getColumns().size();i++) {
 			hash = new PlusOperatorExpression(hash, pk.getColumns().get(i).hasOneRelation() 
-					? paramBean.callMethod("get"+ pk.getColumns().get(i).getOneRelation().getDestTable().getUc1stCamelCaseName()).callMethod("get"+pk.getColumns().get(i).getOneRelationMappedColumn().getUc1stCamelCaseName())  
-					:  new NonMemberMethodCallExpression(new MethodDefaultQHash(),  paramBean.callMethod("get"+ pk.getColumns().get(i).getUc1stCamelCaseName())));
+					? paramEntity.callMethod("get"+ pk.getColumns().get(i).getOneRelation().getDestTable().getUc1stCamelCaseName()).callMethod("get"+pk.getColumns().get(i).getOneRelationMappedColumn().getUc1stCamelCaseName())  
+					:  new NonMemberMethodCallExpression(new MethodDefaultQHash(),  paramEntity.callMethod("get"+ pk.getColumns().get(i).getUc1stCamelCaseName())));
 		}
-		//_return(new NonMemberMethodCallExpression(mQhash,hash));
 		_return(hash);
 	}
 }

@@ -16,7 +16,7 @@ public class MethodAddRelatedEntity extends Method {
 	protected OneToManyRelation rel;
 	
 	public MethodAddRelatedEntity(OneToManyRelation r, Param p) {
-		super(Public, Types.Void, OrmUtil.getAddRelatedBeanMethodName(r));
+		super(Public, Types.Void, OrmUtil.getAddRelatedEntityMethodName(r));
 		addParam(p);
 		rel=r;
 	}

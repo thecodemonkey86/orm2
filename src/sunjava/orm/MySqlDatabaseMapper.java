@@ -83,11 +83,11 @@ public class MySqlDatabaseMapper extends DatabaseTypeMapper{
 	}
 
 	@Override
-	public Type getBeanQueryClass(EntityCls beanCls) {
+	public Type getEntityQueryClass(EntityCls entityCls) {
 		throw new RuntimeException("not implemented");
 	}
 	@Override
-	public Type getLibBeanQueryClass(EntityCls beanCls) {
+	public Type getLibEntityQueryClass(EntityCls entityCls) {
 		throw new RuntimeException("not implemented");
 	}
 

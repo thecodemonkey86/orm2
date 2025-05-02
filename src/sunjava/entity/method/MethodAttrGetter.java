@@ -42,7 +42,7 @@ public class MethodAttrGetter extends Method{
 				)
 					
 					
-			).thenBlock().addInstr( Types.BeanRepository.callStaticMethod("load"+parent.getName(), _this(),pSqlCon).asInstruction());
+			).thenBlock().addInstr( Types.EntityRepository.callStaticMethod("load"+parent.getName(), _this(),pSqlCon).asInstruction());
 		}
 		_return(a);
 		

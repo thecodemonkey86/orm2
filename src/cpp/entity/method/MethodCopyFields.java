@@ -13,7 +13,7 @@ import cpp.core.instruction.IfBlock;
 import cpp.core.method.MethodAttributeSetter;
 import cpp.entity.Entities;
 import cpp.entity.EntityCls;
-import cpp.entity.Nullable;
+import cpp.core.Optional;
 import cpp.lib.ClsQSet;
 import cpp.orm.OrmUtil;
 import cpp.util.ClsDbPool;
@@ -79,9 +79,9 @@ public class MethodCopyFields extends Method{
 				
 				IfBlock ifNotExclude = _if(Expressions.not(pExclude.callMethod(ClsQSet.contains, QString.fromStringConstant(col.getName()))));
 				if(col.isNullable()) {
-					IfBlock ifValIsNull = ifNotExclude.thenBlock()._if( pSrc.callAttrGetter(col.getCamelCaseName()).callMethod(Nullable.isNull));
+					IfBlock ifValIsNull = ifNotExclude.thenBlock()._ifNot( pSrc.callAttrGetter(col.getCamelCaseName()).callMethod(Optional.has_value));
 					ifValIsNull.thenBlock()._callMethodInstr(_this(),  MethodColumnAttrSetNull.getMethodName(col));
-					ifValIsNull.elseBlock()._callMethodInstr(_this(), MethodColumnAttrSetter.getMethodName(col), pSrc.callAttrGetter(col.getCamelCaseName()).callMethod(Nullable.val));
+					ifValIsNull.elseBlock()._callMethodInstr(_this(), MethodColumnAttrSetter.getMethodName(col), pSrc.callAttrGetter(col.getCamelCaseName()).callMethod(Optional.value));
 				} else {
 					ifNotExclude.thenBlock()._callMethodInstr(_this(), MethodColumnAttrSetter.getMethodName(col), pSrc.callAttrGetter(col.getCamelCaseName()));
 				}

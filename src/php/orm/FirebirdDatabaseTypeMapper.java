@@ -118,11 +118,11 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 	}
 
 	@Override
-	public Type getBeanQueryClass(EntityCls beanCls) {
+	public Type getEntityQueryClass(EntityCls entityCls) {
 		throw new RuntimeException("not implemented");
 	}
 	@Override
-	public Type getLibBeanQueryClass(EntityCls beanCls) {
+	public Type getLibEntityQueryClass(EntityCls entityCls) {
 		throw new RuntimeException("not implemented");
 	}
 
@@ -256,17 +256,17 @@ public class FirebirdDatabaseTypeMapper extends DatabaseTypeMapper{
 		return e;
 	}
 	
-	public Method getBeanRepositoryBeginTransactionMethod() {
+	public Method getEntityRepositoryBeginTransactionMethod() {
 		return new FirebirdEntityRepositoryBeginTransactionMethod();
 	}
 
 	@Override
-	public Method getBeanRepositoryCommitTransactionMethod() {
+	public Method getEntityRepositoryCommitTransactionMethod() {
 		return new FirebirdEntityRepositoryCommitTransactionMethod();
 	}
 
 	@Override
-	public Method getBeanRepositoryRollbackTransactionMethod() {
+	public Method getEntityRepositoryRollbackTransactionMethod() {
 		return new FirebirdEntityRepositoryRollbackTransactionMethod();
 	}
 	

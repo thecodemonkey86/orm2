@@ -13,6 +13,7 @@ public class MethodGetFieldName extends Method {
 	
 	public MethodGetFieldName(Column col) {
 		this(col,false);
+		setnoexcept();
 	}
 	
 	public MethodGetFieldName(Column col, boolean prefix) {

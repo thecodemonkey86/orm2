@@ -9,7 +9,7 @@ import cpp.core.expression.CreateObjectExpression;
 import cpp.core.expression.Expressions;
 import cpp.core.instruction.IfBlock;
 import cpp.core.method.MethodAttributeSetter;
-import cpp.entity.Nullable;
+import cpp.core.Optional;
 import cpp.jsonentity.JsonEntity;
 import cpp.jsonentity.OneAttr;
 import database.column.Column;
@@ -36,30 +36,30 @@ public class MethodOneRelationAttrSetter extends MethodAttributeSetter {
 	public void addImplementation() {
 		super.addImplementation();
 		OneRelation r = ((OneAttr) attr).getRelation();
-		Param pRelationBean = getParam(attr.getName());
+		Param pRelationEntity = getParam(attr.getName());
 		for(int i=0;i<r.getColumnCount();i++) {
 			Column destCol = r.getColumns(i).getValue2();
 			Column srcCol = r.getColumns(i).getValue1();
 			
 			if(destCol.isNullable() == srcCol.isNullable()) {
 				if(destCol.isNullable()) {
-					IfBlock ifParamOneRelationIsNull = _if(pRelationBean._equals(Expressions.Nullptr));
-					ifParamOneRelationIsNull.thenBlock().addInstr( _this().assignAttr(srcCol.getCamelCaseName(), new CreateObjectExpression(Types.nullable(JsonEntity.getDatabaseMapper().columnToType(destCol)))));
-					ifParamOneRelationIsNull.elseBlock().addInstr( _this().assignAttr(srcCol.getCamelCaseName(), pRelationBean.callMethod("get"+destCol.getUc1stCamelCaseName())));
+					IfBlock ifParamOneRelationIsNull = _if(pRelationEntity._equals(Expressions.Nullptr));
+					ifParamOneRelationIsNull.thenBlock().addInstr( _this().assignAttr(srcCol.getCamelCaseName(), new CreateObjectExpression(Types.optional(JsonEntity.getDatabaseMapper().columnToType(destCol)))));
+					ifParamOneRelationIsNull.elseBlock().addInstr( _this().assignAttr(srcCol.getCamelCaseName(), pRelationEntity.callMethod("get"+destCol.getUc1stCamelCaseName())));
 					
 				} else {
-					addInstr( _this().assignAttr(srcCol.getCamelCaseName(), pRelationBean.callMethod("get"+destCol.getUc1stCamelCaseName())));
+					addInstr( _this().assignAttr(srcCol.getCamelCaseName(), pRelationEntity.callMethod("get"+destCol.getUc1stCamelCaseName())));
 				}
 				
 				
 			} else if(destCol.isNullable()) {
 				
-				IfBlock ifBeanNotNull = _if(pRelationBean._equals(Expressions.Nullptr));
-					ifBeanNotNull.thenBlock().addInstr( _this().assignAttr(srcCol.getCamelCaseName(), pRelationBean.callMethod("get"+destCol.getUc1stCamelCaseName()).callMethod(Nullable.val)));
+				IfBlock ifEntityNotNull = _if(pRelationEntity._equals(Expressions.Nullptr));
+					ifEntityNotNull.thenBlock().addInstr( _this().assignAttr(srcCol.getCamelCaseName(), pRelationEntity.callMethod("get"+destCol.getUc1stCamelCaseName()).callMethod(Optional.value)));
 			} else {
-				IfBlock ifParamOneRelationIsNull = _if(pRelationBean._equals(Expressions.Nullptr));
+				IfBlock ifParamOneRelationIsNull = _if(pRelationEntity._equals(Expressions.Nullptr));
 				ifParamOneRelationIsNull.thenBlock().addInstr( _this().assignAttr(srcCol.getCamelCaseName(), new CreateObjectExpression(JsonEntity.getDatabaseMapper().columnToType(srcCol))));
-				ifParamOneRelationIsNull.elseBlock().addInstr( _this().assignAttr(srcCol.getCamelCaseName(), new CreateObjectExpression(JsonEntity.getDatabaseMapper().columnToType(srcCol), pRelationBean.callMethod("get"+destCol.getUc1stCamelCaseName()))));
+				ifParamOneRelationIsNull.elseBlock().addInstr( _this().assignAttr(srcCol.getCamelCaseName(), new CreateObjectExpression(JsonEntity.getDatabaseMapper().columnToType(srcCol), pRelationEntity.callMethod("get"+destCol.getUc1stCamelCaseName()))));
 			}
 			
 			if (!this.internal) {

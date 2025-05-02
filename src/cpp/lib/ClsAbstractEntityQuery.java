@@ -6,11 +6,11 @@ import cpp.core.Cls;
 import cpp.core.ClsTemplate;
 import cpp.core.TplCls;
 
-public class ClsAbstractBeanQuery extends TplCls{
+public class ClsAbstractEntityQuery extends TplCls{
 
 	public static final String where = "where";
 	
-	public ClsAbstractBeanQuery(ClsTemplate tpl, Cls cls) {
+	public ClsAbstractEntityQuery(ClsTemplate tpl, Cls cls) {
 		super(tpl.getName(),cls);
 		addMethod(new LibMethod(toRef(), "select"));
 		addMethod(new LibMethod(toRef(), "leftJoin"));

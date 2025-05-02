@@ -81,12 +81,12 @@ public class MethodSetValueByName extends Method {
 				Expression ret = null;
 				
 				if(c.isNullable()) {
-					ret = new InlineIfExpression( _this().callAttrGetter(c.getCamelCaseName()).callMethod(Nullable.isNull), new CreateObjectExpression(Types.QVariant), _this().callAttrGetter(c.getCamelCaseName()).callMethod(Nullable.val)); 
+					ret = new InlineIfExpression( _this().callAttrGetter(c.getCamelCaseName()).callMethod(Nullable.isNull), new CreateObjectExpression(Types.QVariant), _this().callAttrGetter(c.getCamelCaseName()).callMethod(Optional.value)); 
 				} else {
-					ret = Types.QVariant.callStaticMethod(ClsQVariant.fromValue, _this().callAttrGetter(c.getCamelCaseName()));
+					ret = ClsQVariant.fromValue(_this().callAttrGetter(c.getCamelCaseName()));
 				}
 				
-//				ReturnInstruction ret =new ReturnInstruction(Types.QVariant.callStaticMethod(ClsQVariant.fromValue, _this().callAttrGetter(c.getCamelCaseName()))); 
+//				ReturnInstruction ret =new ReturnInstruction(ClsQVariant.fromValue(_this().callAttrGetter(c.getCamelCaseName()))); 
 				long hash = qhash(c.getName());
 				if (!hashCollisions.contains(hash)) {
 					switchBlock._case(new UIntExpression(hash))._return(ret);

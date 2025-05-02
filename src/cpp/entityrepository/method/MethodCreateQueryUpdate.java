@@ -10,8 +10,7 @@ public class MethodCreateQueryUpdate extends Method {
 	EntityCls entity;
 	
 	public MethodCreateQueryUpdate(EntityCls cls) {
-		//super(Public, new ClsBeanQuery(cls).toUniquePointer(), "createQuery"+cls.getName());
-		super(Public, Types.beanQueryUpdate(cls),getMethodName(cls)
+		super(Public, Types.entityQueryUpdate(cls),getMethodName(cls)
 				);
 		setStatic(true);
 		this.entity=cls;
@@ -23,7 +22,6 @@ public class MethodCreateQueryUpdate extends Method {
 	}
 
 	public static String getMethodName(EntityCls cls) {
-		// TODO Auto-generated method stub
 		return "update"+cls.getName();
 	}
 

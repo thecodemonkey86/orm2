@@ -9,30 +9,30 @@ import cpp.lib.ClsQList;
 import cpp.orm.OrmUtil;
 import database.relation.OneToManyRelation;
 
-public class MethodAddRelatedBean extends Method {
+public class MethodAddRelatedEntity extends Method {
 
 	protected OneToManyRelation rel;
-	Param pBean;
+	Param pEntity;
 	
-	public MethodAddRelatedBean(OneToManyRelation r, Param p) {
+	public MethodAddRelatedEntity(OneToManyRelation r, Param p) {
 		super(Public, Types.Void, getMethodName(r));
-		pBean = addParam(p);
+		pEntity = addParam(p);
 		rel=r;
 	}
 
 	@Override
 	public void addImplementation() {
 		Attr a=parent.getAttrByName(OrmUtil.getOneToManyRelationDestAttrName(rel));
-		addInstr(a.callMethod("append",pBean).asInstruction());
+		addInstr(a.callMethod("append",pEntity).asInstruction());
 //		addInstr(parent.getAttrByName("_added"+StringUtil.ucfirst(a.getName())).callMethod("append",getParam("entity")).asInstruction());
 
 		
-		if(!pBean.getType().getName().startsWith(ClsQList.CLSNAME)) // TODO overloaded with QVector
+		if(!pEntity.getType().getName().startsWith(ClsQList.CLSNAME)) // TODO overloaded with QVector
 		for(int i=0;i < rel.getColumnCount(); i++) {
 			if(!rel.getDestMappingColumn(i).isPartOfPk()) {
-				addInstr(pBean.callSetterMethodInstruction(rel.getDestMappingColumn(i).getCamelCaseName(), _this().callAttrGetter(rel.getColumns(i).getValue1().getCamelCaseName())));
+				addInstr(pEntity.callSetterMethodInstruction(rel.getDestMappingColumn(i).getCamelCaseName(), _this().callAttrGetter(rel.getColumns(i).getValue1().getCamelCaseName())));
 			} else {
-				addInstr(pBean.callMethodInstruction("set"+ rel.getDestMappingColumn(i).getUc1stCamelCaseName()+"Internal", _this().callAttrGetter(rel.getColumns(i).getValue1().getCamelCaseName())));
+				addInstr(pEntity.callMethodInstruction("set"+ rel.getDestMappingColumn(i).getUc1stCamelCaseName()+"Internal", _this().callAttrGetter(rel.getColumns(i).getValue1().getCamelCaseName())));
 			}
 		}
 	}

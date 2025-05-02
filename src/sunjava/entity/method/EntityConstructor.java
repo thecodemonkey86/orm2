@@ -45,7 +45,7 @@ public class EntityConstructor extends Constructor{
 				/*if (defValExpr != null) {
 					_assign(parent.getAttrByName(col.getCamelCaseName()),  defValExpr);
 				} else {
-					_assign(parent.getAttrByName(col.getCamelCaseName()), BeanCls.getTypeMapper().getGenericDefaultValueExpression(col));
+					_assign(parent.getAttrByName(col.getCamelCaseName()), EntityCls.getTypeMapper().getGenericDefaultValueExpression(col));
 				}*/
 				_assign(parent.getAttrByName(col.getCamelCaseName()),  defValExpr);
 			}

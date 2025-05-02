@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import codegen.CodeUtil;
 
 public class CopyConstructor extends Constructor {
-
-	public CopyConstructor(Cls cls) {
+	boolean delete;
+	public CopyConstructor(Cls cls, boolean delete) {
 		addParam(cls.toConstRef(),"");
+		this.delete=delete;
 	}
 	
 	@Override
@@ -26,6 +27,6 @@ public class CopyConstructor extends Constructor {
 		for(Param p:this.params) {
 			params.add(CodeUtil.sp("const",p.getType().getName(),"&",name));
 		}
-		return CodeUtil.sp("public:", parent.getName(),CodeUtil.parentheses(CodeUtil.commaSep(params)),"= default;");
+		return CodeUtil.sp("public:", parent.getName(),CodeUtil.parentheses(CodeUtil.commaSep(params)),"=",(delete?"delete":"default"))+";";
 	}
 }

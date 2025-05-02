@@ -21,17 +21,17 @@ import sunjava.core.instruction.IfBlock;
 import sunjava.entity.Entities;
 import sunjava.entity.EntityCls;
 import sunjava.entity.method.MethodOneRelationAttrSetter;
-import sunjava.entity.method.MethodOneRelationBeanIsNull;
+import sunjava.entity.method.MethodOneRelationEntityIsNull;
 import sunjava.entityrepository.method.MethodGetFromResultSet;
 import sunjava.lib.ClsHashSet;
 import sunjava.lib.ClsResultSet;
 import sunjava.lib.ClsSqlQuery;
 import util.pg.PgCppUtil;
 
-public class MethodBeanQueryFetchOne extends Method{
+public class MethodEntityQueryFetchOne extends Method{
 	EntityCls entity;
 	
-	public MethodBeanQueryFetchOne(EntityCls entity) {
+	public MethodEntityQueryFetchOne(EntityCls entity) {
 		super(Public, entity, "fetchOne");
 		this.entity=entity;
 	}
@@ -55,7 +55,7 @@ public class MethodBeanQueryFetchOne extends Method{
 //		OrmUtil.addAssignValueFromResultSetInstructions(resultSet, ifQSqlQueryNext.getIfInstr(), e1, col, "e1");
 //		}
 					.setIfInstr(
-							e1.assign(Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(entity),  resultSet, JavaString.stringConstant("e1")))
+							e1.assign(Types.EntityRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(entity),  resultSet, JavaString.stringConstant("e1")))
 							,
 							e1.callAttrSetterMethodInstr("loaded", BoolExpression.TRUE)//_assignInstruction(e1.accessAttr("loaded"), BoolExpression.TRUE)
 							)
@@ -70,11 +70,11 @@ public class MethodBeanQueryFetchOne extends Method{
 		manyRelations.addAll(manyToManyRelations);
 		
 		for(OneRelation r:oneRelations) {
-//			BeanCls foreignCls = Beans.get(r.getDestTable()); 
-			IfBlock ifBlock= doWhileQSqlQueryNext._if(e1.callMethod(new MethodOneRelationBeanIsNull(r)));
+//			EntityCls foreignCls = Entities.get(r.getDestTable()); 
+			IfBlock ifBlock= doWhileQSqlQueryNext._if(e1.callMethod(new MethodOneRelationEntityIsNull(r)));
 			ifBlock.thenBlock().
 			_callMethodInstr(e1, new MethodOneRelationAttrSetter( e1.getClassConcreteType().getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)), true,r.isPartOfPk()), 
-					Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias())));
+					Types.EntityRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias())));
 		}
 		for(AbstractRelation r:manyRelations) {
 			EntityCls foreignCls = Entities.get(r.getDestTable());  
@@ -93,19 +93,19 @@ public class MethodBeanQueryFetchOne extends Method{
 //				IfBlock ifNotContains = 
 						doWhileQSqlQueryNext._if(Expressions.not(pkSet.callMethod(ClsHashSet.contains, pk)))
 						.addIfInstr(pkSet.callMethodInstruction(ClsHashSet.add, pk))
-						.addIfInstr(e1.callMethodInstruction(EntityCls.getRelatedBeanMethodName(r), Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias()))));
+						.addIfInstr(e1.callMethodInstruction(EntityCls.getRelatedEntityMethodName(r), Types.EntityRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias()))));
 //						.addIfInstr(e1.accessAttr(CodeUtil2.plural(r.getDestTable().getCamelCaseName())).callMethodInstruction("append",  _this().callGetByRecordMethod(foreignCls, rec, JavaString.fromStringConstant(r.getAlias()))));
 				
 			} else {
 				Column colPk = r.getDestTable().getPrimaryKey().getColumns().get(0);
 				Type type = EntityCls.getTypeMapper().columnToType(colPk);
 
-				//IfBlock ifNotRecValueIsNull = doWhileQSqlQueryNext._if(Expressions.not(  Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Beans.get(r.getDestTable())),  resultSet, JavaString.fromStringConstant("pk"+r.getAlias()))));
+				//IfBlock ifNotRecValueIsNull = doWhileQSqlQueryNext._if(Expressions.not(  Types.EntityRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.fromStringConstant("pk"+r.getAlias()))));
 				
 				Var pkSet = ifQSqlQueryNext.thenBlock()._declareInitDefaultConstructor(Types.hashset(type), "pkSet"+r.getAlias());
 				/*Var pk = ifNotRecValueIsNull.getIfInstr()._declare(
 						type, 
-						"pk"+r.getAlias(), Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Beans.get(r.getDestTable())),  resultSet, JavaString.fromStringConstant("pk"+r.getAlias())))
+						"pk"+r.getAlias(), Types.EntityRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.fromStringConstant("pk"+r.getAlias())))
 						
 						;*/
 				
@@ -118,7 +118,7 @@ public class MethodBeanQueryFetchOne extends Method{
 				IfBlock ifNotRecValueIsNull = doWhileQSqlQueryNext._if(_not(resultSet.callMethod(ClsResultSet.wasNull)));
 				ifNotRecValueIsNull.thenBlock()._if(Expressions.not(pkSet.callMethod(ClsHashSet.contains, pk)))
 					.addIfInstr(pkSet.callMethodInstruction(ClsHashSet.add, pk))
-					.addIfInstr(e1.callMethodInstruction(EntityCls.getRelatedBeanMethodName(r), Types.BeanRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias()))));
+					.addIfInstr(e1.callMethodInstruction(EntityCls.getRelatedEntityMethodName(r), Types.EntityRepository.callStaticMethod(MethodGetFromResultSet.getMethodName(Entities.get(r.getDestTable())),  resultSet, JavaString.stringConstant(r.getAlias()))));
 			}
 			
 		}

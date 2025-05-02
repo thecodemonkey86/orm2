@@ -12,6 +12,7 @@ public class MethodAttributeSetter extends Method{
 		super(Public, CoreTypes.Void,getMethodName(a) );
 		this.attr=a;
 		addParam(new Param(a.getType().toPassParamType() , a.getName()));
+		setnoexcept();
 	}
 
 	

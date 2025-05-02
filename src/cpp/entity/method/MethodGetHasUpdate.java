@@ -19,6 +19,7 @@ public class MethodGetHasUpdate extends Method{
 		super(Public, Types.Bool, "hasUpdate");
 		this.tbl = tbl;
 		setConstQualifier();
+		setnoexcept();
 	}
 
 	@Override

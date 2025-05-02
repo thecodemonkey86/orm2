@@ -7,6 +7,7 @@ public class MethodStaticAttributeGetter extends MethodAttributeGetter {
 	public MethodStaticAttributeGetter(Attr a) {
 		super(a);
 		setStatic(true);
+		setnoexcept();
 	}
 	
 	public MethodStaticAttributeGetter(Attr a,boolean returnConstRef) {

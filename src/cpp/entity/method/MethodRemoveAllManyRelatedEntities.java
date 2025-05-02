@@ -58,50 +58,6 @@ public class MethodRemoveAllManyRelatedEntities extends Method {
 		
 		
 		
-		/*Attr a=parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
-		ForeachLoop foreach = _foreach(new Var(((ManyAttr)a).getElementType().toConstRef(), "_relationBean"), a);
-		foreach.addInstr(_this().callMethodInstruction(MethodRemoveManyToManyRelatedEntity.getMethodName(rel), foreach.getVar()));*/
-		
-//		Attr a=parent.getAttrByName(OrmUtil.getManyRelationDestAttrName(rel));
-//		EntityCls relationBean = Entities.get( rel.getDestTable());
-//		Var varForeach = new Var(((ManyAttr)a).getElementType().toConstRef(), "_relationBean");
-//		if (relationBean.getTbl().getPrimaryKey().isMultiColumn()) {
-//			ForeachLoop foreachRelationBeans = _foreach(varForeach, a);	
-//			Struct pkType=relationBean.getStructPk();
-//			Var idRemoved = foreachRelationBeans._declare(pkType, "idRemoved");
-//			for(Column col:relationBean.getTbl().getPrimaryKey().getColumns()) {
-//				
-//				foreachRelationBeans._assign(idRemoved.accessAttr(col
-//						.getCamelCaseName()), varForeach
-//						.callAttrGetter(
-//								col
-//								.getCamelCaseName()
-//						));
-//			}
-//			
-//			
-//			
-//			/*foreachRelationBeans.addInstr(
-//					parent.getAttrByName(
-//							a.getName()+"Removed")
-//							.callMethod("append",
-//									idRemoved
-//								).asInstruction());	*/
-//		} else {
-//			ForeachLoop foreachRelationBeans = _foreach(varForeach, a);	
-//			
-//			/*foreachRelationBeans.addInstr(
-//				parent.getAttrByName(
-//						a.getName()+"Removed")
-//						.callMethod("append",
-//								varForeach.callMethod("get" + relationBean.getTbl().getPrimaryKey().getFirstColumn().getUc1stCamelCaseName())
-//																
-//							).asInstruction());	*/
-//			
-//		}
-//		
-//
-//		_callMethodInstr(a, ClsQVector.clear);
 	}
 
 }

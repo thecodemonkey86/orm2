@@ -14,9 +14,6 @@ public class ConstructorEntityQueryUpdate extends Constructor {
 	@Override
 	public void addImplementation() {
 		addInstr( _this().assignAttr(pTable.getName(), pTable));
-		//addInstr( _this().assignAttr("limitResults", new IntExpression(0)));
-		//addInstr( _this().assignAttr("resultOffset", new IntExpression(-1)));
-//		addInstr( _this().assignAttr(ClsBeanQuery.queryMode, EnumQueryMode.INSTANCE.constant(EnumQueryMode.Select)));
 	}
 
 	

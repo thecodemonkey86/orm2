@@ -20,10 +20,10 @@ import php.core.method.MethodAttributeGetter;
 import php.core.method.MethodAttributeSetter;
 import php.entity.method.EntityConstructor;
 import php.entity.method.EntityEqualsMethod;
-import php.entity.method.MethodAddManyToManyRelatedBean;
-import php.entity.method.MethodAddManyToManyRelatedBeanInternal;
-import php.entity.method.MethodAddRelatedBean;
-import php.entity.method.MethodAddRelatedBeanInternal;
+import php.entity.method.MethodAddManyToManyRelatedEntity;
+import php.entity.method.MethodAddManyToManyRelatedEntityInternal;
+import php.entity.method.MethodAddRelatedEntity;
+import php.entity.method.MethodAddRelatedEntityInternal;
 import php.entity.method.MethodAttrGetter;
 import php.entity.method.MethodClearModified;
 import php.entity.method.MethodColumnAttrSetNull;
@@ -40,10 +40,10 @@ import php.entity.method.MethodIsModified;
 import php.entity.method.MethodManyAttrGetter;
 import php.entity.method.MethodOneRelationAttrGetter;
 import php.entity.method.MethodOneRelationAttrSetter;
-import php.entity.method.MethodOneRelationBeanIsNull;
-import php.entity.method.MethodRemoveAllManyToManyRelatedBeans;
-import php.entity.method.MethodRemoveAllOneToManyRelatedBeans;
-import php.entity.method.MethodRemoveManyToManyRelatedBean;
+import php.entity.method.MethodOneRelationEntityIsNull;
+import php.entity.method.MethodRemoveAllManyToManyRelatedEntities;
+import php.entity.method.MethodRemoveAllOneToManyRelatedEntities;
+import php.entity.method.MethodRemoveManyToManyRelatedEntity;
 import php.entity.method.MethodSetAutoIncrementId;
 import php.entity.method.MethodSetPrimaryKey;
 import php.entity.method.MethodSetValue;
@@ -60,12 +60,12 @@ public class EntityCls extends PhpCls {
 	static Database database;
 	static DatabaseTypeMapper typeMapper;
 	static PhpCls sqlQueryCls;
-	protected static String beanNamespace;
-	protected static String beanRepoNamespace;
+	protected static String entityNamespace;
+	protected static String entityRepoNamespace;
 	public final static String API_LEVEL="2.5.0";
 	
-	public static void setBeanRepoNamespace(String beanRepoClsNamespace) {
-		EntityCls.beanRepoNamespace = beanRepoClsNamespace;
+	public static void setEntityRepoNamespace(String entityRepoClsNamespace) {
+		EntityCls.entityRepoNamespace = entityRepoClsNamespace;
 	}
 
 	public static void setSqlQueryCls(PhpCls sqlQueryCls) {
@@ -76,8 +76,8 @@ public class EntityCls extends PhpCls {
 		return sqlQueryCls;
 	}
 
-	public static void setBeanNamespace(String beanPackage) {
-		EntityCls.beanNamespace = beanPackage;
+	public static void setEntityNamespace(String entityPackage) {
+		EntityCls.entityNamespace = entityPackage;
 	}
 
 	public static void setDatabase(Database database) {
@@ -117,7 +117,7 @@ public class EntityCls extends PhpCls {
 			OneAttr attr = new OneAttr(r);
 			addAttr(attr);
 			addMethod(new MethodOneRelationAttrGetter(attr,true));	
-			addMethod(new MethodOneRelationBeanIsNull(r));
+			addMethod(new MethodOneRelationEntityIsNull(r));
 			addMethod(new MethodOneRelationAttrSetter( attr, true)); // internal setter
 			addMethod(new MethodOneRelationAttrSetter( attr, false)); // public setter
 			if (!r.isPartOfPk()) {
@@ -130,15 +130,15 @@ public class EntityCls extends PhpCls {
 			ManyAttr attr = new ManyAttr(r);
 			addAttr(attr);
 			addMethod(new MethodManyAttrGetter(attr));
-			addMethod(new MethodAddRelatedBean(r, new Param(attr.getElementType(), "entity")));
-			addMethod(new MethodAddRelatedBeanInternal(r, new Param(attr.getElementType(), "entity")));
+			addMethod(new MethodAddRelatedEntity(r, new Param(attr.getElementType(), "entity")));
+			addMethod(new MethodAddRelatedEntityInternal(r, new Param(attr.getElementType(), "entity")));
 			Attr manyRelAdded = new Attr(Types.array(Entities.get(r.getDestTable())) ,attr.getName()+"Added");
 			addAttr(manyRelAdded);
 			
 			Attr manyRelRemoved = new Attr(Types.array(Entities.get(r.getDestTable())) ,attr.getName()+"Removed");
 			addAttr(manyRelRemoved);
 			
-			addMethod(new MethodRemoveAllOneToManyRelatedBeans(r)
+			addMethod(new MethodRemoveAllOneToManyRelatedEntities(r)
 					);
 		}
 
@@ -155,14 +155,14 @@ public class EntityCls extends PhpCls {
 			addAttr(manyRelRemoved);
 			addMethod(new MethodAttributeGetter(manyRelRemoved));
 			
-			addMethod(new MethodAddManyToManyRelatedBean(r, new Param(attr.getElementType(), "entity")));
-			addMethod(new MethodAddManyToManyRelatedBeanInternal(r, new Param(attr.getElementType(), "entity")));
+			addMethod(new MethodAddManyToManyRelatedEntity(r, new Param(attr.getElementType(), "entity")));
+			addMethod(new MethodAddManyToManyRelatedEntityInternal(r, new Param(attr.getElementType(), "entity")));
 
-			addMethod(new MethodRemoveManyToManyRelatedBean(r, new Param(attr.getElementType(), "entity")));
+			addMethod(new MethodRemoveManyToManyRelatedEntity(r, new Param(attr.getElementType(), "entity")));
 			addMethod(new MethodHasRemovedManyToMany(r));
 			addMethod(new MethodHasAddedManyToMany(r));
 			
-			addMethod(new MethodRemoveAllManyToManyRelatedBeans(r));
+			addMethod(new MethodRemoveAllManyToManyRelatedEntities(r));
 		}
 		addMethod(new MethodSetPrimaryKey(this));
 		
@@ -217,14 +217,14 @@ public class EntityCls extends PhpCls {
 	}
 
 	public EntityCls(Table tbl,List<OneToManyRelation> manyRelations,List<OneRelation> oneRelations, List<ManyRelation> manyToManyRelations) {
-		super(CodeUtil2.uc1stCamelCase(tbl.getName()), beanNamespace);
+		super(CodeUtil2.uc1stCamelCase(tbl.getName()), entityNamespace);
 		this.tbl = tbl;
 		this.oneToManyRelations= manyRelations;
 		this.oneRelations = oneRelations;
 		this.manyRelations = manyToManyRelations;
 		
 		if (tbl.getPrimaryKey().isMultiColumn()) {
-			pkType = new PkMultiColumnType("Pk"+tbl.getUc1stCamelCaseName(),beanNamespace+"\\Pk", tbl);
+			pkType = new PkMultiColumnType("Pk"+tbl.getUc1stCamelCaseName(),entityNamespace+"\\Pk", tbl);
 			
 			for(Column col: tbl.getPrimaryKey().getColumns()) {
 				Attr attrPrev = new Attr(EntityCls.getTypeMapper().getTypeFromDbDataType(col), col.getCamelCaseName()+"Previous");
@@ -279,7 +279,7 @@ addMethod(new MethodSetValue());
 		addMethod(new MethodGetFieldsAsAssocArray(this));
 		
 		
-		fetchListHelper = new FetchListHelperClass(this, beanRepoNamespace);
+		fetchListHelper = new FetchListHelperClass(this, entityRepoNamespace);
 	}
 
 
@@ -374,19 +374,19 @@ addMethod(new MethodSetValue());
 	/**
 	 * difference to {@code accessColumnAttrOrEntity}: if one relation entity, automatically calls the getter method for the mapped key column 
 	 * 
-	 * @param beanExpression
+	 * @param entityExpression
 	 * @param col
-	 * @param skipOneRelationEntity true: avoid (potentially) loading 1:1/n:1-relation entity, use redundant primary key field in BeanClass which owns 1:1/n:1-relation  
+	 * @param skipOneRelationEntity true: avoid (potentially) loading 1:1/n:1-relation entity, use redundant primary key field in EntityClass which owns 1:1/n:1-relation  
 	 * @return
 	 */
-	public static Expression accessAttrGetterByColumn(Expression beanExpression, Column col, boolean skipOneRelationEntity) {
+	public static Expression accessAttrGetterByColumn(Expression entityExpression, Column col, boolean skipOneRelationEntity) {
 		if (col.hasOneRelation()) {
 			try{
-				Attr attr = ((EntityCls) beanExpression.getType()).getOneRelationAttr(col.getOneRelation());
+				Attr attr = ((EntityCls) entityExpression.getType()).getOneRelationAttr(col.getOneRelation());
 				if(skipOneRelationEntity) {
-					return beanExpression.callMethod("get"+StringUtil.ucfirst(col.getCamelCaseName()));
+					return entityExpression.callMethod("get"+StringUtil.ucfirst(col.getCamelCaseName()));
 				} else {
-					return beanExpression.accessAttrGetter(attr).callMethod("get"+col.getOneRelationMappedColumn().getUc1stCamelCaseName());
+					return entityExpression.accessAttrGetter(attr).callMethod("get"+col.getOneRelationMappedColumn().getUc1stCamelCaseName());
 				}
 			} catch(Exception e) {
 				e.printStackTrace();
@@ -394,62 +394,62 @@ addMethod(new MethodSetValue());
 				throw e;
 			}
 		} else {
-			return beanExpression.accessAttrGetter(((EntityCls) beanExpression.getType()).getAttrByName(col.getCamelCaseName()));
+			return entityExpression.accessAttrGetter(((EntityCls) entityExpression.getType()).getAttrByName(col.getCamelCaseName()));
 		}
 	}
 
 	/**
 	 * 
-	 * @param beanExpression
+	 * @param entityExpression
 	 * @param col
 	 * @return
 	 */
-	public static Expression accessColumnAttrOrEntity(Expression beanExpression, Column col) {
+	public static Expression accessColumnAttrOrEntity(Expression entityExpression, Column col) {
 		if (col.hasOneRelation()) {
 			try{
-				Attr attr = ((EntityCls) beanExpression.getType()).getOneRelationAttr(col.getOneRelation());
-				return beanExpression.accessAttrGetter(attr);
+				Attr attr = ((EntityCls) entityExpression.getType()).getOneRelationAttr(col.getOneRelation());
+				return entityExpression.accessAttrGetter(attr);
 			} catch(Exception e) {
 				e.printStackTrace();
 				System.out.println(col);
 				throw e;
 			}
 		} else {
-			return beanExpression.accessAttrGetter(((EntityCls) beanExpression.getType()).getAttrByName(col.getCamelCaseName()));
+			return entityExpression.accessAttrGetter(((EntityCls) entityExpression.getType()).getAttrByName(col.getCamelCaseName()));
 		}
 	}
 	
 	/**
 	 * 
-	 * @param beanExpression
+	 * @param entityExpression
 	 * @param col
 	 * @return
 	 */
-	public static Expression accessColumnAttrOrEntityPrevious(Expression beanExpression, Column col) {
+	public static Expression accessColumnAttrOrEntityPrevious(Expression entityExpression, Column col) {
 		if (!col.isPartOfPk()) {
 			throw new IllegalArgumentException();
 		}
-		return beanExpression.accessAttr(col.getCamelCaseName()+"Previous");
+		return entityExpression.accessAttr(col.getCamelCaseName()+"Previous");
 	}
 	
 	/**
 	 * 
-	 * @param beanExpression
+	 * @param entityExpression
 	 * @param col
 	 * @return
 	 */
-	public static Expression accessIsColumnAttrOrEntityModified(Expression beanExpression, Column col) {
+	public static Expression accessIsColumnAttrOrEntityModified(Expression entityExpression, Column col) {
 		if (col.hasOneRelation()) {
 			try{
 				String attrName = OrmUtil.getOneRelationDestAttrName(col.getOneRelation())+"Modified";
-				return beanExpression.callMethod("is"+StringUtil.ucfirst(attrName));
+				return entityExpression.callMethod("is"+StringUtil.ucfirst(attrName));
 			} catch(Exception e) {
 				e.printStackTrace();
 				System.out.println(col);
 				throw e;
 			}
 		} else {
-			return beanExpression.callMethod("is"+ col.getUc1stCamelCaseName()+"Modified");
+			return entityExpression.callMethod("is"+ col.getUc1stCamelCaseName()+"Modified");
 		}
 	}
 
@@ -477,7 +477,7 @@ addMethod(new MethodSetValue());
 		return manyRelations;
 	}
 
-	public static String getAddRelatedBeanMethodName(AbstractRelation r) {
+	public static String getAddRelatedEntityMethodName(AbstractRelation r) {
 		if (r instanceof OneToManyRelation) {
 			return "add"+StringUtil.ucfirst(OrmUtil.getManyRelationDestAttrNameSingular((OneToManyRelation) r))+"Internal";
 		} else  if (r instanceof ManyRelation) {
@@ -505,17 +505,17 @@ addMethod(new MethodSetValue());
 		}
 	}
 
-	public static Expression accessPrimaryKeyPreviousAttrGetterByColumn(Expression beanExpression, Column col) {
+	public static Expression accessPrimaryKeyPreviousAttrGetterByColumn(Expression entityExpression, Column col) {
 		if (col.hasOneRelation()) {
 			try{
-				return beanExpression.callMethod("get"+StringUtil.ucfirst(col.getCamelCaseName()+"Previous"));
+				return entityExpression.callMethod("get"+StringUtil.ucfirst(col.getCamelCaseName()+"Previous"));
 			} catch(Exception e) {
 				e.printStackTrace();
 				System.out.println(col);
 				throw e;
 			}
 		} else {
-			return beanExpression.accessAttrGetter(((EntityCls) beanExpression.getType()).getAttrByName(col.getCamelCaseName()+"Previous"));
+			return entityExpression.accessAttrGetter(((EntityCls) entityExpression.getType()).getAttrByName(col.getCamelCaseName()+"Previous"));
 		}
 	}
 	

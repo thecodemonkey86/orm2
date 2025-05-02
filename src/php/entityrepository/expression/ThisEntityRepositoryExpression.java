@@ -6,9 +6,9 @@ import php.core.expression.Var;
 import php.entity.EntityCls;
 import php.entityrepository.ClsEntityRepository;
 
-public class ThisBeanRepositoryExpression extends ThisExpression{
+public class ThisEntityRepositoryExpression extends ThisExpression{
 
-	public ThisBeanRepositoryExpression(ClsEntityRepository parent) {
+	public ThisEntityRepositoryExpression(ClsEntityRepository parent) {
 		super(parent);
 	}
 
@@ -16,7 +16,7 @@ public class ThisBeanRepositoryExpression extends ThisExpression{
 		return entity.callStaticMethod("getByRecord", accessAttr("sqlCon"), record, alias);
 	}
 	
-//	public MethodCall callGetByRecordMethod(BeanCls entity, Expression...args) {
+//	public MethodCall callGetByRecordMethod(EntityCls entity, Expression...args) {
 //		try{
 //			return new MethodCall(this, ((Cls)getType()).getMethod("get"+entity.getName()+"ByRecord"),args);
 //		} catch (Exception e) {

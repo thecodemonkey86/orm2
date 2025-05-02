@@ -4,7 +4,7 @@ import cpp.CoreTypes;
 import cpp.core.Method;
 import cpp.core.expression.Expression;
 import cpp.core.expression.Operators;
-import cpp.entity.Nullable;
+import cpp.core.Optional;
 import cpp.lib.ClsQString;
 import database.column.Column;
 
@@ -20,7 +20,7 @@ public class MethodIsNullOrEmpty extends Method{
 	@Override
 	public void addImplementation() {
 		Expression a = _this().accessAttr(col.getCamelCaseName());
-		_return(a.callMethod(Nullable.isNull).binOp(Operators.OR, a.callMethod(Nullable.val).callMethod(ClsQString.isEmpty)));	
+		_return(_not(a.callMethod(Optional.has_value)).binOp(Operators.OR, a.callMethod(Optional.value).callMethod(ClsQString.isEmpty)));	
 	}
 
 }

@@ -74,7 +74,7 @@ public class ClsEntityQuerySelect extends Cls {
 	public static final String params = "params";
 	public static final String lazyLoading = "lazyLoading";
 	//public static final String table = "table";
-	//public static final String mainBeanAlias = "mainBeanAlias";
+	//public static final String mainEntityAlias = "mainEntityAlias";
 	
 	public ClsEntityQuerySelect(EntityCls cls) {
 		super(cls.getName()+ "EntityQuerySelect");
@@ -108,15 +108,15 @@ public class ClsEntityQuerySelect extends Cls {
 		addIncludeHeaderInSource(cls.getHeaderInclude());
 		addIncludeHeaderInSource("../"+ Types.EntityRepository.getName().toLowerCase());
 		addIncludeLibInSource(Types.QRegularExpression);
-		addIncludeDefaultHeaderFileName(Types.SqlUtil);
+		addIncludeInSourceDefaultHeaderFileName(Types.SqlUtil);
 		addIncludeDefaultHeaderFileName(Types.SqlQuery);
 		addIncludeInSourceDefaultHeaderFileName(QtSqlTypes.QSqlDriver);
-		addIncludeDefaultHeaderFileName(Types.nullable(null));
+		addIncludeLib(Types.optional(null));
 		addIncludeHeader(ClsDbPool.instance.getHeaderInclude());
 		addIncludeLibInSource(QtCoreTypes.QDebug,true);
 		addIncludeLibInSource(QtSqlTypes.QSqlError,true);
 		addIncludeLib(Types.QVariant.getName());
-//		addAttr(new Attr(Types.QString,mainBeanAlias));
+//		addAttr(new Attr(Types.QString,mainEntityAlias));
 //		addAttr(new Attr(Types.QString,selectFields));
 //		addAttr(new Attr(Types.QString,table));
 		addAttr(new Attr(Types.QStringList,"orderByExpressions"));
@@ -209,6 +209,8 @@ public class ClsEntityQuerySelect extends Cls {
 		addMethod(new MethodAddQueryParameter(Types.Int64));
 		addMethod(new MethodAddQueryParameter(Types.QString));
 		addMethod(new MethodAddQueryParameter(Types.QVariant));
+		
+		headerInclude=EntityCls.getRepositoryPath()+"query/"+getName().toLowerCase()+".h";
 	}
 	
 	@Override

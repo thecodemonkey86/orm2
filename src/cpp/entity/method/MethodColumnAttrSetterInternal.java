@@ -26,13 +26,14 @@ public class MethodColumnAttrSetterInternal extends Method{
 			addParam(new Param(a.getType().isPrimitiveType() ? a.getType() : a.getType().toConstRef(), a.getName()));
 		}
 		this.col=col;
+		setnoexcept();
 	}
 
 	@Override
 	public void addImplementation() {
 		Param param = getParam(a.getName());
 		if (col.isNullable()) {
-			_assign(_accessThis(a), new CreateObjectExpression(Types.nullable(param.getType().isPrimitiveType() ? param.getType() : ((ConstRef)param.getType()).getBase()), param));
+			_assign(_accessThis(a), new CreateObjectExpression(Types.optional(param.getType().isPrimitiveType() ? param.getType() : ((ConstRef)param.getType()).getBase()), param));
 		} else {
 			_assign(_accessThis(a), param);
 		}

@@ -26,7 +26,7 @@ import php.core.method.Method;
 import php.entity.Entities;
 import php.entity.EntityCls;
 import php.entity.method.MethodOneRelationAttrSetter;
-import php.entity.method.MethodOneRelationBeanIsNull;
+import php.entity.method.MethodOneRelationEntityIsNull;
 import php.entitypk.method.MethodPkHash;
 import php.entityrepository.ClsEntityRepository;
 import php.lib.ClsFirebirdSqlQuery;
@@ -62,8 +62,8 @@ public class MethodGetById extends Method {
 	}
 
 //	@Override
-//	public ThisBeanRepositoryExpression _this() {
-//		return new ThisBeanRepositoryExpression((ClsBeanRepository) parent);
+//	public ThisEntityRepositoryExpression _this() {
+//		return new ThisEntityRepositoryExpression((ClsEntityRepository) parent);
 //	}
 	
 	private Expression getFetchExpression(Var res) {
@@ -162,8 +162,8 @@ public class MethodGetById extends Method {
 		manyRelations.addAll(manyToManyRelations);
 	
 		for(OneRelation r:oneRelations) {
-//			BeanCls foreignCls = Beans.get(r.getDestTable()); 
-			IfBlock ifBlock= doWhileRowIsNotNull._if(Expressions.and( e1.callMethod(new MethodOneRelationBeanIsNull(r)),row.arrayIndex(new PhpStringLiteral(EntityCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias() + "__" + r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull()) );
+//			EntityCls foreignCls = Entities.get(r.getDestTable()); 
+			IfBlock ifBlock= doWhileRowIsNotNull._if(Expressions.and( e1.callMethod(new MethodOneRelationEntityIsNull(r)),row.arrayIndex(new PhpStringLiteral(EntityCls.getTypeMapper().filterFetchAssocArrayKey(r.getAlias() + "__" + r.getDestTable().getPrimaryKey().getFirstColumn().getName()))).isNotNull()) );
 			ifBlock.thenBlock().
 			_callMethodInstr(e1, new MethodOneRelationAttrSetter( e1.getClassConcreteType().getAttrByName(PgCppUtil.getOneRelationDestAttrName(r)), true), 
 					Types.EntityRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Entities.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
@@ -171,7 +171,7 @@ public class MethodGetById extends Method {
 		
 		for(AbstractRelation r:manyRelations) {
 			EntityCls foreignCls = Entities.get(r.getDestTable()); 
-			Type beanPk=OrmUtil.getRelationForeignPrimaryKeyType(r);
+			Type entityPk=OrmUtil.getRelationForeignPrimaryKeyType(r);
 			
 			Expression pkArrayIndex = null;
 			IfBlock ifIsRowIndexNotNull = null;
@@ -186,7 +186,7 @@ public class MethodGetById extends Method {
 				 ifIsRowIndexNotNull = ifRowNotNull.thenBlock()._if(Expressions.and(ifIsRowIndexNotNullCondition));
 				
 				
-				Var foreignPk = ifIsRowIndexNotNull.thenBlock()._declareNew(beanPk, "foreignPk"+StringUtil.ucfirst(r.getAlias()),foreignPkArgs);
+				Var foreignPk = ifIsRowIndexNotNull.thenBlock()._declareNew(entityPk, "foreignPk"+StringUtil.ucfirst(r.getAlias()),foreignPkArgs);
 							
 				Var pkSet = ifIsRowIndexNotNull.thenBlock()._declareNewArray(Types.array(Types.Mixed), "pkSet"+StringUtil.ucfirst(r.getAlias()));
 				pkArrayIndex = pkSet.arrayIndex(foreignPk.callMethod(MethodPkHash.getMethodName()));
@@ -203,9 +203,9 @@ public class MethodGetById extends Method {
 				pkArrayIndex = pkSet.arrayIndex(arrayIndex);
 			}
 			IfBlock ifNotIssetPk = ifIsRowIndexNotNull.thenBlock()._if(_not(PhpFunctions.isset.call(pkArrayIndex)));
-			Var foreignBean = ifNotIssetPk.thenBlock()._declare(foreignCls, "b" + r.getAlias(),  Types.EntityRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Entities.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
-			ifNotIssetPk.thenBlock()._assign(pkArrayIndex, foreignBean);
-			ifNotIssetPk.thenBlock()._callMethodInstr(e1, EntityCls.getAddRelatedBeanMethodName(r), foreignBean);
+			Var foreignEntity = ifNotIssetPk.thenBlock()._declare(foreignCls, "b" + r.getAlias(),  Types.EntityRepository.callStaticMethod(MethodGetFromQueryAssocArray.getMethodName(Entities.get(r.getDestTable())),  row, new PhpStringLiteral(r.getAlias())));
+			ifNotIssetPk.thenBlock()._assign(pkArrayIndex, foreignEntity);
+			ifNotIssetPk.thenBlock()._callMethodInstr(e1, EntityCls.getAddRelatedEntityMethodName(r), foreignEntity);
 			doWhileRowIsNotNull.addInstr(ifIsRowIndexNotNull);
 		}
 		

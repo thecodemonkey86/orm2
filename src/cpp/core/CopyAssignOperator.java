@@ -5,10 +5,11 @@ import java.util.ArrayList;
 import codegen.CodeUtil;
 
 public class CopyAssignOperator extends Operator {
-
-	public CopyAssignOperator(Cls cls) {
+	boolean delete;
+	public CopyAssignOperator(Cls cls, boolean delete) {
 		super("=",cls.toRef(),false);
 		addParam(cls.toConstRef(),"");
+		this.delete=delete;
 	}
 	
 	@Override
@@ -33,6 +34,6 @@ public class CopyAssignOperator extends Operator {
 				symbol,
 				CodeUtil.parentheses(CodeUtil.commaSep(params)),
 				(constQualifier?"const":""),
-				"= default;");
+				"=",(delete?"delete":"default"))+";";
 	}
 }

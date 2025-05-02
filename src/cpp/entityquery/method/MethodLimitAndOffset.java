@@ -12,8 +12,8 @@ public class MethodLimitAndOffset extends Method{
 
 	Param pJoinTableAlias, pOn, pQueryParams;
 	boolean withConditionParameter;
-	EntityQueryType beanQueryType;
-	public MethodLimitAndOffset(Cls parentType, EntityQueryType beanQueryType, Param pQueryParams,boolean withConditionParameter) {
+	EntityQueryType entityQueryType;
+	public MethodLimitAndOffset(Cls parentType, EntityQueryType entityQueryType, Param pQueryParams,boolean withConditionParameter) {
 		super(Public, parentType.toRef(), "limitAndOffset");
 		addParam(Types.Int64, "limit");
 		addParam(Types.Int64, "offset");
@@ -25,7 +25,7 @@ public class MethodLimitAndOffset extends Method{
 				
 		this.withConditionParameter = withConditionParameter;
 		
-		this.beanQueryType = beanQueryType;
+		this.entityQueryType = entityQueryType;
 	}
 
 	@Override
@@ -34,12 +34,12 @@ public class MethodLimitAndOffset extends Method{
 			@Override
 			public String toString() {
 				
-				String str=(pQueryParams!=null)? "this->params.append("+ (Types.QVariant.toConstRef().equals(pQueryParams.getType()) ||(Types.QVariantList.toConstRef().equals(pQueryParams.getType())) ? pQueryParams.getReadAccessString() : Types.QVariant.callStaticMethod(ClsQVariant.fromValue, pQueryParams )) +");\r\n" : "";
+				String str=(pQueryParams!=null)? "this->params.append("+ (Types.QVariant.toConstRef().equals(pQueryParams.getType()) ||(Types.QVariantList.toConstRef().equals(pQueryParams.getType())) ? pQueryParams.getReadAccessString() : ClsQVariant.fromValue(pQueryParams )) +");\r\n" : "";
 				
 				   str+="	this->limitResults = limit;\r\n" + 
 						"	this->resultOffset = offset;\r\n";
 				   
-				   if(beanQueryType == EntityQueryType.Select) {
+				   if(entityQueryType == EntityQueryType.Select) {
 						 if(MethodLimitAndOffset.this.withConditionParameter) {
 							 str+="	this->limitOffsetCondition = condition;\r\n";
 						// } else {

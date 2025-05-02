@@ -4,6 +4,7 @@ import cpp.Types;
 import cpp.core.Method;
 import cpp.core.Param;
 import cpp.core.Type;
+import cpp.core.expression.BoolExpression;
 import cpp.core.expression.Var;
 import cpp.core.instruction.IfBlock;
 import cpp.entity.EntityCls;
@@ -15,8 +16,9 @@ public class MethodGetByIdOrCreateNew extends Method {
 	protected EntityCls entity;
 	protected boolean addSortingParam;
 	protected Param pOrderBy;
+	protected Param pOrderByDirection;
 	protected Param pSqlCon;
-	
+	protected Param pLazyLoad;
 	public MethodGetByIdOrCreateNew(EntityCls entity,boolean addSortingParams) {
 		super(Public, entity.toSharedPtr(), "get"+entity.getName()+"ByIdOrCreateNew");
 		this.addSortingParam = addSortingParams;
@@ -26,16 +28,21 @@ public class MethodGetByIdOrCreateNew extends Method {
 			addParam(new Param(colType.isPrimitiveType() ? colType : colType.toConstRef(), col.getCamelCaseName()));
 		}
 
-		if(addSortingParams) {
-			pOrderBy = addParam(Types.QString.toConstRef(), "orderBy");
+		if(entity.hasRelations()) {
+			
+			if(addSortingParams) {
+				pLazyLoad = addParam(Types.Bool,"lazyLoading");
+				pOrderBy = addParam(Types.QString.toConstRef(), "orderBy");
+				pOrderByDirection = addParam(Types.OrderDirection, "direction");
+			} else {
+				pLazyLoad = addParam(Types.Bool,"lazyLoading",BoolExpression.FALSE);
+			}
 		}
 		pSqlCon = addParam(Types.QSqlDatabase.toConstRef(),"sqlCon",ClsDbPool.instance.callStaticMethod(ClsDbPool.getDatabase));
 		this.entity=entity;
 		setStatic(true);
 	}
-	public MethodGetByIdOrCreateNew(EntityCls entity) {
-		this(entity,false);
-	}
+	 
 
 	
 	@Override

@@ -11,7 +11,7 @@ import cpp.core.expression.BoolExpression;
 import cpp.core.expression.MakeSharedExpression;
 import cpp.core.expression.Var;
 import cpp.core.instruction.IfBlock;
-import cpp.entity.Nullable;
+import cpp.core.Optional;
 import cpp.entity.method.MethodColumnAttrSetNull;
 import cpp.jsonentity.JsonEntity;
 import database.column.Column;
@@ -91,9 +91,9 @@ public class MethodCreateNew extends Method {
 					Column pkCol =  cls.getTbl().getPrimaryKey().getColumn(i);
 					Param param = initializeFieldsParams.get(i);
 					if(pkCol.isNullable()) {
-						IfBlock ifIsNull= _if(param.callMethod(Nullable.isNull));
+						IfBlock ifIsNull= _ifNot(param.callMethod(Optional.has_value));
 						ifIsNull.thenBlock().addInstr(entity.callMethodInstruction(MethodColumnAttrSetNull.getMethodName(entity.getClassType().getAttrByName(param.getName()))));
-						ifIsNull.elseBlock().addInstr(entity.callMethodInstruction("set" +StringUtil.ucfirst(param.getName())+"Internal",param.callMethod(Nullable.val)));
+						ifIsNull.elseBlock().addInstr(entity.callMethodInstruction("set" +StringUtil.ucfirst(param.getName())+"Internal",param.callMethod(Optional.value)));
 					} else {
 						addInstr(entity.callMethodInstruction("set" +StringUtil.ucfirst(param.getName())+"Internal",param));
 					}
@@ -103,9 +103,9 @@ public class MethodCreateNew extends Method {
 					if(!col.isFileImportEnabled()) {
 						Param param = initializeFieldsParams.get(i++);
 						if(col.isNullable()) {
-							IfBlock ifIsNull= _if(param.callMethod(Nullable.isNull));
+							IfBlock ifIsNull= _ifNot(param.callMethod(Optional.has_value));
 							ifIsNull.thenBlock().addInstr(entity.callMethodInstruction(MethodColumnAttrSetNull.getMethodName(entity.getClassType().getAttrByName(param.getName()))));
-							ifIsNull.elseBlock().addInstr(entity.callSetterMethodInstruction(param.getName(),param.callMethod(Nullable.val)));
+							ifIsNull.elseBlock().addInstr(entity.callSetterMethodInstruction(param.getName(),param.callMethod(Optional.value)));
 						} else {
 							addInstr(entity.callSetterMethodInstruction(param.getName(),param));
 						}

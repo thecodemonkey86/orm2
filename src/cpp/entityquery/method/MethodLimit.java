@@ -11,16 +11,16 @@ import cpp.entityquery.EntityQueryType;
 public class MethodLimit extends Method{
 
 	Param pJoinTableAlias, pOn;
-	EntityQueryType beanQueryType;
+	EntityQueryType entityQueryType;
 	
-	public MethodLimit(Cls parentType,EntityQueryType beanQueryType) {
+	public MethodLimit(Cls parentType,EntityQueryType entityQueryType) {
 		super(Public, parentType.toRef(), "limit");
 		addParam(Types.Int64, "limit");
-		if(beanQueryType == EntityQueryType.Select) {
+		if(entityQueryType == EntityQueryType.Select) {
 			addParam(Types.QString.toConstRef(),"condition");
 			addParam(new Param(Types.QString.toConstRef(),"orderBy", new QString()));
 		}
-		this.beanQueryType = beanQueryType;
+		this.entityQueryType = entityQueryType;
 		
 	}
 
@@ -29,7 +29,7 @@ public class MethodLimit extends Method{
 		addInstr(new Instruction() {
 			@Override
 			public String toString() {
-				if(beanQueryType == EntityQueryType.Select) {
+				if(entityQueryType == EntityQueryType.Select) {
 					return "this->limitResults = limit;\r\n" + 
 							"        this->resultOffset = 0;\r\n" + 
 							"        this->limitOffsetCondition = condition;\r\n" + 

@@ -26,8 +26,8 @@ public class FetchListHelperClass extends JavaCls{
 		manyRelations.addAll(entity.getManyToManyRelations());
 		addConstructor(new FetchListHelperConstructor(entity));
 		for(AbstractRelation r:manyRelations) {
-			Type beanPk=Types.getRelationForeignPrimaryKeyType(r);
-			Attr attrSet = new Attr(Types.hashset(beanPk), r.getAlias()+"Set");
+			Type entityPk=Types.getRelationForeignPrimaryKeyType(r);
+			Attr attrSet = new Attr(Types.hashset(entityPk), r.getAlias()+"Set");
 			addMethod(new MethodAttributeGetter(attrSet));
 			addAttr(attrSet);
 		}

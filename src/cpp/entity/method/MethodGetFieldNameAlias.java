@@ -21,6 +21,7 @@ public class MethodGetFieldNameAlias extends Method {
 			pAlias = addParam(new Param(Types.QString.toConstRef(), "alias"));
 		
 		this.mainAlias = mainAlias;
+		setnoexcept();
 	}
 
 	@Override

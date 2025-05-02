@@ -16,7 +16,7 @@ import cpp.core.expression.Expression;
 import cpp.core.expression.Expressions;
 import cpp.core.expression.StdFunctionInvocation;
 import cpp.core.instruction.IfBlock;
-import cpp.entity.Nullable;
+import cpp.core.Optional;
 import cpp.jsonentity.OneAttr;
 import cpp.jsonentity.JsonEntities;
 import cpp.jsonentity.JsonEntity;
@@ -52,8 +52,8 @@ public class MethodLoadOneRelation extends Method{
 			
 			for(int i=0;i<r.getColumnCount();++i) {
 				if(r.getColumns(i).getValue1().isNullable()) {
-					nullCheckArgs.add(_this().accessAttr(r.getColumns(i).getValue1().getCamelCaseName()).callMethod(Nullable.isNull));
-					pkArgs[i] = _this().accessAttr(r.getColumns(i).getValue1().getCamelCaseName()).callMethod(Nullable.val);
+					nullCheckArgs.add(_not(_this().accessAttr(r.getColumns(i).getValue1().getCamelCaseName()).callMethod(Optional.has_value)));
+					pkArgs[i] = _this().accessAttr(r.getColumns(i).getValue1().getCamelCaseName()).callMethod(Optional.value);
 				} else {
 					pkArgs[i] = _this().accessAttr(r.getColumns(i).getValue1().getCamelCaseName());
 				}

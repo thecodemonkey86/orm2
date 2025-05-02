@@ -1,6 +1,5 @@
 package cpp.entityquery.method;
 
-import cpp.Types;
 import cpp.core.Cls;
 import cpp.core.Method;
 import cpp.core.Param;
@@ -8,7 +7,7 @@ import cpp.core.QString;
 import cpp.core.Type;
 import cpp.core.instruction.IfBlock;
 import cpp.entity.EntityCls;
-import cpp.entity.Nullable;
+import cpp.core.Optional;
 import cpp.entityquery.ClsEntityQueryUpdate;
 import cpp.lib.ClsQVariant;
 import cpp.lib.ClsQList;
@@ -32,13 +31,13 @@ public class MethodUpdateSet extends Method{
 		
 		
 		if(col.isNullable()) {
-			IfBlock ifNull = _if(pValue.callMethod(Nullable.isNull));
+			IfBlock ifNull = _ifNot(pValue.callMethod(Optional.has_value));
 			ifNull.thenBlock().addInstr(_this().accessAttr(ClsEntityQueryUpdate.updateFields).binOp("+=",  QString.fromStringConstant(col.getEscapedName()+"=NULL")).asInstruction());
 			ifNull.elseBlock().addInstr(_this().accessAttr(ClsEntityQueryUpdate.updateFields).binOp("+=",  QString.fromStringConstant(col.getEscapedName()+"=?")).asInstruction());			
-			ifNull.elseBlock()._callMethodInstr( _this().accessAttr(ClsEntityQueryUpdate.params),ClsQList.append,Types.QVariant.callStaticMethod(ClsQVariant.fromValue, pValue.callMethod(Nullable.val)));
+			ifNull.elseBlock()._callMethodInstr( _this().accessAttr(ClsEntityQueryUpdate.params),ClsQList.append,ClsQVariant.fromValue(pValue.callMethod(Optional.value)));
 		} else {
 			addInstr(_this().accessAttr(ClsEntityQueryUpdate.updateFields).binOp("+=", QString.fromStringConstant(col.getEscapedName()+"=?")).asInstruction());
-			_callMethodInstr( _this().accessAttr(ClsEntityQueryUpdate.params),ClsQList.append,Types.QVariant.callStaticMethod(ClsQVariant.fromValue, pValue) );
+			_callMethodInstr( _this().accessAttr(ClsEntityQueryUpdate.params),ClsQList.append,ClsQVariant.fromValue(pValue) );
 		}
 		_return(_this().dereference());
 	}
