@@ -3,20 +3,20 @@ package cpp.core.expression;
 import cpp.Types;
 import cpp.core.Type;
 
-public class UIntExpression extends Expression{
-	long s;
+public class UInt16Expression extends Expression{
+	int s;
 	
-	public UIntExpression(long s) {
+	public UInt16Expression(int s) {
 		this.s=s;
 	}
 	
 	@Override
 	public Type getType() {
-		return Types.UInt;
+		return Types.UInt16;
 	}
 
 	@Override
 	public String toString() {
-		return Long.toString(s)+"u";
+		return Integer.toString(s)+"u";
 	}
 }

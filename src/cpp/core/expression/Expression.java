@@ -11,7 +11,6 @@ import cpp.core.IAttributeContainer;
 import cpp.core.Method;
 import cpp.core.Operator;
 import cpp.core.Param;
-import cpp.core.RawPtr;
 import cpp.core.SharedPtr;
 import cpp.core.Type;
 import cpp.core.instruction.AssignInstruction;

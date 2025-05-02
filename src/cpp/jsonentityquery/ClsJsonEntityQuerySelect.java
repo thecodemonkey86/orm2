@@ -5,6 +5,7 @@ import cpp.NetworkTypes;
 import cpp.Types;
 import cpp.core.Cls;
 import cpp.core.Constructor;
+import cpp.core.Type;
 import cpp.jsonentity.JsonEntity;
 import cpp.jsonentityquery.method.MethodJsonQuery;
 import cpp.jsonentityquery.method.MethodJsonQueryJoin;
@@ -42,8 +43,10 @@ public class ClsJsonEntityQuerySelect extends Cls{
 				addMethod(new MethodJsonQueryWhereIsNull(this, c));
 				addMethod(new MethodJsonQueryWhereIsNotNull(this, c));
 			}
+			Type colType = JsonEntity.getDatabaseMapper().columnToType(c);
+			colType.collectIncludes(this,false);
 		}
-		addIncludeLib("memory");
+		addIncludeLibInSource("memory");
 		addForwardDeclaredClass(entity);
 		addIncludeLibInSource(NetworkTypes.QUrl);
 		addIncludeLibInSource(NetworkTypes.QUrlQuery);

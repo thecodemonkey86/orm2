@@ -149,4 +149,8 @@ public class Type implements Cloneable{
 		
 		
 	}
+
+	public boolean isUnsigned() {
+		return false;
+	}
 }

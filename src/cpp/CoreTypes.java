@@ -26,11 +26,11 @@ public class CoreTypes {
 	public static final PrimitiveType Int16=new PrimitiveType("int16_t");
 	public static final PrimitiveType Int8=new PrimitiveType("int8_t");
 	public static final PrimitiveType Int64=new PrimitiveType("int64_t");
-	public static final PrimitiveType UInt32=new PrimitiveType("uint32_t");
-	public static final PrimitiveType UInt = new PrimitiveType("uint");
-	public static final PrimitiveType UInt16=new PrimitiveType("uint16_t");
-	public static final PrimitiveType UInt8=new PrimitiveType("uint8_t");
-	public static final PrimitiveType UInt64=new PrimitiveType("uint64_t");
+	public static final PrimitiveType UInt32=new PrimitiveType("uint32_t", true);
+	public static final PrimitiveType UInt = new PrimitiveType("uint", true);
+	public static final PrimitiveType UInt16=new PrimitiveType("uint16_t", true);
+	public static final PrimitiveType UInt8=new PrimitiveType("uint8_t", true);
+	public static final PrimitiveType UInt64=new PrimitiveType("uint64_t", true);
 //	public static final PrimitiveType LongLong=new PrimitiveType("long long");
 	public static final PrimitiveType Short=new PrimitiveType("short");
 	public static final ClsQString QString= new ClsQString();

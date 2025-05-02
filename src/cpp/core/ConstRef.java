@@ -72,4 +72,9 @@ public class ConstRef extends Cls {
 	public boolean isPtr() {
 		return base.isPtr();
 	}
+	
+	@Override
+	public boolean isUnsigned() {
+		return base.isUnsigned();
+	}
 }
