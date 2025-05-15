@@ -85,7 +85,7 @@ public class MethodSave extends Method {
 		IfBlock ifNotEmpty = lambdaExpression._if(Expressions.not(vRaw.callMethod(ClsQByteArray.isEmpty)));
 		
 		lambdaExpression.addInstr(new SemicolonTerminatedInstruction("qWarning()<<rawResponse"));
-		ifNotEmpty.thenBlock().addInstr(new StdFunctionInvocation(pCallback, reply.callMethod(ClsQNetworkReply.error)._equals(NetworkTypes.QNetworkReply.noError).binOp(Operators.AND,Expressions.not(d.callMethod(ClsQJsonDocument.object).callMethod(ClsQJsonObject.value, QStringLiteral.fromStringConstant("error")).callMethod(ClsQJsonValue.toBool)))));
+		ifNotEmpty.thenBlock().addInstr(new StdFunctionInvocation(pCallback, reply.callMethod(ClsQNetworkReply.error)._equals(NetworkTypes.QNetworkReply.noError).binOp(Operators.AND,Expressions.not(d.callMethod(ClsQJsonDocument.object).callMethod(ClsQJsonObject.value, QStringLiteral.fromStringConstant("error")).callMethod(ClsQJsonValue.toBool, BoolExpression.TRUE)))));
 		ifNotEmpty.thenBlock().addInstr(reply.callMethodInstruction(ClsQNetworkReply.deleteLater));
 		ifNotEmpty.elseBlock().addInstr(new StdFunctionInvocation(pCallback,BoolExpression.FALSE));
 	}
