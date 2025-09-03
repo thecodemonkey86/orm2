@@ -69,13 +69,13 @@ public class MethodToStringSelect extends Method{
 						"                query += QStringLiteral(\" WHERE %1\").arg("+ MethodToStringSelect.this.bean.	getName() +"::getLimitQueryString(limitResults,resultOffset,limitOffsetCondition));" + CodeUtil2.NEWLINE + 
 						"            }" + CodeUtil2.NEWLINE + 
 						"             query += QStringLiteral(\" ORDER BY \");" + CodeUtil2.NEWLINE +
-						"             for(auto order : this->orderByExpressions) {" + CodeUtil2.NEWLINE + 
+						"             for(const auto & order : this->orderByExpressions) {" + CodeUtil2.NEWLINE + 
 						"               query += QStringLiteral(\"%1,\").arg(order);" + CodeUtil2.NEWLINE + 
 						"             }" + CodeUtil2.NEWLINE + 				
 						"             query += this->orderByPrimaryKey();" + CodeUtil2.NEWLINE +
 						"            } else {" + CodeUtil2.NEWLINE +
 						"             query += QStringLiteral(\" ORDER BY \");" + CodeUtil2.NEWLINE +
-						"             for(auto order : this->orderByExpressions) {" + CodeUtil2.NEWLINE + 
+						"             for(const auto & order : this->orderByExpressions) {" + CodeUtil2.NEWLINE + 
 						"               query += QStringLiteral(\"%1,\").arg(order);" + CodeUtil2.NEWLINE + 
 						"             }" + CodeUtil2.NEWLINE + 				
 						"             query += this->orderByPrimaryKey();" + CodeUtil2.NEWLINE +
@@ -83,7 +83,7 @@ public class MethodToStringSelect extends Method{
 						"            }" + CodeUtil2.NEWLINE + 
 						"        } else {" + CodeUtil2.NEWLINE + 
 						"             query += QStringLiteral(\" ORDER BY \");" + CodeUtil2.NEWLINE +
-						"             for(auto order : this->orderByExpressions) {" + CodeUtil2.NEWLINE + 
+						"             for(const auto & order : this->orderByExpressions) {" + CodeUtil2.NEWLINE + 
 						"               query += QStringLiteral(\"%1,\").arg(order);" + CodeUtil2.NEWLINE + 
 						"             }" + CodeUtil2.NEWLINE + 				
 						"             query += this->orderByPrimaryKey();" + CodeUtil2.NEWLINE +

@@ -38,7 +38,7 @@ public class MethodEntityQueryWhereIn extends Method {
 
 	@Override
 	public void addImplementation() {
-		ForeachLoop foreachParams = _foreach(new Var(((TplCls) ((ConstRef) pValue.getType()).getBase()).getElementType(), "_p"),pValue);
+		ForeachLoop foreachParams = _foreach(new Var(((TplCls) ((ConstRef) pValue.getType()).getBase()).getElementType().toConstRef(), "_p"),pValue);
 		
 		if(c.isNullable()) {
 			foreachParams._callMethodInstr(_this().accessAttr("params"), ClsQVariantList.append	,new InlineIfExpression( foreachParams.getVar().callMethod(Nullable.isNull), new CreateObjectExpression(Types.QVariant), Types.QVariant.callStaticMethod(ClsQVariant.fromValue, foreachParams.getVar().callMethod(Nullable.val))));
