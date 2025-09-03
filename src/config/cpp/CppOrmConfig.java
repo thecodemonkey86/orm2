@@ -5,7 +5,7 @@ import config.OrmConfig;
 public class CppOrmConfig extends OrmConfig{
 	protected String exportMacro,exportMacroIncludeHeader,namespace;
 	public enum QtVersion{V5_12,V5_13, V5_14, V5_15}
-	
+	boolean openAPI;
 	protected QtVersion qtVersion = QtVersion.V5_15;
 	
 	public QtVersion getQtVersion() {
@@ -32,6 +32,15 @@ public class CppOrmConfig extends OrmConfig{
 	public String getExportMacroIncludeHeader() {
 		return exportMacroIncludeHeader;
 	}
+	
+	public void setOpenAPI(boolean openAPI) {
+		this.openAPI = openAPI;
+	}
+	
+	public boolean isOpenAPI() {
+		return openAPI;
+	}
+	
 //	public boolean hasNamespace() {
 //		return namespace!=null;
 //	}

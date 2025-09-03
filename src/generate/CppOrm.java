@@ -35,6 +35,7 @@ import cpp.entityrepository.ClsEntityRepository;
 import cpp.jsonentity.JsonEntities;
 import cpp.jsonentity.JsonEntity;
 import cpp.jsonentityrepository.JsonEntityRepository;
+import cpp.openapi.OrmYamlWriter;
 import cpp.orm.DatabaseTypeMapper;
 import cpp.orm.FirebirdDatabaseTypeMapper;
 import cpp.orm.MySqlDatabaseMapper;
@@ -128,6 +129,7 @@ public class CppOrm extends OrmGenerator {
 		String dbFile = null;
 		String charset = "utf8" ;
 		String jsTarget=null;
+		boolean openApi=false;
 		for(int i=0;i<args.length-1;i++) {
 			if(args[i].equals("--engine")) {
 				engine = args[i+1];
@@ -147,6 +149,8 @@ public class CppOrm extends OrmGenerator {
 				charset = args[i+1];
 			} else if(args[i].equals("--js")) {
 				jsTarget = args[i+1];
+			} else if(args[i].equals("--openapi")) {
+				openApi=true;
 			}
 		}
 		
@@ -213,8 +217,8 @@ public class CppOrm extends OrmGenerator {
 		
 		CppConfigReader cfgReader = new CppConfigReader(xmlFile.getParent(),conn,database);
 		DefaultXMLReader.read(xmlFile, cfgReader);
-		OrmConfig cfg=cfgReader.getCfg();
-		
+		CppOrmConfig cfg=cfgReader.getCfg();
+		cfg.setOpenAPI(openApi);
 		cfg.setDatabase(database);
 		cfg.setDbEngine(engine);
 		
@@ -233,6 +237,12 @@ public class CppOrm extends OrmGenerator {
 		
 		Path pathModel = cfg.getModelPath();
 		if(cfg.getJsonMode() == null) {
+			if(cfg.isOpenAPI()) {
+				for(Table tbl:cfg.getEntityTables() ) {
+					OrmYamlWriter.write(tbl,cfg);
+				}
+				return;
+			}
 			//default SQL mode
 			EntityCls.setModelPath(cfg.getBasePath().relativize(cfg.getModelPath()).toString().replace('\\', '/'));
 			EntityCls.setRepositoryPath(cfg.getBasePath().relativize(cfg.getRepositoryPath()).toString().replace('\\', '/'));
@@ -263,21 +273,19 @@ public class CppOrm extends OrmGenerator {
 			if(cfg.hasOverrideRepositoryClassName()) {
 				repo.setName(cfg.getOverrideRepositoryClassName());
 			}
-			repo.addDeclarations(Entities.getAllBeans());
-			for (EntityCls c : Entities.getAllBeans()) {
+			repo.addDeclarations(Entities.getAllEntities());
+			for (EntityCls c : Entities.getAllEntities()) {
 				c.setPrimaryKeyType();
 			}
 			
-			for (EntityCls c : Entities.getAllBeans()) {
+			for (EntityCls c : Entities.getAllEntities()) {
 				c.addDeclarations();
 			}
-	//		for (BeanCls c : Beans.getAllBeans()) {
-	//			c.breakPointerCircles();
-	//		}
+ 
 			boolean jsEnabled=jsTarget!=null;
 			
 			Path pathBeans = pathModel.resolve("entities");
-			for (EntityCls c : Entities.getAllBeans()) {
+			for (EntityCls c : Entities.getAllEntities()) {
 				Path pathHeader = pathBeans.resolve(c.getName().toLowerCase()+".h");
 				Path pathSrc = pathBeans.resolve(c.getName().toLowerCase()+".cpp");
 				
@@ -302,7 +310,6 @@ public class CppOrm extends OrmGenerator {
 							throw new RuntimeException("Missing custom class members end marker: " + pathHeader);
 						}
 						String customClassMember = existingHeaderFile.substring(startHdr+EntityCls.BEGIN_CUSTOM_CLASS_MEMBERS.length(), endHdr);
-						//c.addMethod(new CustomClassMemberCode(customClassMember, implCode) );
 						
 						c.addCustomHeaderCode(customClassMember);
 					}
@@ -317,9 +324,6 @@ public class CppOrm extends OrmGenerator {
 						if(!Files.exists(pBackup)) {
 							Files.createDirectory(pBackup);
 						}
-						//FileUtil2.writeFileIfContentChanged(pBackup.resolve(pathSrc.getFileName().toString()),implCode.getBytes(utf8), writeOptions);
-						
-						//c.addMethod(new CustomClassMemberCode(customClassMember, implCode) );
 						c.addCustomSourceCode(implCode);
 					}
 					startSrc = -1;
@@ -342,12 +346,6 @@ public class CppOrm extends OrmGenerator {
 						c.addCustomPreprocessorCode(customPp );
 					}
 					
-	//				if (sbHdr.length()>0)
-	//					FileUtil2.writeFileIfContentChanged(Paths.get("bak_custom_class_members", pathHeader.getFileName().toString()),sbHdr.toString().getBytes(utf8), writeOptions);
-	//				
-	//				if (sbSrc.length()>0)
-	//					FileUtil2.writeFileIfContentChanged(Paths.get("bak_custom_class_members", pathSrc.getFileName().toString()),sbSrc.toString().getBytes(utf8), writeOptions);
-	//				
 				}
 				c.setExportMacro(cfg.getExportMacro(),cfg.getExportMacroIncludeHeader());
 				c.addMethodImplementations();
@@ -361,7 +359,7 @@ public class CppOrm extends OrmGenerator {
 			Files.createDirectories(pathRepositoryQuery);
 	
 			
-			for (EntityCls c : Entities.getAllBeans()) {
+			for (EntityCls c : Entities.getAllEntities()) {
 				
 				FileUtil2.writeFileIfContentChanged(pathBeans.resolve(c.getName().toLowerCase()+".h"), c.toHeaderString().getBytes(utf8), writeOptions);
 				FileUtil2.writeFileIfContentChanged(pathBeans.resolve(c.getName().toLowerCase()+".cpp"), c.toSourceString().getBytes(utf8), writeOptions);
@@ -400,7 +398,7 @@ public class CppOrm extends OrmGenerator {
 			
 			if(jsEnabled) {
 				JSONObject json= new JSONObject();
-				for (EntityCls c : Entities.getAllBeans()) {
+				for (EntityCls c : Entities.getAllEntities()) {
 					JSONObject entityJson=new JSONObject();
 					for(Column col: c.getTbl().getAllColumns()) {
 						entityJson.put(col.getCamelCaseName(), col.getName());
