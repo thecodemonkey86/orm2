@@ -28,7 +28,7 @@ public class Entities {
 		beans.put(cls.getName(), cls);
 	}
 	
-	public static Collection<EntityCls> getAllBeans() {
+	public static Collection<EntityCls> getAllEntities() {
 		return beans.values();
 	}
 }
