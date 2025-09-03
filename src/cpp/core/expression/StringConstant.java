@@ -43,5 +43,9 @@ public class StringConstant extends Expression {
 	public String toString() {
 		return CodeUtil.quote(getCppEscapedString(str));
 	}
+	
+	public boolean isEmpty() {
+		return str.isEmpty();
+	}
 
 }

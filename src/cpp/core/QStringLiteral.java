@@ -47,7 +47,9 @@ public class QStringLiteral extends QString {
 				return "QString::fromUtf8"+CodeUtil.parentheses(expression);
 			}
 		}
-		
+		if(((StringConstant)expression).isEmpty()) {
+			return "QLatin1String"+CodeUtil.parentheses(expression);// clazy recommendation
+		}
 		return "QStringLiteral"+CodeUtil.parentheses(expression);
 	}
 	
