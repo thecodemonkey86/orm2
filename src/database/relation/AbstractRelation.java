@@ -16,9 +16,11 @@ public class AbstractRelation {
 	protected String additionalJoin;
 	protected String additionalOrderBy;
 	protected Set<RelationSqlOptions> sqlOptions;
+	protected boolean composition;
 	
 	public AbstractRelation(String alias) {
 		this.alias = alias;
+		composition = false;
 	}
 	
 	public void setRelationType(RelationType relationType) {
@@ -102,5 +104,14 @@ public class AbstractRelation {
 
 	public boolean hasAdditionalOrderBy() {
 		return additionalOrderBy!=null;
+	}
+	
+
+	public void setComposition(boolean composition) {
+		this.composition = composition;
+	}
+	
+	public boolean isComposition() {
+		return composition;
 	}
 }

@@ -36,7 +36,7 @@ public class MethodAddRelatedTableJoins extends Method {
 				joinConditions.add(CodeUtil.sp("e1."+r.getColumns(i).getValue1().getEscapedName(),'=',r.getAlias()+"."+ r.getColumns(i).getValue2().getEscapedName()));
 			}
 			
-			query = query.callMethod("leftJoin", Entities.get(r.getDestTable()).callStaticMethod("getTableName"),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
+			query = query.callMethod(r.isComposition() ? "join": "leftJoin", Entities.get(r.getDestTable()).callStaticMethod("getTableName"),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
 		}
 		for(OneToManyRelation r:entity.getOneToManyRelations()) {
 			ArrayList<String> joinConditions=new ArrayList<>();
@@ -52,14 +52,14 @@ public class MethodAddRelatedTableJoins extends Method {
 				joinConditions.add(CodeUtil.sp("e1."+r.getSourceEntityColumn(i).getEscapedName(),'=',r.getAlias("mapping")+"."+ r.getSourceMappingColumn(i).getEscapedName()));
 			}
 			
-			query = query.callMethod("leftJoin", QString.fromStringConstant(r.getMappingTable().getEscapedName()),QString.fromStringConstant(r.getAlias("mapping")), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
+			query = query.callMethod(r.isComposition() ? "join": "leftJoin",  QString.fromStringConstant(r.getMappingTable().getEscapedName()),QString.fromStringConstant(r.getAlias("mapping")), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
 			
 			joinConditions.clear();
 			for(int i=0;i<r.getDestColumnCount();i++) {
 				joinConditions.add(CodeUtil.sp(r.getAlias("mapping")+"."+r.getDestMappingColumn(i).getEscapedName(),'=',r.getAlias()+"."+r.getDestEntityColumn(i).getEscapedName() ));
 			}
 			
-			query = query.callMethod("leftJoin", Entities.get(r.getDestTable()).callStaticMethod("getTableName"),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
+			query = query.callMethod(r.isComposition() ? "join": "leftJoin", Entities.get(r.getDestTable()).callStaticMethod("getTableName"),QString.fromStringConstant(r.getAlias()), QString.fromStringConstant(CodeUtil2.concat(joinConditions," AND ")));
 			
 		}
 		
