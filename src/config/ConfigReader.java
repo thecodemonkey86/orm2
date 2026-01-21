@@ -316,6 +316,10 @@ public abstract class ConfigReader implements ContentHandler {
 					if(attrAdditionalOrderBy!=null) {
 						currentManyToManyRelation.setAdditionalOrderBy(attrAdditionalOrderBy);
 					}
+					String attrComposition=atts.getValue("composition");
+					if(attrComposition!=null) {
+						currentManyToManyRelation.setComposition(attrComposition.equals("true") || attrComposition.equals("1"));
+					}
 					manyToManyAliasCounter++;
 					break;}
 				case ONE_TO_MANY_RELATIONS:
@@ -376,11 +380,15 @@ public abstract class ConfigReader implements ContentHandler {
 					currentOneRelation.setSubstituteNameSingular(substituteName);
 					String attrAdditionalJoin=atts.getValue("additionalJoin");
 					if(attrAdditionalJoin!=null) {
-						currentManyToManyRelation.setAdditionalJoin(attrAdditionalJoin);
+						currentOneRelation.setAdditionalJoin(attrAdditionalJoin);
 					}
 					String attrAdditionalOrderBy=atts.getValue("additionalOrderBy");
 					if(attrAdditionalOrderBy!=null) {
-						currentManyToManyRelation.setAdditionalOrderBy(attrAdditionalOrderBy);
+						currentOneRelation.setAdditionalOrderBy(attrAdditionalOrderBy);
+					}
+					String attrComposition=atts.getValue("composition");
+					if(attrComposition!=null) {
+						currentOneRelation.setComposition(attrComposition.equals("true") || attrComposition.equals("1"));
 					}
 					oneAliasCounter++;
 					break;
