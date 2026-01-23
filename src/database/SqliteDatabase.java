@@ -351,4 +351,10 @@ public class SqliteDatabase extends Database {
 		return false;
 		
 	}
+
+	@Override
+	public boolean supportsUpsert() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

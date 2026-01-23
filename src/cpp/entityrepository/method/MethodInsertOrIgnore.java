@@ -14,7 +14,7 @@ public class MethodInsertOrIgnore extends Method {
 
 	@Override
 	public void addImplementation() {
-		addInstr(_this().callMethodInstruction(EntityCls.getDatabaseMapper().getRepositoryInsertOrIgnoreMethod(), pEntity) ) ;
+		addInstr(_this().callMethodInstruction(EntityCls.getDatabaseMapper().getRepositoryInsertOrIgnoreMethod(), pEntity.deref()) ) ;
 
 	}
 

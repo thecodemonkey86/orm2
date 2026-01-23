@@ -54,6 +54,7 @@ public abstract class Database {
 	public abstract String getDefaultSchema() ;
 
 	public abstract boolean supportsInsertOrIgnore();
+	public abstract boolean supportsUpsert();
 	public abstract boolean supportsMultiRowInsert();
 
 	public boolean supportsLoadingFiles() {

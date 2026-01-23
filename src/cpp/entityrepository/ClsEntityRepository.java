@@ -24,6 +24,7 @@ import cpp.entityrepository.method.MethodPrepareInsertOrIgnore;
 import cpp.entityrepository.method.MethodRemoveAllRelated;
 import cpp.entityrepository.method.MethodRepoCreateNew;
 import cpp.entityrepository.method.MethodRepoCreateNewNonNullableOnly;
+import cpp.entityrepository.method.MethodUpsert;
 import cpp.lib.ClsBaseRepository;
 import database.column.Column;
 import database.relation.IManyRelation;
@@ -98,6 +99,14 @@ public class ClsEntityRepository extends Cls{
 				addMethod(new MethodInsertOrIgnore(entity));
 				
 			}
+			var colsWithoutPk=entity.getTbl().getColumnsWithoutPrimaryKey();
+			if(!colsWithoutPk.isEmpty()) {
+				if(EntityCls.getDatabase().supportsUpsert()) {
+					addMethod(new MethodUpsert(entity,true));
+					addMethod(new MethodUpsert(entity,false));
+				}
+			}
+					
 //			addMethod(new MethodEntitySave(bean,false));
 //			addMethod(new MethodEntitySaveBulk(bean,false));
 //			addMethod(new MethodEntitySaveBulk(bean,true));

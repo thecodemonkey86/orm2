@@ -15,6 +15,7 @@ public class ClsBaseRepository extends Cls{
 	public static final String bulkSave = "bulkSave"; 
 	public static final String bulkInsert = "bulkInsert"; 
 	public static final String prepareInsertOrIgnorePg = "prepareInsertOrIgnorePg"; 
+	public static final String upsertPg = "upsertPg"; 
 	
 	public ClsBaseRepository() {
 		super("BaseRepository");
@@ -25,6 +26,7 @@ public class ClsBaseRepository extends Cls{
 		addMethod( new LibMethod(Types.Void, bulkSave));
 		addMethod( new LibMethod(Types.Void, bulkInsert));
 		addMethod( new LibMethod(Types.Void, insertOrIgnorePg));
+		addMethod( new LibMethod(Types.Void, upsertPg));
 		addMethodTemplate( new LibMethodTemplate(Types.Void, prepareInsertOrIgnorePg) {
 			
 			@Override

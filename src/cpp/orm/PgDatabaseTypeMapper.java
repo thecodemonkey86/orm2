@@ -255,7 +255,6 @@ public class PgDatabaseTypeMapper extends DatabaseTypeMapper{
 
 	@Override
 	public String getRepositoryInsertOrUpdateMethod() {
-		// TODO Auto-generated method stub
-		return null;
+		return ClsBaseRepository.upsertPg;
 	}
 }

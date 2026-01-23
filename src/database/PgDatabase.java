@@ -203,4 +203,12 @@ public class PgDatabase extends Database {
 	public String getFileLoadFunction() {
 		return "bytea_import";
 	}
+
+
+
+	@Override
+	public boolean supportsUpsert() {
+		// TODO Auto-generated method stub
+		return true;
+	}
 }

@@ -136,6 +136,15 @@ public class FirebirdDatabase extends Database {
 	public String sqlInsertMultiRow(AbstractTable tbl, List<Column> columnsInSpecificOrder, String placeholders) {
 		throw new RuntimeException("not implemented");
 	}
+
+
+
+
+	@Override
+	public boolean supportsUpsert() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 	
 }

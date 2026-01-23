@@ -55,6 +55,8 @@ import cpp.entity.method.MethodGetTableNameAlias;
 import cpp.entity.method.MethodGetUpdateCondition;
 import cpp.entity.method.MethodGetUpdateConditionParams;
 import cpp.entity.method.MethodGetUpdateFields;
+import cpp.entity.method.MethodGetUpsertParams;
+import cpp.entity.method.MethodGetUpsertPlaceholders;
 import cpp.entity.method.MethodGetValueByName;
 import cpp.entity.method.MethodIsNullOrEmpty;
 import cpp.entity.method.MethodManyAttrGetter;
@@ -86,7 +88,7 @@ public class EntityCls extends Cls {
 	public static final String END_CUSTOM_CLASS_MEMBERS = "/*END_CUSTOM_CLASS_MEMBERS*/";
 	public static final String BEGIN_CUSTOM_PREPROCESSOR = "/*BEGIN_CUSTOM_PREPROCESSOR*/";
 	public static final String END_CUSTOM_PREPROCESSOR = "/*END_CUSTOM_PREPROCESSOR*/";
-	public static final String APILEVEL = "3.13.1";
+	public static final String APILEVEL = "3.14.0";
 	
 	static Database database;
 	static DatabaseTypeMapper mapper;
@@ -386,10 +388,16 @@ public class EntityCls extends Cls {
 		addForwardDeclaredClass(this);
 		List<Column> cols = tbl.getColumns(!tbl.getPrimaryKey().isAutoIncrement());
 		List<Column> allCols = tbl.getColumns(true);
+		var colsWithoutPk=tbl.getColumnsWithoutPrimaryKey();
 		addMethod(new MethodGetInsertFields(cols));
 		addMethod(new MethodGetInsertValuePlaceholders(tbl));
-		addMethod(new MethodGetInsertParams(cols));
-		addMethod(new MethodGetUpdateFields(tbl.getColumnsWithoutPrimaryKey(),tbl.getPrimaryKey()));
+		
+		if(!colsWithoutPk.isEmpty()) {
+			addMethod(new MethodGetUpsertPlaceholders(tbl));
+			addMethod(new MethodGetUpsertParams());
+		}
+		addMethod(new MethodGetInsertParams(cols));		
+		addMethod(new MethodGetUpdateFields(colsWithoutPk,tbl.getPrimaryKey()));
 		addMethod(new MethodGetUpdateConditionParams(tbl.getPrimaryKey()));
 		addMethod(new MethodGetUpdateCondition(tbl.getPrimaryKey()));
 //		addMethod(new MethodGetById(oneRelations,manyRelations, tbl, this));

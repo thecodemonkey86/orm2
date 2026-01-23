@@ -126,6 +126,13 @@ public class MySqlDatabase extends Database {
 	}
 
 
+	@Override
+	public boolean supportsUpsert() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
 	
 
 }
